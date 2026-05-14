@@ -2117,6 +2117,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Documentation
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#reporting-issues" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2278,6 +2289,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Documentation
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#reporting-issues" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2384,6 +2406,21 @@ issues, and connect with the people maintaining the project.</p>
 <li>Add tests for new functionality.</li>
 <li>Update documentation as needed.</li>
 </ul>
+<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<p>Documentation is built on GitHub Actions and deployed to a separate GitHub Pages
+repository (<code>confusius-tools/confusius-docs</code>). Every pull request gets an automatic
+preview deployed at <code>https://confusius-tools.github.io/confusius-docs/pr-preview/pr-N/</code>,
+with a link posted as a comment on the PR. The preview is cleaned up automatically
+when the PR is closed.</p>
+<p>To build the docs locally:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>just<span class="w"> </span>docs
+</span></code></pre></div>
+<p><strong>Adding documentation images.</strong> Image generators live in <code>docs/images/&lt;topic&gt;/generate.py</code>.
+Each generator is run in CI automatically. If you add a new one, register it in the
+<strong>Generate documentation images</strong> step of <code>.github/workflows/docs.yml</code>.</p>
+<p><strong>Adding examples.</strong> Example scripts live in <code>docs/examples/</code> and are discovered
+automatically by the gallery builder. After adding a script, add its built output path
+to the <code>nav</code> in <code>zensical.toml</code>.</p>
 <h3 id="reporting-issues">Reporting Issues<a class="headerlink" href="#reporting-issues" title="Permanent link">&para;</a></h3>
 <p>If you find a bug or have a feature request:</p>
 <ol>
