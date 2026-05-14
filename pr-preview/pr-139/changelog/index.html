@@ -2488,14 +2488,6 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>register_volume</code> now returns a 3-tuple
-  <code>(registered, transform, diagnostics)</code> instead of a 2-tuple. Existing call sites
-  that unpack the two-element return value need to add a third variable (or
-  <code>_</code>)
-  (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
-</ul>
-<h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
-<ul>
 <li><code>register_volume</code> now also returns a
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationDiagnostics&lt;/span&gt;
 
@@ -2504,10 +2496,14 @@
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../api/registration/#confusius.registration.RegistrationDiagnostics"><code>RegistrationDiagnostics</code></a> dataclass
   with the per-iteration metric values, final metric value, iteration count, optimizer
-  stop condition, and the metric name. <code>register_volumewise</code> propagates the per-frame
-  diagnostics list under <code>attrs["registration_diagnostics"]</code> and adds
-  <code>final_metric_value</code> and <code>n_iterations</code> columns to <code>motion_params</code>
-  (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
+  stop condition, and the metric name. <code>register_volumewise</code> always adds per-frame
+  <code>final_metric_value</code> and <code>n_iterations</code> columns to <code>motion_params</code>, and exposes the
+  full per-frame diagnostics list under <code>attrs["registration_diagnostics"]</code> only when
+  called with <code>keep_diagnostics=True</code> to avoid retaining the full optimizer metric
+  trace by default (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
+</ul>
+<h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
+<ul>
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>

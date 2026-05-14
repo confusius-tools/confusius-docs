@@ -4198,7 +4198,8 @@ not match <code>moving</code>.</p>
 </span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
 </span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_progress&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(show_progress)">show_progress</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;keep_diagnostics&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(keep_diagnostics)">keep_diagnostics</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -4411,6 +4412,28 @@ cost of speed.</p>
             <p>Whether to display a progress bar while registering volumes.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.registration.register_volumewise(keep_diagnostics)" class="doc doc-heading doc-heading-parameter">              <b><code>keep_diagnostics</code></b>
+<a href="#confusius.registration.register_volumewise(keep_diagnostics)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to keep the full per-frame
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationDiagnostics&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.registration.RegistrationDiagnostics"><code>RegistrationDiagnostics</code></a>
+list on the returned DataArray under
+<code>attrs["registration_diagnostics"]</code>. Disabled by default because each
+diagnostics object carries the full optimizer metric trace, which adds
+up over long recordings. The cheap per-frame summaries
+(<code>final_metric_value</code>, <code>n_iterations</code>) are always added to
+<code>motion_params</code> regardless of this flag.</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -4420,17 +4443,19 @@ cost of speed.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Registered data with the same coordinates as input, input attributes, and added
-motion metadata in <code>attrs["reference_time"]</code>, <code>attrs["motion_params"]</code> (now
-also including per-frame <code>final_metric_value</code> and <code>n_iterations</code> columns), and
-<code>attrs["registration_diagnostics"]</code> (a list of
+            <p>Registered data with the same coordinates as input, input attributes,
+and added motion metadata in <code>attrs["reference_time"]</code> and
+<code>attrs["motion_params"]</code>. <code>motion_params</code> always carries per-frame
+<code>final_metric_value</code> and <code>n_iterations</code> columns. When
+<code>keep_diagnostics=True</code>, <code>attrs["registration_diagnostics"]</code> also
+carries a list of
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationDiagnostics&lt;/span&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-dataclass&quot;&gt;&lt;code&gt;dataclass&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="./#confusius.registration.RegistrationDiagnostics"><code>RegistrationDiagnostics</code></a>,
-one entry per frame).</p>
+  &lt;/span&gt;" href="./#confusius.registration.RegistrationDiagnostics"><code>RegistrationDiagnostics</code></a>
+(one entry per frame) with the full per-iteration metric trace.</p>
           </div>
         </li>
     </ul>
