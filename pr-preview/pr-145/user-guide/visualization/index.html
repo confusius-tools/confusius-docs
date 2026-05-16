@@ -973,6 +973,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#composite-plots" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Composite Plots
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Composite Plots">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Basic Usage
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#normalisation-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Normalisation Strategies
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skipping-resampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Skipping Resampling
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#carpet-plots" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -985,7 +1035,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-usage_2" class="md-nav__link">
+  <a href="#basic-usage_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         Basic Usage
@@ -2556,6 +2606,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#composite-plots" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Composite Plots
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Composite Plots">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Basic Usage
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#normalisation-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Normalisation Strategies
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skipping-resampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Skipping Resampling
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#carpet-plots" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2568,7 +2668,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#basic-usage_2" class="md-nav__link">
+  <a href="#basic-usage_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         Basic Usage
@@ -2702,6 +2802,11 @@ generation</strong>:</p>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_contours"><code>plot_contours</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;contours&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.contours"><code>.fusi.plot.contours()</code></a></td>
 <td>Matplotlib</td>
 <td>Contour-only grids (masks or atlas outlines)</td>
+</tr>
+<tr>
+<td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_composite&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_composite"><code>plot_composite</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;composite&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.composite"><code>.fusi.plot.composite()</code></a></td>
+<td>Matplotlib</td>
+<td>Composite plots of two volumes</td>
 </tr>
 <tr>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_carpet&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_carpet"><code>plot_carpet</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;carpet&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.carpet"><code>.fusi.plot.carpet()</code></a></td>
@@ -3087,6 +3192,83 @@ without the coordinate-matching of <a class="autorefs autorefs-internal" title="
 <p>The <code>.fusi.plot.contours()</code> accessor provides the same function with a shorter syntax:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">atlas_fusi</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">contours</span><span class="p">(</span><span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+<h2 id="composite-plots">Composite Plots<a class="headerlink" href="#composite-plots" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_composite&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_composite"><code>plot_composite</code></a> overlays two volumes as a
+<strong>red/cyan composite</strong>: the first volume drives the red channel, the second drives
+the cyan channel (green + blue). Voxels that are bright in both volumes appear as
+desaturated grey, voxels bright in only one volume appear in pure red or cyan, and
+voxels dim in both stay black. This is the same encoding used by the live
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volume">registration progress preview</a> and is a
+quick way to inspect how well two volumes are aligned — for example two sessions
+of the same subject, a moving image against a reference, or a registered output
+against its target.</p>
+<h3 id="basic-usage_2">Basic Usage<a class="headerlink" href="#basic-usage_2" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Xarray accessor</label><label for="__tabbed_3_2">Function API</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Two angiography volumes from different sessions of the same subject.</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">vol_3d</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">composite</span><span class="p">(</span><span class="n">vol_3d_session2</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span><span class="n">vol_3d</span><span class="p">,</span> <span class="n">vol_3d_session2</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>By default <code>vol_3d_session2</code> is resampled onto <code>vol_3d</code>'s grid (<code>resample=True</code>),
+so the two volumes do not need to share the same shape, spacing, or origin. The
+function returns a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter"><code>VolumePlotter</code></a> with one
+panel per slice — the same overlay machinery used by <code>plot_volume</code> and
+<code>plot_contours</code>, so you can chain
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a> on top to layer
+atlas outlines over the composite.</p>
+<p><a class="glightbox" data-gallery="light" data-title="Red/cyan composite of two angiography sessions" data-type="image" href="../../images/visualization/composite-light.png#only-light"><img alt="Red/cyan composite of two angiography sessions" src="../../images/visualization/composite-light.png#only-light" /></a>
+<a class="glightbox" data-gallery="dark" data-title="Red/cyan composite of two angiography sessions" data-type="image" href="../../images/visualization/composite-dark.png#only-dark"><img alt="Red/cyan composite of two angiography sessions" src="../../images/visualization/composite-dark.png#only-dark" /></a></p>
+<h3 id="normalisation-strategies">Normalisation Strategies<a class="headerlink" href="#normalisation-strategies" title="Permanent link">&para;</a></h3>
+<p><code>normalize_strategy</code> controls how voxel intensities are mapped into the <code>[0, 1]</code>
+range that drives each channel:</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Per-array range</th>
+<th>Cross-array range</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"per_volume"</code> (default)</td>
+<td>one range per volume</td>
+<td>independent</td>
+<td>Each input is shown at its own contrast; preserves within-volume relative brightness.</td>
+</tr>
+<tr>
+<td><code>"per_slice"</code></td>
+<td>one range per 2D slice</td>
+<td>independent</td>
+<td>Maximises contrast on dim slices; loses slice-to-slice comparability.</td>
+</tr>
+<tr>
+<td><code>"shared"</code></td>
+<td>single range across both volumes</td>
+<td>shared</td>
+<td>Preserves absolute intensity differences between the two inputs (one looks dim, the other bright when their dynamic ranges differ).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="skipping-resampling">Skipping Resampling<a class="headerlink" href="#skipping-resampling" title="Permanent link">&para;</a></h3>
+<p>If the two volumes already share the same grid — for example one was previously
+registered onto the other — pass <code>resample=False</code> to skip the SimpleITK resample
+step:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">fixed</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">composite</span><span class="p">(</span><span class="n">registered_moving</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+<p>When <code>resample=False</code>, the two arrays must share dimensions, shape, and
+coordinates. If the shapes match but the coordinate values disagree (e.g., two
+acquisitions on slightly offset grids that you know are equivalent), pass
+<code>ignore_data2_coordinates=True</code> to override <code>data2</code>'s coordinate axes with
+<code>data1</code>'s before plotting.</p>
 <h2 id="carpet-plots">Carpet Plots<a class="headerlink" href="#carpet-plots" title="Permanent link">&para;</a></h2>
 <p>A <strong>carpet plot</strong> (also called a grayplot or Power plot<sup id="fnref:power2017"><a class="footnote-ref" href="#fn:power2017">1</a></sup>) displays every
 voxel's time-series as a row in a 2D raster image with time on the x-axis. Z-scored by
@@ -3094,25 +3276,25 @@ default, it makes motion artifacts, global signal transients, and outlier volume
 immediately visible as vertical stripes or abrupt intensity changes.</p>
 <p>Carpet plots are primarily used for quality control—for a deeper discussion of <abbr title="Quality Control">QC</abbr>
 metrics, see the <a href="../quality-control/">Quality Control</a> guide.</p>
-<h3 id="basic-usage_2">Basic Usage<a class="headerlink" href="#basic-usage_2" title="Permanent link">&para;</a></h3>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Xarray accessor</label><label for="__tabbed_3_2">Function API</label></div>
+<h3 id="basic-usage_3">Basic Usage<a class="headerlink" href="#basic-usage_3" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Xarray accessor</label><label for="__tabbed_4_2">Function API</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_carpet</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_carpet</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
