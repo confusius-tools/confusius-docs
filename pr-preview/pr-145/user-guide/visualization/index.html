@@ -3272,10 +3272,12 @@ range that drives each channel:</p>
 the other) pass <code>resample=False</code> to skip the resample step:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">fixed</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">composite</span><span class="p">(</span><span class="n">registered_moving</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></code></pre></div>
-<p>When <code>resample=False</code>, the two arrays must share dimensions, shape, and coordinates. If
-the shapes match but the coordinate values disagree (e.g., two acquisitions on slightly
-offset grids that you know are equivalent), pass <code>ignore_data2_coordinates=True</code> to
-override <code>data2</code>'s coordinate axes with <code>data1</code>'s before plotting.</p>
+<p>When <code>resample=False</code>, the two arrays must share dimensions, shape, and coordinates
+within tolerance. Coordinates are checked with <code>numpy.allclose</code>-style tolerances
+(<code>rtol=1e-5</code>, <code>atol=1e-8</code> by default); once the check passes, <code>data2</code>'s coordinates are
+replaced with <code>data1</code>'s so the two volumes share an exact coordinate frame downstream.
+Widen <code>rtol</code> / <code>atol</code> to accept acquisitions on offset grids that you know are
+equivalent.</p>
 <h2 id="carpet-plots">Carpet Plots<a class="headerlink" href="#carpet-plots" title="Permanent link">&para;</a></h2>
 <p>A <strong>carpet plot</strong> (also called a grayplot or Power plot<sup id="fnref:power2017"><a class="footnote-ref" href="#fn:power2017">1</a></sup>) displays every
 voxel's time-series as a row in a 2D raster image with time on the x-axis. Z-scored by
