@@ -1543,6 +1543,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_composite" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_composite
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.plot_contours" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2383,6 +2394,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_composite" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_composite
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.plot_contours" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2517,6 +2539,13 @@
             <p>Image visualization utilities for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="confusius.plotting.napari">napari</span></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Napari-based visualization utilities for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -2559,6 +2588,13 @@
             –
             <div class="doc-md-description">
               <p>Plot voxel intensities across time as a raster image.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_composite&lt;/span&gt;" href="./#confusius.plotting.plot_composite">plot_composite</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Plot a red/cyan composite of two volumes as a grid of 2D slice panels.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -2749,6 +2785,13 @@ when no axes are provided at construction time.</p>
 <p><span class="doc-section-title">Methods:</span></p>
     <ul>
           <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_composite&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_composite">add_composite</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Plot a red/cyan composite of two volumes on the axes.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_contours">add_contours</a></code></b>
             –
             <div class="doc-md-description">
@@ -2800,6 +2843,297 @@ when no axes are provided at construction time.</p>
 
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="confusius.plotting.VolumePlotter.add_composite" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_composite</span>
+
+
+<a href="#confusius.plotting.VolumePlotter.add_composite" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_composite</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data1&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(data1)">data1</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data2&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(data2)">data2</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(resample)">resample</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalize_strategy&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(normalize_strategy)">normalize_strategy</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;per_slice&quot;</span><span class="p">,</span> <span class="s2">&quot;shared&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_coords&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(slice_coords)">slice_coords</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Sequence" href="https://docs.python.org/3/library/typing.html#typing.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;match_coordinates&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(match_coordinates)">match_coordinates</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;alpha&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(alpha)">alpha</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_titles&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(show_titles)">show_titles</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axis_labels&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(show_axis_labels)">show_axis_labels</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axis_ticks&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(show_axis_ticks)">show_axis_ticks</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axes&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(show_axes)">show_axes</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fontsize&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(fontsize)">fontsize</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;nrows&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(nrows)">nrows</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ncols&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(ncols)">ncols</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dpi&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.VolumePlotter.add_composite(dpi)">dpi</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a red/cyan composite of two volumes on the axes.</p>
+<p>Each slice is rendered as an RGB image where <code>data1</code> drives the red channel
+and <code>data2</code> drives the green and blue channels (cyan), making overlap
+visible as desaturated grey. This is the same visual encoding used by the
+live registration progress preview.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(data1)" class="doc doc-heading doc-heading-parameter">              <b><code>data1</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(data1)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>First volume, plotted in red. 3D volume data. Unitary dimensions (except
+<code>slice_mode</code>) are squeezed before processing. Complex-valued inputs are
+converted to magnitude (<code>abs(data)</code>) with a warning.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(data2)" class="doc doc-heading doc-heading-parameter">              <b><code>data2</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(data2)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Second volume, plotted in cyan. Must have the same dimensionality as
+<code>data1</code> after squeezing; when <code>resample=True</code> it is resampled onto
+<code>data1</code>'s grid before plotting, so its native shape and coordinates may
+differ.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(resample)" class="doc doc-heading doc-heading-parameter">              <b><code>resample</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(resample)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to resample <code>data2</code> onto <code>data1</code>'s grid using an identity
+transform before blending. When <code>False</code>, the two arrays must
+already share the same dimensions and shape, and their coordinates
+must match within <code>rtol</code>/<code>atol</code>; once validated, <code>data2</code>'s
+coordinates are replaced with <code>data1</code>'s so the two volumes share
+an exact coordinate frame downstream.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(rtol)" class="doc doc-heading doc-heading-parameter">              <b><code>rtol</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(rtol)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1e-5</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Relative tolerance used to validate that <code>data1</code> and <code>data2</code> share
+coordinates when <code>resample=False</code>. Widen to accept acquisitions on
+slightly offset grids known to be equivalent. Ignored when
+<code>resample=True</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(atol)" class="doc doc-heading doc-heading-parameter">              <b><code>atol</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(atol)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1e-8</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Absolute tolerance used to validate that <code>data1</code> and <code>data2</code> share
+coordinates when <code>resample=False</code>. Ignored when <code>resample=True</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(normalize_strategy)" class="doc doc-heading doc-heading-parameter">              <b><code>normalize_strategy</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(normalize_strategy)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(<span title="per_volume">per_volume</span>, <span title="per_slice">per_slice</span>, <span title="shared">shared</span>)</code>, default:
+                  <code>&#34;per_volume&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Intensity normalisation strategy.</p>
+<ul>
+<li><code>"per_volume"</code>: rescale each input to <code>[0, 1]</code> independently over its
+  full volume. Preserves slice-to-slice contrast within each array
+  but loses the absolute-intensity relationship between <code>data1</code> and
+  <code>data2</code>.</li>
+<li><code>"per_slice"</code>: rescale each 2D slice independently. Maximises
+  contrast on dim slices at the cost of cross-slice comparability.</li>
+<li><code>"shared"</code>: rescale both volumes together using a single shared
+  <code>[min(data1.min(), data2.min()), max(data1.max(), data2.max())]</code>
+  range. Preserves the absolute-intensity relationship between the
+  two inputs, useful when comparing data acquired at the same
+  dynamic range.</li>
+</ul>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(slice_coords)" class="doc doc-heading doc-heading-parameter">              <b><code>slice_coords</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(slice_coords)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of float</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Coordinate values along <code>slice_mode</code> at which to extract slices. If not
+provided, all coordinate values from <code>data1</code> are used.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(match_coordinates)" class="doc doc-heading doc-heading-parameter">              <b><code>match_coordinates</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(match_coordinates)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>If True, match slice coordinates to the stored coordinate mapping of an
+existing figure (for use as an overlay). If False, plot sequentially on
+a fresh grid of axes — the natural mode for a standalone composite plot.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(alpha)" class="doc doc-heading doc-heading-parameter">              <b><code>alpha</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(alpha)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1.0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Opacity of the composite image.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(show_titles)" class="doc doc-heading doc-heading-parameter">              <b><code>show_titles</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(show_titles)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display subplot titles showing the slice coordinate.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(show_axis_labels)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axis_labels</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(show_axis_labels)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display axis labels (with units when available).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(show_axis_ticks)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axis_ticks</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(show_axis_ticks)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display axis tick labels.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(show_axes)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axes</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(show_axes)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to show axis decorations. When <code>False</code>, overrides
+<code>show_axis_labels</code> and <code>show_axis_ticks</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(fontsize)" class="doc doc-heading doc-heading-parameter">              <b><code>fontsize</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(fontsize)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Base font size for all text elements. Subplot titles use <code>fontsize</code>
+directly; axis labels use <code>0.9 * fontsize</code>; tick labels use
+<code>0.85 * fontsize</code>. If not provided, uses the active Matplotlib
+defaults.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(nrows)" class="doc doc-heading doc-heading-parameter">              <b><code>nrows</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(nrows)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of rows in the subplot grid when creating a new figure.
+If not provided, computed automatically.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(ncols)" class="doc doc-heading doc-heading-parameter">              <b><code>ncols</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(ncols)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of columns in the subplot grid when creating a new figure.
+If not provided, computed automatically.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.VolumePlotter.add_composite(dpi)" class="doc doc-heading doc-heading-parameter">              <b><code>dpi</code></b>
+<a href="#confusius.plotting.VolumePlotter.add_composite(dpi)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure resolution in dots per inch. Ignored when using an existing
+figure.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Returns self for method chaining.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If either input has a <code>time</code> dimension, is not 2D or 3D, lacks
+<code>slice_mode</code> as a dimension, or (when <code>resample=False</code>) the two
+arrays do not share dims, shape, and coordinates within
+<code>rtol</code>/<code>atol</code>.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The composite is rendered with
+<a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.pcolormesh.html#matplotlib.axes.Axes.pcolormesh"><code>pcolormesh</code></a> using its RGB-<code>C</code>
+codepath, so panels line up with overlays drawn by
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>add_volume</code></a> /
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a>.
+Hover tooltips, colormaps, colorbars, and intensity thresholds are
+not supported on composite axes — use <code>add_volume</code> for those.</p>
+</details>
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
@@ -3862,6 +4196,376 @@ NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref),
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">],</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_carpet</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+</span></code></pre></div>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="confusius.plotting.plot_composite" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">plot_composite</span>
+
+
+<a href="#confusius.plotting.plot_composite" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">plot_composite</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data1&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(data1)">data1</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data2&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(data2)">data2</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(resample)">resample</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalize_strategy&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(normalize_strategy)">normalize_strategy</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;per_slice&quot;</span><span class="p">,</span> <span class="s2">&quot;shared&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_coords&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(slice_coords)">slice_coords</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Sequence" href="https://docs.python.org/3/library/typing.html#typing.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_mode&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(slice_mode)">slice_mode</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;alpha&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(alpha)">alpha</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_titles&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(show_titles)">show_titles</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axis_labels&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(show_axis_labels)">show_axis_labels</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axis_ticks&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(show_axis_ticks)">show_axis_ticks</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_axes&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(show_axes)">show_axes</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fontsize&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(fontsize)">fontsize</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;yincrease&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(yincrease)">yincrease</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;xincrease&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(xincrease)">xincrease</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;bg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(bg_color)">bg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(fg_color)">fg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;figure&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(figure)">figure</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;axes&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(axes)">axes</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]</span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;nrows&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(nrows)">nrows</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ncols&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(ncols)">ncols</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dpi&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(dpi)">dpi</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a red/cyan composite of two volumes as a grid of 2D slice panels.</p>
+<p>Each slice is rendered as an RGB image where <code>data1</code> drives the red channel
+and <code>data2</code> drives the green and blue channels (cyan), making overlap
+visible as desaturated grey. This is the same visual encoding used by the
+live registration progress preview.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(data1)" class="doc doc-heading doc-heading-parameter">              <b><code>data1</code></b>
+<a href="#confusius.plotting.plot_composite(data1)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>First volume, plotted in red. 3D volume data. Unitary dimensions (except
+<code>slice_mode</code>) are squeezed before processing. Complex-valued inputs are
+converted to magnitude (<code>abs(data)</code>) with a warning.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(data2)" class="doc doc-heading doc-heading-parameter">              <b><code>data2</code></b>
+<a href="#confusius.plotting.plot_composite(data2)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Second volume, plotted in cyan. Must have the same dimensionality as <code>data1</code>
+after squeezing; when <code>resample=True</code> it is resampled onto <code>data1</code>'s grid before
+plotting, so its native shape and coordinates may differ.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(resample)" class="doc doc-heading doc-heading-parameter">              <b><code>resample</code></b>
+<a href="#confusius.plotting.plot_composite(resample)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to resample <code>data2</code> onto <code>data1</code>'s grid using an identity transform
+before blending. When <code>False</code>, the two arrays must already share dimensions and
+shape, and their coordinates must match within <code>rtol</code>/<code>atol</code>; once validated,
+<code>data2</code>'s coordinates are replaced with <code>data1</code>'s so the two volumes share an
+exact coordinate frame downstream.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(rtol)" class="doc doc-heading doc-heading-parameter">              <b><code>rtol</code></b>
+<a href="#confusius.plotting.plot_composite(rtol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1e-5</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Relative tolerance used to validate that <code>data1</code> and <code>data2</code> share coordinates
+when <code>resample=False</code>. Widen to accept acquisitions on slightly offset grids
+known to be equivalent. Ignored when <code>resample=True</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(atol)" class="doc doc-heading doc-heading-parameter">              <b><code>atol</code></b>
+<a href="#confusius.plotting.plot_composite(atol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1e-8</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Absolute tolerance used to validate that <code>data1</code> and <code>data2</code> share coordinates
+when <code>resample=False</code>. Ignored when <code>resample=True</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(normalize_strategy)" class="doc doc-heading doc-heading-parameter">              <b><code>normalize_strategy</code></b>
+<a href="#confusius.plotting.plot_composite(normalize_strategy)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="per_volume">per_volume</span>, <span title="per_slice">per_slice</span>, <span title="shared">shared</span>)</code>, default:
+                  <code>&#34;per_volume&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Intensity normalisation strategy.</p>
+<ul>
+<li><code>"per_volume"</code>: rescale each input to <code>[0, 1]</code> independently over its full volume.
+  Preserves slice-to-slice contrast within each array but loses the
+  absolute-intensity relationship between <code>data1</code> and <code>data2</code>.</li>
+<li><code>"per_slice"</code>: rescale each 2D slice independently. Maximises contrast on dim
+  slices at the cost of cross-slice comparability.</li>
+<li><code>"shared"</code>: rescale both volumes together using a single shared
+  <code>[min(data1.min(), data2.min()), max(data1.max(), data2.max())]</code> range.
+  Preserves the absolute-intensity relationship between the two inputs.</li>
+</ul>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(slice_coords)" class="doc doc-heading doc-heading-parameter">              <b><code>slice_coords</code></b>
+<a href="#confusius.plotting.plot_composite(slice_coords)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>sequence of float</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Coordinate values along <code>slice_mode</code> at which to extract slices. Slices are
+selected by nearest-neighbour lookup. If not provided, all coordinate values
+from <code>data1</code> are used.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(slice_mode)" class="doc doc-heading doc-heading-parameter">              <b><code>slice_mode</code></b>
+<a href="#confusius.plotting.plot_composite(slice_mode)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#34;z&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Dimension along which to slice (e.g. <code>"x"</code>, <code>"y"</code>, <code>"z"</code>). After slicing, each
+panel must be 2D.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(alpha)" class="doc doc-heading doc-heading-parameter">              <b><code>alpha</code></b>
+<a href="#confusius.plotting.plot_composite(alpha)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>1.0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Opacity of the composite image.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(show_titles)" class="doc doc-heading doc-heading-parameter">              <b><code>show_titles</code></b>
+<a href="#confusius.plotting.plot_composite(show_titles)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display subplot titles showing the slice coordinate.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(show_axis_labels)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axis_labels</code></b>
+<a href="#confusius.plotting.plot_composite(show_axis_labels)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display axis labels (with units when available).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(show_axis_ticks)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axis_ticks</code></b>
+<a href="#confusius.plotting.plot_composite(show_axis_ticks)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to display axis tick labels.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(show_axes)" class="doc doc-heading doc-heading-parameter">              <b><code>show_axes</code></b>
+<a href="#confusius.plotting.plot_composite(show_axes)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to show all axis decorations. When <code>False</code>, overrides <code>show_axis_labels</code>
+and <code>show_axis_ticks</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(fontsize)" class="doc doc-heading doc-heading-parameter">              <b><code>fontsize</code></b>
+<a href="#confusius.plotting.plot_composite(fontsize)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Base font size for all text elements. Subplot titles use <code>fontsize</code> directly;
+axis labels use <code>0.9 * fontsize</code>; tick labels use <code>0.85 * fontsize</code>. If not
+provided, uses the active Matplotlib defaults.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(yincrease)" class="doc doc-heading doc-heading-parameter">              <b><code>yincrease</code></b>
+<a href="#confusius.plotting.plot_composite(yincrease)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether the y-axis increases upward (<code>True</code>) or downward (<code>False</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(xincrease)" class="doc doc-heading doc-heading-parameter">              <b><code>xincrease</code></b>
+<a href="#confusius.plotting.plot_composite(xincrease)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether the x-axis increases to the right (<code>True</code>) or left (<code>False</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(bg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>bg_color</code></b>
+<a href="#confusius.plotting.plot_composite(bg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#34;black&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Background color for the figure and axes. Any matplotlib-compatible color string
+(e.g. <code>"black"</code>, <code>"white"</code>, <code>"#1a1a2e"</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(fg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>fg_color</code></b>
+<a href="#confusius.plotting.plot_composite(fg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Color for text, labels, ticks, and spines. If not provided, derived
+automatically from <code>bg_color</code> using the WCAG relative luminance formula (white
+on dark backgrounds, black on light ones).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(figure)" class="doc doc-heading doc-heading-parameter">              <b><code>figure</code></b>
+<a href="#confusius.plotting.plot_composite(figure)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Existing figure to draw into. If not provided, a new figure is created.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(axes)" class="doc doc-heading doc-heading-parameter">              <b><code>axes</code></b>
+<a href="#confusius.plotting.plot_composite(axes)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="numpy.ndarray" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray">ndarray</a> or <a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Existing axes to draw into: either a single
+<a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes"><code>matplotlib.axes.Axes</code></a> or a 2D array of them. Must
+contain exactly as many elements as there are slices. A single <code>Axes</code> is wrapped
+automatically. If not provided, new axes are created inside <code>figure</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(nrows)" class="doc doc-heading doc-heading-parameter">              <b><code>nrows</code></b>
+<a href="#confusius.plotting.plot_composite(nrows)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of rows in the subplot grid. If not provided, computed automatically.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(ncols)" class="doc doc-heading doc-heading-parameter">              <b><code>ncols</code></b>
+<a href="#confusius.plotting.plot_composite(ncols)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of columns in the subplot grid. If not provided, computed automatically.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(dpi)" class="doc doc-heading doc-heading-parameter">              <b><code>dpi</code></b>
+<a href="#confusius.plotting.plot_composite(dpi)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure resolution in dots per inch. Ignored when <code>figure</code> is provided.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Object managing the figure, axes, and coordinate mapping for overlays.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If either input has a <code>time</code> dimension, is not 2D or 3D, lacks <code>slice_mode</code> as a
+dimension, or (when <code>resample=False</code>) the two arrays do not share dims, shape,
+and coordinates within <code>rtol</code>/<code>atol</code>.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Rendering uses <a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.pcolormesh.html#matplotlib.axes.Axes.pcolormesh"><code>pcolormesh</code></a> with an RGB <code>C</code>
+array, so panels share their cell geometry with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="./#confusius.plotting.plot_volume"><code>plot_volume</code></a> /
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="./#confusius.plotting.plot_contours"><code>plot_contours</code></a> and overlay correctly.
+Colormaps, colorbars, intensity thresholds, and hover tooltips are not supported on
+composite axes — use <code>plot_volume</code> for those.</p>
+<p>The returned <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter"><code>VolumePlotter</code></a> stores the
+coordinate-to-axis mapping, so you can overlay further volumes or contours with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>VolumePlotter.add_volume</code></a> or
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_contours"><code>VolumePlotter.add_contours</code></a>.</p>
+</details>
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_composite</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fixed</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;fixed.zarr&quot;</span><span class="p">)[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">moving</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;moving.zarr&quot;</span><span class="p">)[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span> <span class="o">=</span> <span class="n">plot_composite</span><span class="p">(</span><span class="n">fixed</span><span class="p">,</span> <span class="n">moving</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Skip resampling when the two volumes are already aligned.</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span> <span class="o">=</span> <span class="n">plot_composite</span><span class="p">(</span><span class="n">fixed</span><span class="p">,</span> <span class="n">registered_moving</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Maximise contrast on dim slices.</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span> <span class="o">=</span> <span class="n">plot_composite</span><span class="p">(</span><span class="n">fixed</span><span class="p">,</span> <span class="n">moving</span><span class="p">,</span> <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
