@@ -2620,10 +2620,15 @@
     <div class="doc doc-contents ">
 
         <p>Validate that a DataArray follows ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> conventions.</p>
-<p>This validator is intentionally broader than
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="./#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>: it accepts
-2D, 3D, 2D+t, 3D+t, and multi-pose variants as long as dimensions, coordinates,
-and optional metadata follow ConfUSIus conventions.</p>
+<p>A valid <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray must:</p>
+<ul>
+<li>Have dimension names from the set <code>(time, pose, z, y, x)</code>, with optional extra
+  dimensions if <code>allow_extra_dims</code> is <code>True</code> (e.g., <code>region</code>, <code>component</code>, <code>mask</code>,
+  etc.).</li>
+<li>Have matching 1D coordinates for all dimensions that are strictly
+  monotonic-increasing when numeric.</li>
+</ul>
+<p>Additional requirements can be enforced using the function parameters.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
