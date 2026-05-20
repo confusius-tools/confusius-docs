@@ -2005,6 +2005,8 @@
       
         
       
+        
+      
     
     
     
@@ -2221,6 +2223,126 @@
     
   
   Registration of two sessions from the same subject
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Decomposition
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  Decomposition
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/decomposition/pca_single_recording/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  PCA on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/decomposition/fastica_single_recording/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  FastICA on a single fUSI recording
 
     
   </span>
@@ -3867,7 +3989,7 @@ Ignored when <code>seed_signals</code> is provided.</p>
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIConnectivityAccessor.seed_map(clean_kwargs)" class="doc doc-heading doc-heading-parameter">              <b><code>clean_kwargs</code></b>
-<a href="#confusius.xarray.FUSIConnectivityAccessor.seed_map(clean_kwargs)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a> or None</code>, default:
+<a href="#confusius.xarray.FUSIConnectivityAccessor.seed_map(clean_kwargs)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>, default:
                   <code>None</code>
 )
           –
@@ -6751,18 +6873,18 @@ slices.</p>
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIRegistrationAccessor.to_volume(optimizer_weights)" class="doc doc-heading doc-heading-parameter">              <b><code>optimizer_weights</code></b>
-<a href="#confusius.xarray.FUSIRegistrationAccessor.to_volume(optimizer_weights)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>list of float or None</code>, default:
+<a href="#confusius.xarray.FUSIRegistrationAccessor.to_volume(optimizer_weights)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>list of float</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Per-parameter weights applied on top of auto-estimated scales via
-<code>SetOptimizerWeights()</code>. <code>None</code> applies no additional weighting.
-The weight for each parameter is multiplied into the effective step
-size: <code>0</code> freezes a parameter, values in <code>(0, 1)</code> slow it
-down, <code>1</code> leaves it unchanged. For the 3D Euler transform the
-order is <code>[angleX, angleY, angleZ, tx, ty, tz]</code>; to disable
-rotations around x and y use <code>[0, 0, 1, 1, 1, 1]</code>.</p>
+<code>SetOptimizerWeights()</code>. If not provided, no additional weighting is
+applied. The weight for each parameter is multiplied into the effective step
+size: <code>0</code> freezes a parameter, values in <code>(0, 1)</code> slow it down, <code>1</code> leaves
+it unchanged. For the 3D Euler transform the order is <code>[angleX, angleY,
+angleZ, tx, ty, tz]</code>; to disable rotations around x and y use <code>[0, 0, 1, 1,
+1, 1]</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7072,18 +7194,18 @@ Use 1 for serial processing.</p>
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIRegistrationAccessor.volumewise(optimizer_weights)" class="doc doc-heading doc-heading-parameter">              <b><code>optimizer_weights</code></b>
-<a href="#confusius.xarray.FUSIRegistrationAccessor.volumewise(optimizer_weights)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>list of float or None</code>, default:
+<a href="#confusius.xarray.FUSIRegistrationAccessor.volumewise(optimizer_weights)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>list of float</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Per-parameter weights applied on top of auto-estimated scales via
-<code>SetOptimizerWeights()</code>. <code>None</code> applies no additional weighting.
-The weight for each parameter is multiplied into the effective step
-size: <code>0</code> freezes a parameter, values in <code>(0, 1)</code> slow it
-down, <code>1</code> leaves it unchanged. For the 3D Euler transform the
-order is <code>[angleX, angleY, angleZ, tx, ty, tz]</code>; to disable
-rotations around x and y use <code>[0, 0, 1, 1, 1, 1]</code>.</p>
+<code>SetOptimizerWeights()</code>. If not provided, no additional weighting is
+applied. The weight for each parameter is multiplied into the effective step
+size: <code>0</code> freezes a parameter, values in <code>(0, 1)</code> slow it down, <code>1</code> leaves
+it unchanged. For the 3D Euler transform the order is <code>[angleX, angleY,
+angleZ, tx, ty, tz]</code>; to disable rotations around x and y use <code>[0, 0, 1, 1,
+1, 1]</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/dev/changelog/">
       
       
-        <link rel="prev" href="../examples/_built/registration/register_volume_same_subject/">
+        <link rel="prev" href="../examples/_built/decomposition/fastica_single_recording/">
       
       
         <link rel="next" href="../contributing/">
@@ -1817,6 +1817,8 @@
       
         
       
+        
+      
     
     
     
@@ -2053,6 +2055,126 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Decomposition
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  Decomposition
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/decomposition/pca_single_recording/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  PCA on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/decomposition/fastica_single_recording/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  FastICA on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2190,6 +2312,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
       </span>
     </span>
   </a>
@@ -2411,6 +2544,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2513,8 +2657,15 @@
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>
+<li>Added shared <code>fontsize</code> parameter to <code>plot_volume</code>, <code>plot_contours</code>, and carpet
+  plotting entry points so text sizing is consistent across all plotting APIs
+  (<a href="https://github.com/confusius-tools/confusius/pull/128">#128</a>).</li>
 <li>Replaced plotting <code>black_bg</code> with explicit <code>bg_color</code> and <code>fg_color</code> controls for
   clearer visual customization (<a href="https://github.com/confusius-tools/confusius/pull/124">#124</a>).</li>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FastICA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.FastICA"><code>FastICA</code></a> transformer for independent
+  component analysis of fUSI recordings, with the same xarray-aware <code>fit</code> /
+  <code>transform</code> / <code>inverse_transform</code> API as <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.PCA"><code>PCA</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/118">#118</a>).</li>
 <li>Added example gallery helper utilities to streamline writing and maintaining docs
   examples (<a href="https://github.com/confusius-tools/confusius/pull/102">#102</a>).</li>
 </ul>
@@ -2550,6 +2701,12 @@
   <a href="https://scientific-python.org/specs/spec-0001/">SPEC-0001</a> PEP 562 lazy loading.
   Submodules and exported functions are only imported on first access, reducing <code>import
   confusius</code> overhead for workflows that use a subset of the package.</li>
+</ul>
+<h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Switched documentation hosting to GitHub Pages with <code>mike</code> versioning and automatic
+  PR preview deployments
+  (<a href="https://github.com/confusius-tools/confusius/pull/134">#134</a>).</li>
 </ul>
 <h2 id="020">0.2.0<a class="headerlink" href="#020" title="Permanent link">&para;</a></h2>
 <p>Released 2026-05-05.</p>
