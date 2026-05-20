@@ -2529,6 +2529,14 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Fixed <code>register_volume</code>, <code>plot_composite</code>, and <code>VolumePlotter.add_composite</code>
+  filling out-of-FOV voxels with <code>0.0</code> when resampling. This caused a bright
+  background artifact for dB-scaled data (where 0 is maximum intensity). The fill
+  value now defaults to the minimum of the moving image, with explicit control via
+  <code>fill_value</code> on <code>register_volume</code> (applies to both the final output and the live
+  progress composite) and <code>resample_kwargs={"default_value": ...}</code> on
+  <code>plot_composite</code> / <code>add_composite</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/138">#138</a>).</li>
 <li>Fixed plotting hover information silently disappearing when the returned
   <code>VolumePlotter</code> was not held in a variable (e.g. <code>obj.fusi.plot.volume().show()</code>). The
   hover manager is now kept alive until the figure is closed
