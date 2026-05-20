@@ -84,9 +84,7 @@ data
 # avoid components dominated by motion artefacts.
 
 # %%
-data = cf.registration.register_volumewise(
-    data, learning_rate=1e-2, show_progress=False
-)
+data = cf.registration.register_volumewise(data, learning_rate=1e-2)
 
 # %% [markdown]
 # ## Temporal ICA
@@ -108,8 +106,8 @@ data_std = standardize(data)
 # same `(time, voxels)` orientation as [PCA][confusius.decomposition.PCA]. The
 # algorithm finds `n_components` time courses that are as statistically independent and
 # non-Gaussian as possible. The [`maps_`][confusius.decomposition.FastICA] attribute
-# stores the corresponding spatial mixing weights — the voxel-space directions along
-# which each independent time course has its strongest influence.
+# stores the corresponding spatial mixing weights (the voxel-space directions along
+# which each independent time course has its strongest influence).
 
 # %%
 ica_t = FastICA(
