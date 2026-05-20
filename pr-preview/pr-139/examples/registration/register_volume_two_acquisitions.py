@@ -15,9 +15,9 @@
 # %% [markdown]
 # ## Fetch and load both recordings
 #
-# Each recording is a single power Doppler image of one slice. We convert it to
-# decibels—both for display and for the registration itself, which is more stable
-# on the log-compressed dynamic range.
+# Each recording is a single power Doppler image of one slice. We convert it to decibels
+# for both display and registration, which is usually more stable on the log-compressed
+# dynamic range.
 
 # %%
 from pathlib import Path
@@ -45,7 +45,8 @@ bids_root = fetch_cybis_pereira_2026(
 )
 
 
-def _load_angio_pwd(session: str) -> xr.DataArray:
+def _load_angio_for_registration(session: str) -> xr.DataArray:
+    """Load an angio acquisition and scale its intensity for registration."""
     path = (
         Path(bids_root)
         / "sub-rat75"
@@ -56,8 +57,8 @@ def _load_angio_pwd(session: str) -> xr.DataArray:
     return cf.load(path).fusi.scale.db().compute()
 
 
-fixed = _load_angio_pwd(sessions[0])
-moving = _load_angio_pwd(sessions[1])
+fixed = _load_angio_for_registration(sessions[0])
+moving = _load_angio_for_registration(sessions[1])
 
 fixed
 # %%
@@ -82,7 +83,6 @@ moving
 # %%
 moving.coords["z"] = fixed.z
 plotter = cf.plotting.plot_composite(fixed, moving, bg_color=bg_color)
-plotter.show()
 
 # %% [markdown]
 # ## Run the registration
@@ -143,7 +143,6 @@ for ax, moving_view, title in [
     ax.set_title(title)
 
 fig.suptitle("Fixed (red) / moving (cyan)")
-fig.show()
 
 # %% [markdown]
 # !!! tip "Watch registration progress live"
@@ -170,11 +169,9 @@ ax.plot(diagnostics.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics.metric})")
 ax.set_title(diagnostics.stop_condition)
-fig.show()
 
 
 # %% [markdown]
-# The resulting affine encodes the registration transform in physical (millimeter)
-# units and can be reused, composed with other transforms, or applied to additional
-# volumes from the same session with
-# [`resample_volume`][confusius.registration.resample_volume].
+# The resulting affine encodes the registration transform in physical units and can be
+# reused, composed with other transforms, or applied to additional volumes from the same
+# session with [`resample_volume`][confusius.registration.resample_volume].
