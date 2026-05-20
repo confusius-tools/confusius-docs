@@ -4542,7 +4542,7 @@ SCAN data).</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_like(interpolation)">interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;default_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_like(default_value)">default_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;default_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_like(default_value)">default_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sitk_threads&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_like(sitk_threads)">sitk_threads</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
@@ -4601,12 +4601,14 @@ the reference physical space to moving physical space (pull/inverse convention).
         <li class="doc-section-item field-body">
 <h4 id="confusius.registration.resample_like(default_value)" class="doc doc-heading doc-heading-parameter">              <b><code>default_value</code></b>
 <a href="#confusius.registration.resample_like(default_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>0.0</code>
+                  <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Value assigned to voxels that fall outside the moving image's field of view
-after resampling.</p>
+after resampling. If not provided, defaults to <code>float(moving.min())</code>, which
+renders out-of-FOV voxels as background regardless of intensity scale (important
+for dB data where 0 is maximum intensity).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4673,7 +4675,7 @@ also have a time dimension.</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_volume(interpolation)">interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;default_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_volume(default_value)">default_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;default_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_volume(default_value)">default_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sitk_threads&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.resample_volume(sitk_threads)">sitk_threads</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
@@ -4760,12 +4762,14 @@ dimension order.</p>
         <li class="doc-section-item field-body">
 <h4 id="confusius.registration.resample_volume(default_value)" class="doc doc-heading doc-heading-parameter">              <b><code>default_value</code></b>
 <a href="#confusius.registration.resample_volume(default_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>0.0</code>
+                  <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Value assigned to voxels that fall outside the moving image's field of
-view after resampling.</p>
+            <p>Value assigned to voxels that fall outside the moving image's field of view
+after resampling. If not provided, defaults to <code>float(moving.min())</code>, which
+renders out-of-FOV voxels as background regardless of intensity scale (important
+for dB data where 0 is maximum intensity).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
