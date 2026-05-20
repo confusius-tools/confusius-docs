@@ -2115,10 +2115,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fit-a-pca-model" class="md-nav__link">
+  <a href="#temporal-pca-modetemporal" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Fit a <abbr title="Principal Component Analysis">PCA</abbr> model
+        Temporal <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="temporal"</code>)
       </span>
     </span>
   </a>
@@ -2137,10 +2137,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-the-principal-axes-of-variance" class="md-nav__link">
+  <a href="#temporal-pca-maps-and-corresponding-time-courses" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Visualize the principal axes of variance
+        Temporal <abbr title="Principal Component Analysis">PCA</abbr> maps and corresponding time courses
       </span>
     </span>
   </a>
@@ -2148,10 +2148,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-the-temporal-components" class="md-nav__link">
+  <a href="#spatial-pca-modespatial" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Visualize the temporal components
+        Spatial <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="spatial"</code>)
       </span>
     </span>
   </a>
@@ -2354,10 +2354,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fit-a-pca-model" class="md-nav__link">
+  <a href="#temporal-pca-modetemporal" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Fit a <abbr title="Principal Component Analysis">PCA</abbr> model
+        Temporal <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="temporal"</code>)
       </span>
     </span>
   </a>
@@ -2376,10 +2376,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-the-principal-axes-of-variance" class="md-nav__link">
+  <a href="#temporal-pca-maps-and-corresponding-time-courses" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Visualize the principal axes of variance
+        Temporal <abbr title="Principal Component Analysis">PCA</abbr> maps and corresponding time courses
       </span>
     </span>
   </a>
@@ -2387,10 +2387,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-the-temporal-components" class="md-nav__link">
+  <a href="#spatial-pca-modespatial" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Visualize the temporal components
+        Spatial <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="spatial"</code>)
       </span>
     </span>
   </a>
@@ -2484,6 +2484,16 @@
 <h1 id="pca-on-a-single-fusi-recording"><abbr title="Principal Component Analysis">PCA</abbr> on a single <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#pca-on-a-single-fusi-recording" title="Permanent link">&para;</a></h1>
 <p>This example shows how to use principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) to decompose a <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 recording into principal axes of variance.</p>
+<p>ConfUSIus supports two <abbr title="Principal Component Analysis">PCA</abbr> orientations:</p>
+<ul>
+<li><code>mode="temporal"</code> (default): center across time for each voxel, then find orthogonal
+  voxel-space directions that maximize variance of projected time samples.</li>
+<li><code>mode="spatial"</code>: center across voxels for each time point (after transposition),
+  then find orthogonal spatial maps that maximize variance across voxels.</li>
+</ul>
+<p>Both return time courses with shape <code>(time, component)</code> via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA.transform"><code>transform</code></a>, but the statistical objective is
+applied along different dimensions.</p>
 <p><abbr title="Principal Component Analysis">PCA</abbr> finds an ordered orthogonal set of axes in feature space<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> such that projection
 onto the first <em>k</em> axes captures the maximum possible variance among all
 <em>k</em>-dimensional linear projections. Equivalently, these axes are the dominant
@@ -2493,8 +2503,8 @@ properly standardized. If you are interested in linear covariance structure in y
 <h2 id="load-a-fusi-recording">Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#load-a-fusi-recording" title="Permanent link">&para;</a></h2>
 <p>To demonstrate the use of <abbr title="Principal Component Analysis">PCA</abbr> on <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data, we use a spontaneous activity recording
 from the <a href="https://doi.org/10.1016/j.neuron.2022.02.012">Nunez-Elizalde 2022 dataset</a>.
-See <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022"><code>fetch_nunez_elizalde_2022</code></a> for
-more details on how to download this dataset using ConfUSIus.</p>
+See the <a href="../../../../user-guide/datasets/">Datasets</a> user guide for more details on how
+to download this dataset using ConfUSIus.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
@@ -2507,40 +2517,28 @@ more details on how to download this dataset using ConfUSIus.</p>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">standardize</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Keep figure backgrounds transparent in docs and standalone notebooks.</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Match text and axes styling to the active Matplotlib theme.</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">fg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;text.color&quot;</span><span class="p">])</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># # Increase text size for dense decomposition figures.</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># plt.rcParams.update(</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1">#     {</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1">#         &quot;font.size&quot;: 15,</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1">#         &quot;axes.titlesize&quot;: 17,</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1">#         &quot;axes.labelsize&quot;: 15,</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1">#         &quot;xtick.labelsize&quot;: 13,</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1">#         &quot;ytick.labelsize&quot;: 13,</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="c1">#         &quot;legend.fontsize&quot;: 13,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1">#     }</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># )</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="c1"># Keep notebook output compact for large DataArray displays.</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201011&quot;</span><span class="p">,</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice03&quot;</span><span class="p">,</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="p">)</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201011&quot;</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz&quot;</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="p">)</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="n">data</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># Keep notebook output compact for large DataArray displays.</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201011&quot;</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice03&quot;</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201011&quot;</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz&quot;</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">data</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -3084,7 +3082,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 114</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-4818d2a6-9e8e-406c-9a5a-3efacb7e8a55' class='xr-array-in' type='checkbox' ><label for='section-4818d2a6-9e8e-406c-9a5a-3efacb7e8a55' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>4.464e+03 5.588e+03 5.064e+03 ... 2.977e+04 2.558e+04 2.353e+04</span></div><div class='xr-array-data'><pre>array([[[[ 4463.8   ,  5588.404 ,  5063.7925, ...,  6008.3438,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 114</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-170507a7-b71e-4016-a680-b34cdfb745e2' class='xr-array-in' type='checkbox' ><label for='section-170507a7-b71e-4016-a680-b34cdfb745e2' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>4.464e+03 5.588e+03 5.064e+03 ... 2.977e+04 2.558e+04 2.353e+04</span></div><div class='xr-array-data'><pre>array([[[[ 4463.8   ,  5588.404 ,  5063.7925, ...,  6008.3438,
            5016.807 ,  5296.5776],
          [ 5369.187 ,  5347.434 ,  5393.3667, ...,  5593.255 ,
            5330.843 ,  6088.181 ],
@@ -3124,7 +3122,7 @@ dl.xr-attrs {
           21754.053 , 21667.215 ],
          [22383.992 , 21130.988 , 21290.71  , ..., 29774.988 ,
           25576.12  , 23529.764 ]]]],
-      shape=(751, 1, 114, 80), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-a06e66e0-4473-4c12-8f1b-6891cde6b481' class='xr-section-summary-in' type='checkbox' checked /><label for='section-a06e66e0-4473-4c12-8f1b-6891cde6b481' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-d2ec7fdf-d502-4006-8359-47b6ad2d97d2' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d2ec7fdf-d502-4006-8359-47b6ad2d97d2' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-423c5fa1-f531-4016-8ce5-eea6739d0165' class='xr-var-data-in' type='checkbox'><label for='data-423c5fa1-f531-4016-8ce5-eea6739d0165' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-00b06703-8fa7-44c5-aed4-7c39855bc2e8' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-00b06703-8fa7-44c5-aed4-7c39855bc2e8' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-82137672-5bea-448f-9baf-ade7978050cb' class='xr-var-data-in' type='checkbox'><label for='data-82137672-5bea-448f-9baf-ade7978050cb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.73 2.778 2.827 ... 8.142 8.19</div><input id='attrs-52cc0c81-845f-49b2-b2c7-bd407605c3ed' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-52cc0c81-845f-49b2-b2c7-bd407605c3ed' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b70d8d27-bbc6-4c13-85a9-1e24f8d9b5a5' class='xr-var-data-in' type='checkbox'><label for='data-b70d8d27-bbc6-4c13-85a9-1e24f8d9b5a5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.73008, 2.7784 , 2.82672, 2.87504, 2.92336, 2.97168, 3.02   , 3.06832,
+      shape=(751, 1, 114, 80), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-bd9f0a8f-0cd3-4b31-921e-bfc677380e5c' class='xr-section-summary-in' type='checkbox' checked /><label for='section-bd9f0a8f-0cd3-4b31-921e-bfc677380e5c' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-f3c38ca0-8555-4f69-83be-226a4e940c23' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f3c38ca0-8555-4f69-83be-226a4e940c23' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2097340c-3638-47ae-ac9f-9f94a931878e' class='xr-var-data-in' type='checkbox'><label for='data-2097340c-3638-47ae-ac9f-9f94a931878e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-eb61d1b8-d3c3-4a95-a444-db51161fd45e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-eb61d1b8-d3c3-4a95-a444-db51161fd45e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3b83f5d4-5a11-4063-b7bf-84802bf07bc0' class='xr-var-data-in' type='checkbox'><label for='data-3b83f5d4-5a11-4063-b7bf-84802bf07bc0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.73 2.778 2.827 ... 8.142 8.19</div><input id='attrs-dae9fbc5-bfc7-4f1c-80e7-6d4bc647a497' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dae9fbc5-bfc7-4f1c-80e7-6d4bc647a497' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6f31ad59-1cea-48ce-a897-6b70aaf600ee' class='xr-var-data-in' type='checkbox'><label for='data-6f31ad59-1cea-48ce-a897-6b70aaf600ee' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.73008, 2.7784 , 2.82672, 2.87504, 2.92336, 2.97168, 3.02   , 3.06832,
        3.11664, 3.16496, 3.21328, 3.2616 , 3.30992, 3.35824, 3.40656, 3.45488,
        3.5032 , 3.55152, 3.59984, 3.64816, 3.69648, 3.7448 , 3.79312, 3.84144,
        3.88976, 3.93808, 3.9864 , 4.03472, 4.08304, 4.13136, 4.17968, 4.228  ,
@@ -3138,14 +3136,14 @@ dl.xr-attrs {
        6.98224, 7.03056, 7.07888, 7.1272 , 7.17552, 7.22384, 7.27216, 7.32048,
        7.3688 , 7.41712, 7.46544, 7.51376, 7.56208, 7.6104 , 7.65872, 7.70704,
        7.75536, 7.80368, 7.852  , 7.90032, 7.94864, 7.99696, 8.04528, 8.0936 ,
-       8.14192, 8.19024])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-6a1902a3-2257-4c03-a0aa-027a0f0ddf83' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6a1902a3-2257-4c03-a0aa-027a0f0ddf83' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d6b25688-0b6f-4243-bd0d-c3be4421912b' class='xr-var-data-in' type='checkbox'><label for='data-d6b25688-0b6f-4243-bd0d-c3be4421912b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
+       8.14192, 8.19024])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-36f76a8f-7b38-4d75-8506-24900994344d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-36f76a8f-7b38-4d75-8506-24900994344d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ada58227-2e39-4507-ac43-1d0b89ac55bf' class='xr-var-data-in' type='checkbox'><label for='data-ada58227-2e39-4507-ac43-1d0b89ac55bf' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
        -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
        -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
        -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
         0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
         1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
         2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f7e86396-abb2-4d9c-97db-ff748461f548' class='xr-section-summary-in' type='checkbox' /><label for='section-f7e86396-abb2-4d9c-97db-ff748461f548' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f6ca88ef-45b5-4208-b12b-88f8d444da42' class='xr-section-summary-in' type='checkbox' /><label for='section-f6ca88ef-45b5-4208-b12b-88f8d444da42' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
@@ -3165,7 +3163,7 @@ can be helpful for long recordings.</p>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">data</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="fit-a-pca-model">Fit a <abbr title="Principal Component Analysis">PCA</abbr> model<a class="headerlink" href="#fit-a-pca-model" title="Permanent link">&para;</a></h2>
+<h2 id="temporal-pca-modetemporal">Temporal <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="temporal"</code>)<a class="headerlink" href="#temporal-pca-modetemporal" title="Permanent link">&para;</a></h2>
 <p>Before performing <abbr title="Principal Component Analysis">PCA</abbr>, we standardize the recording by centering and scaling each
 voxel's time series to zero mean and unit variance. The
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;standardize&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.standardize"><code>standardize</code></a> function can be used for this purpose.
@@ -3181,15 +3179,13 @@ the same arguments as the scikit-learn model, such as
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA"><code>n_components</code></a> for the number of
 principal components to compute, and
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA"><code>random_state</code></a> for reproducibility
-(see the API documentation for more details). After fitting the model, the principal
-axes—also known as spatial components—are stored in the
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA"><code>.maps_</code></a> attribute, and the corresponding time
-series—also known as temporal components or scores—can be obtained by transforming the
-data with the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA.transform"><code>.transform</code></a> method.</p>
+(see the API documentation for more details).</p>
+<p>By default, <abbr title="Principal Component Analysis">PCA</abbr> uses <code>mode="temporal"</code> (fit on <code>(time, voxels)</code>). A
+<code>mode="spatial"</code> option is also available, analogous to spatial <abbr title="Independent Component Analysis">ICA</abbr>.</p>
 <p>Here, we fit a <abbr title="Principal Component Analysis">PCA</abbr> model with all available components.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_std</span><span class="p">)</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">signals</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">pca_t</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;temporal&quot;</span><span class="p">)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">signals_t</span> <span class="o">=</span> <span class="n">pca_t</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_std</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">signals_t</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -3733,7 +3729,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>component</span>: 751</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-b0243024-0563-48c8-8bd6-f74904e8b8d7' class='xr-array-in' type='checkbox' ><label for='section-b0243024-0563-48c8-8bd6-f74904e8b8d7' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>73.07 -8.187 -3.946 10.23 13.19 ... 0.2158 -0.7849 -0.3381 -1.729e-05</span></div><div class='xr-array-data'><pre>array([[ 7.3071930e+01, -8.1868048e+00, -3.9456780e+00, ...,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>component</span>: 751</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-16045a9b-b729-4105-8a6b-633167ea3a33' class='xr-array-in' type='checkbox' ><label for='section-16045a9b-b729-4105-8a6b-633167ea3a33' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>73.07 -8.187 -3.946 10.23 13.19 ... 0.2158 -0.7849 -0.3381 -1.729e-05</span></div><div class='xr-array-data'><pre>array([[ 7.3071930e+01, -8.1868048e+00, -3.9456780e+00, ...,
          1.2141544e+00,  1.5502616e+00,  1.8778226e-06],
        [ 5.2029629e+01,  2.1730190e+01, -1.4518289e+01, ...,
          7.1177453e-01, -2.8988850e-01, -6.6003145e-07],
@@ -3746,7 +3742,7 @@ dl.xr-attrs {
         -1.0207410e+00, -5.2597034e-01, -4.4402695e-06],
        [ 5.1801804e+01, -1.8862444e+01,  1.6068029e+01, ...,
         -7.8491914e-01, -3.3806562e-01, -1.7292521e-05]],
-      shape=(751, 751), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-3feaa2ad-9f4d-48c6-afac-c2510b567a93' class='xr-section-summary-in' type='checkbox' checked /><label for='section-3feaa2ad-9f4d-48c6-afac-c2510b567a93' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-42f9b467-a3ef-4c4b-a534-f1f3fb7b4d87' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-42f9b467-a3ef-4c4b-a534-f1f3fb7b4d87' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c58074dc-024a-4bb7-a300-bcd0759a3332' class='xr-var-data-in' type='checkbox'><label for='data-c58074dc-024a-4bb7-a300-bcd0759a3332' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>component</span></div><div class='xr-var-dims'>(component)</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>0 1 2 3 4 5 ... 746 747 748 749 750</div><input id='attrs-c5b58cf0-7fe1-4eb2-b24e-5905efcbe0f9' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-c5b58cf0-7fe1-4eb2-b24e-5905efcbe0f9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5d0a50d9-b47c-41d3-859e-697f2b557d88' class='xr-var-data-in' type='checkbox'><label for='data-5d0a50d9-b47c-41d3-859e-697f2b557d88' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([  0,   1,   2, ..., 748, 749, 750], shape=(751,))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-7ff6f87e-06b5-4972-ad2e-28a4b8c15c81' class='xr-section-summary-in' type='checkbox' checked /><label for='section-7ff6f87e-06b5-4972-ad2e-28a4b8c15c81' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>PCA signals</dd></dl></div></li></ul></div></div>
+      shape=(751, 751), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-591250c4-16c9-4059-ad5d-85e2549b2bc4' class='xr-section-summary-in' type='checkbox' checked /><label for='section-591250c4-16c9-4059-ad5d-85e2549b2bc4' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-08515ae5-8b1c-40d9-88a5-d939468509c3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-08515ae5-8b1c-40d9-88a5-d939468509c3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e946fe24-c2ac-4cc3-aecb-65fd76ce02cf' class='xr-var-data-in' type='checkbox'><label for='data-e946fe24-c2ac-4cc3-aecb-65fd76ce02cf' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>component</span></div><div class='xr-var-dims'>(component)</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>0 1 2 3 4 5 ... 746 747 748 749 750</div><input id='attrs-43e69bb8-02e4-4d90-905c-d53a34bfb257' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-43e69bb8-02e4-4d90-905c-d53a34bfb257' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-59fa09fc-ebee-4386-812f-402f63601447' class='xr-var-data-in' type='checkbox'><label for='data-59fa09fc-ebee-4386-812f-402f63601447' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([  0,   1,   2, ..., 748, 749, 750], shape=(751,))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-b357b1bf-bb33-44c3-9d97-eeda9408e2c6' class='xr-section-summary-in' type='checkbox' checked /><label for='section-b357b1bf-bb33-44c3-9d97-eeda9408e2c6' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>PCA signals</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
 <h2 id="explained-variance">Explained variance<a class="headerlink" href="#explained-variance" title="Permanent link">&para;</a></h2>
@@ -3759,7 +3755,7 @@ cumulative curve on the right shows how quickly the total explained variance sat
 These plots can help guide the choice of how many components to retain for further
 analysis, for example by selecting the "elbow" of the screen plot or a threshold for
 cumulative variance.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">variance_ratio</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">variance_ratio</span> <span class="o">=</span> <span class="n">pca_t</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">component_ids</span> <span class="o">=</span> <span class="n">variance_ratio</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="mi">1</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">cumulative_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">variance_ratio</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
@@ -3779,85 +3775,659 @@ cumulative variance.</p>
 </span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">_</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Cumulative variance&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../pca_single_recording_output_light/cell_11_0_light.png#only-light" data-type="image" data-title="Example output from cell 11, image 0" data-gallery="light"><img src="../pca_single_recording_output_light/cell_11_0_light.png#only-light" alt="Example output from cell 11, image 0"></a><a class="glightbox" href="../pca_single_recording_output_dark/cell_11_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 11, image 0" data-gallery="dark"><img src="../pca_single_recording_output_dark/cell_11_0_dark.png#only-dark" alt="Example output from cell 11, image 0"></a></p>
-<h2 id="visualize-the-principal-axes-of-variance">Visualize the principal axes of variance<a class="headerlink" href="#visualize-the-principal-axes-of-variance" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA"><code>maps_</code></a> is a <code>(component, z, y, x)</code> DataArray.
-Each map is a principal axis in voxel space and indicates how strongly each voxel
-contributes to the corresponding component. Voxels with large positive weights tend to
-increase together along that axis, whereas voxels with large negative weights tend to
-vary in the opposite direction.</p>
-<p>These maps should not be interpreted as localized activation maps. Instead, they
-describe distributed patterns of covariation across the recording. In practice, the
-leading components often reflect broad anatomical or vascular structure, global signal
-fluctuations, artifacts, and other dominant sources of shared variance.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">maps_12</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">maps_12</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">maps_12</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;component&quot;</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">fg_color</span><span class="o">=</span><span class="n">fg_color</span><span class="p">,</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Component weight&quot;</span><span class="p">,</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="p">)</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="n">_</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;PCA spatial maps (first 12 components)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+<h2 id="temporal-pca-maps-and-corresponding-time-courses">Temporal <abbr title="Principal Component Analysis">PCA</abbr> maps and corresponding time courses<a class="headerlink" href="#temporal-pca-maps-and-corresponding-time-courses" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA"><code>maps_</code></a> stores principal axes in voxel space as a
+<code>(component, z, y, x)</code> DataArray. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA.transform"><code>transform</code></a>
+returned the associated temporal scores in <code>signals_t</code>, a <code>(time, component)</code>
+DataArray.</p>
+<p>Looking at both together is more informative than either alone. The maps show the
+dominant covariance structure in space, while the scores show how strongly each pattern
+is expressed over time.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">n_show</span> <span class="o">=</span> <span class="mi">6</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">axes_tc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)]</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">axes_tc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)):</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">var</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pca_t</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">component_map</span> <span class="o">=</span> <span class="n">pca_t</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="p">[</span><span class="n">comp</span><span class="p">])</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">component_map</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        <span class="n">component_map</span><span class="p">,</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="n">axes</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>        <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;component&quot;</span><span class="p">,</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>        <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>        <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>        <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>        <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>        <span class="n">show_titles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>        <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    <span class="p">)</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    <span class="n">signals_t</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PC </span><span class="si">{</span><span class="n">comp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> %)&quot;</span><span class="p">)</span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="n">axes_tc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Temporal PCA maps and time courses (first 6 components)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../pca_single_recording_output_light/cell_13_0_light.png#only-light" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="light"><img src="../pca_single_recording_output_light/cell_13_0_light.png#only-light" alt="Example output from cell 13, image 0"></a><a class="glightbox" href="../pca_single_recording_output_dark/cell_13_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="dark"><img src="../pca_single_recording_output_dark/cell_13_0_dark.png#only-dark" alt="Example output from cell 13, image 0"></a></p>
-<h2 id="visualize-the-temporal-components">Visualize the temporal components<a class="headerlink" href="#visualize-the-temporal-components" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.PCA.transform"><code>.transform</code></a> returned the principal
-components, that is, the projection of the data onto each principal axis: a <code>(time,
-component)</code> DataArray. These time courses show how strongly each spatial pattern is
-expressed at each time point.</p>
-<p>Looking at the temporal scores together with the spatial maps is often more informative
-than inspecting either alone. A component may appear anatomically structured in space,
-while its score can reveal whether it reflects a slow drift, a transient fluctuation,
-or a more rhythmic pattern. Because <abbr title="Principal Component Analysis">PCA</abbr> orders components by explained variance, the
-first components correspond to the most dominant temporal structure in the recording.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">n_show</span> <span class="o">=</span> <span class="mi">6</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">axes_tc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)]</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">axes_tc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)):</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">var</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">component_map</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="p">[</span><span class="n">comp</span><span class="p">])</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">component_map</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="n">component_map</span><span class="p">,</span>
-</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="n">axes</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;component&quot;</span><span class="p">,</span>
-</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
-</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span>
-</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>        <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
-</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>        <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>        <span class="n">show_titles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>        <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>        <span class="n">fg_color</span><span class="o">=</span><span class="n">fg_color</span><span class="p">,</span>
-</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    <span class="p">)</span>
-</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>
-</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>    <span class="n">signals</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
-</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PC </span><span class="si">{</span><span class="n">comp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> %)&quot;</span><span class="p">)</span>
-</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>
-</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-6-36"><a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="n">axes_tc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
-</span><span id="__span-6-37"><a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;PCA spatial maps and time courses (first 6 components)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+<h2 id="spatial-pca-modespatial">Spatial <abbr title="Principal Component Analysis">PCA</abbr> (<code>mode="spatial"</code>)<a class="headerlink" href="#spatial-pca-modespatial" title="Permanent link">&para;</a></h2>
+<p>Spatial <abbr title="Principal Component Analysis">PCA</abbr> transposes the matrix to <code>(voxels, time)</code> before decomposition. In this
+orientation, variance maximization is performed across voxels, yielding orthogonal
+spatial maps as principal components.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">pca_s</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;spatial&quot;</span><span class="p">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">signals_s</span> <span class="o">=</span> <span class="n">pca_s</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_std</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">signals_s</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../pca_single_recording_output_light/cell_15_0_light.png#only-light" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="light"><img src="../pca_single_recording_output_light/cell_15_0_light.png#only-light" alt="Example output from cell 15, image 0"></a><a class="glightbox" href="../pca_single_recording_output_dark/cell_15_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="dark"><img src="../pca_single_recording_output_dark/cell_15_0_dark.png#only-dark" alt="Example output from cell 15, image 0"></a></p>
+<div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in notebooks */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+  line-height: 1.6;
+  padding-bottom: 4px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.xr-header {
+  border-bottom: solid 1px var(--xr-border-color);
+  margin-bottom: 4px;
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-obj-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type,
+.xr-group-box-contents > label {
+  color: var(--xr-font-color2);
+  display: block;
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item > input,
+.xr-group-box-contents > input,
+.xr-array-wrap > input {
+  display: block;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+}
+
+.xr-section-item > input + label,
+.xr-var-item > input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item > input:enabled + label,
+.xr-var-item > input:enabled + label,
+.xr-array-wrap > input:enabled + label,
+.xr-group-box-contents > input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item > input:focus-visible + label,
+.xr-var-item > input:focus-visible + label,
+.xr-array-wrap > input:focus-visible + label,
+.xr-group-box-contents > input:focus-visible + label {
+  outline: auto;
+}
+
+.xr-section-item > input:enabled + label:hover,
+.xr-var-item > input:enabled + label:hover,
+.xr-array-wrap > input:enabled + label:hover,
+.xr-group-box-contents > input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.xr-section-summary > em {
+  font-weight: normal;
+}
+
+.xr-span-grid {
+  grid-column-end: -1;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.3em;
+}
+
+.xr-group-box-contents > input:checked + label > span {
+  display: inline-block;
+  padding-left: 0.6em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details,
+.xr-group-box-contents > label {
+  padding-top: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in ~ .xr-section-details {
+  display: none;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-children {
+  display: inline-grid;
+  grid-template-columns: 100%;
+  grid-column: 1 / -1;
+  padding-top: 4px;
+}
+
+.xr-group-box {
+  display: inline-grid;
+  grid-template-columns: 0px 30px auto;
+}
+
+.xr-group-box-vline {
+  grid-column-start: 1;
+  border-right: 0.2em solid;
+  border-color: var(--xr-border-color);
+  width: 0px;
+}
+
+.xr-group-box-hline {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  height: 1em;
+  width: 26px;
+  border-bottom: 0.2em solid;
+  border-color: var(--xr-border-color);
+}
+
+.xr-group-box-contents {
+  grid-column-start: 3;
+  padding-bottom: 4px;
+}
+
+.xr-group-box-contents > label::before {
+  content: "📂";
+  padding-right: 0.3em;
+}
+
+.xr-group-box-contents > input:checked + label::before {
+  content: "📁";
+}
+
+.xr-group-box-contents > input:checked + label {
+  padding-bottom: 0px;
+}
+
+.xr-group-box-contents > input:checked ~ .xr-sections {
+  display: none;
+}
+
+.xr-group-box-contents > input + label > span {
+  display: none;
+}
+
+.xr-group-box-ellipsis {
+  font-size: 1.4em;
+  font-weight: 900;
+  color: var(--xr-font-color2);
+  letter-spacing: 0.15em;
+  cursor: default;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>component</span>: 751</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-a2c720a9-4a73-4acb-8e47-1d8a3829bd69' class='xr-array-in' type='checkbox' ><label for='section-a2c720a9-4a73-4acb-8e47-1d8a3829bd69' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-3.171e+04 -1.604e+03 1.375e+03 -3.92e+03 ... 35.02 16.3 -0.001499</span></div><div class='xr-array-data'><pre>array([[-3.17054668e+04, -1.60375635e+03,  1.37527271e+03, ...,
+        -4.95495987e+01, -7.17364502e+01, -2.02133600e-03],
+       [-7.75983789e+03, -8.06093652e+03,  2.14849268e+03, ...,
+        -3.21925697e+01,  1.27697525e+01, -1.93034706e-03],
+       [-7.56035938e+03, -1.13749277e+04,  2.88610522e+03, ...,
+         4.38601780e+00,  1.26230836e+00, -1.64916716e-03],
+       ...,
+       [-3.33795625e+04,  1.04725146e+03,  5.65974854e+03, ...,
+        -5.23865852e+01, -6.92091417e+00, -2.62537925e-03],
+       [-3.13637578e+04,  6.69577490e+03,  4.90937793e+03, ...,
+         4.31756668e+01,  2.53113976e+01, -1.98870990e-03],
+       [-2.85325449e+04,  7.52789062e+03,  4.80687622e+02, ...,
+         3.50163574e+01,  1.62975731e+01, -1.49943179e-03]],
+      shape=(751, 751), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-2a92ac91-973e-42de-ab9a-e32a0b42aae3' class='xr-section-summary-in' type='checkbox' checked /><label for='section-2a92ac91-973e-42de-ab9a-e32a0b42aae3' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-de702300-7f25-49b1-aed6-f1f5d1ae7784' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-de702300-7f25-49b1-aed6-f1f5d1ae7784' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-95cb0b3e-3062-4d3f-8ca4-a2228dba9be1' class='xr-var-data-in' type='checkbox'><label for='data-95cb0b3e-3062-4d3f-8ca4-a2228dba9be1' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>component</span></div><div class='xr-var-dims'>(component)</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>0 1 2 3 4 5 ... 746 747 748 749 750</div><input id='attrs-07579dce-4aff-4439-8a8e-e85af71ecb1a' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-07579dce-4aff-4439-8a8e-e85af71ecb1a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5e8c87ab-8576-4257-a543-cfc9d297404a' class='xr-var-data-in' type='checkbox'><label for='data-5e8c87ab-8576-4257-a543-cfc9d297404a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([  0,   1,   2, ..., 748, 749, 750], shape=(751,))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-e2fa1693-e624-4007-bcf1-e0abbd6b181a' class='xr-section-summary-in' type='checkbox' checked /><label for='section-e2fa1693-e624-4007-bcf1-e0abbd6b181a' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>PCA signals</dd></dl></div></li></ul></div></div>
+<style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
+
+<p>As in temporal mode, we inspect maps and corresponding time courses jointly.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">n_show</span> <span class="o">=</span> <span class="mi">6</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">axes_tc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)]</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">axes_tc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)):</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">var</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pca_s</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="n">component_map</span> <span class="o">=</span> <span class="n">pca_s</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="p">[</span><span class="n">comp</span><span class="p">])</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">component_map</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="n">component_map</span><span class="p">,</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="n">axes</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;component&quot;</span><span class="p">,</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>        <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>        <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>        <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>        <span class="n">show_titles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>        <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>    <span class="p">)</span>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>    <span class="n">signals_s</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PC </span><span class="si">{</span><span class="n">comp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">var</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> %)&quot;</span><span class="p">)</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="n">axes_tc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Spatial PCA maps and time courses (first 6 components)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+</span></code></pre></div>
+<p><a class="glightbox" href="../pca_single_recording_output_light/cell_17_0_light.png#only-light" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="light"><img src="../pca_single_recording_output_light/cell_17_0_light.png#only-light" alt="Example output from cell 17, image 0"></a><a class="glightbox" href="../pca_single_recording_output_dark/cell_17_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="dark"><img src="../pca_single_recording_output_dark/cell_17_0_dark.png#only-dark" alt="Example output from cell 17, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 281.5 s</p>
+<p><strong>Total running time:</strong> 280.5 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/fastica?urlpath=lab/tree/docs/examples/02_decomposition/01_pca_single_recording.py">Launch in Binder</a> <a class="md-button" href="../pca_single_recording.py">Download .py</a> <a class="md-button" href="../pca_single_recording.ipynb">Download .ipynb</a></p>
 <div class="footnote">
 <hr />

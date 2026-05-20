@@ -2546,11 +2546,13 @@ Suitable when temporal independence is the relevant prior.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to find spatially or temporally independent components.</p>
+            <p>Whether to find spatially or temporally independent components:</p>
 <ul>
-<li><code>"spatial"</code> (default): fits on <code>(voxels, time)</code>, finds independent spatial
-  maps. Matches FSL MELODIC's default for single-subject data.</li>
-<li><code>"temporal"</code>: fits on <code>(time, voxels)</code>, finds independent time courses.</li>
+<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. The independent components are
+  spatial maps; the projected time courses are their temporal mixing weights.
+  Matches FSL MELODIC's default for single-subject data.</li>
+<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The independent components are time
+  courses; the spatial maps are their voxel-wise mixing weights.</li>
 </ul>
           </div>
         </li>
@@ -2590,6 +2592,7 @@ Suitable when temporal independence is the relevant prior.</p>
           <div class="doc-md-description">
             <p>The functional form of the <code>G</code> function used in the approximation to
 neg-entropy. Can be either <code>"logcosh"</code>, <code>"exp"</code>, or <code>"cube"</code>.</p>
+<p>Default is <code>"cube"</code> to align with FSL MELODIC (<code>pow3</code>).</p>
 <p>You can also provide your own function. It should return a tuple containing the
 value of the function and its derivative at the point. The derivative should be
 averaged along its last dimension.</p>
@@ -2609,11 +2612,12 @@ averaged along its last dimension.</p>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.FastICA(max_iter)" class="doc doc-heading doc-heading-parameter">              <b><code>max_iter</code></b>
 <a href="#confusius.decomposition.FastICA(max_iter)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
-                  <code>200</code>
+                  <code>500</code>
 )
           –
           <div class="doc-md-description">
-            <p>Maximum number of iterations during fit.</p>
+            <p>Maximum number of iterations during fit. Default matches FSL MELODIC
+(<code>--maxit=500</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3494,6 +3498,24 @@ ensure proper conditioning. See
 reproducible results across multiple function calls.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.decomposition.PCA(mode)" class="doc doc-heading doc-heading-parameter">              <b><code>mode</code></b>
+<a href="#confusius.decomposition.PCA(mode)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="temporal">temporal</span>, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;spatial&lt;/span&gt;" href="../spatial/#confusius.spatial">spatial</a>)</code>, default:
+                  <code>&#34;temporal&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to fit <abbr title="Principal Component Analysis">PCA</abbr> along temporal or spatial orientation:</p>
+<ul>
+<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The principal axes are
+  spatial maps; the projected components are temporal time courses that capture
+  dominant variance across voxels.</li>
+<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. The principal axes are time courses; the
+  projected components are spatial maps that capture dominant variance across
+  time.</li>
+</ul>
+          </div>
+        </li>
     </ul>
 
 
@@ -3781,6 +3803,13 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
           <div class="doc-md-description">
             <p>If input has no <code>time</code> dimension, fewer than 2 timepoints, or no spatial
 dimensions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>mode</code> is not <code>"temporal"</code> or <code>"spatial"</code>.</p>
           </div>
         </li>
     </ul>
