@@ -2501,6 +2501,9 @@
   full per-frame diagnostics list under <code>attrs["registration_diagnostics"]</code> only when
   called with <code>keep_diagnostics=True</code> to avoid retaining the full optimizer metric
   trace by default (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
+<li>Renamed <code>validate_iq</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2513,6 +2516,11 @@
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>
+<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_fusi_dataarray"><code>validate_fusi_dataarray</code></a>
+  validator and refactored <abbr title="In-phase and Quadrature">IQ</abbr>/registration validation to use it. Core dimension
+  coordinates are now validated as 1D, numeric, finite, and strictly increasing,
+  while extra/non-dimension coordinates remain allowed
+  (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 <li>Replaced plotting <code>black_bg</code> with explicit <code>bg_color</code> and <code>fg_color</code> controls for
   clearer visual customization (<a href="https://github.com/confusius-tools/confusius/pull/124">#124</a>).</li>
 <li>Added example gallery helper utilities to streamline writing and maintaining docs
