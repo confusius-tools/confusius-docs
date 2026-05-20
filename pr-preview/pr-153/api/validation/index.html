@@ -2625,8 +2625,9 @@
 <li>Have dimension names from the set <code>(time, pose, z, y, x)</code>, with optional extra
   dimensions if <code>allow_extra_dims</code> is <code>True</code> (e.g., <code>region</code>, <code>component</code>, <code>mask</code>,
   etc.).</li>
-<li>Have matching 1D coordinates for all dimensions that are strictly
-  monotonic-increasing when numeric.</li>
+<li>Have matching 1D coordinates for all dimensions.</li>
+<li>Have numeric, finite, and strictly increasing core dimension coordinates (<code>time</code>,
+  <code>pose</code>, <code>z</code>, <code>y</code>, <code>x</code>).</li>
 </ul>
 <p>Additional requirements can be enforced using the function parameters.</p>
 
@@ -2761,8 +2762,8 @@ canonical relative order <code>(time, pose, z, y, x)</code>.</p>
             –
           <div class="doc-md-description">
             <p>If dimension names are invalid, required dimensions or coordinates are missing,
-there are too few spatial dimensions, numeric coordinates are not strictly
-increasing, optional stricter checks fail, or required metadata is missing.</p>
+there are too few spatial dimensions, core numeric coordinate constraints fail,
+optional stricter checks fail, or required metadata is missing.</p>
           </div>
         </li>
     </ul>
