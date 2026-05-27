@@ -3516,14 +3516,29 @@ provided.</p>
           –
           <div class="doc-md-description">
             <p>Keyword arguments forwarded to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../signal/#confusius.signal.clean"><code>clean</code></a>. Cleaning is
-applied to the full data array before computing correlations. If not provided,
+applied before computing correlations. If <code>mask</code> is provided, cleaning is
+applied to the masked <code>(time, space)</code> signals for efficiency. If not provided,
 no cleaning is applied.</p>
 <div class="admonition warning">
 <p class="admonition-title">Chunking along time</p>
-<p>Any operation in <code>clean_kwargs</code> that involves detrending or
-filtering requires the <code>time</code> dimension to be un-chunked.
-Rechunk your data before calling <code>fit</code>: <code>data.chunk({'time': -1})</code>.</p>
+<p>Any operation in <code>clean_kwargs</code> that involves detrending or filtering
+requires the <code>time</code> dimension to be un-chunked. Rechunk your data before
+calling <code>fit</code>: <code>data.chunk({'time': -1})</code>.</p>
 </div>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.connectivity.SeedBasedMaps(mask)" class="doc doc-heading doc-heading-parameter">              <b><code>mask</code></b>
+<a href="#confusius.connectivity.SeedBasedMaps(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Boolean spatial mask selecting which voxels are included in the correlation
+computation. When provided, voxel signals are first extracted with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_mask&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_mask"><code>extract_with_mask</code></a>, so cleaning and
+correlation are computed only on masked voxels. Output maps retain the full
+spatial geometry, with voxels outside the mask set to <code>0</code>.</p>
           </div>
         </li>
     </ul>
