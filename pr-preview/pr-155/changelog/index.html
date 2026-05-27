@@ -2645,6 +2645,9 @@
   full per-frame diagnostics list under <code>attrs["registration_diagnostics"]</code> only when
   called with <code>keep_diagnostics=True</code> to avoid retaining the full optimizer metric
   trace by default (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
+<li>Renamed <code>validate_iq</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2661,9 +2664,17 @@
 <li>Added <code>datatypes</code> filter to <code>fetch_cybis_pereira_2026</code>, allowing downloads to be
   scoped to specific <abbr title="Brain Imaging Data Structure">BIDS</abbr> datatype directories (<code>"fusi"</code>, <code>"angio"</code>, <code>"motion"</code>)
   (<a href="https://github.com/confusius-tools/confusius/pull/141">#141</a>).</li>
+<li>Added <code>fetch_template_huang_2025</code> for downloading and loading the Huang et al.
+  vascular mouse template from OSF, with cache/refresh behavior matching existing
+  template fetchers (<a href="https://github.com/confusius-tools/confusius/pull/162">#162</a>).</li>
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>
+<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_fusi_dataarray"><code>validate_fusi_dataarray</code></a>
+  validator and refactored <abbr title="In-phase and Quadrature">IQ</abbr>/registration validation to use it. Core dimension
+  coordinates are now validated as 1D, numeric, finite, and strictly increasing,
+  while extra/non-dimension coordinates remain allowed
+  (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 <li>Added shared <code>fontsize</code> parameter to <code>plot_volume</code>, <code>plot_contours</code>, and carpet
   plotting entry points so text sizing is consistent across all plotting APIs
   (<a href="https://github.com/confusius-tools/confusius/pull/128">#128</a>).</li>
@@ -2716,7 +2727,7 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/134">#134</a>).</li>
 </ul>
 <h2 id="020">0.2.0<a class="headerlink" href="#020" title="Permanent link">&para;</a></h2>
-<p>Released 2026-05-05.</p>
+<p><em>Released 2026-05-05.</em></p>
 <p>First official public beta release of ConfUSIus.</p>
 <h3 id="highlights"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h3>
 <ul>
