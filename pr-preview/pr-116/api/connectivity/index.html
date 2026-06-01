@@ -3449,7 +3449,8 @@ input recording. Time coordinates are preserved when present.</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;silhouette&quot;</span><span class="p">,</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_progress&lt;/code&gt;&lt;/b&gt;" href="./#confusius.connectivity.CAP.select_n_clusters(show_progress)">show_progress</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;progress&lt;/code&gt;&lt;/b&gt;" href="./#confusius.connectivity.CAP.select_n_clusters(progress)">progress</a></span><span class="p">:</span> <span class="s2">&quot;Progress | None&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;return_scores&lt;/code&gt;&lt;/b&gt;" href="./#confusius.connectivity.CAP.select_n_clusters(return_scores)">return_scores</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]]</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3524,16 +3525,35 @@ instance instead of creating a new progress bar with
 <code>rich.progress.track</code>.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.connectivity.CAP.select_n_clusters(return_scores)" class="doc doc-heading doc-heading-parameter">              <b><code>return_scores</code></b>
+<a href="#confusius.connectivity.CAP.select_n_clusters(return_scores)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>If <code>True</code>, also return the method-specific score for each value in
+<code>cluster_range</code>, in the same order.</p>
+          </div>
+        </li>
     </ul>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
-          –
+<b><code>best_k</code></b> (              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>
+)          –
           <div class="doc-md-description">
             <p>Recommended number of clusters.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<b><code>scores</code></b> (              <code>(<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>], <span title="optional">optional</span>)</code>
+)          –
+          <div class="doc-md-description">
+            <p>Returned only when <code>return_scores=True</code>. Method-specific scores
+aligned with <code>cluster_range</code>.</p>
           </div>
         </li>
     </ul>
