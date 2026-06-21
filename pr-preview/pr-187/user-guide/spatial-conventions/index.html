@@ -2711,8 +2711,12 @@ space:</p>
   voxel indices to reference coordinates. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> reads
   the relevant affine(s), converts them from voxel → reference to physical → reference
   form, and stores them under the keys <code>"physical_to_sform"</code> and/or
-  <code>"physical_to_qform"</code> depending on which codes are valid in the header. When saving
-  back to NIfTI, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> can write any named affine in
+  <code>"physical_to_qform"</code> depending on which codes are valid in the header. When a file
+  declares both forms, the physical coordinates come from the primary (usually <code>sform</code>)
+  affine, and <code>physical_to_{secondary}</code> (usually <code>physical_to_qform</code>) is anchored to
+  that same physical space, so both keys map the one set of coordinates in <code>da.coords</code>,
+  just to different reference spaces. When saving back to NIfTI,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> can write any named affine in
   <code>attrs["affines"]</code> to the header via its <code>qform=</code> and <code>sform=</code> arguments, with
   <code>"physical_to_qform"</code> and <code>"physical_to_sform"</code> used as convenience fallbacks.</li>
 <li><strong>Iconeus SCAN</strong>: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> stores a
@@ -2742,8 +2746,10 @@ silently points to the wrong location.</p>
 <code>da.coords</code>. Those values travel with the data through any Xarray operation that
 preserves coordinates, so the affine remains valid without any adjustment.</p>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> reconstructs the full voxel → reference
-NIfTI affine internally by combining the physical → reference orientation matrix
-with the dimension coordinate origin and spacing.</p>
+NIfTI affine internally by composing the physical → reference affine with the
+voxel → physical map built from the dimension coordinate origin and spacing. Using
+the full affine (not just its orientation) means each form keeps its own origin, so
+a file with distinct <code>sform</code> and <code>qform</code> round-trips faithfully.</p>
 </div>
 
 
