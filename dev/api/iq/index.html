@@ -4562,8 +4562,9 @@ the number of IQ volumes.</p>
     <div class="doc doc-contents ">
 
         <p>Process blocks of IQ data using sliding windows.</p>
-<p>This function applies a processing operation to IQ data using
-<code>dask.array.map_overlap</code> for efficient parallelized processing.</p>
+<p>This function applies a processing operation to IQ data using Dask. It uses
+<code>dask.array.map_blocks</code> for non-overlapping windows and
+<code>dask.array.map_overlap</code> when temporal overlap is required.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Depending on the window width and stride, some input volumes may be dropped if
