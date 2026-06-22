@@ -2717,6 +2717,13 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>load_nifti</code> now anchors <code>physical_to_qform</code> to the same physical frame as the
+  primary (sform) coordinates, so the stored qform affine maps the array's
+  physical coordinates to qform world space
+  (<a href="https://github.com/confusius-tools/confusius/pull/187">#187</a>).</li>
+<li><code>save_nifti</code> now preserves each affine's own translation, so a NIfTI file with sform
+  and qform round-trips through <code>load_nifti</code>/<code>save_nifti</code> without corrupting the qform
+  (<a href="https://github.com/confusius-tools/confusius/pull/187">#187</a>).</li>
 <li><strong>[Napari plugin]</strong> Fixed the Signals plot x-axis for volumes without a time
   dimension. It now follows the slider axis world coordinates, with a matching label and
   dropdown option (<a href="https://github.com/confusius-tools/confusius/pull/180">#180</a>).</li>
