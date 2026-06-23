@@ -2717,6 +2717,10 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>process_iq_blocks</code> now handles strongly overlapping <abbr title="In-phase and Quadrature">IQ</abbr> windows without corrupting
+  the output time dimension, so power Doppler and related <abbr title="In-phase and Quadrature">IQ</abbr> reducers work when
+  <code>window_stride &lt; window_width / 2</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/192">#192</a>).</li>
 <li><code>load_nifti</code> now anchors <code>physical_to_qform</code> to the same physical frame as the
   primary (sform) coordinates, so the stored qform affine maps the array's
   physical coordinates to qform world space
