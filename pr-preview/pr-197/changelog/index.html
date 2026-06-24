@@ -2748,9 +2748,9 @@
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Masks are now coerced to boolean by <code>validate_mask</code> (added <code>return_dtype_as_bool</code>
-  parameter that defaults to <code>True</code>), to avoid DataArrays to use <em>positional indexing</em>
-  instead. Previously these masks could select the wrong voxels or, for
-  <code>register_volume</code>, silently disable the metric mask
+  parameter that defaults to <code>True</code>) to avoid DataArrays using <em>positional indexing</em>.
+  Previously these masks could select the wrong voxels or, for <code>register_volume</code>,
+  silently disable the metric mask
   (<a href="https://github.com/confusius-tools/confusius/pull/197">#197</a>).</li>
 <li><code>load_nifti</code> now anchors <code>physical_to_qform</code> to the same physical frame as the
   primary (sform) coordinates, so the stored qform affine maps the array's
