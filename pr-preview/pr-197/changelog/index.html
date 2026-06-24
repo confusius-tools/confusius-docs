@@ -2264,6 +2264,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#performance" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2314,7 +2325,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#enhancements" class="md-nav__link">
+  <a href="#enhancements_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements
@@ -2529,6 +2540,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#performance" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2579,7 +2601,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#enhancements" class="md-nav__link">
+  <a href="#enhancements_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements
@@ -2708,6 +2730,14 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <h2 id="031dev0">0.3.1.dev0<a class="headerlink" href="#031dev0" title="Permanent link">&para;</a></h2>
 <p>Current development version for the next ConfUSIus release.</p>
+<h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>data.fusi.affine.apply</code> now accepts affines with rotation and shear. The
+  axis-aligned part updates the 1D <code>z</code>/<code>y</code>/<code>x</code> coordinates and the method returns
+  the residual orientation as a 4x4 affine (the identity for diagonal affines)
+  for the caller to use as they wish
+  (<a href="https://github.com/confusius-tools/confusius/pull/188">#188</a>).</li>
+</ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> now uses
@@ -2717,6 +2747,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Masks are now coerced to boolean by <code>validate_mask</code> (added <code>return_dtype_as_bool</code>
+  parameter that defaults to <code>True</code>), to avoid DataArrays to use <em>positional indexing</em>
+  instead. Previously these masks could select the wrong voxels or, for
+  <code>register_volume</code>, silently disable the metric mask
+  (<a href="https://github.com/confusius-tools/confusius/pull/197">#197</a>).</li>
 <li><code>load_nifti</code> now anchors <code>physical_to_qform</code> to the same physical frame as the
   primary (sform) coordinates, so the stored qform affine maps the array's
   physical coordinates to qform world space
@@ -2749,7 +2784,7 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 </ul>
-<h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
+<h3 id="enhancements_1"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Added a <code>mask</code> argument to the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.PCA"><code>PCA</code></a>,
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FastICA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.FastICA"><code>FastICA</code></a>,
