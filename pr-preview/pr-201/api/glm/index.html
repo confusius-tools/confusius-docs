@@ -3547,13 +3547,19 @@ Increase this value to tolerate slight timestamp jitter.</p>
 )
           –
           <div class="doc-md-description">
-            <p>units of the spatial coordinates, applied to each run before model fitting. A
+            <p>Full width at half maximum of the Gaussian smoothing kernel, in the physical
+units of the spatial coordinates, applied to each run before model fitting. A
 scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>pose</code>
-dimension); a dict maps non-<code>time</code> dimension names to per-dimension FWHM.
+dimension); a dict maps dimension names to per-dimension FWHM.
 Smoothing is delegated to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;smooth_volume&lt;/span&gt;" href="../spatial/#confusius.spatial.smooth_volume"><code>smooth_volume</code></a>,
-which requires each smoothed dimension to have uniform coordinate spacing.
-dimension to have uniform coordinate spacing. If not provided, no smoothing is
-applied.</p>
+which requires each smoothed dimension to have uniform coordinate spacing.</p>
+<p>.. attention::
+    If the data has any other dimension besides <code>time</code>, a scalar
+    <code>smoothing_fwhm</code> will smooth these dimensions as well.</p>
+<p>.. attention::
+  The dict may also include the <code>"time"</code> key to smooth along the
+  time axis as well (this is intended behavior).</p>
+<p>If not provided, no smoothing is applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
