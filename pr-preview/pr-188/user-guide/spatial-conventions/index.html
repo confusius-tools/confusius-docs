@@ -2833,14 +2833,13 @@ directly in coordinate ticks and world axes. It can also provide a useful initia
 for registration by expressing datasets in approximately the same frame. Any returned
 residual orientation must still be included when comparing or registering datasets.</p>
 <p>Take the <code>sform</code>/<code>qform</code> example from <a href="#reference-spaces">Reference Spaces</a>. A NIfTI
-file with both affines anchors its physical space to the axis-aligned <code>sform</code> frame (the
-primary affine when <code>sform_code &gt; 0</code>). The remaining orientation component of the
-<code>sform</code> is carried on the <code>physical_to_sform</code> affine attribute, while
-<code>physical_to_qform</code> records the mapping of the current physical space to the <code>qform</code>
-frame.</p>
-<p>The example below shows an <code>sform</code> with no rotation or shear, resulting in a
-<code>physical_to_sform</code> that is the identity. The <code>qform</code> has a shift in <code>(z, y)</code> of (+10,
-+5) with respect to the <code>sform</code>, so <code>physical_to_qform</code> encodes that shift:</p>
+file with <code>sform_code &gt; 0</code> anchors its physical space to the <code>sform</code> frame, absorbing
+only its axis-aligned part. The remaining orientation component of <code>sform</code> is carried on
+the <code>physical_to_sform</code> affine attribute, while <code>physical_to_qform</code> records the mapping
+of the physical space to the <code>qform</code> frame.</p>
+<p>The following example uses an axis-aligned <code>sform</code>, so <code>physical_to_sform</code> is the
+identity. The <code>qform</code> is shifted by +10 along <code>z</code> and +5 along <code>y</code> relative to the
+<code>sform</code>, so <code>physical_to_qform</code> contains only a translation:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2.])</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2., 3.])</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
@@ -2850,15 +2849,16 @@ frame.</p>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># here a (+10, +5) shift in (z, y):</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># (+10, +5) shift in (z, y):</span>
 </span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># array([[ 1.,  0.,  0., 10.],</span>
 </span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1">#        [ 0.,  1.,  0.,  5.],</span>
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
 </span></code></pre></div>
-<p>Applying <code>physical_to_qform</code> moves the coordinates into the <code>qform</code> frame, collapses
-<code>physical_to_qform</code> to the identity (the data is <em>in</em> that frame now), and re-expresses
-<code>physical_to_sform</code> to point back the way you came:</p>
+<p>Applying <code>physical_to_qform</code> absorbs the translation into the coordinate arrays. The
+<code>qform</code> frame therefore becomes the new physical frame: <code>physical_to_qform</code> becomes the
+identity, while every other stored affine is re-expressed relative to the new physical
+coordinates.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>confusius.xarray.apply_affine</code></label><label for="__tabbed_1_2">Xarray accessor</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2874,7 +2874,7 @@ frame.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([10., 11., 12.])   &lt;- shifted by +10</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([5., 6., 7., 8.])  &lt;- shifted by +5</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># the (-10, -5) shift back to sform</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># (-10, -5) shift back to sform</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># array([[ 1.,  0.,  0., -10.],</span>
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">#        [ 0.,  1.,  0.,  -5.],</span>
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">#        [ 0.,  0.,  1.,   0.],</span>
@@ -2887,66 +2887,45 @@ frame.</p>
 </span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
 </span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="n">orientation</span>                                 <span class="c1"># identity, nothing left over</span>
 </span></code></pre></div>
-<p>Every other affine in <code>attrs["affines"]</code> (atlas, lab, ...) is re-expressed the same way,
-like <code>physical_to_sform</code> above, so it stays valid.</p>
+<p>Because <code>orientation</code> is the identity, the change of physical frame is complete.</p>
 <h3 id="rotations-and-shears">Rotations and Shears<a class="headerlink" href="#rotations-and-shears" title="Permanent link">&para;</a></h3>
-<p>As explained above, ConfUSIus physical coordinates are three independent 1D arrays, so
-they can encode scaling and translation but <strong>not a rotation or shear that mixes axes</strong>.
-If <code>physical_to_qform</code> were instead only a 90° rotation in the <code>(z, y)</code> plane, none of
-it could go into the coordinates—they come back unchanged from <code>apply_affine</code>—and the
-whole rotation is returned as <code>orientation</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2.])</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2., 3.])</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># identity</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># array([[ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">#        [ 0.,  1.,  0.,  0.],</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># here a 90° rotation in (z, y) plane:</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1"># array([[ 0., -1.,  0.,  0.],</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1">#        [ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
+<p>Independent one-dimensional coordinate arrays cannot represent a transform that mixes
+axes. For example, consider a <code>physical_to_qform</code> containing a 90° rotation in the
+<code>(z, y)</code> plane:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># array([[ 0., -1., 0., 0.],</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">#        [ 1., 0., 0., 0.],</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">#        [ 0., 0., 1., 0.],</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">#        [ 0., 0., 0., 1.]])</span>
 </span></code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1"><code>confusius.xarray.apply_affine</code></label><label for="__tabbed_2_2">Xarray accessor</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">xarray</span><span class="o">.</span><span class="n">apply_affine</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">])</span>
+<p>After calling <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>, the
+coordinate arrays remain unchanged because none of this rotation can be represented as
+independent changes to <code>z</code>, <code>y</code>, and <code>x</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">])</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2.])</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2., 3.])</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">])</span>
+<p>The unabsorbed transform is returned as orientation:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">orientation</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># array([[ 0., -1., 0., 0.],</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">#        [ 1.,  0., 0., 0.],</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">#        [ 0.,  0., 1., 0.],</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">#        [ 0.,  0., 0., 1.]])</span>
 </span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2.])      &lt;- unchanged</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># array([0., 1., 2., 3.])  &lt;- unchanged</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">orientation</span>  <span class="c1"># the 90° rotation the coordinates could not absorb:</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># array([[ 0., -1.,  0.,  0.],</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1">#        [ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># identity</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># array([[ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1">#        [ 0.,  1.,  0.,  0.],</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># here a 90° rotation in (z, y) plane:</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="c1"># array([[ 0., -1.,  0.,  0.],</span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="c1">#        [ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="c1">#        [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="c1">#        [ 0.,  0.,  0.,  1.]])</span>
+<p>Because the residual is non-identity, the DataArray has not been fully re-anchored to
+the <code>qform</code> frame. The stored affines remain valid relative to the unchanged physical
+coordinates:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># identity</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># unchanged 90° rotation</span>
 </span></code></pre></div>
-<p>In general <code>apply</code> absorbs the axis-aligned part (zoom + translation) into the
-coordinates and returns the residual rotation, with
-<code>orientation @ new_physical == affine @ old_physical</code>. You can leave it in
-<code>physical_to_qform</code>, compose it, or store it elsewhere.</p>
+<p>In general, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> absorbs
+the diagonal scale and translation components into the coordinate arrays and returns any
+remaining axis-mixing component, such that</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">orientation</span> <span class="o">@</span> <span class="n">new_physical</span> <span class="o">==</span> <span class="n">affine</span> <span class="o">@</span> <span class="n">old_physical</span>
+</span></code></pre></div>
+<p>Always check the returned <code>orientation</code>. When it is non-identity, retain or compose it
+with subsequent transformations—or resample the data onto the target grid—rather than
+treating the coordinate arrays alone as coordinates in the target frame.</p>
 
 
 
