@@ -2711,9 +2711,10 @@
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> now uses
-  <code>dask.array.map_blocks</code> for non-overlapping outer <abbr title="In-phase and Quadrature">IQ</abbr> windows and keeps
-  <code>dask.array.map_overlap</code> for overlapping cases, reducing Dask overhead in common
-  blockwise processing workflows (<a href="https://github.com/confusius-tools/confusius/pull/190">#190</a>).</li>
+  <code>dask.array.map_blocks</code> for non-overlapping outer <abbr title="In-phase and Quadrature">IQ</abbr> windows and batches
+  overlapping windows with explicit overlap before mapping blocks, reducing Dask
+  overhead in common blockwise processing workflows
+  (<a href="https://github.com/confusius-tools/confusius/pull/190">#190</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
