@@ -3527,7 +3527,7 @@ hard-wired assumptions.</p>
   then the more efficient "randomized" method is selected. Otherwise the exact
   "full" <abbr title="Singular Value Decomposition">SVD</abbr> is computed and optionally truncated afterwards.</li>
 <li><code>"full"</code>: Run an exact full <abbr title="Singular Value Decomposition">SVD</abbr> calling the standard LAPACK solver via
-  <a class="autorefs autorefs-external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.svd.html#scipy.linalg.svd"><code>scipy.linalg.svd</code></a> and select the components by
+  [<code>scipy.linalg.svd</code>][] and select the components by
   postprocessing.</li>
 <li><code>"covariance_eigh"</code>: Precompute the covariance matrix (on centered data), run
   a classical eigenvalue decomposition on the covariance matrix typically using
@@ -3539,7 +3539,7 @@ hard-wired assumptions.</p>
   number and is therefore less numerically stable (e.g. on input data with a
   large range of singular values).</li>
 <li><code>"arpack"</code>: Run <abbr title="Singular Value Decomposition">SVD</abbr> truncated to <code>n_components</code> calling ARPACK solver via
-  <a class="autorefs autorefs-external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.svds.html#scipy.sparse.linalg.svds"><code>scipy.sparse.linalg.svds</code></a>. It requires strictly
+  [<code>scipy.sparse.linalg.svds</code>][]. It requires strictly
   <code>0 &lt; n_components &lt; min(X.shape)</code>.</li>
 <li><code>"randomized"</code>: Run randomized <abbr title="Singular Value Decomposition">SVD</abbr> by the method of Halko et al.</li>
 </ul>

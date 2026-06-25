@@ -2732,11 +2732,18 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>New <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_statistical_threshold&lt;/span&gt;" href="../api/glm/#confusius.glm.apply_statistical_threshold"><code>apply_statistical_threshold</code></a> applies
+  a voxel-level height threshold (uncorrected false positive rate, false-discovery-rate,
+  or Bonferroni) and an optional cluster-extent threshold to a statistical DataArray
+  (<a href="https://github.com/confusius-tools/confusius/pull/204">#204</a>).</li>
 <li><code>data.fusi.affine.apply</code> now accepts affines with rotation and shear. The
   axis-aligned part updates the 1D <code>z</code>/<code>y</code>/<code>x</code> coordinates and the method returns
   the residual orientation as a 4x4 affine (the identity for diagonal affines)
   for the caller to use as they wish
   (<a href="https://github.com/confusius-tools/confusius/pull/188">#188</a>).</li>
+<li>Add <code>smoothing_fwhm</code> parameter to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a>.
+  Smoothing is applied to each run before model fitting
+  (<a href="https://github.com/confusius-tools/confusius/pull/201">#201</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2748,6 +2755,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Masks are now coerced to boolean by <code>validate_mask</code> (added <code>return_dtype_as_bool</code>
+  parameter that defaults to <code>True</code>) to avoid DataArrays using <em>positional indexing</em>.
+  Previously these masks could select the wrong voxels or, for <code>register_volume</code>,
+  silently disable the metric mask
+  (<a href="https://github.com/confusius-tools/confusius/pull/197">#197</a>).</li>
 <li><code>process_iq_blocks</code> now handles strongly overlapping <abbr title="In-phase and Quadrature">IQ</abbr> windows without corrupting
   the output time dimension, so power Doppler and related <abbr title="In-phase and Quadrature">IQ</abbr> reducers work when
   <code>window_stride &lt; window_width / 2</code>

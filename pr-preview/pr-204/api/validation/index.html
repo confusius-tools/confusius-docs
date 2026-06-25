@@ -3154,7 +3154,8 @@ Accepts two formats:</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_exact_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(require_exact_dims)">require_exact_dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;coerce_bool&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(coerce_bool)">coerce_bool</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3222,6 +3223,32 @@ must match data.</p>
           <div class="doc-md-description">
             <p>Whether <code>mask.dims</code> must match all non-<code>time</code> dimensions of <code>data</code> in the same
 order.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.validation.validate_mask(coerce_bool)" class="doc doc-heading doc-heading-parameter">              <b><code>coerce_bool</code></b>
+<a href="#confusius.validation.validate_mask(coerce_bool)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>True</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to coerce the returned <code>mask</code> to boolean dtype. Single-label integer
+masks (<code>{0, region_id}</code>) become <code>{False, True}</code> so callers can index with the
+result without the integer label being misread as a positional index. When
+False, <code>mask</code> is returned with its original dtype unchanged.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="confusius.xarray.DataArray">DataArray</span></code>
+          –
+          <div class="doc-md-description">
+            <p>The validated <code>mask</code>, coerced to boolean dtype when <code>coerce_bool</code> is <code>True</code> (the
+default), otherwise returned with its original dtype.</p>
           </div>
         </li>
     </ul>

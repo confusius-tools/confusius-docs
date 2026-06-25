@@ -3577,6 +3577,32 @@ Increase this value to tolerate slight timestamp jitter.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
+<h4 id="confusius.glm.FirstLevelModel(smoothing_fwhm)" class="doc doc-heading doc-heading-parameter">              <b><code>smoothing_fwhm</code></b>
+<a href="#confusius.glm.FirstLevelModel(smoothing_fwhm)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> or <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Full width at half maximum of the Gaussian smoothing kernel, in the physical
+units of the spatial coordinates, applied to each run before model fitting. A
+scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>pose</code>
+dimension); a dict maps dimension names to per-dimension FWHM.
+Smoothing is delegated to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;smooth_volume&lt;/span&gt;" href="../spatial/#confusius.spatial.smooth_volume"><code>smooth_volume</code></a>,
+which requires each smoothed dimension to have uniform coordinate spacing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the data has any other dimension besides <code>time</code>, a scalar
+<code>smoothing_fwhm</code> will smooth these dimensions as well.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The dict may also include the <code>"time"</code> key to smooth along the
+time axis as well (this is intended behavior).</p>
+</div>
+<p>If not provided, no smoothing is applied.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
 <h4 id="confusius.glm.FirstLevelModel(mask)" class="doc doc-heading doc-heading-parameter">              <b><code>mask</code></b>
 <a href="#confusius.glm.FirstLevelModel(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>, default:
                   <code>None</code>
@@ -5047,7 +5073,7 @@ possible to update each component of a nested object.</p>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;alpha&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(alpha)">alpha</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;threshold&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(threshold)">threshold</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;height_control&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(height_control)">height_control</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;fpr&quot;</span><span class="p">,</span> <span class="s2">&quot;fdr&quot;</span><span class="p">,</span> <span class="s2">&quot;bonferroni&quot;</span><span class="p">]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;height_control&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(height_control)">height_control</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;fpr&quot;</span><span class="p">,</span> <span class="s2">&quot;fdr_bh&quot;</span><span class="p">,</span> <span class="s2">&quot;bonferroni&quot;</span><span class="p">]</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;fpr&quot;</span><span class="p">,</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;cluster_threshold&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(cluster_threshold)">cluster_threshold</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;two_sided&lt;/code&gt;&lt;/b&gt;" href="./#confusius.glm.apply_statistical_threshold(two_sided)">two_sided</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5113,7 +5139,7 @@ not provided in that case, defaults to 3.0. Ignored (with a warning) when
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.glm.apply_statistical_threshold(height_control)" class="doc doc-heading doc-heading-parameter">              <b><code>height_control</code></b>
-<a href="#confusius.glm.apply_statistical_threshold(height_control)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(&#39;fpr&#39;, &#39;fdr&#39;, &#39;bonferroni&#39;)</code>, default:
+<a href="#confusius.glm.apply_statistical_threshold(height_control)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(&#39;fpr&#39;, &#39;fdr_bh&#39;, &#39;bonferroni&#39;)</code>, default:
                   <code>&#34;fpr&#34;</code>
 )
           –
