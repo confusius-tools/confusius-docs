@@ -3541,6 +3541,32 @@ Increase this value to tolerate slight timestamp jitter.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
+<h4 id="confusius.glm.FirstLevelModel(smoothing_fwhm)" class="doc doc-heading doc-heading-parameter">              <b><code>smoothing_fwhm</code></b>
+<a href="#confusius.glm.FirstLevelModel(smoothing_fwhm)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> or <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Full width at half maximum of the Gaussian smoothing kernel, in the physical
+units of the spatial coordinates, applied to each run before model fitting. A
+scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>pose</code>
+dimension); a dict maps dimension names to per-dimension FWHM.
+Smoothing is delegated to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;smooth_volume&lt;/span&gt;" href="../spatial/#confusius.spatial.smooth_volume"><code>smooth_volume</code></a>,
+which requires each smoothed dimension to have uniform coordinate spacing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the data has any other dimension besides <code>time</code>, a scalar
+<code>smoothing_fwhm</code> will smooth these dimensions as well.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The dict may also include the <code>"time"</code> key to smooth along the
+time axis as well (this is intended behavior).</p>
+</div>
+<p>If not provided, no smoothing is applied.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
 <h4 id="confusius.glm.FirstLevelModel(mask)" class="doc doc-heading doc-heading-parameter">              <b><code>mask</code></b>
 <a href="#confusius.glm.FirstLevelModel(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>, default:
                   <code>None</code>
