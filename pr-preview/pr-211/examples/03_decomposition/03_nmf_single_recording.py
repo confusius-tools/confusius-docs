@@ -18,14 +18,14 @@
 #
 # ConfUSIus supports two NMF orientations:
 #
-# - `mode="temporal"` (default): fit on `(time, voxels)`. The components are spatial
-#   maps; the signals are non-negative temporal time courses.
+# - `mode="temporal"` (default): fit on `(time, voxels)`. The components are
+#   non-negative spatial maps; the signals are non-negative temporal time courses.
 # - `mode="spatial"`: fit on `(voxels, time)`. The components are non-negative time
 #   courses; the spatial maps returned by `transform` are signed projections onto the
-#   non-negative dictionary.
+#   non-negative dictionary (analogous to spatial PCA and spatial ICA).
 #
-# We focus on the temporal orientation in this example, where the non-negativity
-# constraint is most directly visible on both factors.
+# We start with temporal NMF, where the non-negativity constraint is most directly
+# visible on both factors, then contrast it with spatial NMF.
 #
 # NMF requires strictly non-negative input data. fUSI Power Doppler signals are
 # non-negative by construction, but numerical operations such as
@@ -189,6 +189,78 @@ for ax in axes_tc[:-1]:
 axes_tc[-1].set_xlabel("Time (s)")
 _ = fig.suptitle(
     "Temporal NMF: spatial maps and time courses (first 10 components)", fontsize=21
+)
+
+# %% [markdown]
+# ## Spatial NMF (`mode="spatial"`)
+#
+# Spatial NMF transposes the data to `(voxels, time)` before decomposition. In this
+# orientation, the components returned in [`maps_`][confusius.decomposition.NMF] are
+# non-negative *time courses* and the signals returned by
+# [`transform`][confusius.decomposition.NMF.transform] are signed spatial maps
+# (mean-centered projections onto the non-negative dictionary, analogous to spatial
+# PCA and spatial ICA). As with the other spatial decompositions, this orientation is
+# well conditioned for fUSI data because the spatial dimension is usually much larger
+# than the temporal one.
+#
+# The coordinate-descent solver can be slow to converge on the large
+# `(voxels, time)` matrix, so we raise `max_iter` to make sure the fit reaches
+# tolerance within the default iteration budget.
+
+# %%
+nmf_s = NMF(
+    n_components=10, init="nndsvda", random_state=0, mode="spatial", max_iter=500
+)
+signals_s = nmf_s.fit_transform(data)
+signals_s
+
+# %% [markdown]
+# ### Spatial maps and time courses
+#
+# [`maps_`][confusius.decomposition.NMF] is a `(component, z, y, x)` DataArray of
+# non-negative time courses in this orientation, in contrast to temporal NMF where
+# `maps_` stores spatial maps. The spatial maps returned by
+# [`transform`][confusius.decomposition.NMF.transform] are signed, because they are
+# projections onto the dictionary after subtracting the voxel mean. Comparing each
+# spatial map with its associated time course helps judge whether a component
+# reflects a plausible functional or vascular source.
+
+# %% tags=["thumbnail"]
+n_show = 10
+fig = plt.figure(figsize=(14, 20), constrained_layout=True)
+fig.patch.set_facecolor(bg_color)
+gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
+
+axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
+for ax in axes_tc[1:]:
+    ax.sharex(axes_tc[0])
+
+for i, comp in enumerate(range(n_show)):
+    component_map = nmf_s.maps_.isel(component=[comp])
+    vmax = float(component_map.max())
+    cf.plotting.plot_volume(
+        component_map,
+        axes=fig.add_subplot(gs[i, 0]),
+        slice_mode="component",
+        cmap="viridis",
+        vmin=0.0,
+        vmax=vmax,
+        show_axes=False,
+        show_colorbar=False,
+        show_titles=False,
+        bg_color=bg_color,
+    )
+
+    signals_s.sel(component=comp).plot(ax=axes_tc[i], lw=1.1)
+    axes_tc[i].set_title(f"Component {comp + 1}")
+    axes_tc[i].set_ylabel("Signal")
+    axes_tc[i].set_xlabel("")
+
+for ax in axes_tc[:-1]:
+    ax.tick_params(labelbottom=False)
+axes_tc[-1].set_xlabel("Time (s)")
+_ = fig.suptitle(
+    "Spatial NMF: time courses and spatial maps (first 10 components)", fontsize=21
 )
 
 # %% [markdown]
