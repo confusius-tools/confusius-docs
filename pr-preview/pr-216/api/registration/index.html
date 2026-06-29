@@ -4812,9 +4812,9 @@ not match <code>moving</code>.</p>
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
 </span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_progress&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(show_progress)">show_progress</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;abort_event&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(abort_event)">abort_event</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="threading.Event" href="https://docs.python.org/3/library/threading.html#threading.Event">Event</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;progress_reporter&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(progress_reporter)">progress_reporter</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumewiseProgressReporter&lt;/span&gt;" href="./#confusius.registration.VolumewiseProgressReporter">VolumewiseProgressReporter</a></span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;progress_reporter&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(progress_reporter)">progress_reporter</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumewiseProgressReporter&lt;/span&gt;" href="./#confusius.registration.VolumewiseProgressReporter">VolumewiseProgressReporter</a></span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;abort_event&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(abort_event)">abort_event</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="threading.Event" href="https://docs.python.org/3/library/threading.html#threading.Event">Event</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;keep_diagnostics&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.register_volumewise(keep_diagnostics)">keep_diagnostics</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
@@ -5032,6 +5032,17 @@ cost of speed.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
+<h4 id="confusius.registration.register_volumewise(progress_reporter)" class="doc doc-heading doc-heading-parameter">              <b><code>progress_reporter</code></b>
+<a href="#confusius.registration.register_volumewise(progress_reporter)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumewiseProgressReporter&lt;/span&gt;" href="./#confusius.registration.VolumewiseProgressReporter">VolumewiseProgressReporter</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Thread-safe reporter notified whenever one frame completes. Useful for GUI
+progress bars or progressively filling an output layer while frames finish.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
 <h4 id="confusius.registration.register_volumewise(abort_event)" class="doc doc-heading doc-heading-parameter">              <b><code>abort_event</code></b>
 <a href="#confusius.registration.register_volumewise(abort_event)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="threading.Event" href="https://docs.python.org/3/library/threading.html#threading.Event">Event</a></code>, default:
                   <code>None</code>
@@ -5043,17 +5054,6 @@ execution, in-flight frame registrations stop at the next optimiser iteration
 boundary and this function returns the partial dataset collected so far. Frames
 that were not started are left blank (filled with the data minimum), and
 per-frame <code>motion_params</code> rows are marked via the diagnostics status.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.registration.register_volumewise(progress_reporter)" class="doc doc-heading doc-heading-parameter">              <b><code>progress_reporter</code></b>
-<a href="#confusius.registration.register_volumewise(progress_reporter)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumewiseProgressReporter&lt;/span&gt;" href="./#confusius.registration.VolumewiseProgressReporter">VolumewiseProgressReporter</a></code>, default:
-                  <code>None</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Thread-safe reporter notified whenever one frame completes. Useful for GUI
-progress bars or progressively filling an output layer while frames finish.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
