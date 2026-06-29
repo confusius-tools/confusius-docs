@@ -2821,6 +2821,9 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Image plotting functions now leave <code>alpha</code> unset by default (<code>None</code>), so a
+  colormap's built-in alpha channel is respected
+  (<a href="https://github.com/confusius-tools/confusius/pull/225">#225</a>).</li>
 <li><code>load_nifti</code> no longer drops affines loaded from the JSON sidecar (e.g.
   <code>bspline_initialization</code> written by the registration pipeline) when merging in the
   NIfTI qform/sform affines
@@ -2880,7 +2883,7 @@
   through NIfTI without their leading axis being mislabeled as time on reload.
   <code>save_nifti</code> now raises <code>ValueError</code> when the DataArray has more than 3
   non-spatial, non-time dims (the NIfTI 7-axis limit)
-  (<a href="https://github.com/confusius-tools/confusius/issues/219">#219</a>).</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 <li><strong>[Napari plugin]</strong> Fixed the Signals plot x-axis for volumes without a time
   dimension. It now follows the slider axis world coordinates, with a matching label and
   dropdown option (<a href="https://github.com/confusius-tools/confusius/pull/180">#180</a>).</li>
