@@ -2270,7 +2270,7 @@
   <a href="#standardize-for-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Standardize for NMF
+        Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2281,7 +2281,7 @@
   <a href="#fit-temporal-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Fit temporal NMF
+        Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2314,7 +2314,7 @@
   <a href="#spatial-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Spatial NMF
+        Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2510,7 +2510,7 @@
   <a href="#standardize-for-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Standardize for NMF
+        Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2521,7 +2521,7 @@
   <a href="#fit-temporal-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Fit temporal NMF
+        Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2554,7 +2554,7 @@
   <a href="#spatial-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Spatial NMF
+        Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
@@ -2662,21 +2662,21 @@
   
 
 
-<h1 id="nmf-on-a-single-fusi-recording">NMF on a single <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#nmf-on-a-single-fusi-recording" title="Permanent link">&para;</a></h1>
-<p>This example shows how to use non-negative matrix factorization (NMF) to decompose a
+<h1 id="nmf-on-a-single-fusi-recording"><abbr title="Non-negative Matrix Factorization">NMF</abbr> on a single <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#nmf-on-a-single-fusi-recording" title="Permanent link">&para;</a></h1>
+<p>This example shows how to use non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) to decompose a
 <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording into non-negative spatial maps and their associated non-negative time
 courses. It complements the <a href="../pca_single_recording/"><abbr title="Principal Component Analysis">PCA</abbr></a> and
 <a href="../fastica_single_recording/">FastICA</a> examples in the same gallery.</p>
-<p>NMF is unique among the decomposers in ConfUSIus because it requires strictly
+<p><abbr title="Non-negative Matrix Factorization">NMF</abbr> is unique among the decomposers in ConfUSIus because it requires strictly
 non-negative inputs<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Power Doppler <abbr title="Functional Ultrasound Imaging">fUSI</abbr> signals are non-negative by construction,
 so they pass the constraint directly. Other modalities (e.g. contrast-based signals,
 B-mode, or demeaned timeseries) contain negative values; the wrapper raises a clear
 <code>ValueError</code> in that case, since the underlying optimization has no real solution.</p>
-<p>A practical way to make signed signals NMF-compatible is to <strong>z-score each voxel and
+<p>A practical way to make signed signals <abbr title="Non-negative Matrix Factorization">NMF</abbr>-compatible is to <strong>z-score each voxel and
 take the absolute value</strong>. The z-score rescales every voxel to a comparable dynamic
 range so that high-variance voxels (e.g. near large vessels) do not dominate the
 decomposition, and the absolute value restores the non-negativity constraint at the
-cost of losing the sign. NMF then factorizes the resulting <em>magnitude</em> signal, which
+cost of losing the sign. <abbr title="Non-negative Matrix Factorization">NMF</abbr> then factorizes the resulting <em>magnitude</em> signal, which
 empirically highlights the same local spatiotemporal patterns as correlation-based
 methods (<abbr title="Principal Component Analysis">PCA</abbr>, <abbr title="Independent Component Analysis">ICA</abbr>) but with strictly non-negative parts.</p>
 <h2 id="load-a-fusi-recording">Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#load-a-fusi-recording" title="Permanent link">&para;</a></h2>
@@ -3344,20 +3344,20 @@ motion.</p>
 
 <div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre></div>
 
-<h2 id="standardize-for-nmf">Standardize for NMF<a class="headerlink" href="#standardize-for-nmf" title="Permanent link">&para;</a></h2>
-<p>NMF requires non-negative inputs but a raw Power Doppler timeseries is dominated by
+<h2 id="standardize-for-nmf">Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#standardize-for-nmf" title="Permanent link">&para;</a></h2>
+<p><abbr title="Non-negative Matrix Factorization">NMF</abbr> requires non-negative inputs but a raw Power Doppler timeseries is dominated by
 each voxel's own mean intensity, which is unrelated to the fluctuations we want to
 capture. We therefore:</p>
 <ol>
 <li>Z-score each voxel's time series with
    <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;standardize&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.standardize"><code>standardize</code></a> to put every voxel on a common
    scale and remove its mean.</li>
-<li>Take the absolute value to satisfy NMF's non-negativity constraint.</li>
+<li>Take the absolute value to satisfy <abbr title="Non-negative Matrix Factorization">NMF</abbr>'s non-negativity constraint.</li>
 </ol>
-<p>The result is a non-negative <em>magnitude</em> signal that NMF can decompose additively.</p>
+<p>The result is a non-negative <em>magnitude</em> signal that <abbr title="Non-negative Matrix Factorization">NMF</abbr> can decompose additively.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">data_nmf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">standardize</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 </span></code></pre></div>
-<h2 id="fit-temporal-nmf">Fit temporal NMF<a class="headerlink" href="#fit-temporal-nmf" title="Permanent link">&para;</a></h2>
+<h2 id="fit-temporal-nmf">Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#fit-temporal-nmf" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> wraps the familiar scikit-learn
 <a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html#sklearn.decomposition.NMF"><code>NMF</code></a> estimator while preserving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray metadata
 and coordinates. With <code>mode="temporal"</code> (the default), it fits on <code>(time, voxels)</code>
@@ -3988,7 +3988,7 @@ fluctuations often indicate residual motion or physiological artefacts.</p>
 </span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../nmf_single_recording_output_light/cell_13_0_light.png#only-light" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="light"><img src="../nmf_single_recording_output_light/cell_13_0_light.png#only-light" alt="Example output from cell 13, image 0"></a><a class="glightbox" href="../nmf_single_recording_output_dark/cell_13_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="dark"><img src="../nmf_single_recording_output_dark/cell_13_0_dark.png#only-dark" alt="Example output from cell 13, image 0"></a></p>
-<h2 id="spatial-nmf">Spatial NMF<a class="headerlink" href="#spatial-nmf" title="Permanent link">&para;</a></h2>
+<h2 id="spatial-nmf">Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#spatial-nmf" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> also accepts <code>mode="spatial"</code>, which transposes
 the data to <code>(voxels, time)</code> before fitting. The output convention is identical to
 temporal mode — <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>maps_</code></a> holds the non-negative spatial
