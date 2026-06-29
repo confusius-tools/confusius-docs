@@ -5135,21 +5135,18 @@ below <code>alpha</code>. Ignored when <code>method</code> is not provided.</p>
           –
           <div class="doc-md-description">
             <p>Multiple-comparison correction method, by default <code>"fdr_bh"</code>. If not provided,
-<code>threshold</code> is applied directly with no statistical control.</p>
-<p>Family-wise-error methods (control the probability of any false positive):
-- <code>"bonferroni"</code>: single-step, valid under any dependence.
-- <code>"sidak"</code>: single-step, assumes independence.
-- <code>"holm"</code>: step-down, valid under any dependence.
-- <code>"holm-sidak"</code>: step-down, assumes independence.
-- <code>"simes-hochberg"</code>: step-up, valid under positive dependence.
-- <code>"hommel"</code>: step-up, valid under positive dependence, most powerful of this
-  family.</p>
-<p>False-discovery-rate methods (control the expected proportion of false
-positives):
-- <code>"fdr_bh"</code>: Benjamini-Hochberg, valid under positive dependence. The
-  recommended default for spatially correlated maps.
-- <code>"fdr_by"</code>: Benjamini-Yekutieli, valid under any dependence, more conservative.</p>
-<p><code>"uncorrected"</code> applies no correction.</p>
+<code>threshold</code> is applied directly with no statistical control. Available methods:</p>
+<ul>
+<li><code>"uncorrected"</code>: no correction.</li>
+<li><code>"bonferroni"</code>: one-step correction.</li>
+<li><code>"sidak"</code>: one-step correction.</li>
+<li><code>"holm-sidak"</code>: step down method using Sidak adjustments.</li>
+<li><code>"holm"</code>: step-down method using Bonferroni adjustments.</li>
+<li><code>"simes-hochberg"</code>: step-up method (independent).</li>
+<li><code>"hommel"</code>: closed method based on Simes tests (non-negative).</li>
+<li><code>"fdr_bh"</code>: Benjamini/Hochberg (non-negative).</li>
+<li><code>"fdr_by"</code>: Benjamini/Yekutieli (negative).</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
