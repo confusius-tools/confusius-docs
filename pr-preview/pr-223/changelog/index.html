@@ -2875,15 +2875,20 @@
 <li><code>save_nifti</code> no longer maps non-time additional axes to the NIfTI 4th slot. A
   degenerate length-1 <code>time</code> axis is always inserted at NIfTI axis 4 (NIfTI's
   conventional time slot), so non-time additional axes always land at NIfTI axes
-  5, 6, 7. The original dim name and coordinate values for each additional axis
-  are written to the sidecar as <code>ConfUSIusDim{N}Name</code> / <code>ConfUSIusDim{N}Coordinates</code>
-  (with <code>N</code> in 4, 5, 6, matching the 0-based NIfTI axis of the extra dim), and
-  <code>load_nifti</code> reads them back to restore the original axis name and coordinate.
-  This lets B-spline control grids and any other non-time payload round-trip
-  through NIfTI without their leading axis being mislabeled as time on reload.
-  <code>save_nifti</code> now raises <code>ValueError</code> when the DataArray has more than 3
-  non-spatial, non-time dims (the NIfTI 7-axis limit)
-  (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
+  5, 6, 7. The original dim name for each additional axis is always written to the
+  sidecar as <code>ConfUSIusDim{N}Name</code> (with <code>N</code> in 4, 5, 6, matching the 0-based
+  NIfTI axis of the extra dim). The matching <code>ConfUSIusDim{N}Coordinates</code> entry
+  is only written when the coord cannot be reconstructed from <code>pixdim</code> (i.e.
+  when the coord does not start at 0 with regular spacing); otherwise the spacing
+  is stored in <code>pixdim</code> and the coord is rebuilt as <code>step * arange(size)</code> on
+  load. <code>load_nifti</code> falls back to the <code>pixdim</code> reconstruction when no
+  <code>ConfUSIusDim{N}Coordinates</code> is present, and to plain <code>arange(size)</code> when
+  <code>pixdim</code> is zero. When the sidecar is missing the <code>ConfUSIusDim{N}Name</code> entry,
+  the axis defaults to a <code>dim{N}</code> placeholder. This lets B-spline control grids
+  and any other non-time payload round-trip through NIfTI without their leading
+  axis being mislabeled as time on reload. <code>save_nifti</code> now raises <code>ValueError</code>
+  when the DataArray has more than 3 non-spatial, non-time dims (the NIfTI
+  7-axis limit) (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 <li><strong>[Napari plugin]</strong> Fixed the Signals plot x-axis for volumes without a time
   dimension. It now follows the slider axis world coordinates, with a matching label and
   dropdown option (<a href="https://github.com/confusius-tools/confusius/pull/180">#180</a>).</li>
