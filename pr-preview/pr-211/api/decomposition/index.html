@@ -3521,15 +3521,13 @@ n_features)</code>. Note that NMF does not support a fractional <code>n_componen
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.NMF(init)" class="doc doc-heading doc-heading-parameter">              <b><code>init</code></b>
-<a href="#confusius.decomposition.NMF(init)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="auto">auto</span>, <span title="nndsvda">nndsvda</span>, <span title="nndsvdar">nndsvdar</span>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/random.html#module-random">random</a>)</code>, default:
-                  <code>&#34;auto&#34;</code>
+<a href="#confusius.decomposition.NMF(init)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="nndsvda">nndsvda</span>, <span title="nndsvdar">nndsvdar</span>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/random.html#module-random">random</a>)</code>, default:
+                  <code>&#34;nndsvda&#34;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Method used to initialize the procedure. <code>"auto"</code> lets sklearn pick <code>"nndsvda"</code>
-for non-negative sparse data and <code>"random"</code> otherwise. <code>"nndsvda"</code> (or its
-randomized variant <code>"nndsvdar"</code>) is a good default for sparse <abbr title="Functional Ultrasound Imaging">fUSI</abbr> Power
-Doppler data.</p>
+            <p>Method used to initialize the procedure. If not set, lets sklearn pick
+<code>"nndsvda"</code> for non-negative sparse data and <code>"random"</code> otherwise.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3650,6 +3648,16 @@ penalty is a combination of L1 and L2.</p>
           <div class="doc-md-description">
             <p>Boolean spatial mask selecting voxels to include during fitting and projection.
 Must match the spatial dimensions and coordinates of the input data.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.decomposition.NMF(verbose)" class="doc doc-heading doc-heading-parameter">              <b><code>verbose</code></b>
+<a href="#confusius.decomposition.NMF(verbose)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to be verbose.</p>
           </div>
         </li>
     </ul>
