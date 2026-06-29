@@ -3059,8 +3059,8 @@ Requires an additional <code>sitk.Resample</code> call per iteration.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Extra keyword arguments forwarded to the internal resample call at each
-iteration.</p>
+            <p>Extra keyword arguments for the internal resample call at each iteration.
+Supported keys are <code>interpolation</code>, <code>fill_value</code>, and <code>sitk_threads</code>.</p>
           </div>
         </li>
     </ul>
@@ -4623,7 +4623,9 @@ Requires resampling the moving image at every iteration. Ignored when
           <div class="doc-md-description">
             <p>Factory that builds the progress reporter, called inside <code>register_volume</code>
 as <code>progress_plotter(registration_method, fixed_img, moving_img, *,
-plot_metric, plot_composite, resample_kwargs)</code>. The returned object must
+plot_metric, plot_composite, resample_kwargs)</code>. Here <code>resample_kwargs</code>
+carries <code>interpolation</code>, <code>fill_value</code>, and <code>sitk_threads</code>. The returned
+object must
 implement the
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationProgress&lt;/span&gt;" href="./#confusius.registration.RegistrationProgress"><code>RegistrationProgress</code></a>
 protocol (<code>update()</code> / <code>close()</code>). If not provided, defaults to
