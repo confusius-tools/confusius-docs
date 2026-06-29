@@ -2285,6 +2285,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2325,7 +2336,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fixes" class="md-nav__link">
+  <a href="#fixes_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
@@ -2386,7 +2397,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fixes_1" class="md-nav__link">
+  <a href="#fixes_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
@@ -2600,6 +2611,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2640,7 +2662,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fixes" class="md-nav__link">
+  <a href="#fixes_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
@@ -2701,7 +2723,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fixes_1" class="md-nav__link">
+  <a href="#fixes_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes
@@ -2822,9 +2844,20 @@
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_statistical_threshold&lt;/span&gt;" href="../api/glm/#confusius.glm.apply_statistical_threshold"><code>apply_statistical_threshold</code></a> to
-  apply voxel-level height threshold (uncorrected false positive rate,
-  false-discovery-rate, or Bonferroni) and an optional cluster-extent threshold to a
-  statistical DataArray (<a href="https://github.com/confusius-tools/confusius/pull/204">#204</a>).</li>
+  threshold a statistical DataArray with a choice of family-wise-error (Bonferroni,
+  Šidák, Holm, Holm-Šidák, Simes-Hochberg, Hommel) or false-discovery-rate
+  (Benjamini-Hochberg, Benjamini-Yekutieli) correction, plus an optional cluster-extent
+  threshold (<a href="https://github.com/confusius-tools/confusius/pull/204">#204</a>).</li>
+</ul>
+<h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Image plotting functions now leave <code>alpha</code> unset by default (<code>None</code>), so a
+  colormap's built-in alpha channel is respected
+  (<a href="https://github.com/confusius-tools/confusius/pull/225">#225</a>).</li>
+<li><code>load_nifti</code> no longer drops affines loaded from the JSON sidecar (e.g.
+  <code>bspline_initialization</code> written by the registration pipeline) when merging in the
+  NIfTI qform/sform affines
+  (<a href="https://github.com/confusius-tools/confusius/pull/222">#222</a>).</li>
 </ul>
 <h2 id="040">0.4.0<a class="headerlink" href="#040" title="Permanent link">&para;</a></h2>
 <p><em>Released 2026-06-25.</em></p>
@@ -2851,7 +2884,7 @@
   overhead in common blockwise processing workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/190">#190</a>).</li>
 </ul>
-<h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_1"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Masks are now coerced to boolean by <code>validate_mask</code> (added <code>return_dtype_as_bool</code>
   parameter that defaults to <code>True</code>) to avoid DataArrays using <em>positional indexing</em>.
@@ -2941,7 +2974,7 @@
   inspecting alignment before and after registration
   (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
 </ul>
-<h3 id="fixes_1"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes_1" title="Permanent link">&para;</a></h3>
+<h3 id="fixes_2"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Fixed <code>resample_like</code> and <code>resample_volume</code> filling out-of-FOV voxels with <code>0.0</code>
   when resampling onto a larger grid. This caused a bright background artifact for
