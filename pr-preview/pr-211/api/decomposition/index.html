@@ -2667,7 +2667,7 @@ xarray metadata through <a class="autorefs autorefs-internal" title="&lt;span cl
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;inverse_transform&lt;/span&gt;" href="./#confusius.decomposition.FastICA.inverse_transform"><code>inverse_transform</code></a>:</p>
 <ul>
 <li>Input data are expected as <code>(time, ...)</code> where <code>...</code> are spatial dimensions.</li>
-<li><code>transform</code> returns a <code>(time, component)</code> DataArray of IC time courses.</li>
+<li><code>transform</code> returns a <code>(time, component)</code> DataArray of <abbr title="Independent Component">IC</abbr> time courses.</li>
 <li><code>inverse_transform</code> reconstructs to <code>(time, ...)</code> using the fitted spatial
   coordinates.</li>
 </ul>
@@ -2855,7 +2855,7 @@ Must match the spatial dimensions and coordinates of the input data.</p>
   the spatially independent patterns that FastICA found. These are the ICs in
   the strict sense.</li>
 <li>In <code>"temporal"</code> mode: the unmixing directions in voxel space, that is, the
-  spatial weights applied to each volume to extract IC time courses. The actual
+  spatial weights applied to each volume to extract <abbr title="Independent Component">IC</abbr> time courses. The actual
   temporal ICs are returned by <code>transform</code>.</li>
 </ul>
           </div>
@@ -3518,14 +3518,30 @@ during fit.</p>
 
 
         <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
-<p>Linear dimensionality reduction that factorizes a non-negative data matrix into two
-non-negative factors: a dictionary of spatial maps (<code>maps_</code>) and their associated
-non-negative temporal signals. The decomposition is computed by minimizing the
-Frobenius norm (or a beta-divergence, depending on the <code>beta_loss</code> parameter)
-between the input data and the reconstructed product of the two factors.</p>
-<p>This estimator wraps <a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html#sklearn.decomposition.NMF"><code>sklearn.decomposition.NMF</code></a> while
-keeping xarray metadata through <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="./#confusius.decomposition.NMF.transform"><code>transform</code></a>
-and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;inverse_transform&lt;/span&gt;" href="./#confusius.decomposition.NMF.inverse_transform"><code>inverse_transform</code></a>:</p>
+<p>Find two non-negative matrices, i.e. matrices with all non-negative elements,
+(<code>W</code>, <code>H</code>) whose product approximates the non-negative matrix <code>X</code>. This
+factorization can be used for example for dimensionality reduction, source
+separation, or topic extraction.</p>
+<p>The objective function is:</p>
+<div class="arithmatex">\[
+    \begin{aligned}
+    L(W, H) &amp;= 0.5 * ||X - WH||_{\text{loss}}^2 \\
+            &amp;+ \alpha_W \, l_{1,\text{ratio}} \, n_{\text{features}} \, ||\mathrm{vec}(W)||_1 \\
+            &amp;+ \alpha_H \, l_{1,\text{ratio}} \, n_{\text{samples}} \, ||\mathrm{vec}(H)||_1 \\
+            &amp;+ 0.5 \, \alpha_W \, (1 - l_{1,\text{ratio}}) \, n_{\text{features}} \, ||W||_{F}^2 \\
+            &amp;+ 0.5 \, \alpha_H \, (1 - l_{1,\text{ratio}}) \, n_{\text{samples}} \, ||H||_{F}^2,
+    \end{aligned}
+\]</div>
+<p>where <span class="arithmatex">\(||A||_{F}^2 = \sum_{i,j} A_{ij}^2\)</span> is the Frobenius norm and <span class="arithmatex">\(||vec(A)||_1 =
+\sum_{i,j} abs(A_{ij})\)</span> is the elementwise L1 norm.</p>
+<p>The generic norm <code>||X - WH||_{\text{loss}}</code> may represent the Frobenius norm or
+another supported beta-divergence loss. The regularization terms are scaled by
+<code>n_features</code> for <code>W</code> and by <code>n_samples</code> for <code>H</code> to keep their impact balanced with
+respect to one another and to the data fit term.</p>
+<p>This estimator wraps <a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html#sklearn.decomposition.NMF"><code>sklearn.decomposition.NMF</code></a>
+while keeping xarray metadata through
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;transform&lt;/span&gt;" href="./#confusius.decomposition.NMF.transform"><code>transform</code></a> and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;inverse_transform&lt;/span&gt;" href="./#confusius.decomposition.NMF.inverse_transform"><code>inverse_transform</code></a>:</p>
 <ul>
 <li>Input data are expected as <code>(time, ...)</code> where <code>...</code> are spatial dimensions.</li>
 <li><code>transform</code> returns a <code>(time, component)</code> DataArray.</li>
@@ -3538,25 +3554,36 @@ and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-ob
     <ul>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.NMF(n_components)" class="doc doc-heading doc-heading-parameter">              <b><code>n_components</code></b>
-<a href="#confusius.decomposition.NMF(n_components)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+<a href="#confusius.decomposition.NMF(n_components)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a> or {<span title="auto">auto</span>} or None</code>, default:
                   <code>&#34;auto&#34;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Number of components to keep. If not set, <code>n_components == min(n_samples,
-n_features)</code>. Note that <abbr title="Non-negative Matrix Factorization">NMF</abbr> does not support a fractional <code>n_components</code> or
-<code>"mle"</code>: it must be an integer or <code>"auto"</code>.</p>
+            <p>Number of components. If <code>None</code>, all features are kept. If
+<code>n_components="auto"</code>, the number of components is automatically inferred from
+<code>W</code> or <code>H</code> shapes.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.NMF(init)" class="doc doc-heading doc-heading-parameter">              <b><code>init</code></b>
-<a href="#confusius.decomposition.NMF(init)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="nndsvda">nndsvda</span>, <span title="nndsvdar">nndsvdar</span>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/random.html#module-random">random</a>)</code>, default:
-                  <code>&#34;nndsvda&#34;</code>
+<a href="#confusius.decomposition.NMF(init)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/random.html#module-random">random</a>, <span title="nndsvd">nndsvd</span>, <span title="nndsvda">nndsvda</span>, <span title="nndsvdar">nndsvdar</span>)</code>, default:
+                  <code>&#34;random&#34;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Method used to initialize the procedure. If not set, lets sklearn pick
-<code>"nndsvda"</code> for non-negative sparse data and <code>"random"</code> otherwise.</p>
+            <p>Method used to initialize the procedure.</p>
+<ul>
+<li><code>None</code>: <code>"nndsvda"</code> if <code>n_components &lt;= min(n_samples, n_features)</code>,
+  otherwise <code>"random"</code>.</li>
+<li><code>"random"</code>: non-negative random matrices, scaled with
+  <code>sqrt(X.mean() / n_components)</code>.</li>
+<li><code>"nndsvd"</code>: non-negative double singular value decomposition (<abbr title="Non-negative Double Singular Value Decomposition">NNDSVD</abbr>)
+  initialization, better for sparseness.</li>
+<li><code>"nndsvda"</code>: <abbr title="Non-negative Double Singular Value Decomposition">NNDSVD</abbr> with zeros filled with the average of <code>X</code>, better when
+  sparsity is not desired.</li>
+<li><code>"nndsvdar"</code>: <abbr title="Non-negative Double Singular Value Decomposition">NNDSVD</abbr> with zeros filled with small random values, generally
+  faster but less accurate than <code>"nndsvda"</code> when sparsity is not desired.</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3566,23 +3593,27 @@ n_features)</code>. Note that <abbr title="Non-negative Matrix Factorization">NM
 )
           –
           <div class="doc-md-description">
-            <p>Numerical solver to use: <code>"cd"</code> is a Coordinate Descent solver (only one
-supporting beta-loss different from <code>"frobenius"</code>) while <code>"mu"</code> is a
-Multiplicative Update solver.</p>
+            <p>Numerical solver to use:</p>
+<ul>
+<li><code>"cd"</code>: coordinate descent solver.</li>
+<li><code>"mu"</code>: multiplicative update solver.</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.NMF(beta_loss)" class="doc doc-heading doc-heading-parameter">              <b><code>beta_loss</code></b>
-<a href="#confusius.decomposition.NMF(beta_loss)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> or {<span title="frobenius">frobenius</span>, <span title="kullback">kullback</span> - <span title="leibler">leibler</span>, <span title="itakura">itakura</span> - <span title="saito">saito</span>}</code>, default:
-                  <code>&#34;frobenius&#34;</code>
+<a href="#confusius.decomposition.NMF(beta_loss)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>float or {&#34;frobenius&#34;, &#34;kullback-leibler&#34;, &#34;itakura-saito&#34;}, \</code>, default:
+                  <code>&#39;frobenius&#39;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Beta divergence to be minimized, measuring the distance between <code>X</code> and the
-dot product <code>WH</code>. Note that values different from <code>"frobenius"</code> (or
-<code>"kullback-leibler"</code>, <code>"itakura-saito"</code> with beta values equal to 1 or 2
-respectively) are not strictly beta divergences and may lead to significantly
-slower convergence. See details in the [<code>sklearn</code> user guide][sklearn-nmf].</p>
+            <div class="language-text highlight"><pre><span></span><code>default: &quot;frobenius&quot;
+</code></pre></div>
+<p>Beta divergence to be minimized, measuring the distance between <code>X</code> and the dot
+product <code>WH</code>. Note that values different from <code>"frobenius"</code> (or <code>2</code>) and
+<code>"kullback-leibler"</code> (or <code>1</code>) lead to significantly slower fits. Note that for
+<code>beta_loss &lt;= 0</code> (or <code>"itakura-saito"</code>), the input matrix <code>X</code> cannot contain
+zeros. Used only in the <code>"mu"</code> solver.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3607,13 +3638,14 @@ slower convergence. See details in the [<code>sklearn</code> user guide][sklearn
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.decomposition.NMF(random_state)" class="doc doc-heading doc-heading-parameter">              <b><code>random_state</code></b>
-<a href="#confusius.decomposition.NMF(random_state)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+<a href="#confusius.decomposition.NMF(random_state)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a> or <a class="autorefs autorefs-external" title="numpy.random.RandomState" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState">RandomState</a></code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Used for initialisation when <code>init == "random"</code> and for <code>"nndsvdar"</code>. Pass an
-int for reproducible results across multiple function calls.</p>
+            <p>Used for initialisation (when <code>init == "nndsvdar"</code> or <code>"random"</code>) and in
+coordinate descent. Pass an int for reproducible results across multiple
+function calls.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3623,8 +3655,8 @@ int for reproducible results across multiple function calls.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Constant that multiplies the regularization terms of <code>W</code>. Set it to zero (the
-default) to have no regularization on <code>W</code>.</p>
+            <p>Constant that multiplies the regularization terms of <code>W</code>. Set it to zero to have
+no regularization on <code>W</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3634,9 +3666,8 @@ default) to have no regularization on <code>W</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Constant that multiplies the regularization terms of <code>H</code>. If <code>"same"</code> (the
-default), the value depends on <code>alpha_W</code>: if <code>alpha_W == 0</code>, <code>alpha_H == 0</code>,
-else <code>alpha_H == alpha_W</code>.</p>
+            <p>Constant that multiplies the regularization terms of <code>H</code>. Set it to zero to have
+no regularization on <code>H</code>. If <code>"same"</code>, it takes the same value as <code>alpha_W</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3646,10 +3677,33 @@ else <code>alpha_H == alpha_W</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>The regularization mixing parameter, with <code>0 &lt;= l1_ratio &lt;= 1</code>. For <code>l1_ratio
-== 0</code> the penalty is an elementwise L2 penalty (aka Frobenius Norm). For
-<code>l1_ratio == 1</code> it is an elementwise L1 penalty. For <code>0 &lt; l1_ratio &lt; 1</code>, the
-penalty is a combination of L1 and L2.</p>
+            <p>The regularization mixing parameter, with <code>0 &lt;= l1_ratio &lt;= 1</code>.</p>
+<ul>
+<li>For <code>l1_ratio = 0</code>, the penalty is an elementwise L2 penalty (aka
+  Frobenius Norm).</li>
+<li>For <code>l1_ratio = 1</code>, it is an elementwise L1 penalty.</li>
+<li>For <code>0 &lt; l1_ratio &lt; 1</code>, the penalty is a combination of L1 and L2.</li>
+</ul>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.decomposition.NMF(verbose)" class="doc doc-heading doc-heading-parameter">              <b><code>verbose</code></b>
+<a href="#confusius.decomposition.NMF(verbose)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to be verbose.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.decomposition.NMF(shuffle)" class="doc doc-heading doc-heading-parameter">              <b><code>shuffle</code></b>
+<a href="#confusius.decomposition.NMF(shuffle)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to randomize the order of coordinates in the coordinate descent solver.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3661,10 +3715,13 @@ penalty is a combination of L1 and L2.</p>
           <div class="doc-md-description">
             <p>Whether to fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> along temporal or spatial orientation:</p>
 <ul>
-<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The dictionaries are spatial maps; the
-  component signals are non-negative temporal time courses.</li>
-<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. The dictionaries are non-negative time
-  courses; the component signals are spatial maps.</li>
+<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The transformed data <code>W</code> are
+  non-negative temporal time courses and the components matrix <code>H</code> reshapes to
+  spatial maps.</li>
+<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. In the underlying sklearn fit, <code>W</code> lives
+  on voxels and <code>H</code> lives on timepoints because the data matrix is transposed.
+  This wrapper still exposes <code>maps_</code> as spatial maps and <code>transform</code> as <code>(time,
+  component)</code> signals.</li>
 </ul>
           </div>
         </li>
@@ -3679,16 +3736,6 @@ penalty is a combination of L1 and L2.</p>
 Must match the spatial dimensions and coordinates of the input data.</p>
           </div>
         </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.decomposition.NMF(verbose)" class="doc doc-heading doc-heading-parameter">              <b><code>verbose</code></b>
-<a href="#confusius.decomposition.NMF(verbose)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
-                  <code>0</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Whether to be verbose.</p>
-          </div>
-        </li>
     </ul>
 
 
@@ -3699,9 +3746,12 @@ Must match the spatial dimensions and coordinates of the input data.</p>
               (<code>(n_components, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Non-negative dictionary elements, sorted by decreasing reconstruction
-contribution. In <code>"temporal"</code> mode these are spatial maps; in <code>"spatial"</code> mode
-these are time courses. Reshaped to the fitted spatial geometry.</p>
+            <p>Non-negative component maps reshaped to the original spatial geometry.</p>
+<ul>
+<li>In <code>"temporal"</code> mode: the components matrix <code>H</code>, interpreted as spatial maps.</li>
+<li>In <code>"spatial"</code> mode: spatial projection maps derived from the fitted <abbr title="Non-negative Matrix Factorization">NMF</abbr> model
+  on transposed data.</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3709,16 +3759,8 @@ these are time courses. Reshaped to the fitted spatial geometry.</p>
               (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>)
           –
           <div class="doc-md-description">
-            <p>The estimated number of components. When <code>n_components</code> is <code>"auto"</code>, this is
-<code>min(n_samples, n_features)</code>.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-          <b><code><span title="confusius.decomposition.NMF.n_iter_">n_iter_</span></code></b>
-              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>)
-          –
-          <div class="doc-md-description">
-            <p>Actual number of iterations run by the solver.</p>
+            <p>The number of components. It is the same as the <code>n_components</code> parameter if it
+was given. Otherwise, it is inferred from the fitted factorization.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3726,8 +3768,16 @@ these are time courses. Reshaped to the fitted spatial geometry.</p>
               (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>)
           –
           <div class="doc-md-description">
-            <p>Frobenius norm of the matrix difference between the training data and the
-reconstructed data from the fit, equal to <code>||X - WH||_F</code>.</p>
+            <p>Frobenius norm of the matrix difference, or beta-divergence, between the
+training data <code>X</code> and the reconstructed data <code>WH</code> from the fitted model.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="confusius.decomposition.NMF.n_iter_">n_iter_</span></code></b>
+              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Actual number of iterations.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3743,8 +3793,8 @@ reconstructed data from the fit, equal to <code>||X - WH||_F</code>.</p>
               (<code>(n_features_in_,) numpy.ndarray</code>)
           –
           <div class="doc-md-description">
-            <p>Feature names seen during fit. Defined only when flattened feature labels are
-all strings.</p>
+            <p>Names of features seen during fit. Defined only when flattened feature
+labels are all strings.</p>
           </div>
         </li>
     </ul>
@@ -3752,14 +3802,14 @@ all strings.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p><abbr title="Non-negative Matrix Factorization">NMF</abbr> requires strictly non-negative input data. <abbr title="Functional Ultrasound Imaging">fUSI</abbr> Power Doppler signals are
-non-negative by construction. The wrapper raises a clear <code>ValueError</code> if the
-(masked) input data contains negative values.</p>
-<p>The <code>"spatial"</code> mode fits <abbr title="Non-negative Matrix Factorization">NMF</abbr> on the transposed data and exposes a manual
-projection rather than relying on <code>sklearn.decomposition.NMF.transform</code>, because
-<code>sklearn</code>'s <abbr title="Non-negative Matrix Factorization">NMF</abbr> <code>transform</code> is only defined for <code>(n_samples, n_features)</code> input.
-As a consequence, <code>transform</code> and <code>inverse_transform</code> do not call into
-<code>sklearn.decomposition.NMF</code> in <code>"spatial"</code> mode.</p>
+  <p>In sklearn's notation, the transformed data are named <code>W</code> and the components matrix
+is named <code>H</code>. In much of the <abbr title="Non-negative Matrix Factorization">NMF</abbr> literature the convention is often the opposite
+because the data matrix is transposed.</p>
+<p>In <code>"spatial"</code> mode, the estimator is still fitted with <code>sklearn.decomposition.NMF</code>,
+but on the transposed data matrix <code>(voxels, time)</code>. The wrapper then computes
+<code>(time, component)</code> signals by projecting the original <code>(time, voxel)</code> matrix onto
+the fitted spatial maps, so that <code>transform</code> and <code>inverse_transform</code> keep the same
+public API in both modes.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
