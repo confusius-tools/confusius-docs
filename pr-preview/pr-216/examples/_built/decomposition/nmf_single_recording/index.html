@@ -12,13 +12,13 @@
         <meta name="author" content="Samuel Le Meur-Diebolt">
       
       
-        <link rel="canonical" href="https://confusius.tools/examples/_built/io/confusius_xarray_101/">
+        <link rel="canonical" href="https://confusius.tools/examples/_built/decomposition/nmf_single_recording/">
       
       
-        <link rel="prev" href="../../../">
+        <link rel="prev" href="../fastica_single_recording/">
       
       
-        <link rel="next" href="../../registration/register_volume_same_subject/">
+        <link rel="next" href="../../../../changelog/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>ConfUSIus and Xarray 101 - ConfUSIus</title>
+        <title>Correct for brain motion - ConfUSIus</title>
       
     
     
@@ -97,7 +97,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#confusius-and-xarray-101" class="md-skip">
+        <a href="#load-a-fusi-recording" class="md-skip">
           Skip to content
         </a>
       
@@ -134,7 +134,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ConfUSIus and Xarray 101
+              Correct for brain motion
             
           </span>
         </div>
@@ -1878,8 +1878,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1899,11 +1897,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_2" >
         
           
           <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="">
@@ -1923,7 +1923,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1937,36 +1937,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  ConfUSIus and Xarray 101
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="././" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../io/confusius_xarray_101/" class="md-nav__link">
         
   
   
@@ -1981,115 +1955,6 @@
   
 
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fetch-one-recording-from-the-nunez-elizalde-2022-dataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Fetch one recording from the Nunez-Elizalde 2022 dataset
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#load-the-recording-as-a-dataarray" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Load the recording as a DataArray
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lazy-loading-and-when-to-compute" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Lazy loading and when to compute
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#positional-and-coordinate-based-indexing" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Positional and coordinate-based indexing
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#plot-a-regional-time-course" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Plot a regional time course
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compute-and-plot-the-mean-power-doppler-volume" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Compute and plot the mean power Doppler volume
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mask-low-intensity-pixels-with-where" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Mask low-intensity pixels with <code>where</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#save-a-processed-result" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Save a processed result
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2201,8 +2066,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -2224,13 +2091,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" checked>
         
           
           <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="">
@@ -2250,7 +2115,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2267,7 +2132,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decomposition/pca_single_recording/" class="md-nav__link">
+      <a href="../pca_single_recording/" class="md-nav__link">
         
   
   
@@ -2294,7 +2159,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decomposition/fastica_single_recording/" class="md-nav__link">
+      <a href="../fastica_single_recording/" class="md-nav__link">
         
   
   
@@ -2318,10 +2183,34 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../decomposition/nmf_single_recording/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  NMF on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2336,6 +2225,125 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#load-a-fusi-recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#correct-for-brain-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Correct for brain motion
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Correct for brain motion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standardize-for-nmf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fit-temporal-nmf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reconstruction-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Reconstruction error
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-maps-and-time-courses" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Spatial maps and time courses
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-nmf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial NMF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spatial-maps-and-time-courses_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Spatial maps and time courses
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2452,8 +2460,6 @@
                     
                     
                     
-                      
-                    
                     
                       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
                       <div class="md-sidebar-button__wrapper">
@@ -2469,8 +2475,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2479,10 +2483,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fetch-one-recording-from-the-nunez-elizalde-2022-dataset" class="md-nav__link">
+  <a href="#load-a-fusi-recording" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Fetch one recording from the Nunez-Elizalde 2022 dataset
+        Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording
       </span>
     </span>
   </a>
@@ -2490,79 +2494,91 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#load-the-recording-as-a-dataarray" class="md-nav__link">
+  <a href="#correct-for-brain-motion" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Load the recording as a DataArray
+        Correct for brain motion
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Correct for brain motion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standardize-for-nmf" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#lazy-loading-and-when-to-compute" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#fit-temporal-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Lazy loading and when to compute
+        Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr>
       </span>
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#positional-and-coordinate-based-indexing" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#reconstruction-error" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Positional and coordinate-based indexing
+        Reconstruction error
       </span>
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#plot-a-regional-time-course" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#spatial-maps-and-time-courses" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Plot a regional time course
+        Spatial maps and time courses
       </span>
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#compute-and-plot-the-mean-power-doppler-volume" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#spatial-nmf" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Compute and plot the mean power Doppler volume
+        Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial NMF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spatial-maps-and-time-courses_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Spatial maps and time courses
       </span>
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#mask-low-intensity-pixels-with-where" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Mask low-intensity pixels with <code>where</code>
-      </span>
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#save-a-processed-result" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Save a processed result
-      </span>
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2627,10 +2643,10 @@
     
     
       <li class="md-path__item">
-        <a href="././" class="md-path__link">
+        <a href="../pca_single_recording/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Getting Started
+    Decomposition
   </span>
 
         </a>
@@ -2650,18 +2666,24 @@
   
 
 
-<h1 id="confusius-and-xarray-101">ConfUSIus and Xarray 101<a class="headerlink" href="#confusius-and-xarray-101" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates how to use ConfUSIus to load and handle <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data as
-<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a> instances. We will use a small subset of the
-Nunez-Elizalde 2022 dataset and use a few basic Xarray operations to inspect, subset,
-and summarize the data.</p>
-<h2 id="fetch-one-recording-from-the-nunez-elizalde-2022-dataset">Fetch one recording from the Nunez-Elizalde 2022 dataset<a class="headerlink" href="#fetch-one-recording-from-the-nunez-elizalde-2022-dataset" title="Permanent link">&para;</a></h2>
-<p>ConfUSIus provides convenient functions to download public datasets. The data is
-cached after the first download, so subsequent runs will be faster. The
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022"><code>fetch_nunez_elizalde_2022</code></a> function
-allows you to specify which subjects, sessions, tasks, and acquisitions to download.
-Here we select one recording from subject <code>CR022</code>, session <code>20201011</code>, task
-<code>spontaneous</code>, and acquisition <code>slice03</code>.</p>
+<p>This example shows how to use non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) to decompose a
+<abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording into non-negative spatial maps and their associated non-negative time
+courses. It complements the <a href="../pca_single_recording/"><abbr title="Principal Component Analysis">PCA</abbr></a> and
+<a href="../fastica_single_recording/">FastICA</a> examples in the same gallery.</p>
+<p><abbr title="Non-negative Matrix Factorization">NMF</abbr> is unique among the decomposers in ConfUSIus because it requires strictly
+non-negative inputs<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Power Doppler <abbr title="Functional Ultrasound Imaging">fUSI</abbr> signals are non-negative by construction,
+so they pass the constraint directly. However, raw power is dominated by each voxel's
+baseline intensity, which can make bright vessels dominate the factorization.</p>
+<p>A practical workaround is to center and scale each voxel across time, then split the
+standardized signal into separate positive and negative channels, preserving <abbr title="Non-negative Matrix Factorization">NMF</abbr>'s
+non-negativity constraint. <abbr title="Non-negative Matrix Factorization">NMF</abbr> can then discover additive components in above-baseline
+and below-baseline fluctuations separately.</p>
+<h2 id="load-a-fusi-recording">Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording<a class="headerlink" href="#load-a-fusi-recording" title="Permanent link">&para;</a></h2>
+<p>We use the same spontaneous activity recording from the <a href="https://doi.org/10.1016/j.neuron.2022.02.012">Nunez-Elizalde 2022
+dataset</a> as in the <a href="../pca_single_recording/"><abbr title="Principal Component Analysis">PCA</abbr></a>
+and <a href="../fastica_single_recording/">FastICA</a> examples. See the
+<a href="../../../../user-guide/datasets/">Datasets</a> user guide for more details on how to
+download this dataset using ConfUSIus.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
@@ -2669,38 +2691,29 @@ Here we select one recording from subject <code>CR022</code>, session <code>2020
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_nunez_elizalde_2022</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Keep notebook output compact for large DataArray displays.</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201011&quot;</span><span class="p">,</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice03&quot;</span><span class="p">,</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">)</span>
-</span></code></pre></div>
-<h2 id="load-the-recording-as-a-dataarray">Load the recording as a DataArray<a class="headerlink" href="#load-the-recording-as-a-dataarray" title="Permanent link">&para;</a></h2>
-<p>The downloaded dataset is stored following the <a href="https://bids.neuroimaging.io/">Brain Imaging Data Structure
-(<abbr title="Brain Imaging Data Structure">BIDS</abbr>)</a>, so we can use the <code>bids_root</code> path to
-construct the path to the desired recording. The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../../../api/io/#confusius.io.load"><code>confusius.load</code></a>
-function reads any compatible <abbr title="Functional Ultrasound Imaging">fUSI</abbr> file (NIfTI, Iconeus SCAN, Zarr, etc.) and returns
-a <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a> with the data values, coordinates, and metadata all in
-one instance. In the recording representation below, note the named dimensions,
-physical coordinates, and representative acquisition attributes attached to the array.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201011&quot;</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz&quot;</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">data</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Keep notebook output compact for large DataArray displays.</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201011&quot;</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice03&quot;</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201011&quot;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz&quot;</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">data</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -3244,706 +3257,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 114</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-30131f3f-af55-4568-8ce6-abdb3db42ecd' class='xr-array-in' type='checkbox' ><label for='section-30131f3f-af55-4568-8ce6-abdb3db42ecd' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(751, 1, 114, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
-    <tr>
-        <td>
-            <table style="border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <td> </td>
-                        <th> Array </th>
-                        <th> Chunk </th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr>
-                        <th> Bytes </th>
-                        <td> 26.13 MiB </td>
-                        <td> 26.13 MiB </td>
-                    </tr>
-
-                    <tr>
-                        <th> Shape </th>
-                        <td> (751, 1, 114, 80) </td>
-                        <td> (751, 1, 114, 80) </td>
-                    </tr>
-                    <tr>
-                        <th> Dask graph </th>
-                        <td colspan="2"> 1 chunks in 1 graph layer </td>
-                    </tr>
-                    <tr>
-                        <th> Data type </th>
-                        <td colspan="2"> float32 numpy.ndarray </td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-        <td>
-        <svg width="483" height="105" style="stroke:rgb(0,0,0);stroke-width:1" >
-
-  <!-- Horizontal lines -->
-  <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2" />
-  <line x1="0" y1="25" x2="120" y2="25" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2" />
-  <line x1="120" y1="0" x2="120" y2="25" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="0.0,0.0 120.0,0.0 120.0,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Text -->
-  <text x="60.0" y="45.41261651458248" font-size="1.0rem" font-weight="100" text-anchor="middle" >751</text>
-  <text x="140.0" y="12.706308257291242" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,140.0,12.706308257291242)">1</text>
-
-
-  <!-- Horizontal lines -->
-  <line x1="190" y1="0" x2="204" y2="14" style="stroke-width:2" />
-  <line x1="190" y1="40" x2="204" y2="55" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="190" y1="0" x2="190" y2="40" style="stroke-width:2" />
-  <line x1="204" y1="14" x2="204" y2="55" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="190.0,0.0 204.9485979497544,14.948597949754403 204.9485979497544,55.712341781689695 190.0,40.763743831935294" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Horizontal lines -->
-  <line x1="190" y1="0" x2="228" y2="0" style="stroke-width:2" />
-  <line x1="204" y1="14" x2="243" y2="14" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="190" y1="0" x2="204" y2="14" style="stroke-width:2" />
-  <line x1="228" y1="0" x2="243" y2="14" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="190.0,0.0 228.94414111279977,0.0 243.89273906255417,14.948597949754403 204.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Horizontal lines -->
-  <line x1="204" y1="14" x2="243" y2="14" style="stroke-width:2" />
-  <line x1="204" y1="55" x2="243" y2="55" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="204" y1="14" x2="204" y2="55" style="stroke-width:2" />
-  <line x1="243" y1="14" x2="243" y2="55" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="204.9485979497544,14.948597949754403 243.89273906255417,14.948597949754403 243.89273906255417,55.712341781689695 204.9485979497544,55.712341781689695" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Text -->
-  <text x="224.4206685061543" y="75.7123417816897" font-size="1.0rem" font-weight="100" text-anchor="middle" >80</text>
-  <text x="263.89273906255414" y="35.33046986572205" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,263.89273906255414,35.33046986572205)">114</text>
-  <text x="187.4742989748772" y="68.2380428068125" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,187.4742989748772,68.2380428068125)">1</text>
-</svg>
-        </td>
-    </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-256cf8f5-5c9c-4327-a86a-2339f81e42e0' class='xr-section-summary-in' type='checkbox' checked /><label for='section-256cf8f5-5c9c-4327-a86a-2339f81e42e0' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-2a52b31f-b67a-422b-a0ff-1f9c019816a5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2a52b31f-b67a-422b-a0ff-1f9c019816a5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ee3ef629-c9bb-4a0f-b07b-ebabeb53d65b' class='xr-var-data-in' type='checkbox'><label for='data-ee3ef629-c9bb-4a0f-b07b-ebabeb53d65b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-163bad20-b34f-44e6-9d36-3a7a2f0beb0d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-163bad20-b34f-44e6-9d36-3a7a2f0beb0d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-30341d9c-d43a-4ac6-bc03-eff069f7add0' class='xr-var-data-in' type='checkbox'><label for='data-30341d9c-d43a-4ac6-bc03-eff069f7add0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.73 2.778 2.827 ... 8.142 8.19</div><input id='attrs-75c02b51-b8a3-4be4-8f94-e55873930c11' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-75c02b51-b8a3-4be4-8f94-e55873930c11' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-918d4140-ae27-4551-963a-51b9e1dbfbd6' class='xr-var-data-in' type='checkbox'><label for='data-918d4140-ae27-4551-963a-51b9e1dbfbd6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.73008, 2.7784 , 2.82672, 2.87504, 2.92336, 2.97168, 3.02   , 3.06832,
-       3.11664, 3.16496, 3.21328, 3.2616 , 3.30992, 3.35824, 3.40656, 3.45488,
-       3.5032 , 3.55152, 3.59984, 3.64816, 3.69648, 3.7448 , 3.79312, 3.84144,
-       3.88976, 3.93808, 3.9864 , 4.03472, 4.08304, 4.13136, 4.17968, 4.228  ,
-       4.27632, 4.32464, 4.37296, 4.42128, 4.4696 , 4.51792, 4.56624, 4.61456,
-       4.66288, 4.7112 , 4.75952, 4.80784, 4.85616, 4.90448, 4.9528 , 5.00112,
-       5.04944, 5.09776, 5.14608, 5.1944 , 5.24272, 5.29104, 5.33936, 5.38768,
-       5.436  , 5.48432, 5.53264, 5.58096, 5.62928, 5.6776 , 5.72592, 5.77424,
-       5.82256, 5.87088, 5.9192 , 5.96752, 6.01584, 6.06416, 6.11248, 6.1608 ,
-       6.20912, 6.25744, 6.30576, 6.35408, 6.4024 , 6.45072, 6.49904, 6.54736,
-       6.59568, 6.644  , 6.69232, 6.74064, 6.78896, 6.83728, 6.8856 , 6.93392,
-       6.98224, 7.03056, 7.07888, 7.1272 , 7.17552, 7.22384, 7.27216, 7.32048,
-       7.3688 , 7.41712, 7.46544, 7.51376, 7.56208, 7.6104 , 7.65872, 7.70704,
-       7.75536, 7.80368, 7.852  , 7.90032, 7.94864, 7.99696, 8.04528, 8.0936 ,
-       8.14192, 8.19024])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-3852ebb4-d5af-477a-bd32-90ca0ede17c2' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3852ebb4-d5af-477a-bd32-90ca0ede17c2' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8407ff3f-bbe5-4300-887a-af39457d9b8a' class='xr-var-data-in' type='checkbox'><label for='data-8407ff3f-bbe5-4300-887a-af39457d9b8a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
-       -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
-       -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
-       -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
-        0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
-        1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
-        2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-83ca4b06-ee99-485f-9cfa-c397215745f6' class='xr-section-summary-in' type='checkbox' /><label for='section-83ca4b06-ee99-485f-9cfa-c397215745f6' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
-       [0., 1., 0., 0.],
-       [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
-<style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
-
-<p>ConfUSIus also registers a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIAccessor&lt;/span&gt;" href="../../../../api/xarray/#confusius.xarray.FUSIAccessor"><code>.fusi</code></a> accessor on every
-DataArray, which exposes <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-specific helpers and methods. For example, we can
-inspect the sampling step along each dimension. Note that for this recording, the
-temporal step isn't defined because the time coordinate isn't regularly sampled. See
-the <a href="../../../../user-guide/xarray/">Working with Xarray</a> guide for a broader overview
-of the accessor.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">spacing</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>/tmp/ipykernel_3881/1348712392.py:1: UserWarning: Coordinate &#39;time&#39; has non-uniform sampling; spacing is undefined.
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  data.fusi.spacing
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>{&#39;time&#39;: None,
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a> &#39;z&#39;: 0.4000000059604645,
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a> &#39;y&#39;: 0.04831999912858009,
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a> &#39;x&#39;: 0.10000000149011612}
-</span></code></pre></div>
-<h2 id="lazy-loading-and-when-to-compute">Lazy loading and when to compute<a class="headerlink" href="#lazy-loading-and-when-to-compute" title="Permanent link">&para;</a></h2>
-<p>ConfUSIus loads recordings lazily, so the underlying array starts out as a Dask array.
-This is convenient for working with large datasets that don't fit in memory, such as
-large beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data. However, lazily loaded arrays may be chunked in ways that
-are not ideal for all operations. For example, chunking across the time dimension is
-ideal for processing volume-by-volume (such as when visualizing a recording in
-napari), but it will make temporal operations (e.g., averaging over time, frequency
-filtering, etc.) less efficient. Thus, when working with smaller recordings that do
-fit in memory, it is often simpler to call <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.compute.html#xarray.DataArray.compute"><code>.compute</code></a>
-right after loading to get a regular in-memory array. This is not required, but it is
-recommended to make subsequent operations more straightforward.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-</span></code></pre></div>
-<h2 id="positional-and-coordinate-based-indexing">Positional and coordinate-based indexing<a class="headerlink" href="#positional-and-coordinate-based-indexing" title="Permanent link">&para;</a></h2>
-<p>Once the recording is in memory, we can keep using normal Xarray operations. A useful
-distinction is between <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.isel.html#xarray.DataArray.isel"><code>.isel</code></a>, which indexes by integer
-position, and <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.sel.html#xarray.DataArray.sel"><code>.sel</code></a>, which indexes by coordinate values.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">first_50_volumes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">first_50_volumes</span>
-</span></code></pre></div>
-<div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
-<defs>
-<symbol id="icon-database" viewBox="0 0 32 32">
-<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
-<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
-<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
-</symbol>
-<symbol id="icon-file-text2" viewBox="0 0 32 32">
-<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
-<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-</symbol>
-</defs>
-</svg>
-<style>/* CSS stylesheet for displaying xarray objects in notebooks */
-
-:root {
-  --xr-font-color0: var(
-    --jp-content-font-color0,
-    var(--pst-color-text-base rgba(0, 0, 0, 1))
-  );
-  --xr-font-color2: var(
-    --jp-content-font-color2,
-    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
-  );
-  --xr-font-color3: var(
-    --jp-content-font-color3,
-    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
-  );
-  --xr-border-color: var(
-    --jp-border-color2,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
-  );
-  --xr-disabled-color: var(
-    --jp-layout-color3,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
-  );
-  --xr-background-color: var(
-    --jp-layout-color0,
-    var(--pst-color-on-background, white)
-  );
-  --xr-background-color-row-even: var(
-    --jp-layout-color1,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
-  );
-  --xr-background-color-row-odd: var(
-    --jp-layout-color2,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
-  );
-}
-
-html[theme="dark"],
-html[data-theme="dark"],
-body[data-theme="dark"],
-body.vscode-dark {
-  --xr-font-color0: var(
-    --jp-content-font-color0,
-    var(--pst-color-text-base, rgba(255, 255, 255, 1))
-  );
-  --xr-font-color2: var(
-    --jp-content-font-color2,
-    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
-  );
-  --xr-font-color3: var(
-    --jp-content-font-color3,
-    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
-  );
-  --xr-border-color: var(
-    --jp-border-color2,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
-  );
-  --xr-disabled-color: var(
-    --jp-layout-color3,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
-  );
-  --xr-background-color: var(
-    --jp-layout-color0,
-    var(--pst-color-on-background, #111111)
-  );
-  --xr-background-color-row-even: var(
-    --jp-layout-color1,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
-  );
-  --xr-background-color-row-odd: var(
-    --jp-layout-color2,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
-  );
-}
-
-.xr-wrap {
-  display: block !important;
-  min-width: 300px;
-  max-width: 700px;
-  line-height: 1.6;
-  padding-bottom: 4px;
-}
-
-.xr-text-repr-fallback {
-  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
-  display: none;
-}
-
-.xr-header {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.xr-header {
-  border-bottom: solid 1px var(--xr-border-color);
-  margin-bottom: 4px;
-}
-
-.xr-header > div,
-.xr-header > ul {
-  display: inline;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.xr-obj-type,
-.xr-obj-name {
-  margin-left: 2px;
-  margin-right: 10px;
-}
-
-.xr-obj-type,
-.xr-group-box-contents > label {
-  color: var(--xr-font-color2);
-  display: block;
-}
-
-.xr-sections {
-  padding-left: 0 !important;
-  display: grid;
-  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-.xr-section-item {
-  display: contents;
-}
-
-.xr-section-item > input,
-.xr-group-box-contents > input,
-.xr-array-wrap > input {
-  display: block;
-  opacity: 0;
-  height: 0;
-  margin: 0;
-}
-
-.xr-section-item > input + label,
-.xr-var-item > input + label {
-  color: var(--xr-disabled-color);
-}
-
-.xr-section-item > input:enabled + label,
-.xr-var-item > input:enabled + label,
-.xr-array-wrap > input:enabled + label,
-.xr-group-box-contents > input:enabled + label {
-  cursor: pointer;
-  color: var(--xr-font-color2);
-}
-
-.xr-section-item > input:focus-visible + label,
-.xr-var-item > input:focus-visible + label,
-.xr-array-wrap > input:focus-visible + label,
-.xr-group-box-contents > input:focus-visible + label {
-  outline: auto;
-}
-
-.xr-section-item > input:enabled + label:hover,
-.xr-var-item > input:enabled + label:hover,
-.xr-array-wrap > input:enabled + label:hover,
-.xr-group-box-contents > input:enabled + label:hover {
-  color: var(--xr-font-color0);
-}
-
-.xr-section-summary {
-  grid-column: 1;
-  color: var(--xr-font-color2);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.xr-section-summary > em {
-  font-weight: normal;
-}
-
-.xr-span-grid {
-  grid-column-end: -1;
-}
-
-.xr-section-summary > span {
-  display: inline-block;
-  padding-left: 0.3em;
-}
-
-.xr-group-box-contents > input:checked + label > span {
-  display: inline-block;
-  padding-left: 0.6em;
-}
-
-.xr-section-summary-in:disabled + label {
-  color: var(--xr-font-color2);
-}
-
-.xr-section-summary-in + label:before {
-  display: inline-block;
-  content: "►";
-  font-size: 11px;
-  width: 15px;
-  text-align: center;
-}
-
-.xr-section-summary-in:disabled + label:before {
-  color: var(--xr-disabled-color);
-}
-
-.xr-section-summary-in:checked + label:before {
-  content: "▼";
-}
-
-.xr-section-summary-in:checked + label > span {
-  display: none;
-}
-
-.xr-section-summary,
-.xr-section-inline-details,
-.xr-group-box-contents > label {
-  padding-top: 4px;
-}
-
-.xr-section-inline-details {
-  grid-column: 2 / -1;
-}
-
-.xr-section-details {
-  grid-column: 1 / -1;
-  margin-top: 4px;
-  margin-bottom: 5px;
-}
-
-.xr-section-summary-in ~ .xr-section-details {
-  display: none;
-}
-
-.xr-section-summary-in:checked ~ .xr-section-details {
-  display: contents;
-}
-
-.xr-children {
-  display: inline-grid;
-  grid-template-columns: 100%;
-  grid-column: 1 / -1;
-  padding-top: 4px;
-}
-
-.xr-group-box {
-  display: inline-grid;
-  grid-template-columns: 0px 30px auto;
-}
-
-.xr-group-box-vline {
-  grid-column-start: 1;
-  border-right: 0.2em solid;
-  border-color: var(--xr-border-color);
-  width: 0px;
-}
-
-.xr-group-box-hline {
-  grid-column-start: 2;
-  grid-row-start: 1;
-  height: 1em;
-  width: 26px;
-  border-bottom: 0.2em solid;
-  border-color: var(--xr-border-color);
-}
-
-.xr-group-box-contents {
-  grid-column-start: 3;
-  padding-bottom: 4px;
-}
-
-.xr-group-box-contents > label::before {
-  content: "📂";
-  padding-right: 0.3em;
-}
-
-.xr-group-box-contents > input:checked + label::before {
-  content: "📁";
-}
-
-.xr-group-box-contents > input:checked + label {
-  padding-bottom: 0px;
-}
-
-.xr-group-box-contents > input:checked ~ .xr-sections {
-  display: none;
-}
-
-.xr-group-box-contents > input + label > span {
-  display: none;
-}
-
-.xr-group-box-ellipsis {
-  font-size: 1.4em;
-  font-weight: 900;
-  color: var(--xr-font-color2);
-  letter-spacing: 0.15em;
-  cursor: default;
-}
-
-.xr-array-wrap {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 20px auto;
-}
-
-.xr-array-wrap > label {
-  grid-column: 1;
-  vertical-align: top;
-}
-
-.xr-preview {
-  color: var(--xr-font-color3);
-}
-
-.xr-array-preview,
-.xr-array-data {
-  padding: 0 5px !important;
-  grid-column: 2;
-}
-
-.xr-array-data,
-.xr-array-in:checked ~ .xr-array-preview {
-  display: none;
-}
-
-.xr-array-in:checked ~ .xr-array-data,
-.xr-array-preview {
-  display: inline-block;
-}
-
-.xr-dim-list {
-  display: inline-block !important;
-  list-style: none;
-  padding: 0 !important;
-  margin: 0;
-}
-
-.xr-dim-list li {
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-}
-
-.xr-dim-list:before {
-  content: "(";
-}
-
-.xr-dim-list:after {
-  content: ")";
-}
-
-.xr-dim-list li:not(:last-child):after {
-  content: ",";
-  padding-right: 5px;
-}
-
-.xr-has-index {
-  font-weight: bold;
-}
-
-.xr-var-list,
-.xr-var-item {
-  display: contents;
-}
-
-.xr-var-item > div,
-.xr-var-item label,
-.xr-var-item > .xr-var-name span {
-  background-color: var(--xr-background-color-row-even);
-  border-color: var(--xr-background-color-row-odd);
-  margin-bottom: 0;
-  padding-top: 2px;
-}
-
-.xr-var-item > .xr-var-name:hover span {
-  padding-right: 5px;
-}
-
-.xr-var-list > li:nth-child(odd) > div,
-.xr-var-list > li:nth-child(odd) > label,
-.xr-var-list > li:nth-child(odd) > .xr-var-name span {
-  background-color: var(--xr-background-color-row-odd);
-  border-color: var(--xr-background-color-row-even);
-}
-
-.xr-var-name {
-  grid-column: 1;
-}
-
-.xr-var-dims {
-  grid-column: 2;
-}
-
-.xr-var-dtype {
-  grid-column: 3;
-  text-align: right;
-  color: var(--xr-font-color2);
-}
-
-.xr-var-preview {
-  grid-column: 4;
-}
-
-.xr-index-preview {
-  grid-column: 2 / 5;
-  color: var(--xr-font-color2);
-}
-
-.xr-var-name,
-.xr-var-dims,
-.xr-var-dtype,
-.xr-preview,
-.xr-attrs dt {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: 10px;
-}
-
-.xr-var-name:hover,
-.xr-var-dims:hover,
-.xr-var-dtype:hover,
-.xr-attrs dt:hover {
-  overflow: visible;
-  width: auto;
-  z-index: 1;
-}
-
-.xr-var-attrs,
-.xr-var-data,
-.xr-index-data {
-  display: none;
-  border-top: 2px dotted var(--xr-background-color);
-  padding-bottom: 20px !important;
-  padding-top: 10px !important;
-}
-
-.xr-var-attrs-in + label,
-.xr-var-data-in + label,
-.xr-index-data-in + label {
-  padding: 0 1px;
-}
-
-.xr-var-attrs-in:checked ~ .xr-var-attrs,
-.xr-var-data-in:checked ~ .xr-var-data,
-.xr-index-data-in:checked ~ .xr-index-data {
-  display: block;
-}
-
-.xr-var-data > table {
-  float: right;
-}
-
-.xr-var-data > pre,
-.xr-index-data > pre,
-.xr-var-data > table > tbody > tr {
-  background-color: transparent !important;
-}
-
-.xr-var-name span,
-.xr-var-data,
-.xr-index-name div,
-.xr-index-data,
-.xr-attrs {
-  padding-left: 25px !important;
-}
-
-.xr-attrs,
-.xr-var-attrs,
-.xr-var-data,
-.xr-index-data {
-  grid-column: 1 / -1;
-}
-
-dl.xr-attrs {
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 125px auto;
-}
-
-.xr-attrs dt,
-.xr-attrs dd {
-  padding: 0;
-  margin: 0;
-  float: left;
-  padding-right: 10px;
-  width: auto;
-}
-
-.xr-attrs dt {
-  font-weight: normal;
-  grid-column: 1;
-}
-
-.xr-attrs dt:hover span {
-  display: inline-block;
-  background: var(--xr-background-color);
-  padding-right: 10px;
-}
-
-.xr-attrs dd {
-  grid-column: 2;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.xr-icon-database,
-.xr-icon-file-text2,
-.xr-no-icon {
-  display: inline-block;
-  vertical-align: middle;
-  width: 1em;
-  height: 1.5em !important;
-  stroke-width: 0;
-  stroke: currentColor;
-  fill: currentColor;
-}
-
-.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
-.xr-var-data-in:checked + label > .xr-icon-database,
-.xr-index-data-in:checked + label > .xr-icon-database {
-  color: var(--xr-font-color0);
-  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
-  stroke-width: 0.8px;
-}
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 50</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 114</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-27524506-6f33-4731-b7ac-494b39b48df9' class='xr-array-in' type='checkbox' ><label for='section-27524506-6f33-4731-b7ac-494b39b48df9' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>4.464e+03 5.588e+03 5.064e+03 ... 2.841e+04 2.673e+04 2.532e+04</span></div><div class='xr-array-data'><pre>array([[[[ 4463.8   ,  5588.404 ,  5063.7925, ...,  6008.3438,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 114</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-fadfb8cd-ef36-41fe-b83a-2ba832524a47' class='xr-array-in' type='checkbox' ><label for='section-fadfb8cd-ef36-41fe-b83a-2ba832524a47' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>4.464e+03 5.588e+03 5.064e+03 ... 2.977e+04 2.558e+04 2.353e+04</span></div><div class='xr-array-data'><pre>array([[[[ 4463.8   ,  5588.404 ,  5063.7925, ...,  6008.3438,
            5016.807 ,  5296.5776],
          [ 5369.187 ,  5347.434 ,  5393.3667, ...,  5593.255 ,
            5330.843 ,  6088.181 ],
@@ -3964,31 +3278,26 @@ dl.xr-attrs {
            5485.5127,  5088.853 ],
          [ 6242.7456,  6078.8955,  5453.0264, ...,  5303.4873,
 ...
-         [17493.861 , 17775.041 , 23547.389 , ..., 28452.746 ,
-          22698.502 , 23594.04  ],
-         [19309.525 , 22344.94  , 17757.36  , ..., 27594.635 ,
-          24383.32  , 30229.205 ]]],
+         [18455.709 , 19690.021 , 22065.379 , ..., 29279.365 ,
+          24760.768 , 18865.059 ],
+         [19500.25  , 20546.143 , 19018.531 , ..., 41545.703 ,
+          27996.793 , 21179.195 ]]],
 
 
-       [[[ 4762.957 ,  4783.239 ,  4716.9546, ...,  4631.195 ,
-           5891.131 ,  5686.8545],
-         [ 5645.5835,  5345.232 ,  4722.929 , ...,  6068.9824,
-           5480.8853,  5593.3716],
-         [ 6165.6123,  5114.455 ,  5317.0586, ...,  5124.0215,
-           6636.563 ,  5232.51  ],
+       [[[ 4493.446 ,  5749.9062,  4908.0405, ...,  5116.4893,
+           5014.6816,  5606.2275],
+         [ 4805.8306,  5201.5073,  6156.0605, ...,  6496.692 ,
+           5214.4478,  6020.7847],
+         [ 4523.9756,  5825.632 ,  5338.9243, ...,  4959.6353,
+           5864.1226,  6266.524 ],
          ...,
-         [21292.963 , 19519.293 , 23920.36  , ..., 28057.277 ,
-          28513.908 , 25043.06  ],
-         [19704.613 , 21517.111 , 22497.361 , ..., 26705.44  ,
-          23562.979 , 24071.332 ],
-         [22085.182 , 19549.383 , 20934.074 , ..., 28412.838 ,
-          26725.537 , 25321.049 ]]]],
-      shape=(50, 1, 114, 80), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-8867fb91-b5fd-4397-bfd0-e27c56321470' class='xr-section-summary-in' type='checkbox' checked /><label for='section-8867fb91-b5fd-4397-bfd0-e27c56321470' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 25.01 25.31</div><input id='attrs-d238c25e-225f-4c0b-9bec-4d3aa4a98cfd' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d238c25e-225f-4c0b-9bec-4d3aa4a98cfd' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a48d2c8f-a2e3-4537-b0b9-9b0ac6aa8919' class='xr-var-data-in' type='checkbox'><label for='data-a48d2c8f-a2e3-4537-b0b9-9b0ac6aa8919' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([10.608, 10.908, 11.208, 11.508, 11.808, 12.108, 12.408, 12.708, 13.008,
-       13.308, 13.608, 13.908, 14.208, 14.508, 14.808, 15.108, 15.408, 15.708,
-       16.008, 16.308, 16.608, 16.908, 17.208, 17.508, 17.808, 18.108, 18.408,
-       18.708, 19.008, 19.308, 19.608, 19.908, 20.208, 20.508, 20.808, 21.108,
-       21.408, 21.708, 22.008, 22.308, 22.608, 22.908, 23.208, 23.508, 23.808,
-       24.108, 24.408, 24.708, 25.008, 25.308])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-73d82f73-a3e8-43f0-b4ba-95ccf2c3b041' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-73d82f73-a3e8-43f0-b4ba-95ccf2c3b041' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-de686825-49e9-4e7e-ad2f-48bbda04bf76' class='xr-var-data-in' type='checkbox'><label for='data-de686825-49e9-4e7e-ad2f-48bbda04bf76' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.73 2.778 2.827 ... 8.142 8.19</div><input id='attrs-0905ea56-147f-468d-9dc6-cba57b8a4063' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-0905ea56-147f-468d-9dc6-cba57b8a4063' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e89a46af-8c19-48bb-bf14-0e2f80286002' class='xr-var-data-in' type='checkbox'><label for='data-e89a46af-8c19-48bb-bf14-0e2f80286002' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.73008, 2.7784 , 2.82672, 2.87504, 2.92336, 2.97168, 3.02   , 3.06832,
+         [18610.822 , 20753.242 , 18185.65  , ..., 24913.578 ,
+          24254.578 , 22802.502 ],
+         [17924.197 , 21776.996 , 19610.148 , ..., 29756.256 ,
+          21754.053 , 21667.215 ],
+         [22383.992 , 21130.988 , 21290.71  , ..., 29774.988 ,
+          25576.12  , 23529.764 ]]]],
+      shape=(751, 1, 114, 80), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-d1024c4e-8ba0-451a-b0dd-8696de3f5de7' class='xr-section-summary-in' type='checkbox' checked /><label for='section-d1024c4e-8ba0-451a-b0dd-8696de3f5de7' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-734c2ac0-b168-427b-8f2e-be8187d0b84f' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-734c2ac0-b168-427b-8f2e-be8187d0b84f' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-aa9aaaa2-6376-4e24-8401-dc39b37334e2' class='xr-var-data-in' type='checkbox'><label for='data-aa9aaaa2-6376-4e24-8401-dc39b37334e2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-ab6e1266-23b3-4183-9fbb-376e6a29f441' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ab6e1266-23b3-4183-9fbb-376e6a29f441' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ffd2dfe1-6d0c-42a2-bcc4-561e5f07a6ae' class='xr-var-data-in' type='checkbox'><label for='data-ffd2dfe1-6d0c-42a2-bcc4-561e5f07a6ae' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.73 2.778 2.827 ... 8.142 8.19</div><input id='attrs-9ac867d0-6f35-44f7-bc94-927aadc1ec42' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-9ac867d0-6f35-44f7-bc94-927aadc1ec42' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-93673587-e23b-437e-9551-92aa3a9bfb5f' class='xr-var-data-in' type='checkbox'><label for='data-93673587-e23b-437e-9551-92aa3a9bfb5f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.73008, 2.7784 , 2.82672, 2.87504, 2.92336, 2.97168, 3.02   , 3.06832,
        3.11664, 3.16496, 3.21328, 3.2616 , 3.30992, 3.35824, 3.40656, 3.45488,
        3.5032 , 3.55152, 3.59984, 3.64816, 3.69648, 3.7448 , 3.79312, 3.84144,
        3.88976, 3.93808, 3.9864 , 4.03472, 4.08304, 4.13136, 4.17968, 4.228  ,
@@ -4002,25 +3311,69 @@ dl.xr-attrs {
        6.98224, 7.03056, 7.07888, 7.1272 , 7.17552, 7.22384, 7.27216, 7.32048,
        7.3688 , 7.41712, 7.46544, 7.51376, 7.56208, 7.6104 , 7.65872, 7.70704,
        7.75536, 7.80368, 7.852  , 7.90032, 7.94864, 7.99696, 8.04528, 8.0936 ,
-       8.14192, 8.19024])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-4bf7185e-0d8e-49f7-a492-2a20fbca54a4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-4bf7185e-0d8e-49f7-a492-2a20fbca54a4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3b206eca-aa68-4d70-a14e-e6bd17058f10' class='xr-var-data-in' type='checkbox'><label for='data-3b206eca-aa68-4d70-a14e-e6bd17058f10' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
+       8.14192, 8.19024])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-fca049a7-62d1-419d-8dc4-f1be08103be9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fca049a7-62d1-419d-8dc4-f1be08103be9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7cea0030-6169-47f8-b21a-7a020764ddfd' class='xr-var-data-in' type='checkbox'><label for='data-7cea0030-6169-47f8-b21a-7a020764ddfd' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
        -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
        -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
        -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
         0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
         1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
         2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-31e2dc85-ae66-4107-9783-94512af62041' class='xr-section-summary-in' type='checkbox' /><label for='section-31e2dc85-ae66-4107-9783-94512af62041' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-a471643b-b170-410d-8de2-13191223d27e' class='xr-section-summary-in' type='checkbox' /><label for='section-a471643b-b170-410d-8de2-13191223d27e' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
-<p>Here we define a region of interest (<abbr title="Region of Interest">ROI</abbr>) in physical coordinates. This is often more
-meaningful than index-based slicing because the bounds are expressed directly in
-physical units (e.g., millimeters) rather than in terms of array indices, which may
-not be as intuitive to interpret.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">roi</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">roi</span>
+<h1 id="correct-for-brain-motion">Correct for brain motion<a class="headerlink" href="#correct-for-brain-motion" title="Permanent link">&para;</a></h1>
+<p>As in the <a href="../pca_single_recording/#correct-for-brain-motion"><abbr title="Principal Component Analysis">PCA</abbr></a> and
+<a href="../fastica_single_recording/#correct-for-brain-motion">FastICA</a> examples, we first
+perform a rigid transformation correction with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> to mitigate brain
+motion.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">register_volumewise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">/home/runner/work/confusius/confusius/.venv/lib/python3.14/site-packages/rich/live.py:260: UserWarning: install 
+"ipywidgets" for Jupyter support
+  warnings.warn('install "ipywidgets" for Jupyter support')
+</pre></div>
+
+<div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre></div>
+
+<h2 id="standardize-for-nmf">Standardize for <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#standardize-for-nmf" title="Permanent link">&para;</a></h2>
+<p><abbr title="Non-negative Matrix Factorization">NMF</abbr> requires non-negative inputs, but raw Power Doppler is dominated by each voxel's
+baseline intensity rather than the temporal fluctuations we want to group. We
+therefore:</p>
+<ol>
+<li>Z-score each voxel's time series with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;standardize&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.standardize"><code>standardize</code></a>
+   to remove its mean and put voxels on a comparable scale.</li>
+<li>Split the standardized signal into separate positive and negative parts.</li>
+</ol>
+<p>This keeps the sign information— above-baseline versus below-baseline
+fluctuations—while still presenting a non-negative matrix to <abbr title="Non-negative Matrix Factorization">NMF</abbr>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">z</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">data_nmf</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)],</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">dim</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">IndexVariable</span><span class="p">(</span><span class="s2">&quot;sign&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;neg&quot;</span><span class="p">]),</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="fit-temporal-nmf">Fit temporal <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#fit-temporal-nmf" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> wraps the familiar scikit-learn
+<a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html#sklearn.decomposition.NMF"><code>NMF</code></a> estimator while preserving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray metadata
+and coordinates. With <code>mode="temporal"</code> (the default), it fits on <code>(time, voxels)</code>
+and returns:</p>
+<ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>maps_</code></a>: non-negative spatial maps. Because we split
+  the input into positive and negative channels, the maps here have shape
+  <code>(component, sign, z, y, x)</code>.</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit_transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF.fit_transform"><code>fit_transform</code></a>: non-negative time
+  courses of shape <code>(time, component)</code>.</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">nmf</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">nmf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_nmf</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">signals</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>/home/runner/work/confusius/confusius/.venv/lib/python3.14/site-packages/sklearn/decomposition/_nmf.py:1720: ConvergenceWarning: Maximum number of iterations 500 reached. Increase it to improve convergence.
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  warnings.warn(
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -4564,72 +3917,100 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 83</li><li><span class='xr-has-index'>x</span>: 40</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-7d26bf7d-3db4-4c83-9c27-181c85a98e61' class='xr-array-in' type='checkbox' ><label for='section-7d26bf7d-3db4-4c83-9c27-181c85a98e61' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>5.411e+04 2.929e+04 1.632e+04 ... 2.982e+04 2.934e+04 2.825e+04</span></div><div class='xr-array-data'><pre>array([[[[ 54114.15 ,  29293.102,  16318.03 , ...,  70195.4  ,
-           82424.75 ,  53491.15 ],
-         [ 36852.598,  23997.521,  17537.834, ...,  87855.99 ,
-           89461.02 ,  50858.67 ],
-         [ 31055.729,  20669.076,  19216.28 , ...,  90254.805,
-           65013.676,  93702.836],
-         ...,
-         [ 28217.041,  28518.54 ,  36518.164, ...,  35137.496,
-           37473.96 ,  31445.836],
-         [ 36724.688,  34043.195,  41564.836, ...,  28682.494,
-           36342.758,  24813.594],
-         [ 36131.27 ,  39894.926,  44742.293, ...,  31363.957,
-           32790.47 ,  26770.775]]],
-
-
-       [[[ 34392.016,  19327.553,  14827.421, ...,  62507.297,
-           56234.023,  32206.031],
-         [ 33328.855,  18415.244,  14050.276, ..., 121733.43 ,
-           88763.02 ,  64205.09 ],
-         [ 40385.535,  16530.572,  16047.016, ..., 120963.68 ,
-...
-         [ 33237.37 ,  35654.13 ,  52624.965, ...,  37240.01 ,
-           28125.756,  25826.408],
-         [ 40038.098,  42877.617,  51304.074, ...,  34593.01 ,
-           26241.9  ,  26714.23 ]]],
-
-
-       [[[ 44361.438,  18625.635,  17125.664, ...,  81257.48 ,
-           56526.516,  47173.05 ],
-         [ 42567.773,  19387.824,  16338.876, ..., 133328.88 ,
-           57100.35 ,  45971.17 ],
-         [ 31899.297,  19105.168,  18343.734, ..., 120351.74 ,
-           52336.94 ,  68195.125],
-         ...,
-         [ 27940.451,  28368.473,  37943.44 , ...,  30510.564,
-           30199.082,  26136.422],
-         [ 31668.438,  32992.008,  43480.77 , ...,  30339.107,
-           32981.223,  26465.889],
-         [ 40846.68 ,  44659.457,  47308.09 , ...,  29822.707,
-           29339.736,  28245.74 ]]]],
-      shape=(751, 1, 83, 40), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-6f0a03b4-2e6b-48e5-88c0-c92510b85a8e' class='xr-section-summary-in' type='checkbox' checked /><label for='section-6f0a03b4-2e6b-48e5-88c0-c92510b85a8e' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-85e6c50c-21ca-4de0-a460-d60797aeb944' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-85e6c50c-21ca-4de0-a460-d60797aeb944' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-679f467b-8570-4bca-979c-b58893a6b600' class='xr-var-data-in' type='checkbox'><label for='data-679f467b-8570-4bca-979c-b58893a6b600' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-660230a9-4d6a-430f-9774-c22d54b20c42' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-660230a9-4d6a-430f-9774-c22d54b20c42' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e40e370c-97b6-4ab1-bb7b-6e252c219197' class='xr-var-data-in' type='checkbox'><label for='data-e40e370c-97b6-4ab1-bb7b-6e252c219197' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>3.503 3.552 3.6 ... 7.417 7.465</div><input id='attrs-2b2db775-961f-49e4-8abd-ec71d88d4a33' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2b2db775-961f-49e4-8abd-ec71d88d4a33' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-4dc649b4-a9c8-4d6c-ae7e-0414e25d525f' class='xr-var-data-in' type='checkbox'><label for='data-4dc649b4-a9c8-4d6c-ae7e-0414e25d525f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([3.5032 , 3.55152, 3.59984, 3.64816, 3.69648, 3.7448 , 3.79312, 3.84144,
-       3.88976, 3.93808, 3.9864 , 4.03472, 4.08304, 4.13136, 4.17968, 4.228  ,
-       4.27632, 4.32464, 4.37296, 4.42128, 4.4696 , 4.51792, 4.56624, 4.61456,
-       4.66288, 4.7112 , 4.75952, 4.80784, 4.85616, 4.90448, 4.9528 , 5.00112,
-       5.04944, 5.09776, 5.14608, 5.1944 , 5.24272, 5.29104, 5.33936, 5.38768,
-       5.436  , 5.48432, 5.53264, 5.58096, 5.62928, 5.6776 , 5.72592, 5.77424,
-       5.82256, 5.87088, 5.9192 , 5.96752, 6.01584, 6.06416, 6.11248, 6.1608 ,
-       6.20912, 6.25744, 6.30576, 6.35408, 6.4024 , 6.45072, 6.49904, 6.54736,
-       6.59568, 6.644  , 6.69232, 6.74064, 6.78896, 6.83728, 6.8856 , 6.93392,
-       6.98224, 7.03056, 7.07888, 7.1272 , 7.17552, 7.22384, 7.27216, 7.32048,
-       7.3688 , 7.41712, 7.46544])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-1.95 -1.85 -1.75 ... 1.85 1.95</div><input id='attrs-211ecd2f-681f-47f3-a9ba-48b9c95fcf95' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-211ecd2f-681f-47f3-a9ba-48b9c95fcf95' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-64ef284f-750f-4f5f-a027-7c5238eee0c0' class='xr-var-data-in' type='checkbox'><label for='data-64ef284f-750f-4f5f-a027-7c5238eee0c0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
-       -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
-        0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
-        1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f71c8b3e-7a9b-426d-949e-2b8d40d1725c' class='xr-section-summary-in' type='checkbox' /><label for='section-f71c8b3e-7a9b-426d-949e-2b8d40d1725c' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
-       [0., 1., 0., 0.],
-       [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>component</span>: 10</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-de7e4c32-72b9-41d4-bbc1-58c65f334180' class='xr-array-in' type='checkbox' ><label for='section-de7e4c32-72b9-41d4-bbc1-58c65f334180' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>0.1658 0.01306 0.0 0.1819 0.0007141 ... 0.04795 0.0 0.3565 0.0 0.06798</span></div><div class='xr-array-data'><pre>array([[0.1657736 , 0.01305686, 0.        , ..., 0.17466769, 0.55248916,
+        0.        ],
+       [0.07842413, 0.        , 0.        , ..., 0.0567409 , 0.521537  ,
+        0.        ],
+       [0.02165581, 0.        , 0.02380166, ..., 0.01371775, 0.36238965,
+        0.        ],
+       ...,
+       [0.10035805, 0.01997683, 0.        , ..., 0.09034111, 0.25914687,
+        0.        ],
+       [0.20754123, 0.0196385 , 0.        , ..., 0.11031527, 0.12536858,
+        0.        ],
+       [0.18679054, 0.01474215, 0.        , ..., 0.35648656, 0.        ,
+        0.06798259]], shape=(751, 10), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-c7bc6b68-8c2c-427e-8abc-feb7b5c77565' class='xr-section-summary-in' type='checkbox' checked /><label for='section-c7bc6b68-8c2c-427e-8abc-feb7b5c77565' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-f7e32607-67eb-4594-b90b-441f1e10e096' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f7e32607-67eb-4594-b90b-441f1e10e096' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a588fcf6-1197-47d1-9808-ccd4787703b9' class='xr-var-data-in' type='checkbox'><label for='data-a588fcf6-1197-47d1-9808-ccd4787703b9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>component</span></div><div class='xr-var-dims'>(component)</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>0 1 2 3 4 5 6 7 8 9</div><input id='attrs-3125a991-c7e3-4811-b366-aeab2e3edcd4' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-3125a991-c7e3-4811-b366-aeab2e3edcd4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e4a79f11-4ec2-493c-b328-d14cb8d584ec' class='xr-var-data-in' type='checkbox'><label for='data-e4a79f11-4ec2-493c-b328-d14cb8d584ec' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-44e087d6-8041-45a4-a1b2-c4c39fa5b646' class='xr-section-summary-in' type='checkbox' checked /><label for='section-44e087d6-8041-45a4-a1b2-c4c39fa5b646' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>NMF signals</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
-<h2 id="plot-a-regional-time-course">Plot a regional time course<a class="headerlink" href="#plot-a-regional-time-course" title="Permanent link">&para;</a></h2>
-<p>To summarize the <abbr title="Region of Interest">ROI</abbr> over time, we average over the spatial dimensions. With Xarray,
-reductions such as <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.mean.html#xarray.DataArray.mean"><code>.mean</code></a> take dimension names like
-<code>("z", "y", "x")</code> rather than integer axis indices, which makes the intent much
-clearer than the NumPy-style <code>axis=(...)</code> equivalent.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">roi_trace</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">roi_trace</span>
+<h2 id="reconstruction-error">Reconstruction error<a class="headerlink" href="#reconstruction-error" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>reconstruction_err_</code></a> is the Frobenius norm of
+<code>X - WH</code>, where <code>W</code> are the spatial maps and <code>H</code> the time courses. It gives a sense
+of how well the chosen number of components explains the standardized data. A
+quantitative model-selection procedure is out of scope here, but the trace is useful
+when sweeping <code>n_components</code> and looking for diminishing returns.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reconstruction_err_: </span><span class="si">{</span><span class="n">nmf</span><span class="o">.</span><span class="n">reconstruction_err_</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_iter_: </span><span class="si">{</span><span class="n">nmf</span><span class="o">.</span><span class="n">n_iter_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>reconstruction_err_: 1911.476
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>n_iter_: 500
+</span></code></pre></div>
+<h2 id="spatial-maps-and-time-courses">Spatial maps and time courses<a class="headerlink" href="#spatial-maps-and-time-courses" title="Permanent link">&para;</a></h2>
+<p>Looking at the spatial maps and the associated time courses side by side is a useful
+first sanity check. Here each component has two map panels: one for above-baseline
+fluctuations (<code>pos</code>) and one for below-baseline fluctuations (<code>neg</code>). Localized,
+anatomically plausible structure paired with a clear transient in the time course
+tends to reflect a coherent spatiotemporal pattern, while diffuse maps paired with
+noisy or drift-like fluctuations often indicate residual motion or physiological
+artefacts.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">n_show</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mf">1.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">axes_tc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)]</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">axes_tc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)):</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">component_map</span> <span class="o">=</span> <span class="n">nmf</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">component_map</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="n">map_gs</span> <span class="o">=</span> <span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subgridspec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sign</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;neg&quot;</span><span class="p">]):</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>            <span class="n">component_map</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">sign</span><span class="o">=</span><span class="n">sign</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>            <span class="n">axes</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">map_gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>            <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>            <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>            <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>            <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>            <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>            <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>            <span class="n">show_titles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>            <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>        <span class="p">)</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>    <span class="n">signals</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Component </span><span class="si">{</span><span class="n">comp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Signal&quot;</span><span class="p">)</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="n">axes_tc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a>    <span class="s2">&quot;Temporal NMF: positive/negative maps and time courses (first 10 components)&quot;</span><span class="p">,</span>
+</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a>    <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
+</span><span id="__span-7-40"><a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><a class="glightbox" href="../nmf_single_recording_output_light/cell_13_0_light.png#only-light" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="light"><img src="../nmf_single_recording_output_light/cell_13_0_light.png#only-light" alt="Example output from cell 13, image 0"></a><a class="glightbox" href="../nmf_single_recording_output_dark/cell_13_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 13, image 0" data-gallery="dark"><img src="../nmf_single_recording_output_dark/cell_13_0_dark.png#only-dark" alt="Example output from cell 13, image 0"></a></p>
+<h2 id="spatial-nmf">Spatial <abbr title="Non-negative Matrix Factorization">NMF</abbr><a class="headerlink" href="#spatial-nmf" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> also accepts <code>mode="spatial"</code>, which transposes
+the data to <code>(voxels, time)</code> before fitting. The output convention is identical to
+temporal mode — <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF"><code>maps_</code></a> still holds the non-negative
+spatial maps (here with <code>pos</code>/<code>neg</code> channels) and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit_transform&lt;/span&gt;" href="../../../../api/decomposition/#confusius.decomposition.NMF.fit_transform"><code>fit_transform</code></a> returns their
+non-negative time courses — so the choice between the two modes mirrors the
+temporal/spatial choice offered by <a href="../pca_single_recording/"><abbr title="Principal Component Analysis">PCA</abbr></a> and
+<a href="../fastica_single_recording/">FastICA</a>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">nmf_spatial</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">NMF</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">n_components</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;spatial&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">signals_s</span> <span class="o">=</span> <span class="n">nmf_spatial</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data_nmf</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">signals_s</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>/home/runner/work/confusius/confusius/.venv/lib/python3.14/site-packages/sklearn/decomposition/_nmf.py:1720: ConvergenceWarning: Maximum number of iterations 500 reached. Increase it to improve convergence.
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  warnings.warn(
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -5173,104 +4554,78 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-d668e191-5d03-4ace-b91f-69dbd8f9c440' class='xr-array-in' type='checkbox' ><label for='section-d668e191-5d03-4ace-b91f-69dbd8f9c440' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>6.635e+04 6.656e+04 6.645e+04 ... 6.653e+04 6.783e+04 6.571e+04</span></div><div class='xr-array-data'><pre>array([66348.41 , 66557.016, 66450.04 , 67012.49 , 68144.78 , 68372.79 ,
-       67921.1  , 68469.25 , 68890.71 , 67069.58 , 65436.324, 64262.84 ,
-       65602.41 , 65938.49 , 66399.56 , 65153.65 , 63270.293, 65269.168,
-       67039.164, 67905.305, 68734.445, 66779.84 , 65605.56 , 66292.42 ,
-       67121.12 , 67980.32 , 68977.66 , 69240.414, 67765.61 , 66217.65 ,
-       63970.117, 67184.92 , 68357.95 , 65556.1  , 65583.58 , 68190.2  ,
-       67335.26 , 67154.64 , 66480.61 , 66404.164, 65663.086, 66078.74 ,
-       65832.52 , 64738.445, 66136.05 , 63371.164, 62459.168, 63203.66 ,
-       64275.445, 63713.633, 61376.543, 59790.59 , 57591.227, 55730.71 ,
-       56647.2  , 54759.715, 51221.914, 52965.773, 55159.824, 57615.84 ,
-       58986.402, 59964.27 , 60136.88 , 60874.65 , 58757.555, 58061.04 ,
-       56182.293, 56041.047, 57076.32 , 58261.273, 56741.527, 56287.008,
-       62313.113, 62347.316, 63996.84 , 64713.707, 63709.555, 60253.766,
-       60759.66 , 56687.83 , 54837.04 , 53100.68 , 55049.348, 54970.59 ,
-       55355.984, 57016.164, 57815.85 , 58763.09 , 57906.36 , 55199.902,
-       52410.145, 53630.35 , 53393.18 , 53412.445, 52818.207, 52445.332,
-       54071.344, 53151.9  , 55913.324, 54888.117, 53394.56 , 54705.332,
-       54446.906, 51611.812, 53421.26 , 51009.047, 53835.297, 55573.95 ,
-       54263.43 , 58182.863, 57732.68 , 57438.51 , 56453.465, 56926.09 ,
-       57313.305, 59335.188, 58494.94 , 58023.418, 58466.703, 56910.598,
-...
-       62800.184, 64596.082, 60621.746, 58751.543, 57612.87 , 55740.2  ,
-       53596.93 , 52002.83 , 52876.074, 51686.086, 52161.203, 52125.19 ,
-       56288.27 , 55193.66 , 55703.406, 54894.25 , 54649.594, 55288.   ,
-       53983.594, 55507.773, 55747.605, 55503.895, 57926.18 , 57712.594,
-       57642.18 , 56274.074, 56258.555, 56250.11 , 57111.58 , 56504.676,
-       57320.49 , 55064.59 , 55482.023, 54983.844, 55895.94 , 53971.42 ,
-       53948.85 , 54405.176, 55606.496, 55052.133, 56424.19 , 57774.   ,
-       60459.79 , 61509.203, 62188.14 , 62561.008, 61988.496, 62394.887,
-       62853.71 , 62584.25 , 62289.47 , 60180.613, 58560.766, 59464.75 ,
-       59374.035, 58590.332, 58315.652, 57802.043, 58368.395, 56826.805,
-       58152.406, 59723.254, 60707.84 , 59914.598, 60431.367, 58878.004,
-       58409.24 , 59576.805, 59844.785, 60277.582, 59497.55 , 58059.453,
-       57816.06 , 57585.453, 60758.086, 59732.105, 60550.277, 61746.934,
-       61891.395, 62957.465, 64076.844, 64144.215, 65131.863, 66848.12 ,
-       69217.64 , 66896.79 , 67886.78 , 65924.86 , 66506.016, 66236.22 ,
-       65263.81 , 66744.086, 63441.13 , 61573.98 , 61871.69 , 63669.99 ,
-       65150.76 , 65755.06 , 65188.97 , 62844.523, 62633.242, 61690.93 ,
-       60862.31 , 61990.387, 61120.254, 65677.25 , 67520.95 , 62751.688,
-       62723.195, 63534.07 , 65492.758, 67111.61 , 66533.625, 67830.9  ,
-       65706.05 ], dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-01591648-af10-44b1-aad6-f622906638bf' class='xr-section-summary-in' type='checkbox' checked /><label for='section-01591648-af10-44b1-aad6-f622906638bf' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-259ad146-6c77-4c69-b7c5-cb4db6b636d5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-259ad146-6c77-4c69-b7c5-cb4db6b636d5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-621f8ec9-787a-4e1e-b2a4-cc926f5883aa' class='xr-var-data-in' type='checkbox'><label for='data-621f8ec9-787a-4e1e-b2a4-cc926f5883aa' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-8cbe08fb-b782-45c7-9010-96a61eb875b5' class='xr-section-summary-in' type='checkbox' /><label for='section-8cbe08fb-b782-45c7-9010-96a61eb875b5' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.46016]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
-       [0., 1., 0., 0.],
-       [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 751</li><li><span class='xr-has-index'>component</span>: 10</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-3cb5323b-0afd-41b0-af9d-79f63323f14f' class='xr-array-in' type='checkbox' ><label for='section-3cb5323b-0afd-41b0-af9d-79f63323f14f' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-49.06 -108.7 23.6 477.0 273.2 ... 31.01 -59.16 840.9 351.1 -65.79</span></div><div class='xr-array-data'><pre>array([[ -49.060493, -108.72904 ,   23.599054, ..., 1360.9792  ,
+         301.0807  ,  -79.03104 ],
+       [ -46.849873, -102.89783 ,   88.44416 , ..., 1054.8505  ,
+         202.54056 , -314.424   ],
+       [ -48.20063 ,  -89.69527 ,   50.060436, ...,  992.90845 ,
+          60.874683, -348.29483 ],
+       ...,
+       [ -52.879208, -147.47987 ,    5.829556, ..., 1231.0189  ,
+         251.24892 , -261.63306 ],
+       [ -48.73986 , -141.4787  ,   35.300552, ..., 1235.6964  ,
+         480.693   , -212.94316 ],
+       [ -41.16797 , -107.332   ,  -33.120617, ...,  840.94934 ,
+         351.05264 ,  -65.78985 ]], shape=(751, 10), dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-8be44092-16ca-435d-91c4-e755a98c9c0a' class='xr-section-summary-in' type='checkbox' checked /><label for='section-8be44092-16ca-435d-91c4-e755a98c9c0a' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.61 10.91 11.21 ... 235.4 235.7</div><input id='attrs-24f298ef-ea80-4292-bbef-5705f5ba048a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-24f298ef-ea80-4292-bbef-5705f5ba048a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8ee351cf-1676-492f-a1ae-00904c4b3cc5' class='xr-var-data-in' type='checkbox'><label for='data-8ee351cf-1676-492f-a1ae-00904c4b3cc5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.608,  10.908,  11.208, ..., 235.095, 235.395, 235.695], shape=(751,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>component</span></div><div class='xr-var-dims'>(component)</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>0 1 2 3 4 5 6 7 8 9</div><input id='attrs-95e53308-584f-4ca9-8469-fcd04bcf5823' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-95e53308-584f-4ca9-8469-fcd04bcf5823' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-95ab0eaa-5c56-4b15-a990-2687d0848e25' class='xr-var-data-in' type='checkbox'><label for='data-95ab0eaa-5c56-4b15-a990-2687d0848e25' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-0bb60b4d-d657-469b-ba4f-d0182ee36f0b' class='xr-section-summary-in' type='checkbox' checked /><label for='section-0bb60b4d-d657-469b-ba4f-d0182ee36f0b' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>NMF signals</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
-<p>The resulting 1D DataArray keeps the time coordinate from the original recording, so
-plotting it with Xarray's built-in plotting function automatically uses the time
-values on the <em>x</em>-axis. As one slightly more advanced example, we can also compute a
-rolling mean with Xarray to smooth short-term fluctuations, while still keeping the
-same labeled time axis.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">roi_trace_smooth</span> <span class="o">=</span> <span class="n">roi_trace</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">roi_trace</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#d93a54&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ROI mean&quot;</span><span class="p">)</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">roi_trace_smooth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#3ad9a4&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Rolling mean (15 samples)&quot;</span><span class="p">)</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mean power Doppler intensity in a central ROI&quot;</span><span class="p">)</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Power Doppler intensity (a.u.)&quot;</span><span class="p">)</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<h3 id="spatial-maps-and-time-courses_1">Spatial maps and time courses<a class="headerlink" href="#spatial-maps-and-time-courses_1" title="Permanent link">&para;</a></h3>
+<p>As in temporal mode, we inspect the positive and negative spatial maps and their
+corresponding time courses side by side.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">n_show</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">11.5</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mf">1.4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">axes_tc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)]</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">sharex</span><span class="p">(</span><span class="n">axes_tc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">)):</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">component_map</span> <span class="o">=</span> <span class="n">nmf_spatial</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">component_map</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">map_gs</span> <span class="o">=</span> <span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subgridspec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sign</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;neg&quot;</span><span class="p">]):</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>            <span class="n">component_map</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">sign</span><span class="o">=</span><span class="n">sign</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>            <span class="n">axes</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">map_gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>            <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>            <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>            <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>            <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>            <span class="n">show_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>            <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>            <span class="n">show_titles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>            <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>        <span class="p">)</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>    <span class="n">signals_s</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Component </span><span class="si">{</span><span class="n">comp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Signal&quot;</span><span class="p">)</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>    <span class="n">axes_tc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_tc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="n">axes_tc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>    <span class="s2">&quot;Spatial NMF: positive/negative maps and time courses (first 10 components)&quot;</span><span class="p">,</span>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>    <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../confusius_xarray_101_output_light/cell_17_0_light.png#only-light" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="light"><img src="../confusius_xarray_101_output_light/cell_17_0_light.png#only-light" alt="Example output from cell 17, image 0"></a><a class="glightbox" href="../confusius_xarray_101_output_dark/cell_17_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="dark"><img src="../confusius_xarray_101_output_dark/cell_17_0_dark.png#only-dark" alt="Example output from cell 17, image 0"></a></p>
-<h2 id="compute-and-plot-the-mean-power-doppler-volume">Compute and plot the mean power Doppler volume<a class="headerlink" href="#compute-and-plot-the-mean-power-doppler-volume" title="Permanent link">&para;</a></h2>
-<p>This recording has a single brain slice, so averaging over time leaves a 2D image. We
-convert it to decibel-scale and display it using ConfUSIus's
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> and
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIScaleAccessor&lt;/span&gt;" href="../../../../api/xarray/#confusius.xarray.FUSIScaleAccessor"><code>.fusi.scale</code></a> accessors.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">mean_db</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">mean_db</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Power Doppler (dB)&quot;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">)</span>
-</span></code></pre></div>
-<p><a class="glightbox" href="../confusius_xarray_101_output_light/cell_19_0_light.png#only-light" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="light"><img src="../confusius_xarray_101_output_light/cell_19_0_light.png#only-light" alt="Example output from cell 19, image 0"></a><a class="glightbox" href="../confusius_xarray_101_output_dark/cell_19_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="dark"><img src="../confusius_xarray_101_output_dark/cell_19_0_dark.png#only-dark" alt="Example output from cell 19, image 0"></a></p>
-<h2 id="mask-low-intensity-pixels-with-where">Mask low-intensity pixels with <code>where</code><a class="headerlink" href="#mask-low-intensity-pixels-with-where" title="Permanent link">&para;</a></h2>
-<p>Xarray's <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.where.html#xarray.DataArray.where"><code>.where</code></a> keeps the same coordinates and dimensions
-while masking values that do not satisfy a condition. Here we suppress low-intensity
-pixels in the mean image before plotting it again.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">mean_db_masked</span> <span class="o">=</span> <span class="n">mean_db</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mean_db</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">mean_db_masked</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;Power Doppler (dB)&quot;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">)</span>
-</span></code></pre></div>
-<p><a class="glightbox" href="../confusius_xarray_101_output_light/cell_21_0_light.png#only-light" data-type="image" data-title="Example output from cell 21, image 0" data-gallery="light"><img src="../confusius_xarray_101_output_light/cell_21_0_light.png#only-light" alt="Example output from cell 21, image 0"></a><a class="glightbox" href="../confusius_xarray_101_output_dark/cell_21_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 21, image 0" data-gallery="dark"><img src="../confusius_xarray_101_output_dark/cell_21_0_dark.png#only-dark" alt="Example output from cell 21, image 0"></a></p>
-<h2 id="save-a-processed-result">Save a processed result<a class="headerlink" href="#save-a-processed-result" title="Permanent link">&para;</a></h2>
-<p>ConfUSIus can also save DataArrays back to disk through the
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a> method. For example, we can save
-the masked mean image as a NIfTI file.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">mean_db_masked</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_desc-maskedmean_pwd.nii.gz&quot;</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">)</span>
-</span></code></pre></div>
+<p><a class="glightbox" href="../nmf_single_recording_output_light/cell_17_0_light.png#only-light" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="light"><img src="../nmf_single_recording_output_light/cell_17_0_light.png#only-light" alt="Example output from cell 17, image 0"></a><a class="glightbox" href="../nmf_single_recording_output_dark/cell_17_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 17, image 0" data-gallery="dark"><img src="../nmf_single_recording_output_dark/cell_17_0_dark.png#only-dark" alt="Example output from cell 17, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 9.1 s</p>
-<p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-registration?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py">Launch in Binder</a> <a class="md-button" href="../confusius_xarray_101.py">Download .py</a> <a class="md-button" href="../confusius_xarray_101.ipynb">Download .ipynb</a></p>
+<p><strong>Total running time:</strong> 294.0 s</p>
+<p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-registration?urlpath=lab/tree/docs/examples/03_decomposition/03_nmf_single_recording.py">Launch in Binder</a> <a class="md-button" href="../nmf_single_recording.py">Download .py</a> <a class="md-button" href="../nmf_single_recording.ipynb">Download .ipynb</a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Lee, D. D., and Seung, H. S. (1999). "Learning the parts of objects by
+non-negative matrix factorization". <em>Nature</em>, 401(6755), 788-791.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
