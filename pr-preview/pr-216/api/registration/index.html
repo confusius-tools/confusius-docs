@@ -4628,18 +4628,17 @@ Requires resampling the moving image at every iteration. Ignored when
 )
           –
           <div class="doc-md-description">
-            <p>Factory that builds the progress reporter, called inside <code>register_volume</code>
-as <code>progress_plotter(registration_method, fixed_img, moving_img, *,
-plot_metric, plot_composite, resample_kwargs)</code>. Here <code>resample_kwargs</code>
-carries <code>interpolation</code>, <code>fill_value</code>, and <code>sitk_threads</code>. The returned
-object must
+            <p>Factory that builds the progress reporter, called inside <code>register_volume</code> as
+<code>progress_plotter(registration_method, fixed_img, moving_img, *, plot_metric,
+plot_composite, resample_kwargs)</code>. Here <code>resample_kwargs</code> carries
+<code>interpolation</code>, <code>fill_value</code>, and <code>sitk_threads</code>. The returned object must
 implement the
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationProgress&lt;/span&gt;" href="./#confusius.registration.RegistrationProgress"><code>RegistrationProgress</code></a>
-protocol (<code>update()</code> / <code>close()</code>). If not provided, defaults to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;RegistrationProgress&lt;/span&gt;" href="./#confusius.registration.RegistrationProgress"><code>RegistrationProgress</code></a> protocol
+(<code>update()</code> / <code>close()</code>). If not provided, the default
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;MatplotlibRegistrationProgressPlotter&lt;/span&gt;" href="./#confusius.registration.MatplotlibRegistrationProgressPlotter"><code>MatplotlibRegistrationProgressPlotter</code></a>
-(matplotlib). Ignored when <code>show_progress=False</code>. Custom factories are expected
-to be safe to call from a non-GUI thread; GUI side effects must be marshalled
-via thread-safe primitives such as Qt signals.</p>
+is used. Ignored when <code>show_progress=False</code>. Custom factories are expected to
+be safe to call from a non-GUI thread; GUI side effects must be marshalled via
+thread-safe primitives such as Qt signals.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
