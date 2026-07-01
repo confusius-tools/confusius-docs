@@ -469,6 +469,8 @@
       
         
       
+        
+      
     
     
     
@@ -1014,6 +1016,35 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/stats/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sigma" viewBox="0 0 24 24"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Inference
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/datasets/" class="md-nav__link">
         
   
@@ -1363,6 +1394,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#registration-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Registration Panel
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1390,6 +1432,8 @@
       
         
           
+        
+      
         
       
         
@@ -1934,6 +1978,35 @@
     
   
   General Linear Model
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stats/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sigma" viewBox="0 0 24 24"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Inference
 
     
   </span>
@@ -2705,6 +2778,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#registration-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Registration Panel
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2772,7 +2856,7 @@
 
 
 <h1 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h1>
-<p>The ConfUSIus sidebar contains four collapsible panels. Each panel operates
+<p>The ConfUSIus sidebar contains five collapsible panels. Each panel operates
 independently and can be expanded or collapsed by clicking its header. For an in-app
 introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <ul>
@@ -2780,6 +2864,7 @@ introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <li><a href="#video-panel"><strong>Video</strong></a> — load videos side-by-side, temporally synced with the <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisition.</li>
 <li><a href="#signals-panel"><strong>Signals</strong></a> — plot voxel, point, or label-region signals in a bottom dock.</li>
 <li><a href="#qc-panel"><strong><abbr title="Quality Control">QC</abbr></strong></a> — compute DVARS, carpet, <abbr title="Coefficient of Variation">CV</abbr>, <abbr title="Temporal Signal-to-Noise Ratio">tSNR</abbr> for a selected layer.</li>
+<li><a href="#registration-panel"><strong>Registration</strong></a> — run between-scan or within-scan registration, inspect progress, and save/apply transforms.</li>
 </ul>
 <h2 id="data-io-panel">Data I/O Panel<a class="headerlink" href="#data-io-panel" title="Permanent link">&para;</a></h2>
 <p>The Data I/O Panel handles both loading and saving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files without leaving the
@@ -3041,6 +3126,23 @@ guide</a> for a full explanation.</p>
 </div>
 </div>
 </div>
+<h2 id="registration-panel">Registration Panel<a class="headerlink" href="#registration-panel" title="Permanent link">&para;</a></h2>
+<p>The Registration Panel runs ConfUSIus registration workflows directly from napari.
+Use <strong>Between scans</strong> for moving/fixed registration and <strong>Within-scan</strong> for
+frame-to-reference motion correction of a time series. The panel supports live preview
+layers, a registration metric plot, cooperative aborts, and transform save/load/apply
+workflows.</p>
+<p><a class="glightbox" data-title="ConfUSIus Registration panel — rigid between-session angiography run" data-type="image" href="../../images/gui/plugin-registration.gif"><img alt="ConfUSIus Registration panel — rigid between-session angiography run" src="../../images/gui/plugin-registration.gif" /></a></p>
+<p>For between-scan registration, pick the moving and fixed layers, choose a transform
+model such as <code>rigid</code>, then click <strong>Run registration</strong>. The guide animation below uses
+between-session angiography volumes from the same animal. ConfUSIus keeps the original
+layers untouched, adds dedicated preview layers for inspection, and stores the final
+registered result as a new layer when the run completes.</p>
+<p>For within-scan motion correction, switch to <strong>Within-scan</strong>, choose the moving layer,
+set the reference frame, and run the correction. The animation below uses a short
+open-field recording chunk and shows the <code>Motion corrected</code> result filling in as frames
+finish.</p>
+<p><a class="glightbox" data-title="ConfUSIus Registration panel — within-scan motion correction" data-type="image" href="../../images/gui/plugin-registration-volumewise.gif"><img alt="ConfUSIus Registration panel — within-scan motion correction" src="../../images/gui/plugin-registration-volumewise.gif" /></a></p>
 
 
 
