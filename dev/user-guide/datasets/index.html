@@ -2766,15 +2766,16 @@ fetchers and their full download sizes:</p>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>┃ Fetch function                   ┃     Size ┃ On disk ┃
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✗    │
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✗    │
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│ fetch_template_huang_2025        │ 16.34 MB │    ✗    │
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✗    │
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>└──────────────────────────────────┴──────────┴─────────┘
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│ fetch_landemard_2026             │ 42.04 GB │    ✗    │
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✗    │
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│ fetch_template_huang_2025        │ 16.34 MB │    ✗    │
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✗    │
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>└──────────────────────────────────┴──────────┴─────────┘
 </span></code></pre></div>
 <p>The sizes shown are for the <strong>full</strong> dataset. Filtered fetches are typically a small
 fraction of this (see the examples below).</p>
 <h2 id="available-fusi-bids-datasets">Available fUSI-BIDS Datasets<a class="headerlink" href="#available-fusi-bids-datasets" title="Permanent link">&para;</a></h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Nunez-Elizalde 2022</label><label for="__tabbed_1_2">Cybis Pereira 2026</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Nunez-Elizalde 2022</label><label for="__tabbed_1_2">Cybis Pereira 2026</label><label for="__tabbed_1_3">Landemard 2026</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Simultaneous neural activity and cerebral blood volume recordings in awake mice,
@@ -2918,15 +2919,95 @@ across all subjects is often the right first step:</p>
 </span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
+<div class="tabbed-block">
+<p>Functional ultrasound imaging recordings from awake, head-fixed,
+freely-running mice, from Landemard et al. (2026)<sup id="fnref:landemard2026"><a class="footnote-ref" href="#fn:landemard2026">3</a></sup>,
+re-exported to fUSI-BIDS format and hosted on
+<a href="https://osf.io/dkseb/overview">OSF (dkseb)</a>.
+Total size: <strong>~42 GB</strong>.</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_landemard_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_landemard_2026"><code>fetch_landemard_2026</code></a> to
+download the dataset. Four filters narrow the download:</p>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>BIDS entity / scope</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>datasets</code></td>
+<td>dataset name</td>
+<td><code>"atlas_mapping"</code>, <code>["rawdata", "processed_data"]</code></td>
+</tr>
+<tr>
+<td><code>subjects</code></td>
+<td><code>sub-</code></td>
+<td><code>["ALD001", "ALD019"]</code></td>
+</tr>
+<tr>
+<td><code>acqs</code></td>
+<td><code>acq-</code></td>
+<td><code>["ref04", "ref11"]</code></td>
+</tr>
+<tr>
+<td><code>datatypes</code></td>
+<td>datatype directory</td>
+<td><code>"fusi"</code>, <code>["fusi", "angio"]</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Landemard dataset has no session layer: every recording sits directly under
+<code>sub-*/fusi/</code> or <code>sub-*/angio/</code>. Files that lack an <code>acq-</code> entity (e.g.
+<code>sub-ALD001_scans.tsv</code>, <code>sub-ALD001/angio/sub-ALD001_pwd.nii.gz</code>) are always
+included regardless of the <code>acqs</code> filter.</p>
+<p>The <code>datasets</code> filter accepts:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rawdata</code></td>
+<td>Raw fUSI and angiography acquisitions per subject</td>
+</tr>
+<tr>
+<td><code>atlas_mapping</code></td>
+<td>Per-subject Allen atlas alignment and region/session matches</td>
+</tr>
+<tr>
+<td><code>processed_data</code></td>
+<td>Dataset-level compact representations, PSTHs, and ephys→fUSI filters</td>
+</tr>
+</tbody>
+</table>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_landemard_2026</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># All subjects, atlas_mapping derivative only.</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_landemard_2026</span><span class="p">(</span><span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;atlas_mapping&quot;</span><span class="p">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Or raw fUSI data for a single subject, with a single acquisition.</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_landemard_2026</span><span class="p">(</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;ALD001&quot;</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;ref04&quot;</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">datatypes</span><span class="o">=</span><span class="s2">&quot;fusi&quot;</span><span class="p">,</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="p">)</span>
+</span></code></pre></div>
+</div>
 </div>
 </div>
 <h2 id="working-with-fusi-bids-datasets">Working with fUSI-BIDS Datasets<a class="headerlink" href="#working-with-fusi-bids-datasets" title="Permanent link">&para;</a></h2>
 <p>fUSI-BIDS dataset fetchers return a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path"><code>pathlib.Path</code></a> to the dataset's root
 directory. You may want to use the <a href="https://bids-standard.github.io/pybids/">PyBIDS</a>
 package for querying files, or simply use <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/pathlib.html#module-pathlib"><code>pathlib</code></a> for quick exploration:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># List every power Doppler NIfTI for one subject.</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">for</span> <span class="n">nii</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">bids_root</span> <span class="o">/</span> <span class="s2">&quot;sub-CR020&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*_pwd.nii.gz&quot;</span><span class="p">)):</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">bids_root</span><span class="p">))</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># List every power Doppler NIfTI for one subject.</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">for</span> <span class="n">nii</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">bids_root</span> <span class="o">/</span> <span class="s2">&quot;sub-CR020&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*_pwd.nii.gz&quot;</span><span class="p">)):</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">bids_root</span><span class="p">))</span>
 </span></code></pre></div>
 <p>See the <a href="../io/">I/O guide</a> for loading NIfTI, Zarr, and Iconeus SCAN files into
 Xarray DataArrays.</p>
@@ -2934,45 +3015,45 @@ Xarray DataArrays.</p>
 <p>Each fUSI-BIDS dataset fetcher caches a <code>dataset_index.json</code> file mapping BIDS-relative
 paths to OSF file metadata (download path and size). Pass <code>refresh=True</code> to re-fetch
 this index from OSF and download any new files that appeared since the last call:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Pick up any files added to OSF since the last fetch.</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span><span class="n">subjects</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CR020&quot;</span><span class="p">],</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Pick up any files added to OSF since the last fetch.</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span><span class="n">subjects</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CR020&quot;</span><span class="p">],</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Existing local files are never re-downloaded—<code>refresh=True</code> only adds what is missing.</p>
 <h2 id="available-templates">Available Templates<a class="headerlink" href="#available-templates" title="Permanent link">&para;</a></h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Huang 2025</label><label for="__tabbed_2_2">Pepe Mariani 2026</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>A vascular mouse fUSI template derived from Huang et al. (2025)<sup id="fnref:huang2025"><a class="footnote-ref" href="#fn:huang2025">3</a></sup> and
+<p>A vascular mouse fUSI template derived from Huang et al. (2025)<sup id="fnref:huang2025"><a class="footnote-ref" href="#fn:huang2025">4</a></sup> and
 distributed as a single ConfUSIus-compatible NIfTI on
 <a href="https://osf.io/am3jw/">OSF (am3jw)</a>. Total size: <strong>~16.3 MB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_huang_2025&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_huang_2025"><code>fetch_template_huang_2025</code></a> to
 download and load the template directly:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_huang_2025</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_huang_2025</span><span class="p">()</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_50um&quot;</span><span class="p">)</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">template</span><span class="p">,</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">)</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<p>A mouse fUSI template derived from Pepe, Mariani et al. (2026)<sup id="fnref:pepe_mariani2026"><a class="footnote-ref" href="#fn:pepe_mariani2026">4</a></sup> and
-distributed as a single ConfUSIus-compatible NIfTI on
-<a href="https://osf.io/43tu9/">OSF (43tu9)</a>. Total size: <strong>~5.5 MB</strong>.</p>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026"><code>fetch_template_pepe_mariani_2026</code></a> to
-download and load the template directly:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_pepe_mariani_2026</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_huang_2025</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_huang_2025</span><span class="p">()</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_50um&quot;</span><span class="p">)</span>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">template</span><span class="p">,</span>
 </span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
 </span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>A mouse fUSI template derived from Pepe, Mariani et al. (2026)<sup id="fnref:pepe_mariani2026"><a class="footnote-ref" href="#fn:pepe_mariani2026">5</a></sup> and
+distributed as a single ConfUSIus-compatible NIfTI on
+<a href="https://osf.io/43tu9/">OSF (43tu9)</a>. Total size: <strong>~5.5 MB</strong>.</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026"><code>fetch_template_pepe_mariani_2026</code></a> to
+download and load the template directly:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_pepe_mariani_2026</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">template</span><span class="p">,</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -2993,16 +3074,21 @@ ultrasound. <em>Neuron</em>, 110(10), 1631–1640.
 navigation system. <em>Cell Reports</em>, 45(1).
 <a href="https://doi.org/10.1016/j.celrep.2025.116791">https://doi.org/10.1016/j.celrep.2025.116791</a>&#160;<a class="footnote-backref" href="#fnref:cybis2026" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
+<li id="fn:landemard2026">
+<p>Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. (2026). Brainwide
+blood volume reflects opposing neural populations. <em>Nature</em>.
+<a href="https://doi.org/10.1038/s41586-026-10350-9">https://doi.org/10.1038/s41586-026-10350-9</a>&#160;<a class="footnote-backref" href="#fnref:landemard2026" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
 <li id="fn:huang2025">
 <p>Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source
 framework for the analysis and visualization of functional ultrasound imaging data
 across animal models.
-<a href="https://doi.org/10.1101/2025.09.16.676515">https://doi.org/10.1101/2025.09.16.676515</a>&#160;<a class="footnote-backref" href="#fnref:huang2025" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<a href="https://doi.org/10.1101/2025.09.16.676515">https://doi.org/10.1101/2025.09.16.676515</a>&#160;<a class="footnote-backref" href="#fnref:huang2025" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
 <li id="fn:pepe_mariani2026">
 <p>Pepe, C. et al. (2026). Structural and dynamic embedding of the mouse
 functional connectome revealed by functional ultrasound imaging (fUSI).
-<a href="https://doi.org/10.64898/2026.02.05.704055">https://doi.org/10.64898/2026.02.05.704055</a>&#160;<a class="footnote-backref" href="#fnref:pepe_mariani2026" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<a href="https://doi.org/10.64898/2026.02.05.704055">https://doi.org/10.64898/2026.02.05.704055</a>&#160;<a class="footnote-backref" href="#fnref:pepe_mariani2026" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
