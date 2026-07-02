@@ -4246,8 +4246,9 @@ Both inputs must be spatial-only (no <code>time</code> dimension).</p>
 <a href="#confusius.registration.register_volume(fixed)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Reference volume. Must be 2D or 3D. Need not have the same shape as
-<code>moving</code>.</p>
+            <p>Reference volume. Must be 2D or 3D. Need not have the same shape as <code>moving</code>.
+When spatial coordinate <code>units</code> metadata is present on both <code>moving</code> and
+<code>fixed</code>, it must match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5034,7 +5035,9 @@ If a time dimension is present, the same transform is applied to all time points
 <a href="#confusius.registration.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray defining the output grid. Must be 2D or 3D spatial (no time dimension).</p>
+            <p>DataArray defining the output grid. Must be 2D or 3D spatial (no time dimension).
+When spatial coordinate <code>units</code> metadata is present on both <code>moving</code> and
+<code>reference</code>, they must match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5043,14 +5046,17 @@ If a time dimension is present, the same transform is applied to all time points
           –
           <div class="doc-md-description">
             <p>Registration transform, as returned by
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="./#confusius.registration.register_volume"><code>register_volume</code></a>.  Maps points from
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="./#confusius.registration.register_volume"><code>register_volume</code></a>. Maps points from
 the reference physical space to moving physical space (pull/inverse convention).</p>
 <ul>
-<li><strong>Affine</strong> (<code>numpy.ndarray</code>): homogeneous matrix.</li>
+<li><strong>Affine</strong> (<code>numpy.ndarray</code>): homogeneous matrix whose translation entries
+  are expressed in the same physical units as <code>moving</code> and <code>reference</code>.</li>
 <li><strong>B-spline</strong> (<code>xarray.DataArray</code>): control-point DataArray.</li>
-<li><strong>Displacement field</strong> (<code>xarray.DataArray</code>): dense field with
-  <code>attrs["type"] == "displacement_field_transform"</code>.</li>
+<li><strong>Displacement field</strong> (<code>xarray.DataArray</code>): dense field with <code>attrs["type"]
+  == "displacement_field_transform"</code>.</li>
 </ul>
+<p>When <code>transform</code> is a DataArray and spatial coordinate <code>units</code> metadata is
+present on both it and <code>reference</code>, those units must also match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

@@ -2664,9 +2664,16 @@ instance.</p>
 <a href="#confusius.atlas.Atlas(dataset)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.Dataset">Dataset</span></code>)
           –
           <div class="doc-md-description">
-            <p>Dataset with variables <code>reference</code>, <code>annotation</code>, and
-<code>hemispheres</code> on a common <code>(z, y, x)</code> grid with physical coordinates
-in millimetres.</p>
+            <p>Dataset with variables <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> on a common
+<code>(z, y, x)</code> physical grid. Atlases constructed with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;from_brainglobe&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-classmethod&quot;&gt;&lt;code&gt;classmethod&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.atlas.Atlas.from_brainglobe"><code>from_brainglobe</code></a> currently use
+millimeters, but <code>Atlas</code> itself only requires that units stay internally
+consistent.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -2678,23 +2685,23 @@ in millimetres.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.atlas.Atlas(mesh_to_physical)" class="doc doc-heading doc-heading-parameter">              <b><code>mesh_to_physical</code></b>
-<a href="#confusius.atlas.Atlas(mesh_to_physical)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(4, 4) numpy.ndarray</code>)
+<h4 id="confusius.atlas.Atlas(mesh_vertex_transform)" class="doc doc-heading doc-heading-parameter">              <b><code>mesh_vertex_transform</code></b>
+<a href="#confusius.atlas.Atlas(mesh_vertex_transform)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(4, 4) numpy.ndarray or xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Homogeneous affine that maps mesh vertex coordinates (microns, atlas
-voxel space) to the DataArrays' physical space (millimetres).</p>
+            <p>Pull transform that maps the atlas' current physical coordinates back to the
+base atlas physical coordinates.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.atlas.Atlas(rl_midline_um)" class="doc doc-heading doc-heading-parameter">              <b><code>rl_midline_um</code></b>
-<a href="#confusius.atlas.Atlas(rl_midline_um)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+<h4 id="confusius.atlas.Atlas(rl_midline)" class="doc doc-heading doc-heading-parameter">              <b><code>rl_midline</code></b>
+<a href="#confusius.atlas.Atlas(rl_midline)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
                   <code>0.0</code>
 )
           –
           <div class="doc-md-description">
-            <p>Midpoint of the RL axis in microns (atlas voxel space). Used to clip
-mesh vertices to a single hemisphere.</p>
+            <p>Midpoint of the RL axis in the base atlas physical units. Used to clip mesh
+vertices to a single hemisphere before applying any mesh vertex transform.</p>
           </div>
         </li>
     </ul>
@@ -2725,7 +2732,7 @@ mesh vertices to a single hemisphere.</p>
               (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Region annotations DataArray with integer labels.</p>
+            <p>Region annotations DataArray with integer labels on the same physical grid.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -2738,7 +2745,7 @@ mesh vertices to a single hemisphere.</p>
               (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Hemisphere map DataArray (1 = left, 2 = right).</p>
+            <p>Hemisphere map DataArray (1 = left, 2 = right) on the same physical grid.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -2829,6 +2836,13 @@ index.</p>
             –
             <div class="doc-md-description">
               <p>Return vertex coordinates and face indices for a region's mesh.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample&lt;/span&gt;" href="./#confusius.atlas.Atlas.resample">resample</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Resample the atlas onto an explicit output grid.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3194,7 +3208,8 @@ check). Ignored when <code>atlas</code> is already a
               <code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;Atlas&lt;/span&gt;" href="./#confusius.atlas.Atlas">Atlas</a></code>
           –
           <div class="doc-md-description">
-            <p>Atlas with DataArrays in the atlas physical space (millimetres).</p>
+            <p>Atlas with DataArrays in atlas physical space. BrainGlobe metadata and
+meshes are currently converted from microns to millimeters.</p>
           </div>
         </li>
     </ul>
@@ -3322,7 +3337,7 @@ any element of <code>sides</code> is not <code>"left"</code>, <code>"right"</cod
         <p>Return vertex coordinates and face indices for a region's mesh.</p>
 <p>Reads the OBJ file bundled with the BrainGlobe atlas, optionally clips to one
 hemisphere, then transforms vertices from micron space to the DataArrays'
-current physical space (millimetres).</p>
+current physical space.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3343,7 +3358,7 @@ current physical space (millimetres).</p>
           –
           <div class="doc-md-description">
             <p>Hemisphere to include. <code>"both"</code> keeps the full mesh. <code>"left"</code> and
-<code>"right"</code> clip in the original atlas micron space along the RL axis at the
+<code>"right"</code> clip in the base atlas physical space along the RL axis at the
 volume midline. Only triangles whose three vertices all fall on the
 requested side are retained; the cut face is not closed.</p>
 <div class="admonition note">
@@ -3362,7 +3377,7 @@ requested side are retained; the cut face is not closed.</p>
 <b><code>vertices</code></b> (              <code>(<a class="autorefs autorefs-external" title="numpy.ndarray" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray">ndarray</a>, <span title="shape">shape</span>(<span title="N">N</span>, 3))</code>
 )          –
           <div class="doc-md-description">
-            <p>Vertex coordinates in the current physical space (millimetres).</p>
+            <p>Vertex coordinates in millimeters.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3401,6 +3416,118 @@ requested side are retained; the cut face is not closed.</p>
 <div class="doc doc-object doc-function">
 
 
+<h4 id="confusius.atlas.Atlas.resample" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">resample</span>
+
+
+<a href="#confusius.atlas.Atlas.resample" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">resample</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;transform&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(transform)">transform</a></span><span class="p">:</span> <span class="n"><span title="confusius.atlas.atlas.MeshVertexTransform">MeshVertexTransform</span></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;shape&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(shape)">shape</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">],</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;spacing&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(spacing)">spacing</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;origin&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(origin)">origin</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(dims)">dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">],</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;reference_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(reference_interpolation)">reference_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sitk_threads&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample(sitk_threads)">sitk_threads</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;Atlas&lt;/span&gt;" href="./#confusius.atlas.Atlas">Atlas</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Resample the atlas onto an explicit output grid.</p>
+<p>Mirrors <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../registration/#confusius.registration.resample_volume"><code>confusius.registration.resample_volume</code></a>
+for atlas objects by constructing a temporary reference grid and delegating to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="./#confusius.atlas.Atlas.resample_like"><code>resample_like</code></a>.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(transform)" class="doc doc-heading doc-heading-parameter">              <b><code>transform</code></b>
+<a href="#confusius.atlas.Atlas.resample(transform)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(N+1, N+1) numpy.ndarray or xarray.DataArray</code>)
+          –
+          <div class="doc-md-description">
+            <p>Pull transform mapping output physical coordinates to the current atlas
+physical coordinates.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(shape)" class="doc doc-heading doc-heading-parameter">              <b><code>shape</code></b>
+<a href="#confusius.atlas.Atlas.resample(shape)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of int</code>)
+          –
+          <div class="doc-md-description">
+            <p>Number of voxels along each output axis, in <code>dims</code> order.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(spacing)" class="doc doc-heading doc-heading-parameter">              <b><code>spacing</code></b>
+<a href="#confusius.atlas.Atlas.resample(spacing)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Voxel spacing along each output axis, in <code>dims</code> order.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(origin)" class="doc doc-heading doc-heading-parameter">              <b><code>origin</code></b>
+<a href="#confusius.atlas.Atlas.resample(origin)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of float</code>)
+          –
+          <div class="doc-md-description">
+            <p>Physical origin along each output axis, in <code>dims</code> order.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(dims)" class="doc doc-heading doc-heading-parameter">              <b><code>dims</code></b>
+<a href="#confusius.atlas.Atlas.resample(dims)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of str</code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimension names of the output atlas grid.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(reference_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>reference_interpolation</code></b>
+<a href="#confusius.atlas.Atlas.resample(reference_interpolation)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation used for the <code>reference</code> volume.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.atlas.Atlas.resample(sitk_threads)" class="doc doc-heading doc-heading-parameter">              <b><code>sitk_threads</code></b>
+<a href="#confusius.atlas.Atlas.resample(sitk_threads)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>-1</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of SimpleITK threads.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;Atlas&lt;/span&gt;" href="./#confusius.atlas.Atlas">Atlas</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Resampled atlas on the requested grid.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h4 id="confusius.atlas.Atlas.resample_like" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">resample_like</span>
 
@@ -3408,7 +3535,7 @@ requested side are retained; the cut face is not closed.</p>
 <a href="#confusius.atlas.Atlas.resample_like" class="headerlink" title="Permanent link">&para;</a></h4>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">resample_like</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;reference&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample_like(reference)">reference</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;transform&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample_like(transform)">transform</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="numpy.float64" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64">float64</a></span><span class="p">],</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;transform&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample_like(transform)">transform</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="numpy.float64" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64">float64</a></span><span class="p">]</span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;reference_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.atlas.Atlas.resample_like(reference_interpolation)">reference_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
@@ -3430,6 +3557,8 @@ Returns a new <a class="autorefs autorefs-internal" title="&lt;span class=&quot;
   to preserve integer labels.</li>
 <li>Meshes returned by <code>get_mesh</code> will also be in the new physical space.</li>
 </ul>
+<p><code>moving</code>, <code>reference</code>, and any DataArray transform must use the same physical
+coordinate units when such metadata is defined.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3444,11 +3573,17 @@ Returns a new <a class="autorefs autorefs-internal" title="&lt;span class=&quot;
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.atlas.Atlas.resample_like(transform)" class="doc doc-heading doc-heading-parameter">              <b><code>transform</code></b>
-<a href="#confusius.atlas.Atlas.resample_like(transform)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(N+1, N+1) numpy.ndarray</code>)
+<a href="#confusius.atlas.Atlas.resample_like(transform)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(N+1, N+1) numpy.ndarray or xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Pull/inverse affine returned by <code>register_volume</code>, mapping
+            <p>Pull/inverse transform returned by <code>register_volume</code>, mapping
 <code>reference</code> physical coordinates to atlas physical coordinates.</p>
+<ul>
+<li><strong>Affine</strong> (<code>numpy.ndarray</code>): homogeneous matrix.</li>
+<li><strong>B-spline</strong> (<code>xarray.DataArray</code>): control-point DataArray.</li>
+<li><strong>Displacement field</strong> (<code>xarray.DataArray</code>): dense field with
+  <code>attrs["type"] == "displacement_field_transform"</code>.</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
