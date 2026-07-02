@@ -3439,7 +3439,8 @@ iteration.</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;spacing&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.bspline_to_displacement_field(spacing)">spacing</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;origin&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.bspline_to_displacement_field(origin)">origin</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.bspline_to_displacement_field(dims)">dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">],</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sitk_threads&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.bspline_to_displacement_field(sitk_threads)">sitk_threads</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3488,6 +3489,18 @@ dimension order.</p>
           –
           <div class="doc-md-description">
             <p>Dimension names of the output displacement field.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.registration.bspline_to_displacement_field(sitk_threads)" class="doc doc-heading doc-heading-parameter">              <b><code>sitk_threads</code></b>
+<a href="#confusius.registration.bspline_to_displacement_field(sitk_threads)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>-1</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of threads SimpleITK may use internally. Negative values resolve to
+<code>max(1, os.cpu_count() + 1 + sitk_threads)</code>, so <code>-1</code> means all CPUs, <code>-2</code>
+means all minus one, and so on.</p>
           </div>
         </li>
     </ul>
@@ -3945,9 +3958,10 @@ B-spline transforms) are treated as identity transforms.</p>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">invert_displacement_field</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;field&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(field)">field</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;max_iterations&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(max_iterations)">max_iterations</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="n"><span title="confusius.registration.bspline.DISPLACEMENT_FIELD_INVERSION_ITERATIONS">DISPLACEMENT_FIELD_INVERSION_ITERATIONS</span></span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;max_error_tolerance&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(max_error_tolerance)">max_error_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="n"><span title="confusius.registration.bspline.DISPLACEMENT_FIELD_INVERSION_MAX_ERROR">DISPLACEMENT_FIELD_INVERSION_MAX_ERROR</span></span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;max_iterations&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(max_iterations)">max_iterations</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;max_error_tolerance&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(max_error_tolerance)">max_error_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sitk_threads&lt;/code&gt;&lt;/b&gt;" href="./#confusius.registration.invert_displacement_field(sitk_threads)">sitk_threads</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3988,6 +4002,18 @@ same grid as <code>field</code>. The inverse maps physical points in the opposit
           –
           <div class="doc-md-description">
             <p>Maximum error tolerance (mm) at which the solver is considered converged.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.registration.invert_displacement_field(sitk_threads)" class="doc doc-heading doc-heading-parameter">              <b><code>sitk_threads</code></b>
+<a href="#confusius.registration.invert_displacement_field(sitk_threads)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
+                  <code>-1</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Number of threads SimpleITK may use internally. Negative values resolve to
+<code>max(1, os.cpu_count() + 1 + sitk_threads)</code>, so <code>-1</code> means all CPUs, <code>-2</code>
+means all minus one, and so on.</p>
           </div>
         </li>
     </ul>
