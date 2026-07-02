@@ -1384,6 +1384,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Events Panel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Events Panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#annotating-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Annotating events
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loading-and-saving" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Loading and saving
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-options_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Display options
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#qc-panel" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2757,6 +2807,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Events Panel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Events Panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#annotating-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Annotating events
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loading-and-saving" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Loading and saving
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-options_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Display options
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#qc-panel" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2834,13 +2934,15 @@
 
 
 <h1 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h1>
-<p>The ConfUSIus sidebar contains four collapsible panels. Each panel operates
+<p>The ConfUSIus sidebar contains five collapsible panels. Each panel operates
 independently and can be expanded or collapsed by clicking its header. For an in-app
 introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <ul>
 <li><a href="#data-io-panel"><strong>Data I/O</strong></a> — load and save fUSI files (NIfTI, Zarr, SCAN).</li>
 <li><a href="#video-panel"><strong>Video</strong></a> — load videos side-by-side, temporally synced with the fUSI acquisition.</li>
 <li><a href="#signals-panel"><strong>Signals</strong></a> — plot voxel, point, or label-region signals in a bottom dock.</li>
+<li><a href="#events-panel"><strong>Events</strong></a> — annotate periods of time (BIDS events) and shade them on
+  the signal plot.</li>
 <li><a href="#qc-panel"><strong>QC</strong></a> — compute DVARS, carpet, CV, tSNR for a selected layer.</li>
 </ul>
 <h2 id="data-io-panel">Data I/O Panel<a class="headerlink" href="#data-io-panel" title="Permanent link">&para;</a></h2>
@@ -3057,6 +3159,60 @@ signals (from the current source mode) and imported signals:</p>
 <dd>Click the <strong>Export</strong> button in the plot toolbar to export all currently plotted
   signals—both live and imported—to a CSV or TSV file.</dd>
 </dl>
+<h2 id="events-panel">Events Panel<a class="headerlink" href="#events-panel" title="Permanent link">&para;</a></h2>
+<p>The Events Panel annotates <em>periods of time</em>—not individual frames—following the <a href="https://bids-specification.readthedocs.io/en/stable/modality-agnostic-files/events.html">BIDS
+events</a>
+convention (<code>onset</code>, <code>duration</code>, and an optional <code>trial_type</code>). Annotated events shade
+the <a href="#signals-panel">signal plot</a> and are named in the time overlay while they are
+active.</p>
+<p><a class="glightbox" data-title="Creating events with the Start/End workflow" data-type="image" href="../../images/gui/plugin-events-create.gif"><img alt="Creating events with the Start/End workflow" src="../../images/gui/plugin-events-create.gif" /></a></p>
+<h3 id="annotating-events">Annotating events<a class="headerlink" href="#annotating-events" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Type a name for the event in the <strong>Event</strong> field (defaults to <code>event</code>).</li>
+<li>Press <strong>Start (S)</strong> to mark the onset at the current time step, scrub the time
+   slider forward, then press <strong>End (E)</strong> to mark the offset. <strong>Cancel (Esc)</strong> discards
+   an in-progress annotation. The shortcuts are active whenever the panel is open.</li>
+<li>The event appears in the table with its trial type, onset, end, and duration.</li>
+</ol>
+<p>The End time must not be before the Start time. Ending at the Start time creates an
+instantaneous (zero-duration) event, as allowed by BIDS; it is drawn as a vertical line
+instead of a shaded band.</p>
+<h3 id="loading-and-saving">Loading and saving<a class="headerlink" href="#loading-and-saving" title="Permanent link">&para;</a></h3>
+<p>Use <strong>Load</strong> to import a BIDS events <code>.tsv</code> file (<code>onset</code> and <code>duration</code> are required; a
+missing <code>trial_type</code> defaults to <code>event</code>) and <strong>Save</strong> to write the current events back
+out as a BIDS events <code>.tsv</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Straight into analysis</p>
+<p>An events <code>.tsv</code> saved here is a standard BIDS events table, so it can be read back
+with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;read_events&lt;/span&gt;" href="../../api/bids/#confusius.bids.read_events">read_events</a> and fed directly to either
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../../api/glm/#confusius.glm.make_first_level_design_matrix">make_first_level_design_matrix</a> or
+the <code>fit</code> method of a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../api/glm/#confusius.glm.FirstLevelModel">FirstLevelModel</a>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.bids</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_events</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.glm</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirstLevelModel</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">events</span> <span class="o">=</span> <span class="n">read_events</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_events.tsv&quot;</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">hrf_model</span><span class="o">=</span><span class="s2">&quot;glover&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fusi_scan</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<h3 id="display-options_1">Display options<a class="headerlink" href="#display-options_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Shade events on signal plot</strong></td>
+<td>Draw each event as a colored band spanning its interval on the bottom-dock signal plot, colored by trial type.</td>
+</tr>
+<tr>
+<td><strong>Show active events in time overlay</strong></td>
+<td>Append each active event to the time overlay as <code>name [onset, end)</code>. An event is active while the current frame's acquisition window overlaps it. The window comes from the layer's <code>volume_acquisition_reference</code>/<code>volume_acquisition_duration</code> metadata, using the frame spacing as the duration when only the reference is present, and the frame's timestamp alone when neither is; an event too short to be sampled by any frame is shown on the next frame instead.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="qc-panel">QC Panel<a class="headerlink" href="#qc-panel" title="Permanent link">&para;</a></h2>
 <p>The QC Panel computes quality control metrics for a selected image layer.</p>
 <p><a class="glightbox" data-title="ConfUSIus QC panel" data-type="image" href="../../images/gui/plugin-qc.png"><img alt="ConfUSIus QC panel" src="../../images/gui/plugin-qc.png" /></a></p>
