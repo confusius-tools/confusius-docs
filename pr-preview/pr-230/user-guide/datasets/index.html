@@ -2959,8 +2959,10 @@ download the dataset. Four filters narrow the download:</p>
 </tbody>
 </table>
 <p>The Landemard dataset has no session layer: every recording sits directly
-under <code>sub-*/fusi/</code> or <code>sub-*/angio/</code>. Files that lack an <code>acq-</code> entity
-(e.g. <code>sub-ALD001_scans.tsv</code>,
+under <code>sub-*/fusi/</code> or <code>sub-*/angio/</code>. Compound acquisition labels such as
+<code>ref11_run-1</code> are matched by their prefix — passing <code>acqs=["ref11"]</code>
+selects both <code>ref11_run-1</code> and <code>ref11_run-2</code>. Files that lack an
+<code>acq-</code> entity (e.g. <code>sub-ALD001_scans.tsv</code>,
 <code>sub-ALD001/angio/sub-ALD001_pwd.nii.gz</code>) are always included regardless
 of the <code>acqs</code> filter.</p>
 <p>The <code>datasets</code> filter accepts:</p>
