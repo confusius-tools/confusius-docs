@@ -2964,6 +2964,10 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;read_events&lt;/span&gt;" href="../api/bids/#confusius.bids.read_events"><code>read_events</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;write_events&lt;/span&gt;" href="../api/bids/#confusius.bids.write_events"><code>write_events</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/176">#176</a>).</li>
+<li>Added a <code>datasets</code> CLI namespace, listed in <code>confusius --help</code>:
+  <code>confusius datasets --list</code> prints the table of available datasets, their sizes,
+  and whether each is cached on disk. A bare <code>confusius PATH...</code> still launches the
+  viewer (<a href="https://github.com/confusius-tools/confusius/pull/234">#234</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> for non-negative matrix factorization
   of <abbr title="Functional Ultrasound Imaging">fUSI</abbr> time series, wrapping <code>sklearn.decomposition.NMF</code> with the same
   xarray-aware <code>fit</code>/<code>transform</code>/<code>inverse_transform</code> interface as
@@ -2992,6 +2996,17 @@
   <code>bspline_initialization</code> written by the registration pipeline) when merging in the
   NIfTI qform/sform affines
   (<a href="https://github.com/confusius-tools/confusius/pull/222">#222</a>).</li>
+<li><code>save_nifti</code> no longer maps non-time additional axes to the NIfTI 4th slot. When
+  additional axes are present in the DataArray, a degenerate length-1 <code>time</code> axis is
+  inserted at NIfTI axis 4 (NIfTI's conventional time slot) so non-time additional axes
+  always land at NIfTI axes 5, 6, 7. The original dim name for each additional axis is
+  always written to the sidecar as <code>ConfUSIusDim{N}Name</code> (with <code>N</code> in 4, 5, 6, matching
+  the 0-based NIfTI axis of the extra dim). The matching <code>ConfUSIusDim{N}Coordinates</code>
+  entry is only written when the coord cannot be reconstructed from <code>pixdim</code> (i.e. when
+  the coord does not start at 0 with regular spacing); otherwise the spacing is stored
+  in <code>pixdim</code> and the coord is rebuilt as <code>step * arange(size)</code> on load. Attributes are
+  preserved in <code>ConfUSIusDim{N}Attributes</code> entries.
+  (<a href="htttps://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
