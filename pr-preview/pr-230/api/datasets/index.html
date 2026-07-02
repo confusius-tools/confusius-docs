@@ -2993,11 +2993,10 @@ navigation system. <em>Cell Reports</em>, 45(1).
     <div class="doc doc-contents ">
 
         <p>Fetch the Landemard 2026 <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> dataset.</p>
-<p>Downloads functional ultrasound imaging recordings from awake,
-head-fixed, freely-running mice, re-exported to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format
-from Landemard et al. (2026).</p>
-<p>Files are downloaded on first call and cached locally. Subsequent calls
-with the same <code>data_dir</code> return immediately for already-cached files.</p>
+<p>Downloads functional ultrasound imaging recordings from awake, head-fixed,
+freely-running mice, re-exported to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format from Landemard et al. (2026).</p>
+<p>Files are downloaded on first call and cached locally. Subsequent calls with the
+same <code>data_dir</code> return immediately for already-cached files.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3009,11 +3008,10 @@ with the same <code>data_dir</code> return immediately for already-cached files.
 )
           –
           <div class="doc-md-description">
-            <p>Directory in which to cache the dataset. Defaults to the platform
-cache directory (e.g. <code>~/.cache/confusius</code> on Linux,
-<code>~/Library/Caches/confusius</code> on macOS,
-<code>%LOCALAPPDATA%\confusius\Cache</code> on Windows),
-overridable via the <code>CONFUSIUS_DATA</code> environment variable.</p>
+            <p>Directory in which to cache the dataset. Defaults to the platform cache
+directory (e.g. <code>~/.cache/confusius</code> on Linux, <code>~/Library/Caches/confusius</code> on
+macOS, <code>%LOCALAPPDATA%\confusius\Cache</code> on Windows), overridable via the
+<code>CONFUSIUS_DATA</code> environment variable.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3023,10 +3021,9 @@ overridable via the <code>CONFUSIUS_DATA</code> environment variable.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Datasets to download. Use <code>"rawdata"</code> for the raw <abbr title="Functional Ultrasound Imaging">fUSI</abbr>/angio data
-and derivative names for processed outputs: <code>"atlas-mapping"</code>,
-<code>"processed-data"</code>. Accepts a single string or a list. If not
-provided, all datasets are downloaded.</p>
+            <p>Datasets to download. Use <code>"rawdata"</code> for the raw <abbr title="Functional Ultrasound Imaging">fUSI</abbr>/angio data and derivative
+names for processed outputs: <code>"atlas_mapping"</code>, <code>"processed_data"</code>. Accepts a
+single string or a list. If not provided, all datasets are downloaded.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3036,9 +3033,8 @@ provided, all datasets are downloaded.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Subject IDs to download (without "sub-" prefix), e.g. <code>"ALD001"</code>
-or <code>["ALD001", "ALD019"]</code>. If not provided, all subjects are
-downloaded.</p>
+            <p>Subject IDs to download (without "sub-" prefix), e.g. <code>"ALD001"</code> or <code>["ALD001",
+"ALD019"]</code>. If not provided, all subjects are downloaded.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3048,12 +3044,11 @@ downloaded.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Acquisition labels to download (without "acq-" prefix), e.g.
-<code>"ref04"</code> or <code>["ref04", "ref11"]</code>. If not provided, all
-acquisitions are downloaded. Files with no <code>acq-</code> entity
-(e.g. <code>sub-ALD001_scans.tsv</code>,
-<code>sub-ALD001/angio/sub-ALD001_pwd.nii.gz</code>) are always included.
-The <code>run-</code> entity is not exposed as a filter.</p>
+            <p>Acquisition labels to download (without "acq-" prefix), e.g. <code>"ref04"</code> or
+<code>["ref04", "ref11"]</code>. If not provided, all acquisitions are downloaded. Files
+with no <code>acq-</code> entity (e.g. <code>sub-ALD001_scans.tsv</code>,
+<code>sub-ALD001/angio/sub-ALD001_pwd.nii.gz</code>) are always included. The <code>run-</code> entity
+is not exposed as a filter.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3063,11 +3058,10 @@ The <code>run-</code> entity is not exposed as a filter.</p>
 )
           –
           <div class="doc-md-description">
-            <p><abbr title="Brain Imaging Data Structure">BIDS</abbr> datatype directories to download, e.g. <code>"fusi"</code>, <code>"angio"</code>,
-<code>["fusi", "angio"]</code>. Valid values are <code>"fusi"</code> and <code>"angio"</code>.
-If not provided, all datatypes are downloaded. Files that do
-not sit under a datatype directory (e.g. subject-level
-<code>scans.tsv</code>) are always included.</p>
+            <p><abbr title="Brain Imaging Data Structure">BIDS</abbr> datatype directories to download, e.g. <code>"fusi"</code>, <code>"angio"</code>, <code>["fusi",
+"angio"]</code>. Valid values are <code>"fusi"</code> and <code>"angio"</code>. If not provided, all
+datatypes are downloaded. Files that do not sit under a datatype directory (e.g.
+subject-level <code>scans.tsv</code>) are always included.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3077,10 +3071,9 @@ not sit under a datatype directory (e.g. subject-level
 )
           –
           <div class="doc-md-description">
-            <p>Whether to re-fetch the dataset index from OSF and download any files
-that are missing locally. If <code>False</code> and all requested files are
-already cached, the function returns immediately without any network
-access.</p>
+            <p>Whether to re-fetch the dataset index from OSF and download any files that are
+missing locally. If <code>False</code> and all requested files are already cached, the
+function returns immediately without any network access.</p>
           </div>
         </li>
     </ul>
@@ -3104,8 +3097,8 @@ access.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If an unknown dataset name is passed in <code>datasets</code>, or an
-unknown datatype is passed in <code>datatypes</code>.</p>
+            <p>If an unknown dataset name is passed in <code>datasets</code>, or an unknown datatype is
+passed in <code>datatypes</code>.</p>
           </div>
         </li>
     </ul>
