@@ -2956,6 +2956,10 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added a <code>datasets</code> CLI namespace, listed in <code>confusius --help</code>:
+  <code>confusius datasets --list</code> prints the table of available datasets, their sizes,
+  and whether each is cached on disk. A bare <code>confusius PATH...</code> still launches the
+  viewer (<a href="https://github.com/confusius-tools/confusius/pull/234">#234</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> for non-negative matrix factorization
   of <abbr title="Functional Ultrasound Imaging">fUSI</abbr> time series, wrapping <code>sklearn.decomposition.NMF</code> with the same
   xarray-aware <code>fit</code>/<code>transform</code>/<code>inverse_transform</code> interface as
@@ -2993,12 +2997,24 @@
   <code>bspline_initialization</code> written by the registration pipeline) when merging in the
   NIfTI qform/sform affines
   (<a href="https://github.com/confusius-tools/confusius/pull/222">#222</a>).</li>
+<li>B-spline control-point DataArrays returned by
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> no longer have their
+  per-axis grid geometry (spacing, origin, domain) swapped between axes on anisotropic
+  images. The bug was invisible on isotropic data, which is why it went unnoticed since
+  it shipped
+  (<a href="https://github.com/confusius-tools/confusius/issues/236">#236</a>,
+  <a href="https://github.com/confusius-tools/confusius/pull/235">#235</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Add an <a href="../examples/_built/decomposition/nmf_single_recording/"><abbr title="Non-negative Matrix Factorization">NMF</abbr> example</a> to the
   gallery, demonstrating the z-score + absolute-value standardization that makes
   signed <abbr title="Functional Ultrasound Imaging">fUSI</abbr> signals <abbr title="Non-negative Matrix Factorization">NMF</abbr>-compatible.</li>
+<li>The <a href="../examples/_built/registration/register_volume_same_subject/">same-subject registration
+  example</a> now follows
+  the rigid registration step with a B-spline refinement, showing the extra local
+  correction it adds and how its parameters differ from the rigid step's
+  (<a href="https://github.com/confusius-tools/confusius/pull/235">#235</a>).</li>
 </ul>
 <h2 id="040">0.4.0<a class="headerlink" href="#040" title="Permanent link">&para;</a></h2>
 <p><em>Released 2026-06-25.</em></p>
