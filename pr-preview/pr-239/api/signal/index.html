@@ -3164,9 +3164,10 @@ regression. This improves numerical stability while preserving constant terms.</
 )
           –
           <div class="doc-md-description">
-            <p>Whether to replace non-finite values (<code>NaN</code>, <code>Inf</code>) in <code>signals</code> and
-<code>confounds</code> with zero before cleaning. If <code>False</code>, non-finite values raise a
-<code>ValueError</code>.</p>
+            <p>Whether to repair non-finite values (<code>NaN</code>, <code>Inf</code>) in <code>signals</code> and
+<code>confounds</code> before cleaning by interpolating each series along <code>time</code> and
+filling boundary gaps from the nearest finite sample. If <code>False</code>, non-finite
+values are left unchanged.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
