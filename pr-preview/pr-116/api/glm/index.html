@@ -18,7 +18,7 @@
         <link rel="prev" href="../connectivity/">
       
       
-        <link rel="next" href="../xarray/">
+        <link rel="next" href="../stats/">
       
       
         
@@ -432,6 +432,8 @@
   
     
     
+      
+        
       
         
       
@@ -1014,6 +1016,35 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/stats/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sigma" viewBox="0 0 24 24"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Inference
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/datasets/" class="md-nav__link">
         
   
@@ -1179,6 +1210,8 @@
       
         
           
+        
+      
         
       
         
@@ -1952,6 +1985,35 @@
   
   
     <li class="md-nav__item">
+      <a href="../stats/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sigma" viewBox="0 0 24 24"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Statistical Inference
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../xarray/" class="md-nav__link">
         
   
@@ -2278,6 +2340,8 @@
       
         
       
+        
+      
     
     
     
@@ -2365,6 +2429,33 @@
     
   
   FastICA on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/decomposition/nmf_single_recording/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  NMF on a single fUSI recording
 
     
   </span>
@@ -3538,6 +3629,32 @@ fields).</p>
 interval in the run <code>time</code> coordinate (see
 [<code>get_representative_step</code>][confusius._utils.get_representative_step]).
 Increase this value to tolerate slight timestamp jitter.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.glm.FirstLevelModel(smoothing_fwhm)" class="doc doc-heading doc-heading-parameter">              <b><code>smoothing_fwhm</code></b>
+<a href="#confusius.glm.FirstLevelModel(smoothing_fwhm)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> or <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Full width at half maximum of the Gaussian smoothing kernel, in the physical
+units of the spatial coordinates, applied to each run before model fitting. A
+scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>pose</code>
+dimension); a dict maps dimension names to per-dimension FWHM.
+Smoothing is delegated to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;smooth_volume&lt;/span&gt;" href="../spatial/#confusius.spatial.smooth_volume"><code>smooth_volume</code></a>,
+which requires each smoothed dimension to have uniform coordinate spacing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the data has any other dimension besides <code>time</code>, a scalar
+<code>smoothing_fwhm</code> will smooth these dimensions as well.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The dict may also include the <code>"time"</code> key to smooth along the
+time axis as well (this is intended behavior).</p>
+</div>
+<p>If not provided, no smoothing is applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
