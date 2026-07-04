@@ -2987,10 +2987,13 @@
   <code>datasets</code>, <code>subjects</code>, <code>acqs</code>, and <code>datatypes</code> filters
   (<a href="https://github.com/confusius-tools/confusius/pull/230">#228</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> (and the matching
-  <code>data.fusi.plot.stat_map</code> accessor) for overlaying statistical maps fully opaque on a
-  background anatomical volume, with a symmetric colormap range picked automatically
-  from the 98th percentile of <code>|stat_map|</code>
-  (<a href="https://github.com/confusius-tools/confusius/pull/241">#241</a>).</li>
+  <code>data.fusi.plot.stat_map</code> accessor) for plotting statistical maps, optionally
+  overlaid fully opaque on a background anatomical volume. <code>vmin</code>/<code>vmax</code> default to
+  the data's actual min/max, and <code>auto_range=True</code> (default) picks both the
+  colormap range and colormap from the data's sign: diverging symmetric
+  <code>[-m, m]</code> with <code>"coolwarm"</code> when both signed, sequential <code>[0, vmax]</code> with
+  <code>"viridis"</code> when non-negative, or <code>[vmin, 0]</code> with <code>"viridis_r"</code> when
+  non-positive (<a href="https://github.com/confusius-tools/confusius/pull/242">#242</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
