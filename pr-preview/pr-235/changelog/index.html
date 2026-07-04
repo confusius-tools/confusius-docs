@@ -2998,6 +2998,10 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>signal.clean</code> now supports <code>ensure_finite=True</code> to repair non-finite <code>signals</code>
+  and <code>confounds</code> by interpolating along time, fills censored boundary samples from
+  the nearest kept sample before filtering, and accepts <code>interpolate_kwargs</code> for
+  pre-scrubbing interpolation (<a href="https://github.com/confusius-tools/confusius/pull/239">#239</a>).</li>
 <li>Image plotting functions now leave <code>alpha</code> unset by default (<code>None</code>), so a
   colormap's built-in alpha channel is respected
   (<a href="https://github.com/confusius-tools/confusius/pull/225">#225</a>).</li>
