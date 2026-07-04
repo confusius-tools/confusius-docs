@@ -2956,6 +2956,14 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li><strong>[Napari plugin]</strong> Added <strong>Events</strong> panel to annotate temporal events within Napari.
+  Events shade the signal plot; active event names appear in the time overlay; load
+  from / save to a <abbr title="Brain Imaging Data Structure">BIDS</abbr> <code>.tsv</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/176">#176</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;bids&lt;/span&gt;" href="../api/bids/#confusius.bids"><code>confusius.bids</code></a> module is now public with new
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;read_events&lt;/span&gt;" href="../api/bids/#confusius.bids.read_events"><code>read_events</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;write_events&lt;/span&gt;" href="../api/bids/#confusius.bids.write_events"><code>write_events</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/176">#176</a>).</li>
 <li>Added a <code>datasets</code> CLI namespace, listed in <code>confusius --help</code>:
   <code>confusius datasets --list</code> prints the table of available datasets, their sizes,
   and whether each is cached on disk. A bare <code>confusius PATH...</code> still launches the
@@ -2981,6 +2989,10 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>signal.clean</code> now supports <code>ensure_finite=True</code> to repair non-finite <code>signals</code>
+  and <code>confounds</code> by interpolating along time, fills censored boundary samples from
+  the nearest kept sample before filtering, and accepts <code>interpolate_kwargs</code> for
+  pre-scrubbing interpolation (<a href="https://github.com/confusius-tools/confusius/pull/239">#239</a>).</li>
 <li>Image plotting functions now leave <code>alpha</code> unset by default (<code>None</code>), so a
   colormap's built-in alpha channel is respected
   (<a href="https://github.com/confusius-tools/confusius/pull/225">#225</a>).</li>
@@ -2988,6 +3000,17 @@
   <code>bspline_initialization</code> written by the registration pipeline) when merging in the
   NIfTI qform/sform affines
   (<a href="https://github.com/confusius-tools/confusius/pull/222">#222</a>).</li>
+<li><code>save_nifti</code> no longer maps non-time additional axes to the NIfTI 4th slot. When
+  additional axes are present in the DataArray, a degenerate length-1 <code>time</code> axis is
+  inserted at NIfTI axis 4 (NIfTI's conventional time slot) so non-time additional axes
+  always land at NIfTI axes 5, 6, 7. The original dim name for each additional axis is
+  always written to the sidecar as <code>ConfUSIusDim{N}Name</code> (with <code>N</code> in 4, 5, 6, matching
+  the 0-based NIfTI axis of the extra dim). The matching <code>ConfUSIusDim{N}Coordinates</code>
+  entry is only written when the coord cannot be reconstructed from <code>pixdim</code> (i.e. when
+  the coord does not start at 0 with regular spacing); otherwise the spacing is stored
+  in <code>pixdim</code> and the coord is rebuilt as <code>step * arange(size)</code> on load. Attributes are
+  preserved in <code>ConfUSIusDim{N}Attributes</code> entries.
+  (<a href="htttps://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
