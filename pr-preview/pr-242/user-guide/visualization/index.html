@@ -3466,28 +3466,30 @@ removing saturation artifacts or thresholding decibel-scaled data.</p>
 <code>data.fusi.plot.stat_map</code> accessor) wraps the
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> +
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_volume"><code>add_volume</code></a> pattern used above for
-statistical overlays: a background anatomical volume, a fully opaque overlay, and a
-symmetric colormap range so that zero maps to the middle of a diverging colormap
-(<code>"RdBu_r"</code> by default):</p>
+statistical overlays: a background anatomical volume, an overlay that is fully opaque
+by default, and a symmetric colormap range so that zero maps to the middle of a
+diverging colormap (<code>"RdBu_r"</code> by default):</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">t_map</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">stat_map</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 </span></code></pre></div>
 <p><code>bg_volume</code> is optional — call <code>t_map.fusi.plot.stat_map(slice_mode="z")</code> to plot the
-statistical map on its own. If <code>vmax</code> is not provided, it defaults to the 98th
-percentile of <code>|t_map|</code>, and the colormap spans <code>[-vmax, vmax]</code>. Pass <code>vmax</code> explicitly
-for a fixed range across figures, and <code>bg_kwargs</code> to customize the background layer's
-own colormap/range:</p>
+statistical map on its own. With the default <code>alpha=1.0</code>, <code>t_map</code> fully covers <code>pwd</code>
+wherever it has a value; <code>pwd</code> only shows through where <code>t_map</code> is masked out by
+<code>threshold</code>. If <code>vmax</code> is not provided, it defaults to the 98th percentile of <code>|t_map|</code>,
+and the colormap spans <code>[-vmax, vmax]</code>. Pass <code>vmax</code> explicitly for a fixed range across
+figures, <code>alpha</code> to blend the overlay with the background instead of fully covering it,
+and <code>bg_kwargs</code> to customize the background layer's own colormap/range:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">t_map</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">stat_map</span><span class="p">(</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">pwd</span><span class="p">,</span>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">vmax</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;t-statistic&quot;</span><span class="p">,</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">bg_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;vmin&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;vmax&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;t-statistic&quot;</span><span class="p">,</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">bg_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;vmin&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;vmax&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>For finer control (e.g. a partially transparent overlay or an asymmetric range), call
-<code>plot_volume</code> and <code>add_volume</code> directly instead, as shown in the
-<a href="#thresholding">Thresholding</a> section above.</p>
+<p>For finer control (e.g. an asymmetric range), call <code>plot_volume</code> and <code>add_volume</code>
+directly instead, as shown in the <a href="#thresholding">Thresholding</a> section above.</p>
 <h2 id="overlaying-contours">Overlaying Contours<a class="headerlink" href="#overlaying-contours" title="Permanent link">&para;</a></h2>
 <p>Atlas outlines or region of interest (<abbr title="Region of Interest">ROI</abbr>) boundaries can be drawn on top of a volume
 plot to provide anatomical context. ConfUSIus represents masks as <strong>integer-labeled
