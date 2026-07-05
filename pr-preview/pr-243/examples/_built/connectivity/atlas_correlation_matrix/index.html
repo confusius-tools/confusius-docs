@@ -29,7 +29,7 @@
     
     
       
-        <title>Atlas-based region correlation matrix - ConfUSIus</title>
+        <title>Atlas correlation matrix - ConfUSIus</title>
       
     
     
@@ -97,7 +97,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#atlas-based-region-correlation-matrix" class="md-skip">
+        <a href="#fetch-the-recording-and-the-template" class="md-skip">
           Skip to content
         </a>
       
@@ -134,7 +134,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Atlas-based region correlation matrix
+              Atlas correlation matrix
             
           </span>
         </div>
@@ -2350,8 +2350,6 @@
       
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -2392,8 +2390,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
-  
-    
   
   
     <label class="md-nav__title" for="__toc">
@@ -2458,10 +2454,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plot-the-correlation-matrix" class="md-nav__link">
+  <a href="#compute-and-plot-the-correlation-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Plot the correlation matrix
+        Compute and plot the correlation matrix
       </span>
     </span>
   </a>
@@ -2588,8 +2584,6 @@
                     
                     
                     
-                      
-                    
                     
                       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
                       <div class="md-sidebar-button__wrapper">
@@ -2604,8 +2598,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
-  
-    
   
   
     <label class="md-nav__title" for="__toc">
@@ -2670,10 +2662,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plot-the-correlation-matrix" class="md-nav__link">
+  <a href="#compute-and-plot-the-correlation-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Plot the correlation matrix
+        Compute and plot the correlation matrix
       </span>
     </span>
   </a>
@@ -2764,22 +2756,24 @@
   
 
 
-<h1 id="atlas-based-region-correlation-matrix">Atlas-based region correlation matrix<a class="headerlink" href="#atlas-based-region-correlation-matrix" title="Permanent link">&para;</a></h1>
-<p>This example shows an end-to-end regional connectivity analysis: register a
-single-slice <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording to an Allen-space template, bring an
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;Atlas&lt;/span&gt;" href="../../../../api/atlas/#confusius.atlas.Atlas">Allen Mouse Brain Atlas</a> into the recording's native space,
-extract region-averaged signals, and visualise their pairwise correlation with
+  <h1 id="__skip">Atlas correlation matrix</h1>
+
+<p>Atlas-based region correlation matrix</p>
+<p>This example shows an end-to-end regional functional connectivity (<abbr title="Functional Connectivity">FC</abbr>) analysis:
+register a single-slice <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording to an Allen-space template, bring the <autoref identifier="confusius.atlas.Atlas">Allen
+Mouse Brain Atlas</autoref> into the recording's native space, extract
+region-averaged signals, and visualise their pairwise correlation with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../../../../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a>.</p>
-<p>We use the <code>fusi</code> acquisition from subject <code>CR022</code>, session <code>20201007</code>, in the
-<a href="https://doi.org/10.1016/j.neuron.2022.02.012">Nunez-Elizalde 2022 dataset</a>, and the
-<autoref identifier="confusius.datasets.fetch_template_pepe_mariani_2026"><code>Pepe, Mariani 2026</code>
+<p>We use an awake freely-running acquisition from subject <code>CR022</code>, session <code>20201007</code>,
+in the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022">Nunez-Elizalde 2022 dataset</a>,
+and the <autoref identifier="confusius.datasets.fetch_template_pepe_mariani_2026">Pepe, Mariani 2026 <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 template</autoref>, which carries the
 affine transform required to bring it into Allen Common Coordinate Framework (CCF)
 space.</p>
 <h2 id="fetch-the-recording-and-the-template">Fetch the recording and the template<a class="headerlink" href="#fetch-the-recording-and-the-template" title="Permanent link">&para;</a></h2>
-<p>The recording is a single coronal slice with 755 timepoints. Registration works on a
-static anatomical image, so we use the temporal mean, converted to decibels for a more
-stable dynamic range.</p>
+<p>The recording is a single coronal slice imaged for approximately 4 minutes at 3.33 Hz.
+Registration works on a static anatomical image, so we use the temporal mean,
+converted to decibels for a more stable dynamic range.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
@@ -2794,31 +2788,27 @@ stable dynamic range.</p>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201007&quot;</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice02&quot;</span><span class="p">,</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">)</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">data_path</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201007&quot;</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd.nii.gz&quot;</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># The recording&#39;s timepoints are not perfectly uniformly spaced (a common trait of raw</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="c1"># scanner timestamps), so we resample to a uniform grid before any time-domain</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="c1"># processing (filtering below requires it).</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">timing</span><span class="o">.</span><span class="n">resample_to_uniform_time</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">))</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">moving</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">template</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">data</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">template</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;CR022&quot;</span><span class="p">,</span> <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;20201007&quot;</span><span class="p">,</span> <span class="n">tasks</span><span class="o">=</span><span class="s2">&quot;spontaneous&quot;</span><span class="p">,</span> <span class="n">acqs</span><span class="o">=</span><span class="s2">&quot;slice02&quot;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">data_path</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022&quot;</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="o">/</span> <span class="s2">&quot;ses-20201007&quot;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="o">/</span> <span class="s2">&quot;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd.nii.gz&quot;</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="c1"># The recording&#39;s timepoints are not perfectly uniformly spaced so we resample to a</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># uniform grid before any time-domain processing (filtering below requires it).</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">timing</span><span class="o">.</span><span class="n">resample_to_uniform_time</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">))</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">moving</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">data</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_3239/3848404959.py:32: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_4262/685735078.py:30: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -3363,7 +3353,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-9f020f61-b5f1-4e1b-8539-b7381f95f50a' class='xr-array-in' type='checkbox' ><label for='section-9f020f61-b5f1-4e1b-8539-b7381f95f50a' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 1, 125, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-2701a7a2-8fe4-47ae-b886-0dede898a42b' class='xr-array-in' type='checkbox' ><label for='section-2701a7a2-8fe4-47ae-b886-0dede898a42b' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 1, 125, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
     <tr>
         <td>
             <table style="border-collapse: collapse;">
@@ -3457,7 +3447,7 @@ dl.xr-attrs {
 </svg>
         </td>
     </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-5227ae4e-4e51-4d00-a2b2-557a5ceccd15' class='xr-section-summary-in' type='checkbox' checked /><label for='section-5227ae4e-4e51-4d00-a2b2-557a5ceccd15' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-ca5f2e4d-2d7c-4979-bae8-4ce27e1401d4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ca5f2e4d-2d7c-4979-bae8-4ce27e1401d4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-abb84c2f-f631-4c62-b946-46a32b07153b' class='xr-var-data-in' type='checkbox'><label for='data-abb84c2f-f631-4c62-b946-46a32b07153b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-2904ffb5-d29c-445e-98d2-cd0819cb8af1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2904ffb5-d29c-445e-98d2-cd0819cb8af1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b272b645-eb84-4925-801d-1c01eacd616c' class='xr-var-data-in' type='checkbox'><label for='data-b272b645-eb84-4925-801d-1c01eacd616c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-e1be74d3-0c3a-4fd9-aeef-2f9ba74c8ba5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e1be74d3-0c3a-4fd9-aeef-2f9ba74c8ba5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-098867f8-47e0-4823-bfa3-018acb9b580d' class='xr-var-data-in' type='checkbox'><label for='data-098867f8-47e0-4823-bfa3-018acb9b580d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
+</table></div></div></li><li class='xr-section-item'><input id='section-d6e55971-d5fe-44ab-b102-650702639874' class='xr-section-summary-in' type='checkbox' checked /><label for='section-d6e55971-d5fe-44ab-b102-650702639874' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-a499577d-0434-48d6-8772-2efacbdab8c9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-a499577d-0434-48d6-8772-2efacbdab8c9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3d3bfb75-f259-4093-908c-528791c8795e' class='xr-var-data-in' type='checkbox'><label for='data-3d3bfb75-f259-4093-908c-528791c8795e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-bd0a9bd3-a98a-415b-9be6-07dc0d3e536e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bd0a9bd3-a98a-415b-9be6-07dc0d3e536e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-75a69055-f5fd-4910-a2ad-1ca6e0179c3a' class='xr-var-data-in' type='checkbox'><label for='data-75a69055-f5fd-4910-a2ad-1ca6e0179c3a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-99c0aaee-4710-4ca2-91da-6d260408cc2d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-99c0aaee-4710-4ca2-91da-6d260408cc2d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3785be7a-6458-4443-8b0c-c57e2acda6e2' class='xr-var-data-in' type='checkbox'><label for='data-3785be7a-6458-4443-8b0c-c57e2acda6e2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
        3.3824 , 3.43072, 3.47904, 3.52736, 3.57568, 3.624  , 3.67232, 3.72064,
        3.76896, 3.81728, 3.8656 , 3.91392, 3.96224, 4.01056, 4.05888, 4.1072 ,
        4.15552, 4.20384, 4.25216, 4.30048, 4.3488 , 4.39712, 4.44544, 4.49376,
@@ -3472,834 +3462,167 @@ dl.xr-attrs {
        7.63456, 7.68288, 7.7312 , 7.77952, 7.82784, 7.87616, 7.92448, 7.9728 ,
        8.02112, 8.06944, 8.11776, 8.16608, 8.2144 , 8.26272, 8.31104, 8.35936,
        8.40768, 8.456  , 8.50432, 8.55264, 8.60096, 8.64928, 8.6976 , 8.74592,
-       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-a566583c-c93a-4538-ad64-973281bb29e4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-a566583c-c93a-4538-ad64-973281bb29e4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-4837e891-c8cb-4b04-9fa5-fe07d7edf497' class='xr-var-data-in' type='checkbox'><label for='data-4837e891-c8cb-4b04-9fa5-fe07d7edf497' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
+       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-9e6584c9-d5ed-4f6c-b5b6-6e3c47a460f3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-9e6584c9-d5ed-4f6c-b5b6-6e3c47a460f3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-62756ba2-8cc6-41f6-8e05-67ad3313169f' class='xr-var-data-in' type='checkbox'><label for='data-62756ba2-8cc6-41f6-8e05-67ad3313169f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
        -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
        -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
        -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
         0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
         1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
         2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-214e7887-6119-49fc-9095-fe751c70300c' class='xr-section-summary-in' type='checkbox' /><label for='section-214e7887-6119-49fc-9095-fe751c70300c' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-e1368906-aaaf-49f3-a372-742d2baa863c' class='xr-section-summary-in' type='checkbox' /><label for='section-e1368906-aaaf-49f3-a372-742d2baa863c' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">template</span>
-</span></code></pre></div>
-<div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
-<defs>
-<symbol id="icon-database" viewBox="0 0 32 32">
-<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
-<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
-<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
-</symbol>
-<symbol id="icon-file-text2" viewBox="0 0 32 32">
-<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
-<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
-</symbol>
-</defs>
-</svg>
-<style>/* CSS stylesheet for displaying xarray objects in notebooks */
-
-:root {
-  --xr-font-color0: var(
-    --jp-content-font-color0,
-    var(--pst-color-text-base rgba(0, 0, 0, 1))
-  );
-  --xr-font-color2: var(
-    --jp-content-font-color2,
-    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
-  );
-  --xr-font-color3: var(
-    --jp-content-font-color3,
-    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
-  );
-  --xr-border-color: var(
-    --jp-border-color2,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
-  );
-  --xr-disabled-color: var(
-    --jp-layout-color3,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
-  );
-  --xr-background-color: var(
-    --jp-layout-color0,
-    var(--pst-color-on-background, white)
-  );
-  --xr-background-color-row-even: var(
-    --jp-layout-color1,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
-  );
-  --xr-background-color-row-odd: var(
-    --jp-layout-color2,
-    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
-  );
-}
-
-html[theme="dark"],
-html[data-theme="dark"],
-body[data-theme="dark"],
-body.vscode-dark {
-  --xr-font-color0: var(
-    --jp-content-font-color0,
-    var(--pst-color-text-base, rgba(255, 255, 255, 1))
-  );
-  --xr-font-color2: var(
-    --jp-content-font-color2,
-    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
-  );
-  --xr-font-color3: var(
-    --jp-content-font-color3,
-    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
-  );
-  --xr-border-color: var(
-    --jp-border-color2,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
-  );
-  --xr-disabled-color: var(
-    --jp-layout-color3,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
-  );
-  --xr-background-color: var(
-    --jp-layout-color0,
-    var(--pst-color-on-background, #111111)
-  );
-  --xr-background-color-row-even: var(
-    --jp-layout-color1,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
-  );
-  --xr-background-color-row-odd: var(
-    --jp-layout-color2,
-    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
-  );
-}
-
-.xr-wrap {
-  display: block !important;
-  min-width: 300px;
-  max-width: 700px;
-  line-height: 1.6;
-  padding-bottom: 4px;
-}
-
-.xr-text-repr-fallback {
-  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
-  display: none;
-}
-
-.xr-header {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.xr-header {
-  border-bottom: solid 1px var(--xr-border-color);
-  margin-bottom: 4px;
-}
-
-.xr-header > div,
-.xr-header > ul {
-  display: inline;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.xr-obj-type,
-.xr-obj-name {
-  margin-left: 2px;
-  margin-right: 10px;
-}
-
-.xr-obj-type,
-.xr-group-box-contents > label {
-  color: var(--xr-font-color2);
-  display: block;
-}
-
-.xr-sections {
-  padding-left: 0 !important;
-  display: grid;
-  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-.xr-section-item {
-  display: contents;
-}
-
-.xr-section-item > input,
-.xr-group-box-contents > input,
-.xr-array-wrap > input {
-  display: block;
-  opacity: 0;
-  height: 0;
-  margin: 0;
-}
-
-.xr-section-item > input + label,
-.xr-var-item > input + label {
-  color: var(--xr-disabled-color);
-}
-
-.xr-section-item > input:enabled + label,
-.xr-var-item > input:enabled + label,
-.xr-array-wrap > input:enabled + label,
-.xr-group-box-contents > input:enabled + label {
-  cursor: pointer;
-  color: var(--xr-font-color2);
-}
-
-.xr-section-item > input:focus-visible + label,
-.xr-var-item > input:focus-visible + label,
-.xr-array-wrap > input:focus-visible + label,
-.xr-group-box-contents > input:focus-visible + label {
-  outline: auto;
-}
-
-.xr-section-item > input:enabled + label:hover,
-.xr-var-item > input:enabled + label:hover,
-.xr-array-wrap > input:enabled + label:hover,
-.xr-group-box-contents > input:enabled + label:hover {
-  color: var(--xr-font-color0);
-}
-
-.xr-section-summary {
-  grid-column: 1;
-  color: var(--xr-font-color2);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.xr-section-summary > em {
-  font-weight: normal;
-}
-
-.xr-span-grid {
-  grid-column-end: -1;
-}
-
-.xr-section-summary > span {
-  display: inline-block;
-  padding-left: 0.3em;
-}
-
-.xr-group-box-contents > input:checked + label > span {
-  display: inline-block;
-  padding-left: 0.6em;
-}
-
-.xr-section-summary-in:disabled + label {
-  color: var(--xr-font-color2);
-}
-
-.xr-section-summary-in + label:before {
-  display: inline-block;
-  content: "►";
-  font-size: 11px;
-  width: 15px;
-  text-align: center;
-}
-
-.xr-section-summary-in:disabled + label:before {
-  color: var(--xr-disabled-color);
-}
-
-.xr-section-summary-in:checked + label:before {
-  content: "▼";
-}
-
-.xr-section-summary-in:checked + label > span {
-  display: none;
-}
-
-.xr-section-summary,
-.xr-section-inline-details,
-.xr-group-box-contents > label {
-  padding-top: 4px;
-}
-
-.xr-section-inline-details {
-  grid-column: 2 / -1;
-}
-
-.xr-section-details {
-  grid-column: 1 / -1;
-  margin-top: 4px;
-  margin-bottom: 5px;
-}
-
-.xr-section-summary-in ~ .xr-section-details {
-  display: none;
-}
-
-.xr-section-summary-in:checked ~ .xr-section-details {
-  display: contents;
-}
-
-.xr-children {
-  display: inline-grid;
-  grid-template-columns: 100%;
-  grid-column: 1 / -1;
-  padding-top: 4px;
-}
-
-.xr-group-box {
-  display: inline-grid;
-  grid-template-columns: 0px 30px auto;
-}
-
-.xr-group-box-vline {
-  grid-column-start: 1;
-  border-right: 0.2em solid;
-  border-color: var(--xr-border-color);
-  width: 0px;
-}
-
-.xr-group-box-hline {
-  grid-column-start: 2;
-  grid-row-start: 1;
-  height: 1em;
-  width: 26px;
-  border-bottom: 0.2em solid;
-  border-color: var(--xr-border-color);
-}
-
-.xr-group-box-contents {
-  grid-column-start: 3;
-  padding-bottom: 4px;
-}
-
-.xr-group-box-contents > label::before {
-  content: "📂";
-  padding-right: 0.3em;
-}
-
-.xr-group-box-contents > input:checked + label::before {
-  content: "📁";
-}
-
-.xr-group-box-contents > input:checked + label {
-  padding-bottom: 0px;
-}
-
-.xr-group-box-contents > input:checked ~ .xr-sections {
-  display: none;
-}
-
-.xr-group-box-contents > input + label > span {
-  display: none;
-}
-
-.xr-group-box-ellipsis {
-  font-size: 1.4em;
-  font-weight: 900;
-  color: var(--xr-font-color2);
-  letter-spacing: 0.15em;
-  cursor: default;
-}
-
-.xr-array-wrap {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 20px auto;
-}
-
-.xr-array-wrap > label {
-  grid-column: 1;
-  vertical-align: top;
-}
-
-.xr-preview {
-  color: var(--xr-font-color3);
-}
-
-.xr-array-preview,
-.xr-array-data {
-  padding: 0 5px !important;
-  grid-column: 2;
-}
-
-.xr-array-data,
-.xr-array-in:checked ~ .xr-array-preview {
-  display: none;
-}
-
-.xr-array-in:checked ~ .xr-array-data,
-.xr-array-preview {
-  display: inline-block;
-}
-
-.xr-dim-list {
-  display: inline-block !important;
-  list-style: none;
-  padding: 0 !important;
-  margin: 0;
-}
-
-.xr-dim-list li {
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-}
-
-.xr-dim-list:before {
-  content: "(";
-}
-
-.xr-dim-list:after {
-  content: ")";
-}
-
-.xr-dim-list li:not(:last-child):after {
-  content: ",";
-  padding-right: 5px;
-}
-
-.xr-has-index {
-  font-weight: bold;
-}
-
-.xr-var-list,
-.xr-var-item {
-  display: contents;
-}
-
-.xr-var-item > div,
-.xr-var-item label,
-.xr-var-item > .xr-var-name span {
-  background-color: var(--xr-background-color-row-even);
-  border-color: var(--xr-background-color-row-odd);
-  margin-bottom: 0;
-  padding-top: 2px;
-}
-
-.xr-var-item > .xr-var-name:hover span {
-  padding-right: 5px;
-}
-
-.xr-var-list > li:nth-child(odd) > div,
-.xr-var-list > li:nth-child(odd) > label,
-.xr-var-list > li:nth-child(odd) > .xr-var-name span {
-  background-color: var(--xr-background-color-row-odd);
-  border-color: var(--xr-background-color-row-even);
-}
-
-.xr-var-name {
-  grid-column: 1;
-}
-
-.xr-var-dims {
-  grid-column: 2;
-}
-
-.xr-var-dtype {
-  grid-column: 3;
-  text-align: right;
-  color: var(--xr-font-color2);
-}
-
-.xr-var-preview {
-  grid-column: 4;
-}
-
-.xr-index-preview {
-  grid-column: 2 / 5;
-  color: var(--xr-font-color2);
-}
-
-.xr-var-name,
-.xr-var-dims,
-.xr-var-dtype,
-.xr-preview,
-.xr-attrs dt {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: 10px;
-}
-
-.xr-var-name:hover,
-.xr-var-dims:hover,
-.xr-var-dtype:hover,
-.xr-attrs dt:hover {
-  overflow: visible;
-  width: auto;
-  z-index: 1;
-}
-
-.xr-var-attrs,
-.xr-var-data,
-.xr-index-data {
-  display: none;
-  border-top: 2px dotted var(--xr-background-color);
-  padding-bottom: 20px !important;
-  padding-top: 10px !important;
-}
-
-.xr-var-attrs-in + label,
-.xr-var-data-in + label,
-.xr-index-data-in + label {
-  padding: 0 1px;
-}
-
-.xr-var-attrs-in:checked ~ .xr-var-attrs,
-.xr-var-data-in:checked ~ .xr-var-data,
-.xr-index-data-in:checked ~ .xr-index-data {
-  display: block;
-}
-
-.xr-var-data > table {
-  float: right;
-}
-
-.xr-var-data > pre,
-.xr-index-data > pre,
-.xr-var-data > table > tbody > tr {
-  background-color: transparent !important;
-}
-
-.xr-var-name span,
-.xr-var-data,
-.xr-index-name div,
-.xr-index-data,
-.xr-attrs {
-  padding-left: 25px !important;
-}
-
-.xr-attrs,
-.xr-var-attrs,
-.xr-var-data,
-.xr-index-data {
-  grid-column: 1 / -1;
-}
-
-dl.xr-attrs {
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 125px auto;
-}
-
-.xr-attrs dt,
-.xr-attrs dd {
-  padding: 0;
-  margin: 0;
-  float: left;
-  padding-right: 10px;
-  width: auto;
-}
-
-.xr-attrs dt {
-  font-weight: normal;
-  grid-column: 1;
-}
-
-.xr-attrs dt:hover span {
-  display: inline-block;
-  background: var(--xr-background-color);
-  padding-right: 10px;
-}
-
-.xr-attrs dd {
-  grid-column: 2;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.xr-icon-database,
-.xr-icon-file-text2,
-.xr-no-icon {
-  display: inline-block;
-  vertical-align: middle;
-  width: 1em;
-  height: 1.5em !important;
-  stroke-width: 0;
-  stroke: currentColor;
-  fill: currentColor;
-}
-
-.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
-.xr-var-data-in:checked + label > .xr-icon-database,
-.xr-index-data-in:checked + label > .xr-icon-database {
-  color: var(--xr-font-color0);
-  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
-  stroke-width: 0.8px;
-}
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;pepe-mariani-2026-fusi-template&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 81</li><li><span class='xr-has-index'>y</span>: 91</li><li><span class='xr-has-index'>x</span>: 116</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-4e7b2a3b-88ae-47fe-a4b6-181747fa964e' class='xr-array-in' type='checkbox' ><label for='section-4e7b2a3b-88ae-47fe-a4b6-181747fa964e' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>1.589 1.654 1.906 3.139 ... -0.002029 -0.001425 -0.001421 -0.001257</span></div><div class='xr-array-data'><pre>array([[[ 1.58904730e+00,  1.65424737e+00,  1.90579922e+00, ...,
-          1.84592445e+00,  1.64345425e+00,  1.57960836e+00],
-        [ 1.68597743e+00,  1.89163068e+00,  2.02026518e+00, ...,
-          2.04294610e+00,  1.86127496e+00,  1.66323763e+00],
-        [ 1.88772834e+00,  2.01690809e+00,  2.17881770e+00, ...,
-          2.17189019e+00,  1.99321451e+00,  1.87552354e+00],
-        ...,
-        [ 1.54211700e+00,  1.44985649e+00,  1.42783524e+00, ...,
-          1.44792428e+00,  1.43786061e+00,  1.48389630e+00],
-        [ 1.38639142e+00,  1.50950657e+00,  1.50773555e+00, ...,
-          1.53577763e+00,  1.51360024e+00,  1.35655838e+00],
-        [ 1.15675634e+00,  1.24545528e+00,  1.21833369e+00, ...,
-          1.24637951e+00,  1.29124878e+00,  1.17016318e+00]],
-
-       [[ 1.60210576e+00,  1.66543925e+00,  1.94973887e+00, ...,
-          1.89130048e+00,  1.66191590e+00,  1.60181016e+00],
-        [ 1.75120979e+00,  1.91072443e+00,  2.09132243e+00, ...,
-          2.09682216e+00,  1.89844701e+00,  1.74372530e+00],
-        [ 1.98507310e+00,  2.08680949e+00,  2.27913078e+00, ...,
-          2.26304477e+00,  2.07539742e+00,  1.98696538e+00],
-...
-          2.90391623e-02,  2.45518709e-02,  2.06912208e-02],
-        [ 1.63864602e-02,  1.82867755e-02,  2.48652946e-02, ...,
-          2.45090120e-02,  2.02801213e-02,  1.80399301e-02],
-        [ 1.33971087e-02,  1.19715875e-02,  1.74442866e-02, ...,
-          1.78523447e-02,  1.46113640e-02,  1.52400188e-02]],
-
-       [[ 5.95192639e-05,  7.13254041e-05,  6.48110404e-05, ...,
-          7.93793607e-05,  6.78291976e-05,  5.37202602e-05],
-        [ 5.12355366e-05,  6.22608081e-05,  5.23574543e-05, ...,
-          6.73280027e-05,  5.48100259e-05,  4.80051826e-05],
-        [ 1.03514146e-05,  1.95939168e-05, -4.06878049e-06, ...,
-          5.06072979e-06,  1.27041038e-05,  6.69952754e-06],
-        ...,
-        [-6.94587517e-04, -1.31071254e-03, -1.51120866e-03, ...,
-         -1.71105250e-03, -1.56161488e-03, -9.30080108e-04],
-        [-1.39745400e-04, -6.82165360e-04, -5.52462179e-04, ...,
-         -7.89057918e-04, -7.89577070e-04, -3.30539744e-04],
-        [-1.08547343e-03, -1.33064346e-03, -1.14912699e-03, ...,
-         -1.42487467e-03, -1.42123054e-03, -1.25739267e-03]]],
-      shape=(81, 91, 116))</pre></div></div></li><li class='xr-section-item'><input id='section-ee9dc733-d36e-4311-a400-c60b0a1a5ba6' class='xr-section-summary-in' type='checkbox' checked /><label for='section-ee9dc733-d36e-4311-a400-c60b0a1a5ba6' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.23 2.33 2.43 ... 10.13 10.23</div><input id='attrs-f30f2650-a60c-4fc6-be61-169622d8e436' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f30f2650-a60c-4fc6-be61-169622d8e436' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f39ec3e8-8b7b-4b13-a40a-06d5a2cc3a77' class='xr-var-data-in' type='checkbox'><label for='data-f39ec3e8-8b7b-4b13-a40a-06d5a2cc3a77' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09999865786329978</dd></dl></div><div class='xr-var-data'><pre>array([ 2.229563,  2.329562,  2.42956 ,  2.529559,  2.629558,  2.729556,
-        2.829555,  2.929554,  3.029552,  3.129551,  3.22955 ,  3.329548,
-        3.429547,  3.529546,  3.629544,  3.729543,  3.829542,  3.92954 ,
-        4.029539,  4.129537,  4.229536,  4.329535,  4.429533,  4.529532,
-        4.629531,  4.729529,  4.829528,  4.929527,  5.029525,  5.129524,
-        5.229523,  5.329521,  5.42952 ,  5.529519,  5.629517,  5.729516,
-        5.829515,  5.929513,  6.029512,  6.129511,  6.229509,  6.329508,
-        6.429507,  6.529505,  6.629504,  6.729503,  6.829501,  6.9295  ,
-        7.029499,  7.129497,  7.229496,  7.329495,  7.429493,  7.529492,
-        7.629491,  7.729489,  7.829488,  7.929486,  8.029485,  8.129484,
-        8.229482,  8.329481,  8.42948 ,  8.529478,  8.629477,  8.729476,
-        8.829474,  8.929473,  9.029472,  9.12947 ,  9.229469,  9.329468,
-        9.429466,  9.529465,  9.629464,  9.729462,  9.829461,  9.92946 ,
-       10.029458, 10.129457, 10.229456])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.7195 0.8194 ... 9.607 9.706</div><input id='attrs-40338c91-fc69-4955-8594-61b7d08c8e86' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-40338c91-fc69-4955-8594-61b7d08c8e86' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-47023e44-cce1-4c40-a294-7e0c4649cfb8' class='xr-var-data-in' type='checkbox'><label for='data-47023e44-cce1-4c40-a294-7e0c4649cfb8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09985496653168884</dd></dl></div><div class='xr-var-data'><pre>array([0.719548, 0.819403, 0.919258, 1.019113, 1.118967, 1.218822, 1.318677,
-       1.418532, 1.518387, 1.618242, 1.718097, 1.817952, 1.917807, 2.017662,
-       2.117517, 2.217372, 2.317227, 2.417082, 2.516937, 2.616792, 2.716647,
-       2.816502, 2.916357, 3.016212, 3.116067, 3.215922, 3.315777, 3.415632,
-       3.515487, 3.615342, 3.715197, 3.815052, 3.914907, 4.014762, 4.114616,
-       4.214471, 4.314326, 4.414181, 4.514036, 4.613891, 4.713746, 4.813601,
-       4.913456, 5.013311, 5.113166, 5.213021, 5.312876, 5.412731, 5.512586,
-       5.612441, 5.712296, 5.812151, 5.912006, 6.011861, 6.111716, 6.211571,
-       6.311426, 6.411281, 6.511136, 6.610991, 6.710846, 6.810701, 6.910556,
-       7.010411, 7.110265, 7.21012 , 7.309975, 7.40983 , 7.509685, 7.60954 ,
-       7.709395, 7.80925 , 7.909105, 8.00896 , 8.108815, 8.20867 , 8.308525,
-       8.40838 , 8.508235, 8.60809 , 8.707945, 8.8078  , 8.907655, 9.00751 ,
-       9.107365, 9.20722 , 9.307075, 9.40693 , 9.506785, 9.60664 , 9.706495])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-0.5957 -0.4857 ... 11.94 12.05</div><input id='attrs-ad0e4dce-eb2d-4bd6-953e-dd1d450fe409' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ad0e4dce-eb2d-4bd6-953e-dd1d450fe409' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fb43d019-3bee-46c8-aa88-2ede2081cb8a' class='xr-var-data-in' type='checkbox'><label for='data-fb43d019-3bee-46c8-aa88-2ede2081cb8a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999184938259889</dd></dl></div><div class='xr-var-data'><pre>array([-0.595727, -0.485735, -0.375743, -0.265751, -0.15576 , -0.045768,
-        0.064224,  0.174216,  0.284208,  0.3942  ,  0.504191,  0.614183,
-        0.724175,  0.834167,  0.944159,  1.054151,  1.164143,  1.274134,
-        1.384126,  1.494118,  1.60411 ,  1.714102,  1.824094,  1.934086,
-        2.044077,  2.154069,  2.264061,  2.374053,  2.484045,  2.594037,
-        2.704028,  2.81402 ,  2.924012,  3.034004,  3.143996,  3.253988,
-        3.36398 ,  3.473971,  3.583963,  3.693955,  3.803947,  3.913939,
-        4.023931,  4.133922,  4.243914,  4.353906,  4.463898,  4.57389 ,
-        4.683882,  4.793874,  4.903865,  5.013857,  5.123849,  5.233841,
-        5.343833,  5.453825,  5.563817,  5.673808,  5.7838  ,  5.893792,
-        6.003784,  6.113776,  6.223768,  6.333759,  6.443751,  6.553743,
-        6.663735,  6.773727,  6.883719,  6.993711,  7.103702,  7.213694,
-        7.323686,  7.433678,  7.54367 ,  7.653662,  7.763654,  7.873645,
-        7.983637,  8.093629,  8.203621,  8.313613,  8.423605,  8.533596,
-        8.643588,  8.75358 ,  8.863572,  8.973564,  9.083556,  9.193548,
-        9.303539,  9.413531,  9.523523,  9.633515,  9.743507,  9.853499,
-        9.963491, 10.073482, 10.183474, 10.293466, 10.403458, 10.51345 ,
-       10.623442, 10.733433, 10.843425, 10.953417, 11.063409, 11.173401,
-       11.283393, 11.393385, 11.503376, 11.613368, 11.72336 , 11.833352,
-       11.943344, 12.053336])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-bd9bc9af-19c9-4312-a24e-337d4d755813' class='xr-section-summary-in' type='checkbox' checked /><label for='section-bd9bc9af-19c9-4312-a24e-337d4d755813' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>sform_code :</span></dt><dd>1</dd><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_sform&#x27;: array([[ 9.78100016e-01,  2.08807581e-01,  3.89870563e-04,
-        -1.01187350e-01],
-       [-2.08136085e-01,  9.77956725e-01, -9.60151011e-06,
-         4.79907980e-01],
-       [-4.52551720e-04, -3.05168414e-04,  9.99999924e-01,
-         1.22853048e-03],
-       [ 0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-         1.00000000e+00]]), &#x27;physical_to_qform&#x27;: array([[ 1.00001344e+00,  0.00000000e+00,  0.00000000e+00,
-        -2.99574084e-05],
-       [ 0.00000000e+00,  1.00145246e+00,  0.00000000e+00,
-        -1.04511137e-03],
-       [ 0.00000000e+00,  0.00000000e+00,  1.00007410e+00,
-         4.41413433e-05],
-       [ 0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-         1.00000000e+00]])}</dd></dl></div></li></ul></div></div>
-<style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
-
 <h2 id="register-the-recording-to-the-template">Register the recording to the template<a class="headerlink" href="#register-the-recording-to-the-template" title="Permanent link">&para;</a></h2>
-<p>The recording's <code>z</code> coordinate is arbitrary (it just indexes the single acquired
-slice), so it carries no information about where that slice actually sits along the
-template's anteroposterior axis. We use an affine measured once in Napari's
-registration widget as the initialization: it places the slice at its approximate
-location and already yields a good overlay, so registration only needs a small affine
-refinement.</p>
-<p><code>register_volume</code> expects a transform mapping <code>fixed</code> (template) physical coordinates
-to <code>moving</code> (recording) physical coordinates, so we invert the Napari affine—which
-instead describes how to place the recording <em>into</em> the template's coordinate
-system—before using it as <code>initialization</code>.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">napari_affine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="p">[</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.594638656430411</span><span class="p">],</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.50293925701927</span><span class="p">],</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.6650243788545875</span><span class="p">],</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="p">]</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">)</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">initialization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">napari_affine</span><span class="p">)</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Crop the template to a thin band around the recording&#39;s expected location: it</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># stabilizes registration and keeps the resampled output close to the recording&#39;s</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># thickness.</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">target_z</span> <span class="o">=</span> <span class="n">napari_affine</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">fixed</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">target_z</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">target_z</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="n">initialized</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">initialization</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">)</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="n">fixed</span><span class="p">,</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="n">initialized</span><span class="p">,</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="p">)</span>
+<p>The template is a 3D volume but the recording is a single slice. We can still register
+the recording to the template, but we need to initialize the registration with a rough
+guess of where the recording sits in the template, otherwise the registration
+algorithm may not converge to the right slice. To initialize the registration, we use
+an affine transform obtained using <a href="https://napari.org/stable/howtos/layers/image.html#buttons">napari's manual transform
+tool</a> by placing the
+recording at an approximate location on the template. The transform is not perfect,
+but it is close enough to allow the registration algorithm to converge to a good
+solution.</p>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> expects a transform
+mapping <code>fixed</code> (template) physical coordinates to <code>moving</code> (recording) physical
+coordinates, so we invert the Napari affine—which instead describes how to place the
+recording <em>into</em> the template's coordinate system—before using it as <code>initialization</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">napari_affine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">[</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.594638656430411</span><span class="p">],</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.50293925701927</span><span class="p">],</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.6650243788545875</span><span class="p">],</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">]</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">initialization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">napari_affine</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># Crop the template to a thin band around the recording&#39;s expected location to improve</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># registration speed and visualization.</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">target_z</span> <span class="o">=</span> <span class="n">napari_affine</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">fixed</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">target_z</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">target_z</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">initialized</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">initialization</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="p">)</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">fixed</span><span class="p">,</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">initialized</span><span class="p">,</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;confusius.plotting.image.VolumePlotter at 0x7f254ab057f0&gt;
+<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_05_0_light.png#only-light" data-type="image" data-title="Example output from cell 5, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_05_0_light.png#only-light" alt="Example output from cell 5, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_05_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 5, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_05_0_dark.png#only-dark" alt="Example output from cell 5, image 0"></a></p>
+<p>We use an affine transform: on top of the rotation and translation a rigid transform
+would allow, it also captures small scale and shear differences between the recording
+and the template.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">registered</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">register_volume</span><span class="p">(</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">moving</span><span class="o">=</span><span class="n">moving</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">transform_type</span><span class="o">=</span><span class="s2">&quot;affine&quot;</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">convergence_window_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">learning_rate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">initialization</span><span class="o">=</span><span class="n">initialization</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_06_1_light.png#only-light" data-type="image" data-title="Example output from cell 6, image 1" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_06_1_light.png#only-light" alt="Example output from cell 6, image 1"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_06_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 6, image 1" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_06_1_dark.png#only-dark" alt="Example output from cell 6, image 1"></a></p>
-<p>We use an affine transform: on top of the rotation and translation a rigid
-transform would allow, it also captures small scale and shear differences between
-the recording and the template.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">registered</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span> <span class="n">diagnostics</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">register_volume</span><span class="p">(</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">moving</span><span class="o">=</span><span class="n">moving</span><span class="p">,</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">,</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">transform_type</span><span class="o">=</span><span class="s2">&quot;affine&quot;</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">convergence_window_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">learning_rate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">initialization</span><span class="o">=</span><span class="n">initialization</span><span class="p">,</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">)</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial metric: </span><span class="si">{</span><span class="n">diagnostics</span><span class="o">.</span><span class="n">metric_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final metric: </span><span class="si">{</span><span class="n">diagnostics</span><span class="o">.</span><span class="n">final_metric_value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iterations: </span><span class="si">{</span><span class="n">diagnostics</span><span class="o">.</span><span class="n">n_iterations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stop condition: </span><span class="si">{</span><span class="n">diagnostics</span><span class="o">.</span><span class="n">stop_condition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="n">affine</span>
-</span></code></pre></div>
-<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_08_0_light.png#only-light" data-type="image" data-title="Example output from cell 8, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_08_0_light.png#only-light" alt="Example output from cell 8, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_08_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 8, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_08_0_dark.png#only-dark" alt="Example output from cell 8, image 0"></a></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Initial metric: -0.0691
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Final metric: -0.1045
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Iterations: 444
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Stop condition: GradientDescentOptimizerv4Template: Convergence checker passed at iteration 444.
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>array([[ 1.00000000e+00, -7.06243870e-19,  3.18622964e-19,
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>        -5.59463866e+00],
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>       [ 1.08740902e-02,  9.06939136e-01,  6.42231016e-03,
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>         2.56951411e+00],
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>       [-5.84240270e-04,  5.92081406e-03,  9.83465206e-01,
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        -5.66460890e+00],
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>       [ 0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>         1.00000000e+00]])
-</span></code></pre></div>
+<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_07_0_light.png#only-light" data-type="image" data-title="Example output from cell 7, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_07_0_light.png#only-light" alt="Example output from cell 7, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_07_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 7, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_07_0_dark.png#only-dark" alt="Example output from cell 7, image 0"></a></p>
 <p>The initialization was already close, so the refinement is small. Comparing the
-overlay before and after registration, alignment is slightly better after the
-affine refinement, most noticeably around the anterior choroidal arteries in the
-bottom part of the field of view.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">moving_view</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initialized</span><span class="p">,</span> <span class="s2">&quot;Manual initialization&quot;</span><span class="p">),</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">registered</span><span class="p">,</span> <span class="s2">&quot;Affine registration refinement&quot;</span><span class="p">),</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">]:</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="n">fixed</span><span class="p">,</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        <span class="n">moving_view</span><span class="p">,</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
-</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    <span class="p">)</span>
-</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
-</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Template (red) / recording (cyan)&quot;</span><span class="p">)</span>
+overlay before and after registration, alignment is slightly better after the affine
+refinement, most noticeably around the anterior choroidal arteries in the bottom part
+of the field of view.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">moving_view</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initialized</span><span class="p">,</span> <span class="s2">&quot;Manual initialization&quot;</span><span class="p">),</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">registered</span><span class="p">,</span> <span class="s2">&quot;Affine registration refinement&quot;</span><span class="p">),</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">]:</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="n">fixed</span><span class="p">,</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="n">moving_view</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="p">)</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Template (red) / recording (cyan)&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_10_0_light.png#only-light" data-type="image" data-title="Example output from cell 10, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_10_0_light.png#only-light" alt="Example output from cell 10, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_10_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 10, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_10_0_dark.png#only-dark" alt="Example output from cell 10, image 0"></a></p>
+<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_09_0_light.png#only-light" data-type="image" data-title="Example output from cell 9, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_09_0_light.png#only-light" alt="Example output from cell 9, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_09_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 9, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_09_0_dark.png#only-dark" alt="Example output from cell 9, image 0"></a></p>
 <h2 id="resample-the-allen-atlas-onto-the-recordings-native-grid">Resample the Allen atlas onto the recording's native grid<a class="headerlink" href="#resample-the-allen-atlas-onto-the-recordings-native-grid" title="Permanent link">&para;</a></h2>
 <p>The template is not itself expressed in Allen space, but it carries the affine
 transform to get there in <code>template.attrs["affines"]["physical_to_sform"]</code>. Composing
-it with the inverse of the estimated registration affine gives a single transform
-from the recording's native coordinates directly to Allen atlas coordinates.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">physical_to_sform</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">subject_to_atlas</span> <span class="o">=</span> <span class="n">physical_to_sform</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">atlas_native</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span><span class="n">moving</span><span class="p">,</span> <span class="n">subject_to_atlas</span><span class="p">)</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">)</span>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">atlas_native</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
+it with the inverse of the estimated registration affine gives a single transform from
+the recording's native coordinates directly to Allen atlas coordinates.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">physical_to_sform</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">subject_to_atlas</span> <span class="o">=</span> <span class="n">physical_to_sform</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">atlas_native</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span><span class="n">moving</span><span class="p">,</span> <span class="n">subject_to_atlas</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">)</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">_</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">atlas_native</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>&lt;confusius.plotting.image.VolumePlotter at 0x7f25495df100&gt;
-</span></code></pre></div>
-<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_12_1_light.png#only-light" data-type="image" data-title="Example output from cell 12, image 1" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_12_1_light.png#only-light" alt="Example output from cell 12, image 1"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_12_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 12, image 1" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_12_1_dark.png#only-dark" alt="Example output from cell 12, image 1"></a></p>
+<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_11_0_light.png#only-light" data-type="image" data-title="Example output from cell 11, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_11_0_light.png#only-light" alt="Example output from cell 11, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_11_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 11, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_11_0_dark.png#only-dark" alt="Example output from cell 11, image 0"></a></p>
 <h2 id="extract-region-signals-and-compute-their-correlation-matrix">Extract region signals and compute their correlation matrix<a class="headerlink" href="#extract-region-signals-and-compute-their-correlation-matrix" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../../../api/atlas/#confusius.atlas.Atlas.get_masks"><code>Atlas.get_masks</code></a> accepts parent acronyms from the
 Allen ontology (e.g. <code>"SSp-bfd"</code>) and automatically aggregates every descendant
 region, so we can request a handful of coarse regions per area of interest instead of
-individual cortical layers or thalamic nuclei. We pick three regions each from
-cortex, hippocampus, thalamus, and hypothalamus.</p>
-<p>We extract left and right hemispheres separately via <code>get_masks</code>'s <code>sides</code> argument:
-combining both sides into one mask would average left/right signals together and
-hide interhemispheric differences. <code>get_masks</code> reuses the same region id for both
-hemispheres of a region, so we stack the two sides' masks into a single <code>(mask, z,
-y, x)</code> array and give every layer a fresh, unique id before passing it to
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../../../../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> in one call—it names
-each output region from the mask coordinate we set, not from these ids. Within each
-area, acronyms are listed medial-to-lateral; the left hemisphere is ordered
-lateral-to-medial and the right medial-to-lateral, so each area block reads as one
-continuous sweep across the slice, meeting at the midline in the middle.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">groups</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="s2">&quot;cortex&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;RSPv&quot;</span><span class="p">,</span> <span class="s2">&quot;MOp&quot;</span><span class="p">,</span> <span class="s2">&quot;SSp-bfd&quot;</span><span class="p">],</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="s2">&quot;hippocampus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;DG&quot;</span><span class="p">,</span> <span class="s2">&quot;CA3&quot;</span><span class="p">,</span> <span class="s2">&quot;CA2&quot;</span><span class="p">],</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="s2">&quot;thalamus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PO&quot;</span><span class="p">,</span> <span class="s2">&quot;VPM&quot;</span><span class="p">,</span> <span class="s2">&quot;RT&quot;</span><span class="p">],</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="s2">&quot;hypothalamus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PH&quot;</span><span class="p">,</span> <span class="s2">&quot;LHA&quot;</span><span class="p">,</span> <span class="s2">&quot;ZI&quot;</span><span class="p">],</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">}</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">region_acronyms</span> <span class="o">=</span> <span class="p">[</span><span class="n">acronym</span> <span class="k">for</span> <span class="n">acronyms</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">acronyms</span><span class="p">]</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="n">region_order</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="n">group_labels</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">for</span> <span class="n">area</span><span class="p">,</span> <span class="n">acronyms</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">region_order</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_L&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">acronyms</span><span class="p">)]</span>
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="n">region_order</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_R&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">acronyms</span><span class="p">]</span>
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="n">group_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="n">area</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">acronyms</span><span class="p">))</span>
-</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="n">sides</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_acronyms</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_acronyms</span><span class="p">)</span>
-</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">mask_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_L&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">region_acronyms</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
-</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_R&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">region_acronyms</span>
-</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="p">]</span>
-</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="n">masks</span> <span class="o">=</span> <span class="n">atlas_native</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="n">region_acronyms</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="n">sides</span><span class="p">)</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span>
-</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>    <span class="n">mask</span><span class="o">=</span><span class="n">mask_names</span>
-</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="p">)</span>
-</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="c1"># get_masks reuses the same region id for both hemispheres of a region, which</span>
-</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="c1"># extract_with_labels would reject as a duplicate id across stacked-mask layers. Give</span>
-</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="c1"># every layer a unique nonzero id instead; extract_with_labels names each output</span>
-</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="c1"># region from the mask coordinate above, not from these ids.</span>
-</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="n">layer_ids</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">masks</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span>
-</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a><span class="n">masks</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">masks</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">layer_ids</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>
-</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">extract_with_labels</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">masks</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
-</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="c1"># extract_with_labels does not guarantee any particular region order, so reindex</span>
-</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a><span class="c1"># explicitly into the left-right sweep computed above.</span>
-</span><span id="__span-11-33"><a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region_order</span><span class="p">)</span>
-</span><span id="__span-11-34"><a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>
-</span><span id="__span-11-35"><a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a><span class="n">signals</span>
+individual cortical layers or thalamic nuclei. We pick three regions each from cortex,
+hippocampus, thalamus, and hypothalamus.</p>
+<p>We extract left and right hemispheres separately via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../../../api/atlas/#confusius.atlas.Atlas.get_masks"><code>get_masks</code></a>'s <code>sides</code> argument: combining both
+sides into one mask would average left/right signals together and hide
+bilateral <abbr title="Functional Connectivity">FC</abbr> and interhemispheric differences.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../../../api/atlas/#confusius.atlas.Atlas.get_masks"><code>get_masks</code></a> reuses the same region id for both
+hemispheres of a region, so we stack the two sides' masks into a single <code>(mask, z, y,
+x)</code> array and give every layer a unique id before passing it to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../../../../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> in one call. Within
+each area the left hemisphere is ordered lateral-to-medial and the right
+medial-to-lateral, so each area block reads as one continuous sweep across the slice.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">groups</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="s2">&quot;cortex&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;RSPv&quot;</span><span class="p">,</span> <span class="s2">&quot;MOp&quot;</span><span class="p">,</span> <span class="s2">&quot;SSp-bfd&quot;</span><span class="p">],</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="s2">&quot;hippocampus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;DG&quot;</span><span class="p">,</span> <span class="s2">&quot;CA3&quot;</span><span class="p">,</span> <span class="s2">&quot;CA2&quot;</span><span class="p">],</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="s2">&quot;thalamus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PO&quot;</span><span class="p">,</span> <span class="s2">&quot;VPM&quot;</span><span class="p">,</span> <span class="s2">&quot;RT&quot;</span><span class="p">],</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="s2">&quot;hypothalamus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;PH&quot;</span><span class="p">,</span> <span class="s2">&quot;LHA&quot;</span><span class="p">,</span> <span class="s2">&quot;ZI&quot;</span><span class="p">],</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">}</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">region_acronyms</span> <span class="o">=</span> <span class="p">[</span><span class="n">acronym</span> <span class="k">for</span> <span class="n">acronyms</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">acronyms</span><span class="p">]</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">region_order</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">group_labels</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">for</span> <span class="n">area</span><span class="p">,</span> <span class="n">acronyms</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">region_order</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_L&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">acronyms</span><span class="p">)]</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">region_order</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_R&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">acronyms</span><span class="p">]</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">group_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="n">area</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">acronyms</span><span class="p">))</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="n">sides</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_acronyms</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_acronyms</span><span class="p">)</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="n">mask_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_L&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">region_acronyms</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">acronym</span><span class="si">}</span><span class="s2">_R&quot;</span> <span class="k">for</span> <span class="n">acronym</span> <span class="ow">in</span> <span class="n">region_acronyms</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="p">]</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="n">masks</span> <span class="o">=</span> <span class="n">atlas_native</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="n">region_acronyms</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="n">sides</span><span class="p">)</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">mask</span><span class="o">=</span><span class="n">mask_names</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="p">)</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="c1"># get_masks reuses the same region id for both hemispheres of a region, which</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="c1"># extract_with_labels would reject as a duplicate id across stacked-mask layers. Give</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="c1"># every layer a unique nonzero id instead; extract_with_labels names each output</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="c1"># region from the mask coordinate above, not from these ids.</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="n">layer_ids</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">masks</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="n">masks</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">masks</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">layer_ids</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">extract_with_labels</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">masks</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="c1"># extract_with_labels does not guarantee any particular region order, so reindex</span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="c1"># explicitly into the left-right sweep computed above.</span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region_order</span><span class="p">)</span>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="n">signals</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -4843,7 +4166,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>region</span>: 24</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-10715ca2-c392-48b7-83c7-b1e39edbb858' class='xr-array-in' type='checkbox' ><label for='section-10715ca2-c392-48b7-83c7-b1e39edbb858' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 24), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>region</span>: 24</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-4f0363bb-ca96-4ade-bd21-4e88d7a35d55' class='xr-array-in' type='checkbox' ><label for='section-4f0363bb-ca96-4ade-bd21-4e88d7a35d55' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 24), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
     <tr>
         <td>
             <table style="border-collapse: collapse;">
@@ -4898,10 +4221,10 @@ dl.xr-attrs {
 </svg>
         </td>
     </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-59872af1-5b3c-486c-8a29-b6a7feb52470' class='xr-section-summary-in' type='checkbox' checked /><label for='section-59872af1-5b3c-486c-8a29-b6a7feb52470' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-8dca6ba7-0642-47d0-86fa-148a6cb5209a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8dca6ba7-0642-47d0-86fa-148a6cb5209a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b6298546-18a6-45ea-9fbb-433c23da03c2' class='xr-var-data-in' type='checkbox'><label for='data-b6298546-18a6-45ea-9fbb-433c23da03c2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U9</div><div class='xr-var-preview xr-preview'>&#x27;SSp-bfd_L&#x27; &#x27;MOp_L&#x27; ... &#x27;ZI_R&#x27;</div><input id='attrs-bbfeea8a-965f-4723-83e0-999d409b7c41' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-bbfeea8a-965f-4723-83e0-999d409b7c41' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ce74b127-b7ce-42dd-824d-41e31d37b350' class='xr-var-data-in' type='checkbox'><label for='data-ce74b127-b7ce-42dd-824d-41e31d37b350' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;SSp-bfd_L&#x27;, &#x27;MOp_L&#x27;, &#x27;RSPv_L&#x27;, &#x27;RSPv_R&#x27;, &#x27;MOp_R&#x27;, &#x27;SSp-bfd_R&#x27;, &#x27;CA2_L&#x27;,
+</table></div></div></li><li class='xr-section-item'><input id='section-595055b7-fa8a-460e-9669-42fa55bb345d' class='xr-section-summary-in' type='checkbox' checked /><label for='section-595055b7-fa8a-460e-9669-42fa55bb345d' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-9a0cbb8f-0f9d-4e84-a7e2-9f0c67dd5454' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-9a0cbb8f-0f9d-4e84-a7e2-9f0c67dd5454' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cf0ef26f-22f2-4dac-81c4-4d4978caac0f' class='xr-var-data-in' type='checkbox'><label for='data-cf0ef26f-22f2-4dac-81c4-4d4978caac0f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U9</div><div class='xr-var-preview xr-preview'>&#x27;SSp-bfd_L&#x27; &#x27;MOp_L&#x27; ... &#x27;ZI_R&#x27;</div><input id='attrs-1aced2a3-23e0-4a08-94a6-71047cc5a962' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-1aced2a3-23e0-4a08-94a6-71047cc5a962' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-84278e28-8d92-4f03-96d1-bd76e14e3fe4' class='xr-var-data-in' type='checkbox'><label for='data-84278e28-8d92-4f03-96d1-bd76e14e3fe4' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;SSp-bfd_L&#x27;, &#x27;MOp_L&#x27;, &#x27;RSPv_L&#x27;, &#x27;RSPv_R&#x27;, &#x27;MOp_R&#x27;, &#x27;SSp-bfd_R&#x27;, &#x27;CA2_L&#x27;,
        &#x27;CA3_L&#x27;, &#x27;DG_L&#x27;, &#x27;DG_R&#x27;, &#x27;CA3_R&#x27;, &#x27;CA2_R&#x27;, &#x27;RT_L&#x27;, &#x27;VPM_L&#x27;, &#x27;PO_L&#x27;,
        &#x27;PO_R&#x27;, &#x27;VPM_R&#x27;, &#x27;RT_R&#x27;, &#x27;ZI_L&#x27;, &#x27;LHA_L&#x27;, &#x27;PH_L&#x27;, &#x27;PH_R&#x27;, &#x27;LHA_R&#x27;,
-       &#x27;ZI_R&#x27;], dtype=&#x27;&lt;U9&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-8242eb9d-b1ec-443d-bb4d-83088c7ff228' class='xr-section-summary-in' type='checkbox' /><label for='section-8242eb9d-b1ec-443d-bb4d-83088c7ff228' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+       &#x27;ZI_R&#x27;], dtype=&#x27;&lt;U9&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-6ab26ddb-8fef-457a-9649-6754c2e7cd90' class='xr-section-summary-in' type='checkbox' /><label for='section-6ab26ddb-8fef-457a-9649-6754c2e7cd90' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
@@ -4909,40 +4232,40 @@ dl.xr-attrs {
 
 <h2 id="clean-the-region-signals">Clean the region signals<a class="headerlink" href="#clean-the-region-signals" title="Permanent link">&para;</a></h2>
 <p>Before correlating regions we remove nuisance variance that would otherwise inflate
-their apparent connectivity: a <code>low_cutoff</code> high-pass filter for slow drift, and
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.compute_compcor_confounds">aCompCor</a> components regressed out.
+their apparent <abbr title="Functional Connectivity">FC</abbr>: a 0.01 Hz high-pass filter for slow drift, and one
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.compute_compcor_confounds">aCompCor</a> component regressed out.
 aCompCor components are extracted from white matter voxels—the Allen ontology's
-<code>"fiber tracts"</code> division, which aggregates every white-matter tract—so they must be
-computed from the voxelwise recording rather than the already-averaged regions.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">white_matter</span> <span class="o">=</span> <span class="n">atlas_native</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">acompcor</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">data</span><span class="p">,</span> <span class="n">noise_mask</span><span class="o">=</span><span class="n">white_matter</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">1</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">)</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">acompcor</span><span class="p">)</span>
+<code>"fiber tracts"</code> division—so they must be computed from the voxelwise recording rather
+than the already-averaged regions.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">white_matter</span> <span class="o">=</span> <span class="n">atlas_native</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">acompcor</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">data</span><span class="p">,</span> <span class="n">noise_mask</span><span class="o">=</span><span class="n">white_matter</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">1</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">acompcor</span><span class="p">)</span>
 </span></code></pre></div>
+<h2 id="compute-and-plot-the-correlation-matrix">Compute and plot the correlation matrix<a class="headerlink" href="#compute-and-plot-the-correlation-matrix" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;ConnectivityMatrix&lt;/span&gt;" href="../../../../api/connectivity/#confusius.connectivity.ConnectivityMatrix"><code>ConnectivityMatrix</code></a> computes the Pearson
 correlation matrix between all region pairs from the <code>(time, region)</code> signals.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">connectivity</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">ConnectivityMatrix</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="p">[</span><span class="n">signals</span><span class="p">]</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">connectivity</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">ConnectivityMatrix</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="p">[</span><span class="n">signals</span><span class="p">]</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </span></code></pre></div>
-<h2 id="plot-the-correlation-matrix">Plot the correlation matrix<a class="headerlink" href="#plot-the-correlation-matrix" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../../../../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a>'s <code>groups</code> parameter annotates
 contiguous blocks of regions with colored strips—handy here to keep track of which
 brain area each region belongs to without cluttering the plot with per-region colors.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_matrix</span><span class="p">(</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">connectivity</span><span class="p">,</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">labels</span><span class="o">=</span><span class="n">region_order</span><span class="p">,</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">groups</span><span class="o">=</span><span class="n">group_labels</span><span class="p">,</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">vmax</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Region correlation matrix&quot;</span><span class="p">,</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_matrix</span><span class="p">(</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">connectivity</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">labels</span><span class="o">=</span><span class="n">region_order</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">groups</span><span class="o">=</span><span class="n">group_labels</span><span class="p">,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">vmax</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Region correlation matrix&quot;</span><span class="p">,</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_20_0_light.png#only-light" data-type="image" data-title="Example output from cell 20, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_20_0_light.png#only-light" alt="Example output from cell 20, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_20_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 20, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_20_0_dark.png#only-dark" alt="Example output from cell 20, image 0"></a></p>
+<p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_19_0_light.png#only-light" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_19_0_light.png#only-light" alt="Example output from cell 19, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_19_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_19_0_dark.png#only-dark" alt="Example output from cell 19, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 242.7 s</p>
+<p><strong>Total running time:</strong> 186.7 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/plot_matrix?urlpath=lab/tree/docs/examples/04_connectivity/01_atlas_correlation_matrix.py">Launch in Binder</a> <a class="md-button" href="../atlas_correlation_matrix.py">Download .py</a> <a class="md-button" href="../atlas_correlation_matrix.ipynb">Download .ipynb</a></p>
 
 
