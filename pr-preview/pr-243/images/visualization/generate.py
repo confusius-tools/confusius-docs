@@ -35,7 +35,6 @@ from qtpy.QtCore import Qt
 from rich.console import Console
 
 import confusius as cf  # noqa: F401  # Register xarray accessors.
-from confusius.atlas import Atlas
 from confusius.datasets import fetch_nunez_elizalde_2022
 
 HERE = Path(__file__).parent
@@ -107,6 +106,18 @@ def _try_int(raw_value: str | None) -> int | None:
         return None
 
 
+def _hex_triplet_to_rgb(raw_hex: str) -> tuple[float, float, float] | None:
+    """Convert a `RRGGBB` color string into RGB floats in [0, 1]."""
+    value = raw_hex.strip().lstrip("#")
+    if len(value) != 6:
+        return None
+
+    try:
+        return tuple(int(value[i : i + 2], 16) / 255 for i in (0, 2, 4))
+    except ValueError:
+        return None
+
+
 def _require_structure_tree_csv(bids_root: Path) -> Path:
     """Return structure-tree CSV path from fetched dataset, or fail."""
     csv_path = bids_root / _DERIVATIVE_STRUCTURE_TREE_REL_PATH
@@ -123,17 +134,11 @@ def _require_structure_tree_csv(bids_root: Path) -> Path:
 def _build_structure_tree_colormap(
     csv_path: Path,
     atlas_labels: np.ndarray,
-    atlas_rgb_lookup: dict[int, list[int]],
 ) -> tuple[dict[int, tuple[float, float, float]], str, float]:
-    """Build `label -> rgb` lookup from the structure-tree CSV and the real Allen atlas.
+    """Build `label -> rgb` lookup from the structure-tree CSV.
 
-    The Nunez derivative dseg can encode labels as `graph_order`/`sphinx_id` rather
-    than Allen `id`, so we auto-detect the best matching key column. The dataset
-    doesn't provide an affine to register this derivative onto Allen atlas space, so
-    we still rely on its own segmentation for region masks—but each label's *color*
-    comes from `atlas_rgb_lookup` (a real [`Atlas`][confusius.atlas.Atlas]'s
-    `annotation.attrs["rgb_lookup"]`, keyed by true Allen id, which every CSV row also
-    carries in its own `id` column), rather than the CSV's own `color_hex_triplet`.
+    The Nunez derivative dseg can encode labels as `graph_order`/`sphinx_id`
+    rather than Allen `id`. We auto-detect the best matching key column.
     """
     with csv_path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
@@ -160,10 +165,13 @@ def _build_structure_tree_colormap(
         if label is None or label <= 0 or label not in label_set:
             continue
 
-        true_id = _try_int(row.get("id"))
-        raw_rgb = atlas_rgb_lookup.get(true_id) if true_id is not None else None
-        if raw_rgb is not None:
-            id_to_rgb[label] = tuple(channel / 255 for channel in raw_rgb)
+        raw_hex = row.get("color_hex_triplet")
+        if raw_hex is None:
+            continue
+
+        rgb = _hex_triplet_to_rgb(raw_hex)
+        if rgb is not None:
+            id_to_rgb[label] = rgb
 
     coverage = len(id_to_rgb) / len(label_set) if label_set else 0.0
     return id_to_rgb, best_key, coverage
@@ -313,13 +321,6 @@ id_to_rgb: dict = {}
 structure_tree_csv: Path | None = None
 roi_labels: set[int] = set()
 
-console.print("Fetching Allen Mouse Brain Atlas (colors only; see note below)")
-atlas = Atlas.from_brainglobe("allen_mouse_100um")
-# The Nunez dataset's own segmentation doesn't come with an affine to Allen atlas
-# space, so region *masks* still come from its derivative dseg file below. We only
-# use the real atlas's own id -> rgb lookup to color each region.
-atlas_rgb_lookup = atlas.annotation.attrs["rgb_lookup"]
-
 atlas_mask_path = (
     Path(ATLAS_MASK_PATH)
     if ATLAS_MASK_PATH is not None
@@ -370,19 +371,11 @@ if atlas_mask_path is not None:
     id_to_rgb, key_name, coverage = _build_structure_tree_colormap(
         structure_tree_csv,
         atlas_labels,
-        atlas_rgb_lookup,
     )
-    if coverage < 0.95:
+    if coverage < 1.0:
         raise RuntimeError(
             "Incomplete structure-tree color coverage for atlas labels: "
-            f"{coverage:.1%}. This usually means _build_structure_tree_colormap "
-            "picked the wrong key column."
-        )
-    if coverage < 1.0:
-        _warn(
-            f"Structure-tree color coverage is {coverage:.1%}: a handful of very "
-            "fine-grained regions may be missing from the Allen atlas's ontology "
-            "version and will render without a color."
+            f"{coverage:.1%}."
         )
     roi_labels = _collect_labels_for_structure(
         structure_tree_csv,
