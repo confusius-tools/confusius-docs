@@ -123,17 +123,17 @@ def _require_structure_tree_csv(bids_root: Path) -> Path:
 def _build_structure_tree_colormap(
     csv_path: Path,
     atlas_labels: np.ndarray,
-    acronym_to_rgb: dict[str, tuple[float, float, float]],
+    atlas_rgb_lookup: dict[int, list[int]],
 ) -> tuple[dict[int, tuple[float, float, float]], str, float]:
     """Build `label -> rgb` lookup from the structure-tree CSV and the real Allen atlas.
 
     The Nunez derivative dseg can encode labels as `graph_order`/`sphinx_id` rather
-    than Allen `id`, so we auto-detect the best matching key column and use it to read
-    off each label's acronym. The dataset doesn't provide an affine to register this
-    derivative onto Allen atlas space, so we still rely on its own segmentation for
-    region masks—but each acronym's *color* comes from `acronym_to_rgb`, built from a
-    real [`Atlas`][confusius.atlas.Atlas], rather than the CSV's own
-    `color_hex_triplet` column.
+    than Allen `id`, so we auto-detect the best matching key column. The dataset
+    doesn't provide an affine to register this derivative onto Allen atlas space, so
+    we still rely on its own segmentation for region masks—but each label's *color*
+    comes from `atlas_rgb_lookup` (a real [`Atlas`][confusius.atlas.Atlas]'s
+    `annotation.attrs["rgb_lookup"]`, keyed by true Allen id, which every CSV row also
+    carries in its own `id` column), rather than the CSV's own `color_hex_triplet`.
     """
     with csv_path.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
@@ -160,9 +160,10 @@ def _build_structure_tree_colormap(
         if label is None or label <= 0 or label not in label_set:
             continue
 
-        rgb = acronym_to_rgb.get(row["acronym"])
-        if rgb is not None:
-            id_to_rgb[label] = rgb
+        true_id = _try_int(row.get("id"))
+        raw_rgb = atlas_rgb_lookup.get(true_id) if true_id is not None else None
+        if raw_rgb is not None:
+            id_to_rgb[label] = tuple(channel / 255 for channel in raw_rgb)
 
     coverage = len(id_to_rgb) / len(label_set) if label_set else 0.0
     return id_to_rgb, best_key, coverage
@@ -316,11 +317,8 @@ console.print("Fetching Allen Mouse Brain Atlas (colors only; see note below)")
 atlas = Atlas.from_brainglobe("allen_mouse_100um")
 # The Nunez dataset's own segmentation doesn't come with an affine to Allen atlas
 # space, so region *masks* still come from its derivative dseg file below. We only
-# use the real atlas to look up each acronym's official color.
-acronym_to_rgb = {
-    row.acronym: tuple(channel / 255 for channel in row.rgb_triplet)
-    for row in atlas.lookup.itertuples()
-}
+# use the real atlas's own id -> rgb lookup to color each region.
+atlas_rgb_lookup = atlas.annotation.attrs["rgb_lookup"]
 
 atlas_mask_path = (
     Path(ATLAS_MASK_PATH)
@@ -372,7 +370,7 @@ if atlas_mask_path is not None:
     id_to_rgb, key_name, coverage = _build_structure_tree_colormap(
         structure_tree_csv,
         atlas_labels,
-        acronym_to_rgb,
+        atlas_rgb_lookup,
     )
     if coverage < 0.95:
         raise RuntimeError(
