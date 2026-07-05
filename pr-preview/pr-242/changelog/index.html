@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/changelog/">
       
       
-        <link rel="prev" href="../examples/_built/decomposition/nmf_single_recording/">
+        <link rel="prev" href="../examples/_built/connectivity/atlas_seed_map/">
       
       
         <link rel="next" href="../contributing/">
@@ -1881,6 +1881,8 @@
       
         
       
+        
+      
     
     
     
@@ -2246,6 +2248,97 @@
     
   
   NMF on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Connectivity
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  Connectivity
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/connectivity/atlas_seed_map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Atlas-based seed connectivity maps
 
     
   </span>
@@ -2994,9 +3087,16 @@
   <code>[-m, m]</code> with <code>"coolwarm"</code> when both signed, sequential <code>[0, vmax]</code> with
   <code>"viridis"</code> when non-negative, or <code>[vmin, 0]</code> with <code>"viridis_r"</code> when
   non-positive (<a href="https://github.com/confusius-tools/confusius/pull/242">#242</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> and the
+  <code>data.fusi.affine.apply</code> accessor now accept a string naming a key in
+  <code>attrs["affines"]</code>, instead of requiring the affine matrix itself
+  (<a href="https://github.com/confusius-tools/confusius/pull/247">#247</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> now rescales the <code>voxdim</code> attribute
+  of the spatial coordinates along with the coordinate values
+  (<a href="https://github.com/confusius-tools/confusius/pull/245">#245</a>).</li>
 <li><code>signal.clean</code> now supports <code>ensure_finite=True</code> to repair non-finite <code>signals</code>
   and <code>confounds</code> by interpolating along time, fills censored boundary samples from
   the nearest kept sample before filtering, and accepts <code>interpolate_kwargs</code> for
