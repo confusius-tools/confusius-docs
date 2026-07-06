@@ -3358,7 +3358,9 @@ sequence of the same length as <code>regions</code> for per-region control.</p>
           –
           <div class="doc-md-description">
             <p>Integer DataArray with dims <code>["mask", "z", "y", "x"]</code>. The
-<code>mask</code> coordinate holds the region acronym for each layer.</p>
+<code>mask</code> coordinate holds the region acronym for each layer, suffixed with
+<code>_L</code>/<code>_R</code> when the corresponding <code>side</code> is <code>"left"</code>/<code>"right"</code> (left/right
+requests for the same region would otherwise share an acronym).</p>
           </div>
         </li>
     </ul>
@@ -3389,6 +3391,8 @@ any element of <code>sides</code> is not <code>"left"</code>, <code>"right"</cod
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;AUDp&quot;</span><span class="p">,</span> <span class="s2">&quot;MOp&quot;</span><span class="p">])</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;AUDp&quot;</span><span class="p">],</span> <span class="n">sides</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">])</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;VISp&quot;</span><span class="p">],</span> <span class="n">sides</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">array([&#39;VISp_L&#39;, &#39;VISp_R&#39;], dtype=object)</span>
 </span></code></pre></div>
 
 
