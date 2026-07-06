@@ -3077,6 +3077,11 @@
   with colored rectangle strips—useful for marking anatomical groupings (e.g. cortex,
   thalamus) when there are too many individual labels to read
   (<a href="https://github.com/confusius-tools/confusius/pull/243">#243</a>).</li>
+<li><strong>[Napari plugin]</strong> Integer-dtype files (e.g. atlas annotations, <abbr title="Region of Interest">ROI</abbr> masks) opened via
+  the <code>confusius</code> CLI, the Data Panel, or the native napari file readers (drag-and-drop /
+  <strong>File &gt; Open</strong>) are now added as a <code>Labels</code> layer with per-label colors, instead of an
+  <code>Image</code> layer with the wrong colormap
+  (<a href="https://github.com/confusius-tools/confusius/pull/257">#257</a>).</li>
 <li><strong>[Napari plugin]</strong> Added <strong>Events</strong> panel to annotate temporal events within Napari.
   Events shade the signal plot; active event names appear in the time overlay; load
   from / save to a <abbr title="Brain Imaging Data Structure">BIDS</abbr> <code>.tsv</code>
@@ -3141,28 +3146,29 @@
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> now rescales the <code>voxdim</code> attribute
   of the spatial coordinates along with the coordinate values
   (<a href="https://github.com/confusius-tools/confusius/pull/245">#245</a>).</li>
-<li><code>signal.clean</code> now supports <code>ensure_finite=True</code> to repair non-finite <code>signals</code>
-  and <code>confounds</code> by interpolating along time, fills censored boundary samples from
-  the nearest kept sample before filtering, and accepts <code>interpolate_kwargs</code> for
-  pre-scrubbing interpolation (<a href="https://github.com/confusius-tools/confusius/pull/239">#239</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a> now supports <code>ensure_finite=True</code> to repair
+  non-finite <code>signals</code> and <code>confounds</code> by interpolating along time, fills censored
+  boundary samples from the nearest kept sample before filtering, and accepts
+  <code>interpolate_kwargs</code> for pre-scrubbing interpolation
+  (<a href="https://github.com/confusius-tools/confusius/pull/239">#239</a>).</li>
 <li>Image plotting functions now leave <code>alpha</code> unset by default (<code>None</code>), so a
   colormap's built-in alpha channel is respected
   (<a href="https://github.com/confusius-tools/confusius/pull/225">#225</a>).</li>
-<li><code>load_nifti</code> no longer drops affines loaded from the JSON sidecar (e.g.
-  <code>bspline_initialization</code> written by the registration pipeline) when merging in the
-  NIfTI qform/sform affines
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> no longer drops affines loaded from the JSON
+  sidecar (e.g. <code>bspline_initialization</code> written by the registration pipeline) when
+  merging in the NIfTI qform/sform affines
   (<a href="https://github.com/confusius-tools/confusius/pull/222">#222</a>).</li>
-<li><code>save_nifti</code> no longer maps non-time additional axes to the NIfTI 4th slot. When
-  additional axes are present in the DataArray, a degenerate length-1 <code>time</code> axis is
-  inserted at NIfTI axis 4 (NIfTI's conventional time slot) so non-time additional axes
-  always land at NIfTI axes 5, 6, 7. The original dim name for each additional axis is
-  always written to the sidecar as <code>ConfUSIusDim{N}Name</code> (with <code>N</code> in 4, 5, 6, matching
-  the 0-based NIfTI axis of the extra dim). The matching <code>ConfUSIusDim{N}Coordinates</code>
-  entry is only written when the coord cannot be reconstructed from <code>pixdim</code> (i.e. when
-  the coord does not start at 0 with regular spacing); otherwise the spacing is stored
-  in <code>pixdim</code> and the coord is rebuilt as <code>step * arange(size)</code> on load. Attributes are
-  preserved in <code>ConfUSIusDim{N}Attributes</code> entries.
-  (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> no longer maps non-time additional axes to the
+  NIfTI 4th slot. When additional axes are present in the DataArray, a degenerate
+  length-1 <code>time</code> axis is inserted at NIfTI axis 4 (NIfTI's conventional time slot) so
+  non-time additional axes always land at NIfTI axes 5, 6, 7. The original dim name for
+  each additional axis is always written to the sidecar as <code>ConfUSIusDim{N}Name</code> (with
+  <code>N</code> in 4, 5, 6, matching the 0-based NIfTI axis of the extra dim). The matching
+  <code>ConfUSIusDim{N}Coordinates</code> entry is only written when the coord cannot be
+  reconstructed from <code>pixdim</code> (i.e. when the coord does not start at 0 with regular
+  spacing); otherwise the spacing is stored in <code>pixdim</code> and the coord is rebuilt as
+  <code>step * arange(size)</code> on load. Attributes are preserved in <code>ConfUSIusDim{N}Attributes</code>
+  entries. (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
