@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/dev/changelog/">
       
       
-        <link rel="prev" href="../examples/_built/decomposition/nmf_single_recording/">
+        <link rel="prev" href="../examples/_built/connectivity/atlas_correlation_matrix/">
       
       
         <link rel="next" href="../contributing/">
@@ -1881,6 +1881,8 @@
       
         
       
+        
+      
     
     
     
@@ -2246,6 +2248,97 @@
     
   
   NMF on a single fUSI recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Connectivity
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  Connectivity
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/connectivity/atlas_correlation_matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Atlas-based region correlation matrix
 
     
   </span>
@@ -2978,6 +3071,12 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a> for plotting 2D matrices
+  (e.g. connectivity or correlation matrices), with optional lower/diagonal triangle
+  masking, grid lines, and a <code>groups</code> parameter that annotates contiguous label runs
+  with colored rectangle strips—useful for marking anatomical groupings (e.g. cortex,
+  thalamus) when there are too many individual labels to read
+  (<a href="https://github.com/confusius-tools/confusius/pull/243">#243</a>).</li>
 <li><strong>[Napari plugin]</strong> Integer-dtype files (e.g. atlas annotations, ROI masks) opened via
   the <code>confusius</code> CLI, the Data Panel, or the native napari file readers (drag-and-drop /
   <strong>File &gt; Open</strong>) are now added as a <code>Labels</code> layer with per-label colors, instead of an
@@ -3076,6 +3175,12 @@
 <li>Add an <a href="../examples/_built/decomposition/nmf_single_recording/">NMF example</a> to the
   gallery, demonstrating the z-score + absolute-value standardization that makes
   signed fUSI signals NMF-compatible.</li>
+<li>Add an <a href="../examples/_built/connectivity/atlas_correlation_matrix/">atlas-based region correlation matrix
+  example</a> to the gallery,
+  demonstrating registration to the Pepe-Mariani 2026 template, resampling the Allen
+  Mouse Brain Atlas onto a recording's native grid, and plotting a region correlation
+  matrix with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a>'s <code>groups</code> annotation
+  (<a href="https://github.com/confusius-tools/confusius/pull/243">#243</a>).</li>
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
