@@ -2990,6 +2990,14 @@
   <code>data.fusi.affine.apply</code> accessor now accept a string naming a key in
   <code>attrs["affines"]</code>, instead of requiring the affine matrix itself
   (<a href="https://github.com/confusius-tools/confusius/pull/247">#247</a>).</li>
+<li>Plotting functions that slice along <code>slice_mode</code> (
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_contours"><code>plot_contours</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_composite&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_composite"><code>plot_composite</code></a>, and the
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="../api/plotting/#confusius.plotting.VolumePlotter"><code>VolumePlotter</code></a> methods) now support non-numeric
+  coordinates (e.g. region/mask labels), so a single call can slice a stacked
+  connectivity or ROI map by label instead of looping over <code>.sel()</code> per panel
+  (<a href="https://github.com/confusius-tools/confusius/pull/250">#250</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
