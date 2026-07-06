@@ -11,7 +11,7 @@
 # reference volume as background.
 #
 # We reuse the same recording, template, and registration workflow as the
-# [Atlas-based region correlation matrix](atlas_correlation_matrix.md) example — see it
+# [Atlas-based region correlation matrix](atlas_correlation_matrix.md) example—see it
 # for a detailed walkthrough of the registration steps condensed here.
 
 # %% [markdown]
