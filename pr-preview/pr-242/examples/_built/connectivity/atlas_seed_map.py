@@ -168,12 +168,11 @@ mapper.maps_
 # over the resampled Allen reference volume, with `vmax=0.8` fixing the colormap to a
 # shared range so the four seeds are directly comparable. `mapper.maps_` stacks all
 # four seed maps along a `region` dimension, so a single `plot_stat_map` call with
-# `slice_mode="region"` plots one panel per seed — no need to loop over
-# `.sel(region=...)` — as long as the background is broadcast to the same `region`
-# dimension first. We outline each seed's own ROI with
-# [`VolumePlotter.add_contours`][confusius.plotting.VolumePlotter.add_contours],
-# leaving `colors` unset so each region is drawn in its canonical Allen color (read
-# from the atlas mask's `attrs["cmap"]`/`attrs["norm"]`, the same convention used by
+# `slice_mode="region"` plots one panel per seed as long as the background is broadcast
+# to the same `region` dimension first. We outline each seed's own ROI with
+# [`VolumePlotter.add_contours`][confusius.plotting.VolumePlotter.add_contours], leaving
+# `colors` unset so each region is drawn in its canonical Allen color (read from the
+# atlas mask's `attrs["cmap"]`/`attrs["norm"]`, the same convention used by
 # [`Atlas.get_masks`][confusius.atlas.Atlas.get_masks] elsewhere).
 
 # %% tags=["thumbnail"]
