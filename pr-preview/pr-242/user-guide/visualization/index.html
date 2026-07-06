@@ -3230,6 +3230,11 @@ generation</strong>:</p>
 <td>Composite plots of two volumes</td>
 </tr>
 <tr>
+<td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stat_map&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.stat_map"><code>.fusi.plot.stat_map()</code></a></td>
+<td>Matplotlib</td>
+<td>Statistical overlays on an anatomical background</td>
+</tr>
+<tr>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_carpet&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_carpet"><code>plot_carpet</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;carpet&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.carpet"><code>.fusi.plot.carpet()</code></a></td>
 <td>Matplotlib</td>
 <td>Voxel time-series raster (quality control)</td>
@@ -3564,7 +3569,7 @@ by default, and a colormap + range picked automatically from the sign of the
 statistical map:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">t_map</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">stat_map</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 </span></code></pre></div>
-<p><code>bg_volume</code> is optional — call <code>t_map.fusi.plot.stat_map(slice_mode="z")</code> to plot the
+<p><code>bg_volume</code> is optional—call <code>t_map.fusi.plot.stat_map(slice_mode="z")</code> to plot the
 statistical map on its own. With the default <code>alpha=1.0</code>, <code>t_map</code> fully covers <code>pwd</code>
 wherever it has a value; <code>pwd</code> only shows through where <code>t_map</code> is masked out by
 <code>threshold</code>. <code>vmin</code>/<code>vmax</code> default to the actual min/max of <code>t_map</code>, and
@@ -3591,14 +3596,26 @@ background layer's own colormap/range:</p>
 </span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">bg_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;vmin&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;vmax&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>A non-diverging statistic (e.g. R²) needs no extra arguments — the sequential range
-and colormap are picked up automatically since the data has only non-negative values:</p>
+<p>A non-diverging statistic (e.g. R²) needs no extra arguments — the sequential range and
+colormap are picked up automatically since the data has only non-negative values:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">r2_map</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">stat_map</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Pass an explicit <code>cmap</code> to override the automatic choice, or <code>auto_range=False</code> to use
-<code>vmin</code>/<code>vmax</code> directly with no zero-anchoring. For finer control (e.g. a custom,
-non-zero-anchored asymmetric range), call <code>plot_volume</code> and <code>add_volume</code> directly
-instead, as shown in the <a href="#thresholding">Thresholding</a> section above.</p>
+<p>Pass an explicit <code>cmap</code> to override the automatic choice, <code>auto_range=False</code> to use
+<code>vmin</code>/<code>vmax</code> directly with no zero-anchoring (e.g. a custom, asymmetric range), or a
+<a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Normalize.html#matplotlib.colors.Normalize"><code>matplotlib.colors.Normalize</code></a> instance as <code>norm</code> (e.g.
+<code>TwoSlopeNorm</code>, <code>BoundaryNorm</code>, <code>LogNorm</code>) for ranges the other three can't express —
+<code>norm</code>, when provided, overrides <code>vmin</code>, <code>vmax</code>, and <code>auto_range</code> entirely. For
+anything <code>plot_stat_map</code> still doesn't expose (e.g. <code>roi_labels</code> hover names), call
+<code>plot_volume</code> and <code>add_volume</code> directly instead, as shown in the
+<a href="#thresholding">Thresholding</a> section above.</p>
+<p><a class="glightbox" data-gallery="light" data-title="Seed-based connectivity maps" data-type="image" href="../../examples/_built/connectivity/atlas_seed_map_thumb_light.png#only-light"><img alt="Seed-based connectivity maps" src="../../examples/_built/connectivity/atlas_seed_map_thumb_light.png#only-light" /></a>
+<a class="glightbox" data-gallery="dark" data-title="Seed-based connectivity maps" data-type="image" href="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark"><img alt="Seed-based connectivity maps" src="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark" /></a></p>
+<p>This figure is generated in the <a href="../../examples/_built/connectivity/atlas_seed_map/">atlas-based seed connectivity maps
+example</a>, which walks through
+registering a recording to an Allen-space template, resampling the <autoref identifier="confusius.atlas.Atlas">Allen Mouse Brain
+Atlas</autoref> onto the recording's native grid, and computing
+voxel-wise seed-based correlation maps with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;SeedBasedMaps&lt;/span&gt;" href="../../api/connectivity/#confusius.connectivity.SeedBasedMaps"><code>SeedBasedMaps</code></a>.</p>
 <h2 id="overlaying-contours">Overlaying Contours<a class="headerlink" href="#overlaying-contours" title="Permanent link">&para;</a></h2>
 <p>Atlas outlines or region of interest (<abbr title="Region of Interest">ROI</abbr>) boundaries can be drawn on top of a volume
 plot to provide anatomical context. ConfUSIus represents masks as <strong>integer-labeled
