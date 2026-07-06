@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/examples/_built/connectivity/atlas_seed_map/">
       
       
-        <link rel="prev" href="../../decomposition/nmf_single_recording/">
+        <link rel="prev" href="../atlas_correlation_matrix/">
       
       
         <link rel="next" href="../../../../changelog/">
@@ -2291,6 +2291,8 @@
       
         
       
+        
+      
     
     
     
@@ -2336,6 +2338,33 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../atlas_correlation_matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Atlas-based region correlation matrix
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2741,7 +2770,7 @@
     
     
       <li class="md-path__item">
-        <a href="././" class="md-path__link">
+        <a href="../atlas_correlation_matrix/" class="md-path__link">
           
   <span class="md-ellipsis">
     Connectivity
@@ -2774,8 +2803,8 @@ resulting map is displayed with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../../../../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a>, using the resampled Allen
 reference volume as background.</p>
 <p>We reuse the same recording, template, and registration workflow as the
-atlas-based region correlation matrix example (see its own page for a detailed
-walkthrough of the registration steps condensed here).</p>
+<a href="../atlas_correlation_matrix/">Atlas-based region correlation matrix</a> example — see it
+for a detailed walkthrough of the registration steps condensed here.</p>
 <h2 id="fetch-the-recording-and-register-to-the-allen-atlas">Fetch the recording and register to the Allen atlas<a class="headerlink" href="#fetch-the-recording-and-register-to-the-allen-atlas" title="Permanent link">&para;</a></h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
@@ -2812,7 +2841,7 @@ walkthrough of the registration steps condensed here).</p>
 </span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
 </span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">template</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_4174/2112388043.py:31: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_26290/2112388043.py:31: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 </span></code></pre></div>
 <p>As in the correlation-matrix example, we initialize registration with an affine
@@ -3449,7 +3478,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>region</span>: 4</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-0f984c9f-f695-4cb3-9784-433cfde740c4' class='xr-array-in' type='checkbox' ><label for='section-0f984c9f-f695-4cb3-9784-433cfde740c4' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(4, 1, 125, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>region</span>: 4</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-b5f96098-6e67-4d09-87b5-b8df9a77a91a' class='xr-array-in' type='checkbox' ><label for='section-b5f96098-6e67-4d09-87b5-b8df9a77a91a' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(4, 1, 125, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
     <tr>
         <td>
             <table style="border-collapse: collapse;">
@@ -3543,7 +3572,7 @@ dl.xr-attrs {
 </svg>
         </td>
     </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-2b87454c-0304-40df-bfe4-e12c08ae3449' class='xr-section-summary-in' type='checkbox' checked /><label for='section-2b87454c-0304-40df-bfe4-e12c08ae3449' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U7</div><div class='xr-var-preview xr-preview'>&#x27;RSP&#x27; &#x27;SSp-bfd&#x27; &#x27;VPM&#x27; &#x27;HIP&#x27;</div><input id='attrs-92d5f344-636b-4e6e-aa24-8a9f23bdbade' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-92d5f344-636b-4e6e-aa24-8a9f23bdbade' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a5e36297-d4f4-45a2-9b00-074cf13db915' class='xr-var-data-in' type='checkbox'><label for='data-a5e36297-d4f4-45a2-9b00-074cf13db915' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;RSP&#x27;, &#x27;SSp-bfd&#x27;, &#x27;VPM&#x27;, &#x27;HIP&#x27;], dtype=&#x27;&lt;U7&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-f7d96dcd-86bc-47a0-973e-73b46cf2f3b9' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-f7d96dcd-86bc-47a0-973e-73b46cf2f3b9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-9f04187e-dc0c-4bb2-877b-2ac90f4607da' class='xr-var-data-in' type='checkbox'><label for='data-9f04187e-dc0c-4bb2-877b-2ac90f4607da' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-a7ad177f-dfa4-46df-97fa-34e4a1d183b3' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-a7ad177f-dfa4-46df-97fa-34e4a1d183b3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7a560528-6e8b-4775-97f1-6e932eea4f48' class='xr-var-data-in' type='checkbox'><label for='data-7a560528-6e8b-4775-97f1-6e932eea4f48' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
+</table></div></div></li><li class='xr-section-item'><input id='section-8429851a-b864-48c1-ae9e-9260eba678b5' class='xr-section-summary-in' type='checkbox' checked /><label for='section-8429851a-b864-48c1-ae9e-9260eba678b5' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U9</div><div class='xr-var-preview xr-preview'>&#x27;SSp-bfd_L&#x27; &#x27;RSP_L&#x27; &#x27;HIP_L&#x27; &#x27;VPM_L&#x27;</div><input id='attrs-aaacf08c-aba3-42ff-9f13-a10f797737fe' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-aaacf08c-aba3-42ff-9f13-a10f797737fe' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ed52c42d-2c32-435d-a35d-0a33fb75c849' class='xr-var-data-in' type='checkbox'><label for='data-ed52c42d-2c32-435d-a35d-0a33fb75c849' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;SSp-bfd_L&#x27;, &#x27;RSP_L&#x27;, &#x27;HIP_L&#x27;, &#x27;VPM_L&#x27;], dtype=&#x27;&lt;U9&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-cbef2f4a-2d21-4f5e-980b-2edd5bff3f5e' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-cbef2f4a-2d21-4f5e-980b-2edd5bff3f5e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7015ffe4-9b04-4ef7-8e14-36cc43827938' class='xr-var-data-in' type='checkbox'><label for='data-7015ffe4-9b04-4ef7-8e14-36cc43827938' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-c249c370-18aa-4272-81bb-5e5c0b3a1963' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-c249c370-18aa-4272-81bb-5e5c0b3a1963' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6fbeca80-1551-4bad-8adc-c7b46042ac32' class='xr-var-data-in' type='checkbox'><label for='data-6fbeca80-1551-4bad-8adc-c7b46042ac32' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
        3.3824 , 3.43072, 3.47904, 3.52736, 3.57568, 3.624  , 3.67232, 3.72064,
        3.76896, 3.81728, 3.8656 , 3.91392, 3.96224, 4.01056, 4.05888, 4.1072 ,
        4.15552, 4.20384, 4.25216, 4.30048, 4.3488 , 4.39712, 4.44544, 4.49376,
@@ -3558,14 +3587,14 @@ dl.xr-attrs {
        7.63456, 7.68288, 7.7312 , 7.77952, 7.82784, 7.87616, 7.92448, 7.9728 ,
        8.02112, 8.06944, 8.11776, 8.16608, 8.2144 , 8.26272, 8.31104, 8.35936,
        8.40768, 8.456  , 8.50432, 8.55264, 8.60096, 8.64928, 8.6976 , 8.74592,
-       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-878bcb11-7ecb-42da-93e9-c62aeb64f523' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-878bcb11-7ecb-42da-93e9-c62aeb64f523' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b0fdb721-18d4-4955-b06e-4324244e44fc' class='xr-var-data-in' type='checkbox'><label for='data-b0fdb721-18d4-4955-b06e-4324244e44fc' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
+       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-d2d924d4-0ab3-48d0-b19e-2f3c41ae0329' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-d2d924d4-0ab3-48d0-b19e-2f3c41ae0329' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-172cc175-4a25-425f-be0b-6c72496d1aea' class='xr-var-data-in' type='checkbox'><label for='data-172cc175-4a25-425f-be0b-6c72496d1aea' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
        -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
        -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
        -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
         0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
         1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
         2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-e6a054d8-ac6d-48fe-aca7-df2d751fd813' class='xr-section-summary-in' type='checkbox' checked /><label for='section-e6a054d8-ac6d-48fe-aca7-df2d751fd813' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>Pearson r</dd><dt><span>cmap :</span></dt><dd>coolwarm</dd><dt><span>norm :</span></dt><dd>&lt;matplotlib.colors.Normalize object at 0x7fbc80d8ff50&gt;</dd></dl></div></li></ul></div></div>
+        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-39995842-dc78-428f-9d04-e04a2d495071' class='xr-section-summary-in' type='checkbox' checked /><label for='section-39995842-dc78-428f-9d04-e04a2d495071' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>Pearson r</dd><dt><span>cmap :</span></dt><dd>coolwarm</dd><dt><span>norm :</span></dt><dd>&lt;matplotlib.colors.Normalize object at 0x7fd1309e7650&gt;</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
 <h2 id="plot-the-seed-maps">Plot the seed maps<a class="headerlink" href="#plot-the-seed-maps" title="Permanent link">&para;</a></h2>
@@ -3616,9 +3645,172 @@ atlas mask's <code>attrs["cmap"]</code>/<code>attrs["norm"]</code>, the same con
 </span><span id="__span-8-35"><a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a>
 </span><span id="__span-8-36"><a id="__codelineno-8-36" name="__codelineno-8-36" href="#__codelineno-8-36"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Seed-based connectivity maps&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../atlas_seed_map_output_light/cell_15_0_light.png#only-light" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="light"><img src="../atlas_seed_map_output_light/cell_15_0_light.png#only-light" alt="Example output from cell 15, image 0"></a><a class="glightbox" href="../atlas_seed_map_output_dark/cell_15_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="dark"><img src="../atlas_seed_map_output_dark/cell_15_0_dark.png#only-dark" alt="Example output from cell 15, image 0"></a></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>[31m---------------------------------------------------------------------------[39m
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>[31mKeyError[39m                                  Traceback (most recent call last)
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/pandas/core/indexes/base.py:3641[39m, in [36mIndex.get_loc[39m[34m(self, key)[39m
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>[32m   3640[39m [38;5;28;01mtry[39;00m:
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>[32m-&gt; [39m[32m3641[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_engine[49m[43m.[49m[43mget_loc[49m[43m([49m[43mcasted_key[49m[43m)[49m
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>[32m   3642[39m [38;5;28;01mexcept[39;00m [38;5;167;01mKeyError[39;00m [38;5;28;01mas[39;00m err:
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>[36mFile [39m[32mpandas/_libs/index.pyx:168[39m, in [36mpandas._libs.index.IndexEngine.get_loc[39m[34m()[39m
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>[36mFile [39m[32mpandas/_libs/index.pyx:197[39m, in [36mpandas._libs.index.IndexEngine.get_loc[39m[34m()[39m
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>[36mFile [39m[32mpandas/_libs/hashtable_class_helper.pxi:7668[39m, in [36mpandas._libs.hashtable.PyObjectHashTable.get_item[39m[34m()[39m
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>[36mFile [39m[32mpandas/_libs/hashtable_class_helper.pxi:7676[39m, in [36mpandas._libs.hashtable.PyObjectHashTable.get_item[39m[34m()[39m
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>[31mKeyError[39m: &#39;SSp-bfd&#39;
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>The above exception was the direct cause of the following exception:
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>[31mKeyError[39m                                  Traceback (most recent call last)
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/xarray/core/indexes.py:869[39m, in [36mPandasIndex.sel[39m[34m(self, labels, method, tolerance)[39m
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>[32m    868[39m [38;5;28;01mtry[39;00m:
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>[32m--&gt; [39m[32m869[39m     indexer = [38;5;28;43mself[39;49m[43m.[49m[43mindex[49m[43m.[49m[43mget_loc[49m[43m([49m[43mlabel_value[49m[43m)[49m
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>[32m    870[39m [38;5;28;01mexcept[39;00m [38;5;167;01mKeyError[39;00m [38;5;28;01mas[39;00m e:
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/pandas/core/indexes/base.py:3648[39m, in [36mIndex.get_loc[39m[34m(self, key)[39m
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>[32m   3647[39m         [38;5;28;01mraise[39;00m InvalidIndexError(key) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01merr[39;00m
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>[32m-&gt; [39m[32m3648[39m     [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m(key) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01merr[39;00m
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>[32m   3649[39m [38;5;28;01mexcept[39;00m [38;5;167;01mTypeError[39;00m:
+</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>[32m   3650[39m     [38;5;66;03m# If we have a listlike key, _check_indexing_error will raise[39;00m
+</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>[32m   3651[39m     [38;5;66;03m#  InvalidIndexError. Otherwise we fall through and re-raise[39;00m
+</span><span id="__span-9-32"><a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>[32m   3652[39m     [38;5;66;03m#  the TypeError.[39;00m
+</span><span id="__span-9-33"><a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>
+</span><span id="__span-9-34"><a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>[31mKeyError[39m: &#39;SSp-bfd&#39;
+</span><span id="__span-9-35"><a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>
+</span><span id="__span-9-36"><a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>The above exception was the direct cause of the following exception:
+</span><span id="__span-9-37"><a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
+</span><span id="__span-9-38"><a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>[31mKeyError[39m                                  Traceback (most recent call last)
+</span><span id="__span-9-39"><a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>[36mCell[39m[36m [39m[32mIn[8][39m[32m, line 17[39m
+</span><span id="__span-9-40"><a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>[32m     14[39m fig, axes = plt.subplots([32m2[39m, [32m2[39m, figsize=([32m8[39m, [32m6[39m), constrained_layout=[38;5;28;01mTrue[39;00m)
+</span><span id="__span-9-41"><a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>[32m     15[39m fig.patch.set_facecolor(bg_color)
+</span><span id="__span-9-42"><a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>[32m---&gt; [39m[32m17[39m plotter = [43mcf[49m[43m.[49m[43mplotting[49m[43m.[49m[43mplot_stat_map[49m[43m([49m
+</span><span id="__span-9-43"><a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>[32m     18[39m [43m    [49m[43mmapper[49m[43m.[49m[43mmaps_[49m[43m,[49m
+</span><span id="__span-9-44"><a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>[32m     19[39m [43m    [49m[43mbg_volume[49m[43m=[49m[43mbg_by_region[49m[43m,[49m
+</span><span id="__span-9-45"><a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>[32m     20[39m [43m    [49m[43mslice_mode[49m[43m=[49m[33;43m&quot;[39;49m[33;43mregion[39;49m[33;43m&quot;[39;49m[43m,[49m
+</span><span id="__span-9-46"><a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>[32m     21[39m [43m    [49m[43mslice_coords[49m[43m=[49m[43mseed_regions[49m[43m,[49m
+</span><span id="__span-9-47"><a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>[32m     22[39m [43m    [49m[43mcmap[49m[43m=[49m[43mcmap[49m[43m,[49m
+</span><span id="__span-9-48"><a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>[32m     23[39m [43m    [49m[43mvmax[49m[43m=[49m[32;43m0.8[39;49m[43m,[49m
+</span><span id="__span-9-49"><a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>[32m     24[39m [43m    [49m[43mcbar_label[49m[43m=[49m[33;43m&quot;[39;49m[33;43mPearson correlation[39;49m[33;43m&quot;[39;49m[43m,[49m
+</span><span id="__span-9-50"><a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>[32m     25[39m [43m    [49m[43mshow_titles[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+</span><span id="__span-9-51"><a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>[32m     26[39m [43m    [49m[43mshow_axes[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+</span><span id="__span-9-52"><a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a>[32m     27[39m [43m    [49m[43mfigure[49m[43m=[49m[43mfig[49m[43m,[49m
+</span><span id="__span-9-53"><a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a>[32m     28[39m [43m    [49m[43maxes[49m[43m=[49m[43maxes[49m[43m,[49m
+</span><span id="__span-9-54"><a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a>[32m     29[39m [43m    [49m[43mbg_color[49m[43m=[49m[43mbg_color[49m[43m,[49m
+</span><span id="__span-9-55"><a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a>[32m     30[39m [43m)[49m
+</span><span id="__span-9-56"><a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>[32m     31[39m plotter.add_contours(seed_masks.rename(mask=[33m&quot;[39m[33mregion[39m[33m&quot;[39m), linewidths=[32m1.5[39m)
+</span><span id="__span-9-57"><a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a>[32m     32[39m plotter.add_contours(brain_mask_by_region, colors=[33m&quot;[39m[33mk[39m[33m&quot;[39m, linewidths=[32m1.0[39m)
+</span><span id="__span-9-58"><a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>
+</span><span id="__span-9-59"><a id="__codelineno-9-59" name="__codelineno-9-59" href="#__codelineno-9-59"></a>[36mFile [39m[32m~/work/confusius/confusius/src/confusius/plotting/image.py:2516[39m, in [36mplot_stat_map[39m[34m(stat_map, bg_volume, slice_coords, slice_mode, bg_kwargs, cmap, norm, vmin, vmax, auto_range, alpha, threshold, threshold_mode, show_colorbar, cbar_label, cbar_kwargs, show_titles, show_axis_labels, show_axis_ticks, show_axes, fontsize, yincrease, xincrease, bg_color, fg_color, figure, axes, nrows, ncols, dpi)[39m
+</span><span id="__span-9-60"><a id="__codelineno-9-60" name="__codelineno-9-60" href="#__codelineno-9-60"></a>[32m   2502[39m     plotter = VolumePlotter(
+</span><span id="__span-9-61"><a id="__codelineno-9-61" name="__codelineno-9-61" href="#__codelineno-9-61"></a>[32m   2503[39m         slice_mode=slice_mode,
+</span><span id="__span-9-62"><a id="__codelineno-9-62" name="__codelineno-9-62" href="#__codelineno-9-62"></a>[32m   2504[39m         figure=figure,
+</span><span id="__span-9-63"><a id="__codelineno-9-63" name="__codelineno-9-63" href="#__codelineno-9-63"></a>[32m   (...)[39m[32m   2509[39m         xincrease=xincrease,
+</span><span id="__span-9-64"><a id="__codelineno-9-64" name="__codelineno-9-64" href="#__codelineno-9-64"></a>[32m   2510[39m     )
+</span><span id="__span-9-65"><a id="__codelineno-9-65" name="__codelineno-9-65" href="#__codelineno-9-65"></a>[32m   2512[39m resolved_vmin, resolved_vmax, resolved_cmap = _resolve_stat_map_style(
+</span><span id="__span-9-66"><a id="__codelineno-9-66" name="__codelineno-9-66" href="#__codelineno-9-66"></a>[32m   2513[39m     stat_map, vmin, vmax, cmap, auto_range
+</span><span id="__span-9-67"><a id="__codelineno-9-67" name="__codelineno-9-67" href="#__codelineno-9-67"></a>[32m   2514[39m )
+</span><span id="__span-9-68"><a id="__codelineno-9-68" name="__codelineno-9-68" href="#__codelineno-9-68"></a>[32m-&gt; [39m[32m2516[39m [38;5;28;01mreturn[39;00m [43mplotter[49m[43m.[49m[43madd_volume[49m[43m([49m
+</span><span id="__span-9-69"><a id="__codelineno-9-69" name="__codelineno-9-69" href="#__codelineno-9-69"></a>[32m   2517[39m [43m    [49m[43mstat_map[49m[43m,[49m
+</span><span id="__span-9-70"><a id="__codelineno-9-70" name="__codelineno-9-70" href="#__codelineno-9-70"></a>[32m   2518[39m [43m    [49m[43mslice_coords[49m[43m=[49m[43mslice_coords[49m[43m,[49m
+</span><span id="__span-9-71"><a id="__codelineno-9-71" name="__codelineno-9-71" href="#__codelineno-9-71"></a>[32m   2519[39m [43m    [49m[43mmatch_coordinates[49m[43m=[49m[43mbg_volume[49m[43m [49m[38;5;129;43;01mis[39;49;00m[43m [49m[38;5;129;43;01mnot[39;49;00m[43m [49m[38;5;28;43;01mNone[39;49;00m[43m,[49m
+</span><span id="__span-9-72"><a id="__codelineno-9-72" name="__codelineno-9-72" href="#__codelineno-9-72"></a>[32m   2520[39m [43m    [49m[43mcmap[49m[43m=[49m[43mresolved_cmap[49m[43m,[49m
+</span><span id="__span-9-73"><a id="__codelineno-9-73" name="__codelineno-9-73" href="#__codelineno-9-73"></a>[32m   2521[39m [43m    [49m[43mnorm[49m[43m=[49m[43mnorm[49m[43m,[49m
+</span><span id="__span-9-74"><a id="__codelineno-9-74" name="__codelineno-9-74" href="#__codelineno-9-74"></a>[32m   2522[39m [43m    [49m[43mvmin[49m[43m=[49m[43mresolved_vmin[49m[43m,[49m
+</span><span id="__span-9-75"><a id="__codelineno-9-75" name="__codelineno-9-75" href="#__codelineno-9-75"></a>[32m   2523[39m [43m    [49m[43mvmax[49m[43m=[49m[43mresolved_vmax[49m[43m,[49m
+</span><span id="__span-9-76"><a id="__codelineno-9-76" name="__codelineno-9-76" href="#__codelineno-9-76"></a>[32m   2524[39m [43m    [49m[43mthreshold[49m[43m=[49m[43mthreshold[49m[43m,[49m
+</span><span id="__span-9-77"><a id="__codelineno-9-77" name="__codelineno-9-77" href="#__codelineno-9-77"></a>[32m   2525[39m [43m    [49m[43mthreshold_mode[49m[43m=[49m[43mthreshold_mode[49m[43m,[49m
+</span><span id="__span-9-78"><a id="__codelineno-9-78" name="__codelineno-9-78" href="#__codelineno-9-78"></a>[32m   2526[39m [43m    [49m[43malpha[49m[43m=[49m[43malpha[49m[43m,[49m
+</span><span id="__span-9-79"><a id="__codelineno-9-79" name="__codelineno-9-79" href="#__codelineno-9-79"></a>[32m   2527[39m [43m    [49m[43mshow_colorbar[49m[43m=[49m[43mshow_colorbar[49m[43m,[49m
+</span><span id="__span-9-80"><a id="__codelineno-9-80" name="__codelineno-9-80" href="#__codelineno-9-80"></a>[32m   2528[39m [43m    [49m[43mcbar_label[49m[43m=[49m[43mcbar_label[49m[43m,[49m
+</span><span id="__span-9-81"><a id="__codelineno-9-81" name="__codelineno-9-81" href="#__codelineno-9-81"></a>[32m   2529[39m [43m    [49m[43mcbar_kwargs[49m[43m=[49m[43mcbar_kwargs[49m[43m,[49m
+</span><span id="__span-9-82"><a id="__codelineno-9-82" name="__codelineno-9-82" href="#__codelineno-9-82"></a>[32m   2530[39m [43m    [49m[43mshow_titles[49m[43m=[49m[43mshow_titles[49m[43m,[49m
+</span><span id="__span-9-83"><a id="__codelineno-9-83" name="__codelineno-9-83" href="#__codelineno-9-83"></a>[32m   2531[39m [43m    [49m[43mshow_axis_labels[49m[43m=[49m[43mshow_axis_labels[49m[43m,[49m
+</span><span id="__span-9-84"><a id="__codelineno-9-84" name="__codelineno-9-84" href="#__codelineno-9-84"></a>[32m   2532[39m [43m    [49m[43mshow_axis_ticks[49m[43m=[49m[43mshow_axis_ticks[49m[43m,[49m
+</span><span id="__span-9-85"><a id="__codelineno-9-85" name="__codelineno-9-85" href="#__codelineno-9-85"></a>[32m   2533[39m [43m    [49m[43mshow_axes[49m[43m=[49m[43mshow_axes[49m[43m,[49m
+</span><span id="__span-9-86"><a id="__codelineno-9-86" name="__codelineno-9-86" href="#__codelineno-9-86"></a>[32m   2534[39m [43m    [49m[43mfontsize[49m[43m=[49m[43mfontsize[49m[43m,[49m
+</span><span id="__span-9-87"><a id="__codelineno-9-87" name="__codelineno-9-87" href="#__codelineno-9-87"></a>[32m   2535[39m [43m    [49m[43mnrows[49m[43m=[49m[43mnrows[49m[43m,[49m
+</span><span id="__span-9-88"><a id="__codelineno-9-88" name="__codelineno-9-88" href="#__codelineno-9-88"></a>[32m   2536[39m [43m    [49m[43mncols[49m[43m=[49m[43mncols[49m[43m,[49m
+</span><span id="__span-9-89"><a id="__codelineno-9-89" name="__codelineno-9-89" href="#__codelineno-9-89"></a>[32m   2537[39m [43m    [49m[43mdpi[49m[43m=[49m[43mdpi[49m[43m,[49m
+</span><span id="__span-9-90"><a id="__codelineno-9-90" name="__codelineno-9-90" href="#__codelineno-9-90"></a>[32m   2538[39m [43m[49m[43m)[49m
+</span><span id="__span-9-91"><a id="__codelineno-9-91" name="__codelineno-9-91" href="#__codelineno-9-91"></a>
+</span><span id="__span-9-92"><a id="__codelineno-9-92" name="__codelineno-9-92" href="#__codelineno-9-92"></a>[36mFile [39m[32m~/work/confusius/confusius/src/confusius/plotting/image.py:892[39m, in [36mVolumePlotter.add_volume[39m[34m(self, data, slice_coords, match_coordinates, cmap, norm, vmin, vmax, threshold, threshold_mode, alpha, show_colorbar, cbar_label, cbar_kwargs, roi_labels, show_titles, show_axis_labels, show_axis_ticks, show_axes, fontsize, nrows, ncols, dpi)[39m
+</span><span id="__span-9-93"><a id="__codelineno-9-93" name="__codelineno-9-93" href="#__codelineno-9-93"></a>[32m    889[39m     [38;5;28;01melse[39;00m:
+</span><span id="__span-9-94"><a id="__codelineno-9-94" name="__codelineno-9-94" href="#__codelineno-9-94"></a>[32m    890[39m         slice_coords = [38;5;28mlist[39m([38;5;28mrange[39m(data.sizes[[38;5;28mself[39m.slice_mode]))
+</span><span id="__span-9-95"><a id="__codelineno-9-95" name="__codelineno-9-95" href="#__codelineno-9-95"></a>[32m--&gt; [39m[32m892[39m unthresholded_slices, actual_coords = [43m_extract_slices[49m[43m([49m
+</span><span id="__span-9-96"><a id="__codelineno-9-96" name="__codelineno-9-96" href="#__codelineno-9-96"></a>[32m    893[39m [43m    [49m[43mdata[49m[43m,[49m[43m [49m[38;5;28;43mself[39;49m[43m.[49m[43mslice_mode[49m[43m,[49m[43m [49m[43mslice_coords[49m
+</span><span id="__span-9-97"><a id="__codelineno-9-97" name="__codelineno-9-97" href="#__codelineno-9-97"></a>[32m    894[39m [43m[49m[43m)[49m
+</span><span id="__span-9-98"><a id="__codelineno-9-98" name="__codelineno-9-98" href="#__codelineno-9-98"></a>[32m    895[39m n_slices = [38;5;28mlen[39m(unthresholded_slices)
+</span><span id="__span-9-99"><a id="__codelineno-9-99" name="__codelineno-9-99" href="#__codelineno-9-99"></a>[32m    897[39m alpha_slices: [38;5;28mlist[39m[np.ndarray] | [38;5;28;01mNone[39;00m = [38;5;28;01mNone[39;00m
+</span><span id="__span-9-100"><a id="__codelineno-9-100" name="__codelineno-9-100" href="#__codelineno-9-100"></a>
+</span><span id="__span-9-101"><a id="__codelineno-9-101" name="__codelineno-9-101" href="#__codelineno-9-101"></a>[36mFile [39m[32m~/work/confusius/confusius/src/confusius/plotting/image.py:361[39m, in [36m_extract_slices[39m[34m(data, slice_mode, slice_coords)[39m
+</span><span id="__span-9-102"><a id="__codelineno-9-102" name="__codelineno-9-102" href="#__codelineno-9-102"></a>[32m    359[39m [38;5;28;01mif[39;00m slice_mode [38;5;129;01min[39;00m data.coords:
+</span><span id="__span-9-103"><a id="__codelineno-9-103" name="__codelineno-9-103" href="#__codelineno-9-103"></a>[32m    360[39m     is_numeric = np.issubdtype(data.coords[slice_mode].dtype, np.number)
+</span><span id="__span-9-104"><a id="__codelineno-9-104" name="__codelineno-9-104" href="#__codelineno-9-104"></a>[32m--&gt; [39m[32m361[39m     slice_da = [43mdata[49m[43m.[49m[43msel[49m[43m([49m
+</span><span id="__span-9-105"><a id="__codelineno-9-105" name="__codelineno-9-105" href="#__codelineno-9-105"></a>[32m    362[39m [43m        [49m[43m{[49m[43mslice_mode[49m[43m:[49m[43m [49m[43mcoord[49m[43m}[49m[43m,[49m[43m [49m[43mmethod[49m[43m=[49m[33;43m&quot;[39;49m[33;43mnearest[39;49m[33;43m&quot;[39;49m[43m [49m[38;5;28;43;01mif[39;49;00m[43m [49m[43mis_numeric[49m[43m [49m[38;5;28;43;01melse[39;49;00m[43m [49m[38;5;28;43;01mNone[39;49;00m
+</span><span id="__span-9-106"><a id="__codelineno-9-106" name="__codelineno-9-106" href="#__codelineno-9-106"></a>[32m    363[39m [43m    [49m[43m)[49m
+</span><span id="__span-9-107"><a id="__codelineno-9-107" name="__codelineno-9-107" href="#__codelineno-9-107"></a>[32m    364[39m     actual_coord = slice_da.coords[slice_mode].values.item()
+</span><span id="__span-9-108"><a id="__codelineno-9-108" name="__codelineno-9-108" href="#__codelineno-9-108"></a>[32m    365[39m [38;5;28;01melse[39;00m:
+</span><span id="__span-9-109"><a id="__codelineno-9-109" name="__codelineno-9-109" href="#__codelineno-9-109"></a>
+</span><span id="__span-9-110"><a id="__codelineno-9-110" name="__codelineno-9-110" href="#__codelineno-9-110"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/xarray/core/dataarray.py:1717[39m, in [36mDataArray.sel[39m[34m(self, indexers, method, tolerance, drop, **indexers_kwargs)[39m
+</span><span id="__span-9-111"><a id="__codelineno-9-111" name="__codelineno-9-111" href="#__codelineno-9-111"></a>[32m   1601[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34msel[39m(
+</span><span id="__span-9-112"><a id="__codelineno-9-112" name="__codelineno-9-112" href="#__codelineno-9-112"></a>[32m   1602[39m     [38;5;28mself[39m,
+</span><span id="__span-9-113"><a id="__codelineno-9-113" name="__codelineno-9-113" href="#__codelineno-9-113"></a>[32m   1603[39m     indexers: Mapping[Any, Any] | [38;5;28;01mNone[39;00m = [38;5;28;01mNone[39;00m,
+</span><span id="__span-9-114"><a id="__codelineno-9-114" name="__codelineno-9-114" href="#__codelineno-9-114"></a>[32m   (...)[39m[32m   1607[39m     **indexers_kwargs: Any,
+</span><span id="__span-9-115"><a id="__codelineno-9-115" name="__codelineno-9-115" href="#__codelineno-9-115"></a>[32m   1608[39m ) -&gt; Self:
+</span><span id="__span-9-116"><a id="__codelineno-9-116" name="__codelineno-9-116" href="#__codelineno-9-116"></a>[32m   1609[39m [38;5;250m    [39m[33;03m&quot;&quot;&quot;Return a new DataArray whose data is given by selecting index[39;00m
+</span><span id="__span-9-117"><a id="__codelineno-9-117" name="__codelineno-9-117" href="#__codelineno-9-117"></a>[32m   1610[39m [33;03m    labels along the specified dimension(s).[39;00m
+</span><span id="__span-9-118"><a id="__codelineno-9-118" name="__codelineno-9-118" href="#__codelineno-9-118"></a>[32m   1611[39m 
+</span><span id="__span-9-119"><a id="__codelineno-9-119" name="__codelineno-9-119" href="#__codelineno-9-119"></a>[32m   (...)[39m[32m   1715[39m [33;03m    Dimensions without coordinates: points[39;00m
+</span><span id="__span-9-120"><a id="__codelineno-9-120" name="__codelineno-9-120" href="#__codelineno-9-120"></a>[32m   1716[39m [33;03m    &quot;&quot;&quot;[39;00m
+</span><span id="__span-9-121"><a id="__codelineno-9-121" name="__codelineno-9-121" href="#__codelineno-9-121"></a>[32m-&gt; [39m[32m1717[39m     ds = [38;5;28;43mself[39;49m[43m.[49m[43m_to_temp_dataset[49m[43m([49m[43m)[49m[43m.[49m[43msel[49m[43m([49m
+</span><span id="__span-9-122"><a id="__codelineno-9-122" name="__codelineno-9-122" href="#__codelineno-9-122"></a>[32m   1718[39m [43m        [49m[43mindexers[49m[43m=[49m[43mindexers[49m[43m,[49m
+</span><span id="__span-9-123"><a id="__codelineno-9-123" name="__codelineno-9-123" href="#__codelineno-9-123"></a>[32m   1719[39m [43m        [49m[43mdrop[49m[43m=[49m[43mdrop[49m[43m,[49m
+</span><span id="__span-9-124"><a id="__codelineno-9-124" name="__codelineno-9-124" href="#__codelineno-9-124"></a>[32m   1720[39m [43m        [49m[43mmethod[49m[43m=[49m[43mmethod[49m[43m,[49m
+</span><span id="__span-9-125"><a id="__codelineno-9-125" name="__codelineno-9-125" href="#__codelineno-9-125"></a>[32m   1721[39m [43m        [49m[43mtolerance[49m[43m=[49m[43mtolerance[49m[43m,[49m
+</span><span id="__span-9-126"><a id="__codelineno-9-126" name="__codelineno-9-126" href="#__codelineno-9-126"></a>[32m   1722[39m [43m        [49m[43m*[49m[43m*[49m[43mindexers_kwargs[49m[43m,[49m
+</span><span id="__span-9-127"><a id="__codelineno-9-127" name="__codelineno-9-127" href="#__codelineno-9-127"></a>[32m   1723[39m [43m    [49m[43m)[49m
+</span><span id="__span-9-128"><a id="__codelineno-9-128" name="__codelineno-9-128" href="#__codelineno-9-128"></a>[32m   1724[39m     [38;5;28;01mreturn[39;00m [38;5;28mself[39m._from_temp_dataset(ds)
+</span><span id="__span-9-129"><a id="__codelineno-9-129" name="__codelineno-9-129" href="#__codelineno-9-129"></a>
+</span><span id="__span-9-130"><a id="__codelineno-9-130" name="__codelineno-9-130" href="#__codelineno-9-130"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/xarray/core/dataset.py:3001[39m, in [36mDataset.sel[39m[34m(self, indexers, method, tolerance, drop, **indexers_kwargs)[39m
+</span><span id="__span-9-131"><a id="__codelineno-9-131" name="__codelineno-9-131" href="#__codelineno-9-131"></a>[32m   2933[39m [38;5;250m[39m[33;03m&quot;&quot;&quot;Returns a new dataset with each array indexed by tick labels[39;00m
+</span><span id="__span-9-132"><a id="__codelineno-9-132" name="__codelineno-9-132" href="#__codelineno-9-132"></a>[32m   2934[39m [33;03malong the specified dimension(s).[39;00m
+</span><span id="__span-9-133"><a id="__codelineno-9-133" name="__codelineno-9-133" href="#__codelineno-9-133"></a>[32m   2935[39m 
+</span><span id="__span-9-134"><a id="__codelineno-9-134" name="__codelineno-9-134" href="#__codelineno-9-134"></a>[32m   (...)[39m[32m   2998[39m 
+</span><span id="__span-9-135"><a id="__codelineno-9-135" name="__codelineno-9-135" href="#__codelineno-9-135"></a>[32m   2999[39m [33;03m&quot;&quot;&quot;[39;00m
+</span><span id="__span-9-136"><a id="__codelineno-9-136" name="__codelineno-9-136" href="#__codelineno-9-136"></a>[32m   3000[39m indexers = either_dict_or_kwargs(indexers, indexers_kwargs, [33m&quot;[39m[33msel[39m[33m&quot;[39m)
+</span><span id="__span-9-137"><a id="__codelineno-9-137" name="__codelineno-9-137" href="#__codelineno-9-137"></a>[32m-&gt; [39m[32m3001[39m query_results = [43mmap_index_queries[49m[43m([49m
+</span><span id="__span-9-138"><a id="__codelineno-9-138" name="__codelineno-9-138" href="#__codelineno-9-138"></a>[32m   3002[39m [43m    [49m[38;5;28;43mself[39;49m[43m,[49m[43m [49m[43mindexers[49m[43m=[49m[43mindexers[49m[43m,[49m[43m [49m[43mmethod[49m[43m=[49m[43mmethod[49m[43m,[49m[43m [49m[43mtolerance[49m[43m=[49m[43mtolerance[49m
+</span><span id="__span-9-139"><a id="__codelineno-9-139" name="__codelineno-9-139" href="#__codelineno-9-139"></a>[32m   3003[39m [43m[49m[43m)[49m
+</span><span id="__span-9-140"><a id="__codelineno-9-140" name="__codelineno-9-140" href="#__codelineno-9-140"></a>[32m   3005[39m [38;5;28;01mif[39;00m drop:
+</span><span id="__span-9-141"><a id="__codelineno-9-141" name="__codelineno-9-141" href="#__codelineno-9-141"></a>[32m   3006[39m     no_scalar_variables = {}
+</span><span id="__span-9-142"><a id="__codelineno-9-142" name="__codelineno-9-142" href="#__codelineno-9-142"></a>
+</span><span id="__span-9-143"><a id="__codelineno-9-143" name="__codelineno-9-143" href="#__codelineno-9-143"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/xarray/core/indexing.py:214[39m, in [36mmap_index_queries[39m[34m(obj, indexers, method, tolerance, **indexers_kwargs)[39m
+</span><span id="__span-9-144"><a id="__codelineno-9-144" name="__codelineno-9-144" href="#__codelineno-9-144"></a>[32m    212[39m         results.append(IndexSelResult(labels))
+</span><span id="__span-9-145"><a id="__codelineno-9-145" name="__codelineno-9-145" href="#__codelineno-9-145"></a>[32m    213[39m     [38;5;28;01melse[39;00m:
+</span><span id="__span-9-146"><a id="__codelineno-9-146" name="__codelineno-9-146" href="#__codelineno-9-146"></a>[32m--&gt; [39m[32m214[39m         results.append([43mindex[49m[43m.[49m[43msel[49m[43m([49m[43mlabels[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43moptions[49m[43m)[49m)
+</span><span id="__span-9-147"><a id="__codelineno-9-147" name="__codelineno-9-147" href="#__codelineno-9-147"></a>[32m    216[39m merged = merge_sel_results(results)
+</span><span id="__span-9-148"><a id="__codelineno-9-148" name="__codelineno-9-148" href="#__codelineno-9-148"></a>[32m    218[39m [38;5;66;03m# drop dimension coordinates found in dimension indexers[39;00m
+</span><span id="__span-9-149"><a id="__codelineno-9-149" name="__codelineno-9-149" href="#__codelineno-9-149"></a>[32m    219[39m [38;5;66;03m# (also drop multi-index if any)[39;00m
+</span><span id="__span-9-150"><a id="__codelineno-9-150" name="__codelineno-9-150" href="#__codelineno-9-150"></a>[32m    220[39m [38;5;66;03m# (.sel() already ensures alignment)[39;00m
+</span><span id="__span-9-151"><a id="__codelineno-9-151" name="__codelineno-9-151" href="#__codelineno-9-151"></a>
+</span><span id="__span-9-152"><a id="__codelineno-9-152" name="__codelineno-9-152" href="#__codelineno-9-152"></a>[36mFile [39m[32m~/work/confusius/confusius/.venv/lib/python3.14/site-packages/xarray/core/indexes.py:871[39m, in [36mPandasIndex.sel[39m[34m(self, labels, method, tolerance)[39m
+</span><span id="__span-9-153"><a id="__codelineno-9-153" name="__codelineno-9-153" href="#__codelineno-9-153"></a>[32m    869[39m             indexer = [38;5;28mself[39m.index.get_loc(label_value)
+</span><span id="__span-9-154"><a id="__codelineno-9-154" name="__codelineno-9-154" href="#__codelineno-9-154"></a>[32m    870[39m         [38;5;28;01mexcept[39;00m [38;5;167;01mKeyError[39;00m [38;5;28;01mas[39;00m e:
+</span><span id="__span-9-155"><a id="__codelineno-9-155" name="__codelineno-9-155" href="#__codelineno-9-155"></a>[32m--&gt; [39m[32m871[39m             [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m(
+</span><span id="__span-9-156"><a id="__codelineno-9-156" name="__codelineno-9-156" href="#__codelineno-9-156"></a>[32m    872[39m                 [33mf[39m[33m&quot;[39m[33mnot all values found in index [39m[38;5;132;01m{[39;00mcoord_name[38;5;132;01m!r}[39;00m[33m. [39m[33m&quot;[39m
+</span><span id="__span-9-157"><a id="__codelineno-9-157" name="__codelineno-9-157" href="#__codelineno-9-157"></a>[32m    873[39m                 [33m&quot;[39m[33mTry setting the `method` keyword argument (example: method=[39m[33m&#39;[39m[33mnearest[39m[33m&#39;[39m[33m).[39m[33m&quot;[39m
+</span><span id="__span-9-158"><a id="__codelineno-9-158" name="__codelineno-9-158" href="#__codelineno-9-158"></a>[32m    874[39m             ) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01me[39;00m
+</span><span id="__span-9-159"><a id="__codelineno-9-159" name="__codelineno-9-159" href="#__codelineno-9-159"></a>[32m    876[39m [38;5;28;01melif[39;00m label_array.dtype.kind == [33m&quot;[39m[33mb[39m[33m&quot;[39m:
+</span><span id="__span-9-160"><a id="__codelineno-9-160" name="__codelineno-9-160" href="#__codelineno-9-160"></a>[32m    877[39m     indexer = label_array
+</span><span id="__span-9-161"><a id="__codelineno-9-161" name="__codelineno-9-161" href="#__codelineno-9-161"></a>
+</span><span id="__span-9-162"><a id="__codelineno-9-162" name="__codelineno-9-162" href="#__codelineno-9-162"></a>[31mKeyError[39m: &quot;not all values found in index &#39;region&#39;. Try setting the `method` keyword argument (example: method=&#39;nearest&#39;).&quot;
+</span></code></pre></div>
+<p><a class="glightbox" href="../atlas_seed_map_output_light/cell_15_1_light.png#only-light" data-type="image" data-title="Example output from cell 15, image 1" data-gallery="light"><img src="../atlas_seed_map_output_light/cell_15_1_light.png#only-light" alt="Example output from cell 15, image 1"></a><a class="glightbox" href="../atlas_seed_map_output_dark/cell_15_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 15, image 1" data-gallery="dark"><img src="../atlas_seed_map_output_dark/cell_15_1_dark.png#only-dark" alt="Example output from cell 15, image 1"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 257.3 s</p>
+<p><strong>Total running time:</strong> 237.2 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/plot_stat_map?urlpath=lab/tree/docs/examples/04_connectivity/02_atlas_seed_map.py">Launch in Binder</a> <a class="md-button" href="../atlas_seed_map.py">Download .py</a> <a class="md-button" href="../atlas_seed_map.ipynb">Download .ipynb</a></p>
 
 
