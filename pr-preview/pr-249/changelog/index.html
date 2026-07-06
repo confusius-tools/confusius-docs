@@ -2398,6 +2398,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2521,7 +2532,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
+  <a href="#maintenance_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
@@ -2735,6 +2746,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2858,7 +2880,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
+  <a href="#maintenance_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         <img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance
@@ -2990,6 +3012,14 @@
   <code>data.fusi.affine.apply</code> accessor now accept a string naming a key in
   <code>attrs["affines"]</code>, instead of requiring the affine matrix itself
   (<a href="https://github.com/confusius-tools/confusius/pull/247">#247</a>).</li>
+<li>Plotting functions that slice along <code>slice_mode</code> (
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_contours"><code>plot_contours</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_composite&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_composite"><code>plot_composite</code></a>, and the
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="../api/plotting/#confusius.plotting.VolumePlotter"><code>VolumePlotter</code></a> methods) now support non-numeric
+  coordinates (e.g. region/mask labels), so a single call can slice a stacked
+  connectivity or <abbr title="Region of Interest">ROI</abbr> map by label instead of looping over <code>.sel()</code> per panel
+  (<a href="https://github.com/confusius-tools/confusius/pull/250">#250</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3024,13 +3054,21 @@
   the coord does not start at 0 with regular spacing); otherwise the spacing is stored
   in <code>pixdim</code> and the coord is rebuilt as <code>step * arange(size)</code> on load. Attributes are
   preserved in <code>ConfUSIusDim{N}Attributes</code> entries.
-  (<a href="htttps://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Add an <a href="../examples/_built/decomposition/nmf_single_recording/"><abbr title="Non-negative Matrix Factorization">NMF</abbr> example</a> to the
   gallery, demonstrating the z-score + absolute-value standardization that makes
   signed <abbr title="Functional Ultrasound Imaging">fUSI</abbr> signals <abbr title="Non-negative Matrix Factorization">NMF</abbr>-compatible.</li>
+</ul>
+<h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Simplified the NIfTI save path: time and extra-dimension voxel spacings are now
+  written directly to the header <code>pixdim</code> instead of through nibabel's <code>set_zooms</code> (that
+  was overwritten anyways), dropping a redundant spatial write that the qform
+  immediately overwrote. Behavior is unchanged.
+  (<a href="https://github.com/confusius-tools/confusius/pull/253">#253</a>).</li>
 </ul>
 <h2 id="040">0.4.0<a class="headerlink" href="#040" title="Permanent link">&para;</a></h2>
 <p><em>Released 2026-06-25.</em></p>
@@ -3171,7 +3209,7 @@
   inspecting alignment before and after registration
   (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
 </ul>
-<h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
+<h3 id="maintenance_1"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Switched documentation hosting to GitHub Pages with <code>mike</code> versioning and automatic
   PR preview deployments
