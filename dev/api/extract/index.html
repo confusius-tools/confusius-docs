@@ -2754,9 +2754,12 @@ those in <code>labels</code>.</p>
   non-overlapping region. The <code>region</code> coordinate of the output holds the
   integer label values.</li>
 <li><strong>Stacked mask format</strong>: Has a leading <code>mask</code> dimension followed by spatial
-  dims, e.g. <code>(mask, z, y, x)</code>. Each layer has values in <code>{0, region_id}</code>
-  and regions may overlap. The <code>region</code> coordinate of the output holds the
-  <code>mask</code> coordinate values (e.g., region label).</li>
+  dims, e.g. <code>(mask, z, y, x)</code>. Each layer has exactly one non-zero value
+  identifying its own voxels, and regions may overlap; the non-zero value
+  itself is not used to identify the layer, so it may repeat across layers
+  (e.g. the same region id for left/right hemisphere layers). The <code>region</code>
+  coordinate of the output holds the <code>mask</code> coordinate values (e.g., region
+  label).</li>
 </ul>
           </div>
         </li>
@@ -2842,11 +2845,12 @@ restriction.</p>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 </span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="go">array([1, 2])</span>
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Stacked mask format from Atlas.get_masks.</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">atlas_fusi</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;AUDp&quot;</span><span class="p">])</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">extract_with_labels</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="go">array([&#39;VISp&#39;, &#39;AUDp&#39;], dtype=object)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Stacked mask format from Atlas.get_masks. Left/right hemisphere layers</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># share the same region id, but each is disambiguated by its `mask` coord.</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">atlas_fusi</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;VISp&quot;</span><span class="p">],</span> <span class="n">sides</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">])</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">extract_with_labels</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="go">array([&#39;VISp_L&#39;, &#39;VISp_R&#39;], dtype=object)</span>
 </span></code></pre></div>
 
 
