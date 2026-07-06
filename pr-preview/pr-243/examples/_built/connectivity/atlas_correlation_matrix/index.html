@@ -29,7 +29,7 @@
     
     
       
-        <title>Atlas correlation matrix - ConfUSIus</title>
+        <title>Atlas-based region correlation matrix - ConfUSIus</title>
       
     
     
@@ -97,7 +97,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fetch-the-recording-and-the-template" class="md-skip">
+        <a href="#atlas-based-region-correlation-matrix" class="md-skip">
           Skip to content
         </a>
       
@@ -134,7 +134,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Atlas correlation matrix
+              Atlas-based region correlation matrix
             
           </span>
         </div>
@@ -2350,6 +2350,8 @@
       
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -2390,6 +2392,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -2584,6 +2588,8 @@
                     
                     
                     
+                      
+                    
                     
                       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
                       <div class="md-sidebar-button__wrapper">
@@ -2598,6 +2604,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -2756,9 +2764,7 @@
   
 
 
-  <h1 id="__skip">Atlas correlation matrix</h1>
-
-<p>Atlas-based region correlation matrix</p>
+<h1 id="atlas-based-region-correlation-matrix">Atlas-based region correlation matrix<a class="headerlink" href="#atlas-based-region-correlation-matrix" title="Permanent link">&para;</a></h1>
 <p>This example shows an end-to-end regional functional connectivity (<abbr title="Functional Connectivity">FC</abbr>) analysis:
 register a single-slice <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording to an Allen-space template, bring the <autoref identifier="confusius.atlas.Atlas">Allen
 Mouse Brain Atlas</autoref> into the recording's native space, extract
@@ -2766,8 +2772,8 @@ region-averaged signals, and visualise their pairwise correlation with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../../../../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a>.</p>
 <p>We use an awake freely-running acquisition from subject <code>CR022</code>, session <code>20201007</code>,
 in the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022">Nunez-Elizalde 2022 dataset</a>,
-and the <autoref identifier="confusius.datasets.fetch_template_pepe_mariani_2026">Pepe, Mariani 2026 <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
-template</autoref>, which carries the
+and the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026">Pepe, Mariani 2026 <abbr title="Functional Ultrasound Imaging">fUSI</abbr> template</a>,
+which carries the
 affine transform required to bring it into Allen Common Coordinate Framework (CCF)
 space.</p>
 <h2 id="fetch-the-recording-and-the-template">Fetch the recording and the template<a class="headerlink" href="#fetch-the-recording-and-the-template" title="Permanent link">&para;</a></h2>
@@ -2806,9 +2812,9 @@ converted to decibels for a more stable dynamic range.</p>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">timing</span><span class="o">.</span><span class="n">resample_to_uniform_time</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_path</span><span class="p">))</span>
 </span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">moving</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">data</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">moving</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_4252/685735078.py:30: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/tmp/ipykernel_13535/1406573884.py:30: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 </span></code></pre></div>
 <div class="gallery-rich-output"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -3353,101 +3359,19 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-2fd71c12-80cd-4671-92ae-2c49cfc024db' class='xr-array-in' type='checkbox' ><label for='section-2fd71c12-80cd-4671-92ae-2c49cfc024db' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 1, 125, 80), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
-    <tr>
-        <td>
-            <table style="border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <td> </td>
-                        <th> Array </th>
-                        <th> Chunk </th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr>
-                        <th> Bytes </th>
-                        <td> 57.60 MiB </td>
-                        <td> 57.60 MiB </td>
-                    </tr>
-
-                    <tr>
-                        <th> Shape </th>
-                        <td> (755, 1, 125, 80) </td>
-                        <td> (755, 1, 125, 80) </td>
-                    </tr>
-                    <tr>
-                        <th> Dask graph </th>
-                        <td colspan="2"> 1 chunks in 7 graph layers </td>
-                    </tr>
-                    <tr>
-                        <th> Data type </th>
-                        <td colspan="2"> float64 numpy.ndarray </td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-        <td>
-        <svg width="483" height="106" style="stroke:rgb(0,0,0);stroke-width:1" >
-
-  <!-- Horizontal lines -->
-  <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2" />
-  <line x1="0" y1="25" x2="120" y2="25" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2" />
-  <line x1="120" y1="0" x2="120" y2="25" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="0.0,0.0 120.0,0.0 120.0,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Text -->
-  <text x="60.0" y="45.41261651458248" font-size="1.0rem" font-weight="100" text-anchor="middle" >755</text>
-  <text x="140.0" y="12.706308257291242" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,140.0,12.706308257291242)">1</text>
-
-
-  <!-- Horizontal lines -->
-  <line x1="190" y1="0" x2="204" y2="14" style="stroke-width:2" />
-  <line x1="190" y1="41" x2="204" y2="56" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="190" y1="0" x2="190" y2="41" style="stroke-width:2" />
-  <line x1="204" y1="14" x2="204" y2="56" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="190.0,0.0 204.9485979497544,14.948597949754403 204.9485979497544,56.12172720352885 190.0,41.17312925377445" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Horizontal lines -->
-  <line x1="190" y1="0" x2="228" y2="0" style="stroke-width:2" />
-  <line x1="204" y1="14" x2="243" y2="14" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="190" y1="0" x2="204" y2="14" style="stroke-width:2" />
-  <line x1="228" y1="0" x2="243" y2="14" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="190.0,0.0 228.91519136365932,0.0 243.86378931341372,14.948597949754403 204.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Horizontal lines -->
-  <line x1="204" y1="14" x2="243" y2="14" style="stroke-width:2" />
-  <line x1="204" y1="56" x2="243" y2="56" style="stroke-width:2" />
-
-  <!-- Vertical lines -->
-  <line x1="204" y1="14" x2="204" y2="56" style="stroke-width:2" />
-  <line x1="243" y1="14" x2="243" y2="56" style="stroke-width:2" />
-
-  <!-- Colored Rectangle -->
-  <polygon points="204.9485979497544,14.948597949754403 243.86378931341372,14.948597949754403 243.86378931341372,56.12172720352885 204.9485979497544,56.12172720352885" style="fill:#ECB172A0;stroke-width:0"/>
-
-  <!-- Text -->
-  <text x="224.40619363158407" y="76.12172720352885" font-size="1.0rem" font-weight="100" text-anchor="middle" >80</text>
-  <text x="263.8637893134137" y="35.535162576641625" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,263.8637893134137,35.535162576641625)">125</text>
-  <text x="187.4742989748772" y="68.64742822865165" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,187.4742989748772,68.64742822865165)">1</text>
-</svg>
-        </td>
-    </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-91d3e258-cada-405d-add8-ebc68f0a05fc' class='xr-section-summary-in' type='checkbox' checked /><label for='section-91d3e258-cada-405d-add8-ebc68f0a05fc' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-0a099c40-dc5c-4f8a-8cf4-de0240601f5f' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-0a099c40-dc5c-4f8a-8cf4-de0240601f5f' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-32813450-bfae-44da-aeb5-02597a031507' class='xr-var-data-in' type='checkbox'><label for='data-32813450-bfae-44da-aeb5-02597a031507' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-f5f6f138-d209-43e6-b2f8-91a6f78f662c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f5f6f138-d209-43e6-b2f8-91a6f78f662c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-38eed90e-50e5-4a42-876e-0798610b8497' class='xr-var-data-in' type='checkbox'><label for='data-38eed90e-50e5-4a42-876e-0798610b8497' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-2d74db71-5969-4769-8b49-0e6dc49bb78a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2d74db71-5969-4769-8b49-0e6dc49bb78a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-06926b61-786b-4f79-9760-e33f4b97dfb3' class='xr-var-data-in' type='checkbox'><label for='data-06926b61-786b-4f79-9760-e33f4b97dfb3' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 125</li><li><span class='xr-has-index'>x</span>: 80</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-15410798-27ed-4445-85c4-34aa86293740' class='xr-array-in' type='checkbox' ><label for='section-15410798-27ed-4445-85c4-34aa86293740' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28</span></div><div class='xr-array-data'><pre>array([[[-18.68791853, -18.56914594, -18.50125742, ..., -17.95731186,
+         -17.93904114, -17.96411065],
+        [-18.53553421, -18.44544855, -18.35652977, ..., -17.88590817,
+         -17.88531234, -17.8921728 ],
+        [-18.48977958, -18.40711579, -18.32848946, ..., -17.79351916,
+         -17.8047821 , -17.82991545],
+        ...,
+        [-12.31568818, -13.39413559, -13.82521836, ..., -13.53650285,
+         -13.52171663, -13.62770889],
+        [-12.3196413 , -13.3536182 , -13.74918197, ..., -13.45700985,
+         -13.38636815, -13.44454796],
+        [-12.37651855, -13.21903683, -13.60253656, ..., -13.36433415,
+         -13.33344696, -13.279082  ]]], shape=(1, 125, 80))</pre></div></div></li><li class='xr-section-item'><input id='section-d42262f7-dfc9-4c04-a8c1-9f68c611a050' class='xr-section-summary-in' type='checkbox' checked /><label for='section-d42262f7-dfc9-4c04-a8c1-9f68c611a050' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4</div><input id='attrs-60d9b615-77b2-4454-9036-18061c8a20e5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-60d9b615-77b2-4454-9036-18061c8a20e5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1e663f4e-7d88-47ae-b6fa-290db64a687e' class='xr-var-data-in' type='checkbox'><label for='data-1e663f4e-7d88-47ae-b6fa-290db64a687e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.4000000059604645</dd></dl></div><div class='xr-var-data'><pre>array([0.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.996 3.044 3.092 ... 8.939 8.988</div><input id='attrs-46428557-63a5-424c-aea9-c3c9827e328c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-46428557-63a5-424c-aea9-c3c9827e328c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a5ad433c-1220-4ad7-afb0-9268a1430836' class='xr-var-data-in' type='checkbox'><label for='data-a5ad433c-1220-4ad7-afb0-9268a1430836' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.04831999912858009</dd></dl></div><div class='xr-var-data'><pre>array([2.99584, 3.04416, 3.09248, 3.1408 , 3.18912, 3.23744, 3.28576, 3.33408,
        3.3824 , 3.43072, 3.47904, 3.52736, 3.57568, 3.624  , 3.67232, 3.72064,
        3.76896, 3.81728, 3.8656 , 3.91392, 3.96224, 4.01056, 4.05888, 4.1072 ,
        4.15552, 4.20384, 4.25216, 4.30048, 4.3488 , 4.39712, 4.44544, 4.49376,
@@ -3462,17 +3386,17 @@ dl.xr-attrs {
        7.63456, 7.68288, 7.7312 , 7.77952, 7.82784, 7.87616, 7.92448, 7.9728 ,
        8.02112, 8.06944, 8.11776, 8.16608, 8.2144 , 8.26272, 8.31104, 8.35936,
        8.40768, 8.456  , 8.50432, 8.55264, 8.60096, 8.64928, 8.6976 , 8.74592,
-       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-28de6634-bb1e-4d70-a5ba-9a9307338324' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-28de6634-bb1e-4d70-a5ba-9a9307338324' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1f034ac5-8078-4317-9d65-529b69c77236' class='xr-var-data-in' type='checkbox'><label for='data-1f034ac5-8078-4317-9d65-529b69c77236' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
+       8.79424, 8.84256, 8.89088, 8.9392 , 8.98752])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-3.95 -3.85 -3.75 ... 3.85 3.95</div><input id='attrs-fda0eb17-6403-4c2a-a333-6d9e7d9bbee9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fda0eb17-6403-4c2a-a333-6d9e7d9bbee9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-253963db-82c5-4787-9e4b-0458cb229a08' class='xr-var-data-in' type='checkbox'><label for='data-253963db-82c5-4787-9e4b-0458cb229a08' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10000000149011612</dd></dl></div><div class='xr-var-data'><pre>array([-3.95, -3.85, -3.75, -3.65, -3.55, -3.45, -3.35, -3.25, -3.15, -3.05,
        -2.95, -2.85, -2.75, -2.65, -2.55, -2.45, -2.35, -2.25, -2.15, -2.05,
        -1.95, -1.85, -1.75, -1.65, -1.55, -1.45, -1.35, -1.25, -1.15, -1.05,
        -0.95, -0.85, -0.75, -0.65, -0.55, -0.45, -0.35, -0.25, -0.15, -0.05,
         0.05,  0.15,  0.25,  0.35,  0.45,  0.55,  0.65,  0.75,  0.85,  0.95,
         1.05,  1.15,  1.25,  1.35,  1.45,  1.55,  1.65,  1.75,  1.85,  1.95,
         2.05,  2.15,  2.25,  2.35,  2.45,  2.55,  2.65,  2.75,  2.85,  2.95,
-        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-21bc2889-dbf0-4849-91c2-9fb132d8a5bd' class='xr-section-summary-in' type='checkbox' /><label for='section-21bc2889-dbf0-4849-91c2-9fb132d8a5bd' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        3.05,  3.15,  3.25,  3.35,  3.45,  3.55,  3.65,  3.75,  3.85,  3.95])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-42e710da-6df1-4da7-bfa9-4509495b857c' class='xr-section-summary-in' type='checkbox' /><label for='section-42e710da-6df1-4da7-bfa9-4509495b857c' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(27)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
+       [0., 0., 0., 1.]])}</dd><dt><span>units :</span></dt><dd>dB</dd><dt><span>scaling :</span></dt><dd>10*log10(x/max)</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
 <h2 id="register-the-recording-to-the-template">Register the recording to the template<a class="headerlink" href="#register-the-recording-to-the-template" title="Permanent link">&para;</a></h2>
@@ -3489,31 +3413,32 @@ solution.</p>
 mapping <code>fixed</code> (template) physical coordinates to <code>moving</code> (recording) physical
 coordinates, so we invert the Napari affine—which instead describes how to place the
 recording <em>into</em> the template's coordinate system—before using it as <code>initialization</code>.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">napari_affine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">[</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.594638656430411</span><span class="p">],</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.50293925701927</span><span class="p">],</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.6650243788545875</span><span class="p">],</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">]</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">initialization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">napari_affine</span><span class="p">)</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># Crop the template to a thin band around the recording&#39;s expected location to improve</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># registration speed and visualization.</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">target_z</span> <span class="o">=</span> <span class="n">napari_affine</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">fixed</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">target_z</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">target_z</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">initialized</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">initialization</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="p">)</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">fixed</span><span class="p">,</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">initialized</span><span class="p">,</span>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Copied and pasted transform after manual transformation in Napari</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">napari_affine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">[</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.594638656430411</span><span class="p">],</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.50293925701927</span><span class="p">],</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.6650243788545875</span><span class="p">],</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="p">]</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">initialization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">napari_affine</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Crop the template to a thin band around the recording&#39;s expected location to improve</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># registration speed and visualization.</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">target_z</span> <span class="o">=</span> <span class="n">napari_affine</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">fixed</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="n">target_z</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">target_z</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="n">initialized</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">initialization</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">moving</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_composite</span><span class="p">(</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">fixed</span><span class="p">,</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">initialized</span><span class="p">,</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="p">[</span><span class="n">target_z</span><span class="p">],</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">normalize_strategy</span><span class="o">=</span><span class="s2">&quot;per_slice&quot;</span><span class="p">,</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_05_0_light.png#only-light" data-type="image" data-title="Example output from cell 5, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_05_0_light.png#only-light" alt="Example output from cell 5, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_05_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 5, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_05_0_dark.png#only-dark" alt="Example output from cell 5, image 0"></a></p>
 <p>We use an affine transform: on top of the rotation and translation a rigid transform
@@ -4167,7 +4092,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>region</span>: 24</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-d321c494-3822-491c-9817-26adec71f485' class='xr-array-in' type='checkbox' ><label for='section-d321c494-3822-491c-9817-26adec71f485' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 24), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-CR022_ses-20201007_task-spontaneous_acq-slice02_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 755</li><li><span class='xr-has-index'>region</span>: 24</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-54f0fcda-be7f-4aeb-b8ae-46620e3c013b' class='xr-array-in' type='checkbox' ><label for='section-54f0fcda-be7f-4aeb-b8ae-46620e3c013b' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(755, 24), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
     <tr>
         <td>
             <table style="border-collapse: collapse;">
@@ -4222,10 +4147,10 @@ dl.xr-attrs {
 </svg>
         </td>
     </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-a465438f-50c6-4985-8fb4-688dcd540845' class='xr-section-summary-in' type='checkbox' checked /><label for='section-a465438f-50c6-4985-8fb4-688dcd540845' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-a3138a0f-ce3a-4981-9c11-b68f05c799b9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-a3138a0f-ce3a-4981-9c11-b68f05c799b9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2846c961-2902-4cf5-9d51-41b3fb270743' class='xr-var-data-in' type='checkbox'><label for='data-2846c961-2902-4cf5-9d51-41b3fb270743' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U9</div><div class='xr-var-preview xr-preview'>&#x27;SSp-bfd_L&#x27; &#x27;MOp_L&#x27; ... &#x27;ZI_R&#x27;</div><input id='attrs-f235000f-3d78-4f47-a2cc-07ec6362e7a7' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-f235000f-3d78-4f47-a2cc-07ec6362e7a7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2845e81d-e9e9-4222-bc70-d904a8cdf31a' class='xr-var-data-in' type='checkbox'><label for='data-2845e81d-e9e9-4222-bc70-d904a8cdf31a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;SSp-bfd_L&#x27;, &#x27;MOp_L&#x27;, &#x27;RSPv_L&#x27;, &#x27;RSPv_R&#x27;, &#x27;MOp_R&#x27;, &#x27;SSp-bfd_R&#x27;, &#x27;CA2_L&#x27;,
+</table></div></div></li><li class='xr-section-item'><input id='section-e663c53c-99a1-40fc-ad27-f478b95188c5' class='xr-section-summary-in' type='checkbox' checked /><label for='section-e663c53c-99a1-40fc-ad27-f478b95188c5' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>11.0 11.3 11.6 ... 236.9 237.2</div><input id='attrs-65687710-e534-40ae-ac23-7f3c4d588309' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-65687710-e534-40ae-ac23-7f3c4d588309' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-0291effa-def2-42ab-8424-c46c7f62678b' class='xr-var-data-in' type='checkbox'><label for='data-0291effa-def2-42ab-8424-c46c7f62678b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.3</dd></dl></div><div class='xr-var-data'><pre>array([ 10.998,  11.298,  11.598, ..., 236.598, 236.898, 237.198], shape=(755,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>region</span></div><div class='xr-var-dims'>(region)</div><div class='xr-var-dtype'>&lt;U9</div><div class='xr-var-preview xr-preview'>&#x27;SSp-bfd_L&#x27; &#x27;MOp_L&#x27; ... &#x27;ZI_R&#x27;</div><input id='attrs-f60e8247-c7eb-4e21-af4b-94f43278c434' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-f60e8247-c7eb-4e21-af4b-94f43278c434' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fb032a4a-231b-4c11-b8d3-adc4c5d5ee80' class='xr-var-data-in' type='checkbox'><label for='data-fb032a4a-231b-4c11-b8d3-adc4c5d5ee80' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([&#x27;SSp-bfd_L&#x27;, &#x27;MOp_L&#x27;, &#x27;RSPv_L&#x27;, &#x27;RSPv_R&#x27;, &#x27;MOp_R&#x27;, &#x27;SSp-bfd_R&#x27;, &#x27;CA2_L&#x27;,
        &#x27;CA3_L&#x27;, &#x27;DG_L&#x27;, &#x27;DG_R&#x27;, &#x27;CA3_R&#x27;, &#x27;CA2_R&#x27;, &#x27;RT_L&#x27;, &#x27;VPM_L&#x27;, &#x27;PO_L&#x27;,
        &#x27;PO_R&#x27;, &#x27;VPM_R&#x27;, &#x27;RT_R&#x27;, &#x27;ZI_L&#x27;, &#x27;LHA_L&#x27;, &#x27;PH_L&#x27;, &#x27;PH_R&#x27;, &#x27;LHA_R&#x27;,
-       &#x27;ZI_R&#x27;], dtype=&#x27;&lt;U9&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-466a15df-a3e6-4ded-b816-7d5a3852550a' class='xr-section-summary-in' type='checkbox' /><label for='section-466a15df-a3e6-4ded-b816-7d5a3852550a' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+       &#x27;ZI_R&#x27;], dtype=&#x27;&lt;U9&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-ae665909-82f3-4958-b696-22dbc464af80' class='xr-section-summary-in' type='checkbox' /><label for='section-ae665909-82f3-4958-b696-22dbc464af80' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(25)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Verasonics</dd><dt><span>manufacturers_model_name :</span></dt><dd>Vantage 128</dd><dt><span>software_version :</span></dt><dd>Alan Urban Technology &amp; Consulting (AUTC)</dd><dt><span>probe_manufacturer :</span></dt><dd>Vermon</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>L22-XTech</dd><dt><span>probe_central_frequency :</span></dt><dd>15000000.0</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.1</dd><dt><span>probe_focal_width :</span></dt><dd>0.4</dd><dt><span>probe_focal_depth :</span></dt><dd>8.0</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>0.3</dd><dt><span>power_doppler_integration_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>0.4</dd><dt><span>clutter_filter_window_stride :</span></dt><dd>0.3</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;highpass:15Hz&#x27;, &#x27;svd:remove_first_15_components&#x27;]</dd><dt><span>task_name :</span></dt><dd>spontaneous</dd><dt><span>task_description :</span></dt><dd>Spontaneous activity without explicit visual stimulation.</dd><dt><span>depth :</span></dt><dd>[0.0, 5.991680000000001]</dd><dt><span>transmit_frequency :</span></dt><dd>15625000.0</dd><dt><span>compound_sampling_frequency :</span></dt><dd>500.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002]</dd><dt><span>probe_voltage :</span></dt><dd>25.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
@@ -4275,7 +4200,7 @@ perceptually uniform <code>"berlin"</code> colormap in dark mode.</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../atlas_correlation_matrix_output_light/cell_19_0_light.png#only-light" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="light"><img src="../atlas_correlation_matrix_output_light/cell_19_0_light.png#only-light" alt="Example output from cell 19, image 0"></a><a class="glightbox" href="../atlas_correlation_matrix_output_dark/cell_19_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="dark"><img src="../atlas_correlation_matrix_output_dark/cell_19_0_dark.png#only-dark" alt="Example output from cell 19, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 189.1 s</p>
+<p><strong>Total running time:</strong> 189.0 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/plot_matrix?urlpath=lab/tree/docs/examples/04_connectivity/01_atlas_correlation_matrix.py">Launch in Binder</a> <a class="md-button" href="../atlas_correlation_matrix.py">Download .py</a> <a class="md-button" href="../atlas_correlation_matrix.ipynb">Download .ipynb</a></p>
 
 
