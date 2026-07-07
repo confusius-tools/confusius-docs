@@ -136,7 +136,7 @@ seed_masks = atlas_native.get_masks(seed_regions, sides="left")
 #
 # We lightly smooth the recording spatially with
 # [`smooth_volume`][confusius.spatial.smooth_volume] (0.1 mm FWHM) to improve the
-# voxel-wise SNR before extracting confounds and seed signals.
+# voxel-wise SNR before extracting confound signals and fitting the seed-based maps.
 #
 # As in the correlation-matrix example, we regress out an
 # [aCompCor][confusius.signal.compute_compcor_confounds] component extracted from
