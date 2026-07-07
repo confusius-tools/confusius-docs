@@ -3148,7 +3148,9 @@
 <li>Dataset fetchers called with <code>refresh=True</code> now re-download cached files whose upstream
   MD5 changed, comparing the cached dataset index against the freshly fetched one instead
   of only checking whether the file exists; downloads are additionally verified against
-  the index MD5. Affects
+  the index MD5. A locally cached dataset whose <code>dataset_index.json</code> predates this format
+  is detected on fetch and reported with a clear error naming the directory to delete and
+  re-fetch, rather than being silently mishandled. Affects
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a>,
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022"><code>fetch_nunez_elizalde_2022</code></a>, and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_landemard_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_landemard_2026"><code>fetch_landemard_2026</code></a>
