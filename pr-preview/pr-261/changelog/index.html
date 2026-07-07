@@ -3101,9 +3101,10 @@
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Dataset fetchers called with <code>refresh=True</code> now re-download cached files whose upstream
-  content changed, comparing each file's MD5 against the dataset index instead of only
-  checking whether the file exists; downloads are additionally verified against the index
-  MD5. Affects <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a>,
+  MD5 changed, comparing the cached dataset index against the freshly fetched one instead
+  of only checking whether the file exists; downloads are additionally verified against
+  the index MD5. Affects
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a>,
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022"><code>fetch_nunez_elizalde_2022</code></a>, and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_landemard_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_landemard_2026"><code>fetch_landemard_2026</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/261">#261</a>).</li>
@@ -3177,6 +3178,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> and other image plotting functions now
+  raise a clear <code>ValueError</code> when <code>vmin</code>/<code>vmax</code> (or a passed-in <code>norm</code>) resolve to a
+  non-finite value, instead of crashing deep inside
+  <code>matplotlib.colors.LinearSegmentedColormap.from_list</code> with an opaque <code>IndexError</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/259">#259</a>).</li>
 <li><code>save_nifti</code> now drops attrs that cannot be serialized to JSON as-is (e.g. matplotlib
   <code>ListedColormap</code>/<code>BoundaryNorm</code> objects) instead of writing their <code>str()</code> repr into the
   sidecar, which could corrupt fields such as <code>cmap</code> on reload. A warning lists the
