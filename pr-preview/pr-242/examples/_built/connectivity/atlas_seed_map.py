@@ -132,7 +132,11 @@ seed_regions = ["SSp-bfd", "RSP", "HIP", "VPM"]
 seed_masks = atlas_native.get_masks(seed_regions, sides="left")
 
 # %% [markdown]
-# ## Clean confounds
+# ## Smooth and compute nuisance regressors
+#
+# We lightly smooth the recording spatially with
+# [`smooth_volume`][confusius.spatial.smooth_volume] (0.1 mm FWHM) to improve the
+# voxel-wise SNR before extracting confounds and seed signals.
 #
 # As in the correlation-matrix example, we regress out an
 # [aCompCor][confusius.signal.compute_compcor_confounds] component extracted from
@@ -142,6 +146,8 @@ seed_masks = atlas_native.get_masks(seed_regions, sides="left")
 # seed signals, so seeds and voxels are preprocessed consistently.
 
 # %%
+data = cf.spatial.smooth_volume(data, fwhm=0.1)
+
 white_matter = atlas_native.get_masks("fiber tracts").isel(mask=0)
 acompcor = cf.signal.compute_compcor_confounds(
     data, noise_mask=white_matter, n_components=1, variance_threshold=0.95
@@ -186,8 +192,8 @@ cmap = "berlin" if is_dark_theme else None
 
 # Broadcast the shared background and brain outline across a "region" dimension
 # matching mapper.maps_, so plot_stat_map can slice both by region in one call.
-bg_by_region = atlas_native.reference.expand_dims(region=seed_regions)
-brain_mask_by_region = brain_mask.expand_dims(region=seed_regions)
+bg_by_region = atlas_native.reference.expand_dims(region=mapper.maps_.region)
+brain_mask_by_region = brain_mask.expand_dims(region=mapper.maps_.region)
 
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
 fig.patch.set_facecolor(bg_color)
@@ -196,9 +202,9 @@ plotter = cf.plotting.plot_stat_map(
     mapper.maps_,
     bg_volume=bg_by_region,
     slice_mode="region",
-    slice_coords=seed_regions,
     cmap=cmap,
     vmax=0.8,
+    threshold=0.25,
     cbar_label="Pearson correlation",
     show_titles=False,
     show_axes=False,
