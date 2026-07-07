@@ -2031,6 +2031,8 @@
       
         
       
+        
+      
     
     
     
@@ -2416,6 +2418,97 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Connectivity
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  Connectivity
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/connectivity/atlas_correlation_matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Atlas-based region correlation matrix
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2767,7 +2860,9 @@ by passing one or multiple paths to the <code>confusius</code> command on launch
 <p>Both routes use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load()</code></a> under the hood, which produces a
 fully-labeled DataArray with named dimensions, physical coordinates, and all file
 metadata preserved. The DataArray is attached to the layer and used automatically by the
-Signals and <abbr title="Quality Control">QC</abbr> panels. By default the full array is loaded into memory for
+Signals and <abbr title="Quality Control">QC</abbr> panels. Integer-dtype files (e.g. atlas annotations, <abbr title="Region of Interest">ROI</abbr> masks) are added
+as a <code>Labels</code> layer with per-label colors instead of a continuous colormap; all other
+dtypes are added as an <code>Image</code> layer. By default the full array is loaded into memory for
 responsive time scrubbing. For files that don't fit in RAM, lazy loading keeps the array
 Dask-backed—the layer appears instantly and slices are read from disk on demand. Enable
 it via the <strong>Load lazily</strong> checkbox in the Data Panel, or with the <code>--lazy</code> flag on the
@@ -2777,7 +2872,8 @@ CLI:</p>
 <h3 id="alternative-napari-file-readers">Alternative: napari file readers<a class="headerlink" href="#alternative-napari-file-readers" title="Permanent link">&para;</a></h3>
 <p>ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN, and Zarr
 files. These let you open files by dragging them onto the canvas or using <strong>File &gt;
-Open</strong> (<span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-o">O</kbd></span>) without switching to the Data Panel.</p>
+Open</strong> (<span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-o">O</kbd></span>) without switching to the Data Panel. Like the Data Panel and CLI,
+integer-dtype files are added as a <code>Labels</code> layer.</p>
 <div class="admonition warning">
 <p class="admonition-title">Axis labels are not propagated to the viewer</p>
 <p>Due to a current napari limitation, files opened through the native readers have
