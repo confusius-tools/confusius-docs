@@ -182,18 +182,15 @@ mapper.maps_
 # [`Atlas.get_masks`][confusius.atlas.Atlas.get_masks] elsewhere).
 
 # %% tags=["thumbnail"]
-brain_mask = atlas_native.get_masks("root").isel(mask=0)
-
 # coolwarm's white midpoint reads as a washed-out hole on a dark background, so switch
-# to berlin (Crameri's perceptually uniform diverging colormap, black midpoint) when
-# the current Matplotlib style is dark.
+# to berlin (Crameri's perceptually uniform diverging colormap, black midpoint) when the
+# current Matplotlib style is dark.
 is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 cmap = "berlin" if is_dark_theme else None
 
 # Broadcast the shared background and brain outline across a "region" dimension
 # matching mapper.maps_, so plot_stat_map can slice both by region in one call.
 bg_by_region = atlas_native.reference.expand_dims(region=mapper.maps_.region)
-brain_mask_by_region = brain_mask.expand_dims(region=mapper.maps_.region)
 
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
 fig.patch.set_facecolor(bg_color)
@@ -204,7 +201,7 @@ plotter = cf.plotting.plot_stat_map(
     slice_mode="region",
     cmap=cmap,
     vmax=0.8,
-    threshold=0.25,
+    threshold=0.20,
     cbar_label="Pearson correlation",
     show_titles=False,
     show_axes=False,
@@ -213,7 +210,6 @@ plotter = cf.plotting.plot_stat_map(
     bg_color=bg_color,
 )
 plotter.add_contours(seed_masks.rename(mask="region"), linewidths=1.5)
-plotter.add_contours(brain_mask_by_region, colors="k", linewidths=1.0)
 for ax, region in zip(axes.ravel(), seed_regions):
     ax.set_title(region)
 
