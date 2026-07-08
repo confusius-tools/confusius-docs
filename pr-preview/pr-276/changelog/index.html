@@ -2604,6 +2604,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Maintenance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enhancements" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2676,7 +2687,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
+  <a href="#maintenance_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Maintenance
@@ -2809,7 +2820,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance_1" class="md-nav__link">
+  <a href="#maintenance_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Maintenance
@@ -2991,6 +3002,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Maintenance
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enhancements" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3063,7 +3085,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance" class="md-nav__link">
+  <a href="#maintenance_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Maintenance
@@ -3196,7 +3218,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#maintenance_1" class="md-nav__link">
+  <a href="#maintenance_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Maintenance
@@ -3297,7 +3319,8 @@
 <li>[<code>build_atlas_cmap_and_norm</code>][confusius._utils.atlas.build_atlas_cmap_and_norm]
   no longer calls the matplotlib-3.11-deprecated <code>set_under</code>/<code>set_over</code>/<code>set_bad</code>
   colormap methods, and no longer passes the deprecated <code>N=</code> argument to
-  <code>ListedColormap</code>.</li>
+  <code>ListedColormap</code>. The under colour is now passed as a constructor kwarg, the
+  matplotlib-3.11-recommended way to set it.</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> no longer emits napari's
   <code>FutureWarning</code> about the deprecated <code>ScaleBar.unit</code> API when <code>show_scale_bar=True</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/271">#271</a>).</li>
@@ -3309,6 +3332,30 @@
   sorted (e.g. a <code>region</code> dimension built from an arbitrary list of acronyms, or a
   descending <code>z</code>). Only the two display dimensions are sorted for plotting geometry now
   (<a href="https://github.com/confusius-tools/confusius/pull/268">#268</a>).</li>
+</ul>
+<h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Bumped the lock to the latest napari (≥ 0.7.1), matplotlib (3.11), numpy
+  (≥ 2.4), numba (≥ 0.64), and llvmlite (≥ 0.46). <code>numba</code> and <code>llvmlite</code> are
+  forced via <code>tool.uv.override-dependencies</code> so the lock still resolves on
+  Python 3.14 (the project advertises 3.14 support but the lowest resolvable
+  numba/llvmlite drop it). Override (not direct pins) avoids fighting napari
+  ≤ 0.7.1's <code>numba&lt;=0.62.1</code> cap on darwin x86_64.</li>
+<li>Visual regression baselines for <code>plot_volume</code>, <code>plot_contours</code>, <code>plot_carpet</code>,
+  <code>plot_stat_map</code>, <code>plot_composite</code>, and <code>plot_matrix</code> regenerated for the
+  matplotlib ≥ 3.11 renderer. Pixel-level diffs were caused by upstream rendering
+  changes (text rasterisation, subpixel alignment), not by ConfUSIus output.</li>
+<li><code>test_feature_names_in_for_string_feature_labels</code> ignores the
+  <code>invalid value encountered in dot</code> warning from sklearn's <abbr title="Non-negative Matrix Factorization">NMF</abbr> iteration. The
+  test only inspects <code>feature_names_in_</code>, which is independent of the iteration
+  result, and the warning is transient on BLAS implementations that flush
+  denormals differently than OpenBLAS (e.g. Accelerate on macOS, exposed by
+  numpy ≥ 2.4's stricter <code>np.dot</code> NaN detection).</li>
+<li><code># type: ignore[old-mypy-code]</code> comments across the codebase replaced with bare
+  <code># type: ignore</code> after the lock upgrade. ty uses <code># ty: ignore[code]</code> (not
+  mypy's <code># type: ignore[code]</code>), so the old per-code directives silently stopped
+  suppressing anything. <code>_apply_threshold</code> return type broadened to
+  <code>list[xr.DataArray | np.ndarray]</code> to reflect what the function actually returns.</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3468,7 +3515,7 @@
   matrix with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a>'s <code>groups</code> annotation
   (<a href="https://github.com/confusius-tools/confusius/pull/243">#243</a>).</li>
 </ul>
-<h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
+<h3 id="maintenance_1"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Simplified the NIfTI save path: time and extra-dimension voxel spacings are now
   written directly to the header <code>pixdim</code> instead of through nibabel's <code>set_zooms</code> (that
@@ -3615,7 +3662,7 @@
   inspecting alignment before and after registration
   (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
 </ul>
-<h3 id="maintenance_1"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance_1" title="Permanent link">&para;</a></h3>
+<h3 id="maintenance_2"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Switched documentation hosting to GitHub Pages with <code>mike</code> versioning and automatic
   PR preview deployments
