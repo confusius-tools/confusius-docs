@@ -3335,12 +3335,15 @@
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Bumped the lock to the latest napari (≥ 0.7.1), matplotlib (3.11), numpy
-  (≥ 2.4), numba (≥ 0.64), and llvmlite (≥ 0.46). <code>numba</code> and <code>llvmlite</code> are
-  forced via <code>tool.uv.override-dependencies</code> so the lock still resolves on
-  Python 3.14 (the project advertises 3.14 support but the lowest resolvable
-  numba/llvmlite drop it). Override (not direct pins) avoids fighting napari
-  ≤ 0.7.1's <code>numba&lt;=0.62.1</code> cap on darwin x86_64.</li>
+<li>Bumped the lock to the latest napari (≥ 0.7.1), matplotlib (≥ 3.11), numpy
+  (≥ 2.4), numba (≥ 0.64), and llvmlite (≥ 0.46). Minimum supported matplotlib
+  is now 3.11.0: matplotlib 3.11 overhauled text rendering and FreeType and
+  cannot reproduce the pixel values of previous versions, so the regenerated
+  visual baselines below only match 3.11+. <code>numba</code> and <code>llvmlite</code> are forced via
+  <code>tool.uv.override-dependencies</code> so the lock still resolves on Python 3.14 (the
+  project advertises 3.14 support but the lowest resolvable numba/llvmlite drop
+  it). Override (not direct pins) avoids fighting napari ≤ 0.7.1's
+  <code>numba&lt;=0.62.1</code> cap on darwin x86_64.</li>
 <li>Visual regression baselines for <code>plot_volume</code>, <code>plot_contours</code>, <code>plot_carpet</code>,
   <code>plot_stat_map</code>, <code>plot_composite</code>, and <code>plot_matrix</code> regenerated for the
   matplotlib ≥ 3.11 renderer. Pixel-level diffs were caused by upstream rendering
