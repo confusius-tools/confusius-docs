@@ -3483,14 +3483,14 @@
   non-finite value, instead of crashing deep inside
   <code>matplotlib.colors.LinearSegmentedColormap.from_list</code> with an opaque <code>IndexError</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/259">#259</a>).</li>
-<li><code>save_nifti</code> now drops attrs that cannot be serialized to JSON as-is (e.g. matplotlib
-  <code>ListedColormap</code>/<code>BoundaryNorm</code> objects) instead of writing their <code>str()</code> repr into the
-  sidecar, which could corrupt fields such as <code>cmap</code> on reload. A warning lists the
-  dropped keys. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> now rebuilds <code>cmap</code>/<code>norm</code> from
-  <code>rgb_lookup</code> when they are missing, so atlas-derived masks and annotations keep their
-  canonical colors after a save/load round-trip. <strong>[Napari plugin]</strong> The reader now
-  falls back to the <code>"gray"</code> colormap (with a napari warning) instead of crashing when a
-  layer's <code>cmap</code> attr is not a valid napari colormap name
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> now drops attrs that cannot be serialized to
+  JSON as-is (e.g. matplotlib <code>ListedColormap</code>/<code>BoundaryNorm</code> objects) instead of
+  writing their <code>str()</code> repr into the sidecar, which could corrupt fields such as <code>cmap</code>
+  on reload. A warning lists the dropped keys. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> now
+  rebuilds <code>cmap</code>/<code>norm</code> from <code>rgb_lookup</code> when they are missing, so atlas-derived masks
+  and annotations keep their canonical colors after a save/load round-trip. <strong>[Napari
+  plugin]</strong> The reader now falls back to the <code>"gray"</code> colormap (with a napari warning)
+  instead of crashing when a layer's <code>cmap</code> attr is not a valid napari colormap name
   (<a href="https://github.com/confusius-tools/confusius/pull/255">#255</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../api/atlas/#confusius.atlas.Atlas.get_masks"><code>Atlas.get_masks</code></a> now suffixes the <code>mask</code>
   coordinate with <code>_L</code>/<code>_R</code> for <code>sides="left"</code>/<code>"right"</code>, so requesting the same region
