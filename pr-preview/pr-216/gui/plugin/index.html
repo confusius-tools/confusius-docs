@@ -3261,7 +3261,7 @@
 
 
 <h1 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h1>
-<p>The ConfUSIus sidebar contains five collapsible panels. Each panel operates
+<p>The ConfUSIus sidebar contains six collapsible panels. Each panel operates
 independently and can be expanded or collapsed by clicking its header. For an in-app
 introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <ul>
@@ -3652,7 +3652,7 @@ large-scale and local deformation at once.</p>
 <tr>
 <td><strong>Learning rate</strong></td>
 <td>Sets the optimizer step size.</td>
-<td>Lower values are safer but slower; higher values can converge faster but may create instabilities.</td>
+<td>Leave <strong>Auto</strong> enabled to let SimpleITK estimate it each iteration, or untick it to use a fixed value (default <code>1.0</code>).</td>
 </tr>
 <tr>
 <td><strong>Iterations</strong></td>
@@ -3677,12 +3677,12 @@ large-scale and local deformation at once.</p>
 <td>Tune only when using mutual information; more bins can capture finer intensity structure but may be noisier.</td>
 </tr>
 <tr>
-<td><strong>Convergence minimum value</strong></td>
+<td><strong>Convergence min</strong></td>
 <td>Minimum optimizer improvement required to keep iterating.</td>
 <td>Lower it when you want stricter convergence.</td>
 </tr>
 <tr>
-<td><strong>Convergence window size</strong></td>
+<td><strong>Convergence window</strong></td>
 <td>Number of recent iterations used to test convergence.</td>
 <td>Increase it to make convergence detection less sensitive to noise.</td>
 </tr>
@@ -3710,6 +3710,16 @@ large-scale and local deformation at once.</p>
 <td><strong>Fill value</strong></td>
 <td>Value written outside the moving field of view after resampling.</td>
 <td>Useful for controlling the appearance of padded background.</td>
+</tr>
+<tr>
+<td><strong>ITK Threads</strong></td>
+<td>Number of SimpleITK threads used for between-scan registration.</td>
+<td>Reduce it when you are running several heavy jobs at once; <code>-1</code> uses all CPUs.</td>
+</tr>
+<tr>
+<td><strong>Optimizer weights</strong></td>
+<td>Applies per-parameter optimizer weights.</td>
+<td>Use it to freeze or down-weight specific affine parameters; not available for B-spline transforms.</td>
 </tr>
 </tbody>
 </table>
@@ -3765,7 +3775,7 @@ run completes.</p>
 <tr>
 <td><strong>Learning rate</strong></td>
 <td>Sets the optimizer step size for each frame.</td>
-<td>Reduce it if updates look unstable; increase it if frames are already close and convergence is too slow.</td>
+<td>Within-scan uses a fixed value here; the default is <code>0.01</code>. Reduce it if updates look unstable; increase it if frames are already close and convergence is too slow.</td>
 </tr>
 <tr>
 <td><strong>Iterations</strong></td>
@@ -3790,12 +3800,12 @@ run completes.</p>
 <td>Only relevant when using mutual information.</td>
 </tr>
 <tr>
-<td><strong>Convergence minimum value</strong></td>
+<td><strong>Convergence min</strong></td>
 <td>Minimum optimizer improvement required to keep iterating.</td>
 <td>Lower it when you want stricter volume-wise convergence.</td>
 </tr>
 <tr>
-<td><strong>Convergence window size</strong></td>
+<td><strong>Convergence window</strong></td>
 <td>Number of recent iterations used to test convergence.</td>
 <td>Increase it when convergence decisions look too jittery.</td>
 </tr>
@@ -3825,14 +3835,14 @@ run completes.</p>
 <td>Mostly useful for controlling output background appearance.</td>
 </tr>
 <tr>
-<td><strong>Parallel jobs</strong></td>
-<td>Number of workers used for volume-wise registration.</td>
-<td>Increase it to speed up long runs; reduce it if your machine is already busy. <code>-1</code> uses all available CPUs</td>
+<td><strong>Diagnostics</strong></td>
+<td>Stores full volume-wise optimizer traces.</td>
+<td>Enable it only when you want detailed debugging or later inspection.</td>
 </tr>
 <tr>
-<td><strong>Keep full traces</strong></td>
-<td>Stores full volume-wise optimizer diagnostics.</td>
-<td>Enable it only when you want detailed debugging or later inspection.</td>
+<td><strong>Parallel jobs</strong></td>
+<td>Number of workers used for volume-wise registration.</td>
+<td>Increase it to speed up long runs; reduce it if your machine is already busy. <code>-1</code> uses all available CPUs.</td>
 </tr>
 </tbody>
 </table>
