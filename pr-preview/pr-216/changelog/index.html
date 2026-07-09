@@ -3357,6 +3357,12 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Dataset fetchers now print the citation to use for the fetched data and accept a
+  <code>print_citation</code> argument to silence it. The template fetchers
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_huang_2025&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_huang_2025"><code>fetch_template_huang_2025</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026"><code>fetch_template_pepe_mariani_2026</code></a>
+  also expose the citation on the returned DataArray as <code>da.attrs["citation"]</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/279">#279</a>).</li>
 <li>Dataset fetchers called with <code>refresh=True</code> now re-download cached files whose upstream
   MD5 changed, comparing the cached dataset index against the freshly fetched one instead
   of only checking whether the file exists; downloads are additionally verified against
@@ -3385,6 +3391,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Saving to Zarr (via <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>save</code></a> or <code>DataArray.fusi.save</code>) now works
+  for data carrying affines or other numpy-valued attributes: nested numpy arrays are
+  stored as lists and non-serializable attrs (e.g. matplotlib colormaps) are dropped
+  with a warning, matching the NIfTI sidecar behaviour
+  (<a href="https://github.com/confusius-tools/confusius/pull/284">#284</a>).</li>
 <li>B-spline control-point DataArrays returned by
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> no longer have their
   per-axis grid geometry (spacing, origin, domain) swapped between axes on anisotropic
@@ -3421,11 +3432,19 @@
   the rigid registration step with a B-spline refinement, showing the extra local
   correction it adds and how its parameters differ from the rigid step's
   (<a href="https://github.com/confusius-tools/confusius/pull/235">#235</a>).</li>
+<li>Long output in gallery examples—warnings, text reprs, tracebacks, and rich-rendered
+  text such as the dataset citation banner—now wraps instead of showing a horizontal
+  scrollbar (<a href="https://github.com/confusius-tools/confusius/pull/285">#285</a>).</li>
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Raised the minimum supported versions to <strong>napari 0.7.1</strong> and
   <strong>matplotlib 3.11</strong>.</li>
+<li>The example-gallery build tool now accepts specific example scripts as arguments
+  (<code>uv run python tools/build_gallery.py docs/examples/01_io/01_confusius_xarray_101.py</code>),
+  running only those; the rest of the gallery is still rendered, taken from cache if
+  present or built without outputs
+  (<a href="https://github.com/confusius-tools/confusius/pull/285">#285</a>).</li>
 </ul>
 <h2 id="050">0.5.0<a class="headerlink" href="#050" title="Permanent link">&para;</a></h2>
 <p>Released 2026-07-07.</p>
@@ -3494,7 +3513,7 @@
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> (and their <code>data.fusi.plot.*</code>
   accessors) now accept <code>cbar_kwargs</code>, forwarded to
-  <a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.colorbar.html#matplotlib.figure.Figure.colorbar"><code>matplotlib.figure.Figure.colorbar</code></a> — useful to
+  <a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.colorbar.html#matplotlib.figure.Figure.colorbar"><code>matplotlib.figure.Figure.colorbar</code></a>—useful to
   shrink a shared colorbar down to size on a multi-panel grid
   (<a href="https://github.com/confusius-tools/confusius/pull/242">#242</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> and the
