@@ -3461,11 +3461,15 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>[Napari plugin]</strong> Imported signal tables now accept <abbr title="Brain Imaging Data Structure">BIDS</abbr> physio <code>*.tsv.gz</code> files with 
-  column names and timing read from the JSON sidecar.</li>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;read_physio&lt;/span&gt;" href="../api/bids/#confusius.bids.read_physio"><code>read_physio</code></a> to load <abbr title="Brain Imaging Data Structure">BIDS</abbr> physio TSV files with
+  column names and metadata from the JSON sidecar, synthesizing a <code>time</code> column when
+  needed; the napari plugin now uses it for imported signal tables.</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Opening a <code>.scan</code> file that is not the legacy HDF5-based Iconeus format now raises a
+  clear error that points users to newer SCAN v2 files and to converting them to NIfTI
+  with Iconeus tools first (<a href="https://github.com/confusius-tools/confusius/pull/297">#297</a>).</li>
 <li>Plotting functions now accept a slice dimension reduced to a scalar coordinate by a
   single-index selection, so <code>plot_contours(atlas.annotation.sel(z=6))</code> works like
   <code>sel(z=[6])</code> (<a href="https://github.com/confusius-tools/confusius/pull/296">#296</a>).</li>
