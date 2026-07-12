@@ -3439,6 +3439,12 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Motion parameter tables from
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_motion_dataframe&lt;/span&gt;" href="../api/registration/#confusius.registration.create_motion_dataframe"><code>create_motion_dataframe</code></a> now label
+  rotations and translations by the coordinate names <code>x</code>/<code>y</code>/<code>z</code> instead of by raw
+  transform-component order, so canonical ConfUSIus arrays stored as <code>(z, y, x)</code> no
+  longer mislabel in-plane motion
+  (<a href="https://github.com/confusius-tools/confusius/pull/301">#301</a>).</li>
 <li>Opening a <code>.scan</code> file that is not the legacy HDF5-based Iconeus format now raises a
   clear error that points users to newer SCAN v2 files and to converting them to NIfTI
   with Iconeus tools first (<a href="https://github.com/confusius-tools/confusius/pull/297">#297</a>).</li>
