@@ -4031,19 +4031,19 @@ computation.</p>
               <code><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></code>
           –
           <div class="doc-md-description">
-            <p>DataFrame with columns:</p>
-<p>Effective 2D (a true 2D image, or a 3D image with any singleton spatial axis):</p>
+            <p>DataFrame with columns determined by the affine dimensionality.</p>
+<p>2D affines:</p>
 <ul>
 <li><code>rotation</code>: In-plane rotation angle in radians.</li>
-<li><code>trans_&lt;dim&gt;</code>: Translation along each non-singleton in-plane spatial axis
-  (mm), for example <code>trans_x</code> and <code>trans_y</code> for <code>(z=1, y, x)</code> data.</li>
+<li><code>trans_x, trans_y</code>: Translations along the DataArray's <code>x</code> and <code>y</code> axes
+  (mm).</li>
 </ul>
-<p>True 3D:</p>
+<p>3D affines:</p>
 <ul>
 <li><code>rot_x, rot_y, rot_z</code>: Rotation angles around the DataArray's
   <code>x</code>, <code>y</code>, and <code>z</code> axes, in radians.</li>
 <li><code>trans_x, trans_y, trans_z</code>: Translations along the DataArray's
-  <code>x</code>, <code>y</code>, and <code>z</code> axes (mm).</li>
+  <code>x</code>, <code>y</code>, and <code>z</code> axes (mm), even when one spatial axis is singleton.</li>
 </ul>
 <p>Both:
 - <code>mean_fd</code>: Mean framewise displacement (mm).
