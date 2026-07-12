@@ -23,16 +23,12 @@
 
 
 # %%
-from base64 import b64encode
-from io import BytesIO
 from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-from IPython.display import HTML
-from PIL import Image, ImageDraw
 
 import confusius as cf
 
@@ -52,6 +48,7 @@ bids_root = cf.datasets.fetch_cybis_pereira_2026(
     acqs=acq,
 )
 
+# %%
 pwd_path = (
     Path(bids_root)
     / f"sub-{subject}"
@@ -98,7 +95,7 @@ motion_df.head()
 # panel is a useful sanity check: frames that systematically hit the maximum iteration
 # count or converge to a much worse similarity metric deserve a closer look.
 
-# %%
+# %% tags=["thumbnail"]
 fig, axes = plt.subplots(4, 1, figsize=(9, 9), sharex=True, constrained_layout=True)
 fig.patch.set_facecolor(bg_color)
 
@@ -147,7 +144,7 @@ ax_iterations.spines["right"].set_color(iteration_color)
 # deviation in the unregistered excerpt. In practice that usually lands on a large
 # vessel, where motion-induced intensity changes are most visible.
 
-# %% tags=["thumbnail"]
+# %%
 std_map = data.squeeze("z", drop=True).std("time")
 voxel_y, voxel_x = np.unravel_index(np.nanargmax(std_map.values), std_map.shape)
 
@@ -163,102 +160,51 @@ ax.set_ylabel("Power Doppler intensity")
 ax.set_title(f"Voxel at y={voxel_y}, x={voxel_x}")
 _ = ax.legend(frameon=False)
 
-# %%
-data_db = data.fusi.scale.db()
-registered_db = registered.fusi.scale.db()
-
 # %% [markdown]
-# ## Build a before/after GIF
+# ## Check the alignment over time
 #
-# A side-by-side movie is often the fastest qualitative check. We render the raw and
-# registered slices with a shared contrast scale so the residual jitter is easy to spot.
-
-
-# %%
-def _to_uint8_frame(values: np.ndarray, vmin: float, vmax: float) -> np.ndarray:
-    """Convert one 2D image to a clipped 8-bit grayscale frame.
-
-    Parameters
-    ----------
-    values : numpy.ndarray
-        Two-dimensional image data.
-    vmin : float
-        Lower display bound.
-    vmax : float
-        Upper display bound.
-
-    Returns
-    -------
-    numpy.ndarray
-        Unsigned 8-bit image with shape `(y, x)`.
-    """
-    if vmax <= vmin:
-        vmax = vmin + 1.0
-    clipped = np.clip((values - vmin) / (vmax - vmin), 0, 1)
-    return (255 * clipped).astype(np.uint8)
-
+# A compact way to inspect the correction inside the notebook is to follow one image
+# column across time. Motion appears as slanted or wobbling vessel traces in this
+# `y × time` raster, while a good correction makes those traces more horizontal and
+# stable.
 
 # %%
-def _movie_html(before: xr.DataArray, after: xr.DataArray) -> HTML:
-    """Return an inline HTML `<img>` tag for a side-by-side animated GIF.
+raster_before = data.fusi.scale.db().isel(z=0, x=voxel_x)
+raster_after = registered.fusi.scale.db().isel(z=0, x=voxel_x)
 
-    Parameters
-    ----------
-    before : xarray.DataArray
-        Unregistered movie with dims `(time, y, x)`.
-    after : xarray.DataArray
-        Registered movie with the same dims and coordinates as `before`.
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True, sharey=True)
+fig.patch.set_facecolor(bg_color)
 
-    Returns
-    -------
-    IPython.display.HTML
-        HTML object embedding the GIF as a data URI.
-    """
-    font = ImageDraw.Draw(Image.new("RGB", (1, 1))).getfont()
-    vmin = float(np.nanpercentile(before, 2))
-    vmax = float(np.nanpercentile(before, 99.8))
-    pad = 8
-    frames: list[Image.Image] = []
+vmin = float(np.nanpercentile(raster_before, 2))
+vmax = float(np.nanpercentile(raster_before, 99.8))
 
-    for i, t in enumerate(before["time"].values):
-        left = Image.fromarray(_to_uint8_frame(before.isel(time=i).values, vmin, vmax))
-        right = Image.fromarray(_to_uint8_frame(after.isel(time=i).values, vmin, vmax))
-        left = left.convert("RGB").resize((320, 260))
-        right = right.convert("RGB").resize((320, 260))
-
-        canvas = Image.new(
-            "RGB", (left.width + right.width + 3 * pad, left.height + 40), "black"
-        )
-        canvas.paste(left, (pad, 28))
-        canvas.paste(right, (left.width + 2 * pad, 28))
-
-        draw = ImageDraw.Draw(canvas)
-        draw.text((pad, 6), "Before", fill="white", font=font)
-        draw.text((left.width + 2 * pad, 6), "After", fill="white", font=font)
-        draw.text((canvas.width - 70, 6), f"{float(t):.1f}s", fill="white", font=font)
-        frames.append(canvas)
-
-    buffer = BytesIO()
-    frames[0].save(
-        buffer,
-        format="GIF",
-        save_all=True,
-        append_images=frames[1:],
-        duration=100,
-        loop=0,
+for ax, raster, title in [
+    (axes[0], raster_before, "Before"),
+    (axes[1], raster_after, "After"),
+]:
+    ax.imshow(
+        raster.T,
+        aspect="auto",
+        origin="lower",
+        cmap="gray",
+        vmin=vmin,
+        vmax=vmax,
+        extent=[
+            float(raster["time"].values[0]),
+            float(raster["time"].values[-1]),
+            float(raster["y"].values[0]),
+            float(raster["y"].values[-1]),
+        ],
     )
-    gif_base64 = b64encode(buffer.getvalue()).decode("ascii")
-    return HTML(
-        f'<img src="data:image/gif;base64,{gif_base64}" alt="Before/after volumewise registration GIF" />'
-    )
+    ax.set_title(title)
+    ax.set_xlabel("Time (s)")
 
-
-movie_before = data_db.squeeze("z", drop=True)
-movie_after = registered_db.squeeze("z", drop=True)
-_movie_html(movie_before, movie_after)
+_ = axes[0].set_ylabel("y (mm)")
 
 # %% [markdown]
-# Even on this short excerpt, the registered movie is visibly more stable and the mean
-# image is slightly sharper. For a full preprocessing workflow, you would usually run
-# the same correction on the complete recording before downstream QC, decomposition, or
-# connectivity analysis.
+# For a full visual check of the corrected movie, open the result in napari with
+# [`plot_napari`][confusius.plotting.plot_napari] or inspect it in the ConfUSIus
+# plugin. We intentionally do not embed a full before/after GIF here because it would
+# make the rendered notebook unnecessarily heavy for the docs site. For a full
+# preprocessing workflow, you would usually run the same correction on the complete
+# recording before downstream QC, decomposition, or connectivity analysis.
