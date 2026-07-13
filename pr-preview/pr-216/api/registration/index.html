@@ -4402,18 +4402,23 @@ computation.</p>
 <p>For 2D:</p>
 <ul>
 <li><code>rotation</code>: Rotation angle in radians.</li>
-<li><code>trans_x</code>: Translation in x (mm).</li>
-<li><code>trans_y</code>: Translation in y (mm).</li>
+<li><code>trans_x</code>: Translation along the DataArray's <code>x</code> axis (mm).</li>
+<li><code>trans_y</code>: Translation along the DataArray's <code>y</code> axis (mm).</li>
 </ul>
 <p>For 3D:</p>
 <ul>
-<li><code>rot_x, rot_y, rot_z</code>: Rotation angles in radians.</li>
-<li><code>trans_x, trans_y, trans_z</code>: Translations (mm).</li>
+<li><code>rot_x, rot_y, rot_z</code>: Rotation angles around the DataArray's
+  <code>x</code>, <code>y</code>, and <code>z</code> axes, in radians.</li>
+<li><code>trans_x, trans_y, trans_z</code>: Translations along the DataArray's
+  <code>x</code>, <code>y</code>, and <code>z</code> axes (mm).</li>
 </ul>
 <p>Both:
 - <code>mean_fd</code>: Mean framewise displacement (mm).
 - <code>max_fd</code>: Maximum framewise displacement (mm).
 - <code>rms_fd</code>: RMS framewise displacement (mm).</p>
+<p>Motion columns are reported in named-axis order (<code>x</code>, <code>y</code>, <code>z</code>), even when
+the input DataArray stores its spatial dimensions in a different order such as
+<code>(z, y, x)</code>.</p>
           </div>
         </li>
     </ul>
