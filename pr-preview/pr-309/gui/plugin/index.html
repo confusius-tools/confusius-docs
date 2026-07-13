@@ -1560,6 +1560,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#registration-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Registration Panel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration Panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#between-scans" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Between scans
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#within-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Within-scan
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3134,6 +3173,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#registration-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Registration Panel
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration Panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#between-scans" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Between scans
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#within-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Within-scan
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3212,7 +3290,7 @@
 
 
 <h1 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h1>
-<p>The ConfUSIus sidebar contains five collapsible panels. Each panel operates
+<p>The ConfUSIus sidebar contains six collapsible panels. Each panel operates
 independently and can be expanded or collapsed by clicking its header. For an in-app
 introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <ul>
@@ -3222,6 +3300,8 @@ introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <li><a href="#events-panel"><strong>Events</strong></a> — annotate periods of time (<abbr title="Brain Imaging Data Structure">BIDS</abbr> events) and shade them on
   the signal plot.</li>
 <li><a href="#qc-panel"><strong><abbr title="Quality Control">QC</abbr></strong></a> — compute DVARS, carpet, <abbr title="Coefficient of Variation">CV</abbr>, <abbr title="Temporal Signal-to-Noise Ratio">tSNR</abbr> for a selected layer.</li>
+<li><a href="#registration-panel"><strong>Registration</strong></a> — run between-scan or within-scan
+  registration, inspect progress, and save/apply transforms.</li>
 </ul>
 <h2 id="data-io-panel">Data I/O Panel<a class="headerlink" href="#data-io-panel" title="Permanent link">&para;</a></h2>
 <p>The Data I/O Panel handles both loading and saving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files without leaving the
@@ -3441,7 +3521,8 @@ signals (from the current source mode) and imported signals:</p>
   signals—both live and imported—to a CSV or TSV file.</dd>
 </dl>
 <h2 id="events-panel">Events Panel<a class="headerlink" href="#events-panel" title="Permanent link">&para;</a></h2>
-<p>The Events Panel annotates <em>periods of time</em>—not individual frames—following the <a href="https://bids-specification.readthedocs.io/en/stable/modality-agnostic-files/events.html"><abbr title="Brain Imaging Data Structure">BIDS</abbr>
+<p>The Events Panel allows annotating <em>periods of time</em>—not individual frames—following the
+<a href="https://bids-specification.readthedocs.io/en/stable/modality-agnostic-files/events.html"><abbr title="Brain Imaging Data Structure">BIDS</abbr>
 events</a>
 convention (<code>onset</code>, <code>duration</code>, and an optional <code>trial_type</code>). Annotated events shade
 the <a href="#signals-panel">signal plot</a> and are named in the time overlay while they are
@@ -3540,6 +3621,268 @@ guide</a> for a full explanation.</p>
 </div>
 </div>
 </div>
+<h2 id="registration-panel">Registration Panel<a class="headerlink" href="#registration-panel" title="Permanent link">&para;</a></h2>
+<p>The Registration Panel runs the ConfUSIus registration workflows directly from napari.
+Use <strong>Between scans</strong> for registering different recordings, or <strong>Within-scan</strong> for
+volume-wise motion correction within a single recording. The panel supports modifying
+registration parameters, live preview, and saving/loading/applying computed transforms.</p>
+<h3 id="between-scans">Between scans<a class="headerlink" href="#between-scans" title="Permanent link">&para;</a></h3>
+<p>Use <strong>Between scans</strong> when you want to register one layer onto another, for example two
+recordings from different animals or a functional recording onto an angiography.</p>
+<ol>
+<li>Select the <strong>Moving layer</strong> and <strong>Fixed layer</strong>.</li>
+<li>Choose a transform model.</li>
+<li>Optionally choose a <strong>Scale</strong> for to compress the intensity dynamics.</li>
+<li>Optionally choose an <strong>Initialization</strong> transform if layers are very misaligned.</li>
+<li>Click <strong>Run registration</strong>.</li>
+</ol>
+<p>Available transform models are:</p>
+<ul>
+<li><code>translation</code> for x/y/z-only shifts,</li>
+<li><code>rigid</code> for translations and rotations,</li>
+<li><code>affine</code> for translations, rotations, scaling, and shear,</li>
+<li><code>bspline</code> for non-linear local deformations.</li>
+</ul>
+<p>For <code>bspline</code>, a staged workflow usually works best: first run <code>rigid</code> or <code>affine</code>, then
+run <code>bspline</code> and select the previous transform in <strong>Initialization</strong>. This lets the
+B-spline model refine a good global alignment instead of trying to solve both
+large-scale and local deformation at once.</p>
+<h4 id="main-parameters">Main parameters<a class="headerlink" href="#main-parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>What it does</th>
+<th>When it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transform</strong></td>
+<td>Chooses the motion model being optimized.</td>
+<td>Start with <code>translation</code> or <code>rigid</code> for simple alignment; use <code>affine</code> for global scale/shear differences; use <code>bspline</code> only after a good global initialization.</td>
+</tr>
+<tr>
+<td><strong>Mesh size</strong></td>
+<td>Sets the B-spline control-grid density.</td>
+<td>Increase it only when <code>bspline</code> needs to capture finer local mismatches; too fine a grid can lead to unrealistic warping.</td>
+</tr>
+<tr>
+<td><strong>Metric</strong></td>
+<td>Chooses the similarity criterion (<code>correlation</code> or <code>mattes_mi</code>).</td>
+<td><code>correlation</code> is a good default for power Doppler data; <code>mattes_mi</code> is more robust when intensity distributions differ.</td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>Applies optional intensity scaling before registration.</td>
+<td>Useful for power Doppler data where large vessels are typically overbright compared to finer structures.</td>
+</tr>
+<tr>
+<td><strong>Initialization</strong></td>
+<td>Sets the starting transform before optimization.</td>
+<td>Use <code>center_geometry</code> or <code>center_moments</code> for coarse setup; reuse a saved/manual affine transform when you already have a good approximate alignment.</td>
+</tr>
+<tr>
+<td><strong>Learning rate</strong></td>
+<td>Sets the optimizer step size.</td>
+<td>Leave <strong>Auto</strong> enabled to let SimpleITK estimate it each iteration, or untick it to use a fixed value (default <code>1.0</code>).</td>
+</tr>
+<tr>
+<td><strong>Iterations</strong></td>
+<td>Maximum number of optimizer steps.</td>
+<td>Increase it when alignment is still improving near the end of a run.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="advanced-parameters">Advanced parameters<a class="headerlink" href="#advanced-parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>What it does</th>
+<th>When it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Histogram bins</strong></td>
+<td>Number of bins used by <code>mattes_mi</code>.</td>
+<td>Tune only when using mutual information; more bins can capture finer intensity structure but may be noisier.</td>
+</tr>
+<tr>
+<td><strong>Convergence min</strong></td>
+<td>Minimum optimizer improvement required to keep iterating.</td>
+<td>Lower it when you want stricter convergence.</td>
+</tr>
+<tr>
+<td><strong>Convergence window</strong></td>
+<td>Number of recent iterations used to test convergence.</td>
+<td>Increase it to make convergence detection less sensitive to noise.</td>
+</tr>
+<tr>
+<td><strong>Multi-resolution</strong></td>
+<td>Runs registration from coarse to fine scales.</td>
+<td>Usually helpful for difficult B-spline alignments or large initial offsets.</td>
+</tr>
+<tr>
+<td><strong>Shrink factors</strong></td>
+<td>Downsampling factors for each resolution level.</td>
+<td>Use larger coarse levels when the initial mismatch is large.</td>
+</tr>
+<tr>
+<td><strong>Smoothing sigmas</strong></td>
+<td>Gaussian smoothing at each resolution level.</td>
+<td>Helps emphasize global structure before fine alignment.</td>
+</tr>
+<tr>
+<td><strong>Resample interp.</strong></td>
+<td>Interpolation used for the registered output and previews.</td>
+<td><code>linear</code> is the usual default; <code>bspline</code> can give smoother resampled images.</td>
+</tr>
+<tr>
+<td><strong>Fill value</strong></td>
+<td>Value written outside the moving field of view after resampling.</td>
+<td>Useful for controlling the appearance of padded background.</td>
+</tr>
+<tr>
+<td><strong>ITK Threads</strong></td>
+<td>Number of SimpleITK threads used for between-scan registration.</td>
+<td>Reduce it when you are running several heavy jobs at once; <code>-1</code> uses all CPUs.</td>
+</tr>
+<tr>
+<td><strong>Optimizer weights</strong></td>
+<td>Applies per-parameter optimizer weights.</td>
+<td>Use it to freeze or down-weight specific affine parameters; not available for B-spline transforms.</td>
+</tr>
+</tbody>
+</table>
+<p>The animation below uses between-session angiography volumes from the same animal across
+different days. ConfUSIus keeps the original layers untouched, adds dedicated preview
+layers for inspection, and stores the final registered result as a new layer when the
+run completes.</p>
+<p><a class="glightbox" data-title="ConfUSIus Registration panel — rigid between-session angiography run" data-type="image" href="../../images/gui/plugin-registration.gif"><img alt="ConfUSIus Registration panel — rigid between-session angiography run" src="../../images/gui/plugin-registration.gif" /></a></p>
+<h3 id="within-scan">Within-scan<a class="headerlink" href="#within-scan" title="Permanent link">&para;</a></h3>
+<p>Use <strong>Within-scan</strong> for motion correction inside a single time series.</p>
+<ol>
+<li>Switch <strong>Mode</strong> to <strong>Within-scan</strong>.</li>
+<li>Select the time-series <strong>Moving layer</strong>.</li>
+<li>Choose the <strong>Reference volume</strong> index used as the registration target.</li>
+<li>Pick a transform model (<code>translation</code>, <code>rigid</code>, or <code>affine</code>).</li>
+<li>Click <strong>Run registration</strong>.</li>
+</ol>
+<h4 id="main-parameters_1">Main parameters<a class="headerlink" href="#main-parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>What it does</th>
+<th>When it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Reference volume</strong></td>
+<td>Chooses the volume index used as the motion-correction target.</td>
+<td>Pick a representative, sharp frame with little motion.</td>
+</tr>
+<tr>
+<td><strong>Transform</strong></td>
+<td>Chooses the volume-wise motion model.</td>
+<td><code>rigid</code> is the safest starting point; <code>affine</code> is available when motion is more complex.</td>
+</tr>
+<tr>
+<td><strong>Metric</strong></td>
+<td>Chooses the volume-to-reference similarity criterion.</td>
+<td><code>correlation</code> is usually a good default for within-recording motion correction.</td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>Applies optional preprocessing before registration.</td>
+<td>Useful when an intensity transform makes anatomy more stable across time for the optimizer.</td>
+</tr>
+<tr>
+<td><strong>Initialization</strong></td>
+<td>Sets the initial volume-wise centering transform.</td>
+<td>Most runs can use no initialization.</td>
+</tr>
+<tr>
+<td><strong>Learning rate</strong></td>
+<td>Sets the optimizer step size for each frame.</td>
+<td>Within-scan uses a fixed value here; the default is <code>0.01</code>. Reduce it if updates look unstable; increase it if frames are already close and convergence is too slow.</td>
+</tr>
+<tr>
+<td><strong>Iterations</strong></td>
+<td>Maximum optimizer steps per frame.</td>
+<td>Increase it for harder motion or more flexible transforms.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="advanced-parameters_1">Advanced parameters<a class="headerlink" href="#advanced-parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>What it does</th>
+<th>When it is useful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Histogram bins</strong></td>
+<td>Number of bins used by <code>mattes_mi</code>.</td>
+<td>Only relevant when using mutual information.</td>
+</tr>
+<tr>
+<td><strong>Convergence min</strong></td>
+<td>Minimum optimizer improvement required to keep iterating.</td>
+<td>Lower it when you want stricter volume-wise convergence.</td>
+</tr>
+<tr>
+<td><strong>Convergence window</strong></td>
+<td>Number of recent iterations used to test convergence.</td>
+<td>Increase it when convergence decisions look too jittery.</td>
+</tr>
+<tr>
+<td><strong>Multi-resolution</strong></td>
+<td>Runs each frame registration from coarse to fine scales.</td>
+<td>Helpful when motion is large or frames are noisy.</td>
+</tr>
+<tr>
+<td><strong>Shrink factors</strong></td>
+<td>Downsampling factors for each resolution level.</td>
+<td>Useful for coarse-to-fine motion correction.</td>
+</tr>
+<tr>
+<td><strong>Smoothing sigmas</strong></td>
+<td>Gaussian smoothing at each resolution level.</td>
+<td>Helps stabilize coarse registration before fine refinement.</td>
+</tr>
+<tr>
+<td><strong>Resample interp.</strong></td>
+<td>Interpolation used for the motion-corrected output.</td>
+<td>Controls output smoothness.</td>
+</tr>
+<tr>
+<td><strong>Fill value</strong></td>
+<td>Value used outside the field of view after resampling.</td>
+<td>Mostly useful for controlling output background appearance.</td>
+</tr>
+<tr>
+<td><strong>Diagnostics</strong></td>
+<td>Stores full volume-wise optimizer traces.</td>
+<td>Enable it only when you want detailed debugging or later inspection.</td>
+</tr>
+<tr>
+<td><strong>Parallel jobs</strong></td>
+<td>Number of workers used for volume-wise registration.</td>
+<td>Increase it to speed up long runs; reduce it if your machine is already busy. <code>-1</code> uses all available CPUs.</td>
+</tr>
+</tbody>
+</table>
+<p>This workflow returns a <code>Motion corrected</code> layer and updates the progress bar as frames
+finish. The animation below uses a short open-field recording chunk and shows the result
+filling in progressively.</p>
+<p><a class="glightbox" data-title="ConfUSIus Registration panel — within-scan motion correction" data-type="image" href="../../images/gui/plugin-registration-volumewise.gif"><img alt="ConfUSIus Registration panel — within-scan motion correction" src="../../images/gui/plugin-registration-volumewise.gif" /></a></p>
 
 
 
