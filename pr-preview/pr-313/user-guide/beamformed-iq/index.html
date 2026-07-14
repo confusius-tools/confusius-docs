@@ -3937,17 +3937,14 @@ etc.), see the API reference for
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_axial_velocity&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_axial_velocity"><code>process_iq_to_axial_velocity</code></a>.</p>
 </div>
 <h4 id="interpreting-velocity">Interpreting Velocity<a class="headerlink" href="#interpreting-velocity" title="Permanent link">&para;</a></h4>
-<p>Velocity values are returned in <strong>meters per second</strong> with sign indicating direction:</p>
-<ul>
-<li><strong>Positive values</strong>: Flow toward the transducer.</li>
-<li><strong>Negative values</strong>: Flow away from the transducer.</li>
-<li><strong>Magnitude</strong>: Speed of flow.</li>
-</ul>
+<p>Velocity values are returned in <strong>meters per second</strong> and correspond to the speed of
+scatterers along the ultrasound beam. That is, positive velocities indicate motion away
+from the transducer, while negative values indicate motion toward the transducer.</p>
 <div class="admonition warning">
 <p class="admonition-title">Velocity aliasing</p>
 <p>Very high velocities may exceed the Nyquist limit and cause aliasing (wrapping). If
-you observe sudden sign reversals in high-flow regions, reduce the <code>lag</code> parameter or
-increase the pulse repetition frequency during acquisition.</p>
+you observe sudden sign reversals in high-motion regions, reduce the <code>lag</code> parameter
+or increase the pulse repetition frequency during acquisition.</p>
 </div>
 <h3 id="b-mode">B-mode<a class="headerlink" href="#b-mode" title="Permanent link">&para;</a></h3>
 <p>B-mode imaging visualizes tissue anatomy by averaging the <abbr title="In-phase and Quadrature">IQ</abbr> signal magnitude over time.
