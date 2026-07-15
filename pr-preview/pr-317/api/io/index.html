@@ -5319,7 +5319,10 @@ the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not enco
 centred on zero (correct spacing, arbitrary origin). No <code>probeToLab</code>-equivalent
 affine has been located, so v2 DataArrays carry <strong>no</strong> <code>physical_to_lab</code> affine.
 Multi-pose / multi-block v2 layouts are inferred by analogy with v1 and have not
-been validated against real files.</p>
+been validated against real files. Provenance strings are mapped to v1-style
+<code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware
+strings as anchors); the raw decoded strings are always kept in
+<code>iconeus_header_strings</code> for manual re-mapping.</p>
 <p>The <code>physical_to_lab</code> affine stored in <code>da.attrs["affines"]</code> maps ConfUSIus physical
 coordinates <code>(z, y, x)</code> to <strong>ConfUSIus-ordered</strong> Iconeus lab coordinates (mm). Apply
 as <code>da.attrs["affines"]["physical_to_lab"] @ np.array([z, y, x, 1.0])</code>. For
