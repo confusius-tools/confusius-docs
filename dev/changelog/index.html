@@ -2655,6 +2655,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Documentation
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#maintenance" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2733,7 +2744,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#documentation_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -2805,7 +2816,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation_1" class="md-nav__link">
+  <a href="#documentation_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -2938,7 +2949,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation_2" class="md-nav__link">
+  <a href="#documentation_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -3153,6 +3164,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Documentation
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#maintenance" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3231,7 +3253,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#documentation_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -3303,7 +3325,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation_1" class="md-nav__link">
+  <a href="#documentation_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -3436,7 +3458,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#documentation_2" class="md-nav__link">
+  <a href="#documentation_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Documentation
@@ -3550,6 +3572,10 @@
   dataset from OSF project <code>7cf9g</code> instead of <code>dkseb</code>. Existing local caches may need a
   one-time <code>refresh=True</code> to replace the cached OSF file index before downloading or
   checking for upstream updates (<a href="https://github.com/confusius-tools/confusius/pull/311">#311</a>).</li>
+<li>Axial velocity processing now always uses the standard Kasai estimator (<code>arg(mean(R1))</code>);
+  the <code>estimation_method</code> and <code>absolute_velocity</code> arguments were removed, the
+  corresponding metadata fields were dropped, and <code>spatial_kernel</code> now defaults to <code>3</code>
+  and accepts explicit <code>(z, y, x)</code> sizes (<a href="https://github.com/confusius-tools/confusius/pull/313">#313</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3566,6 +3592,9 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Axial velocity estimation now scales the Kasai phase increment by the requested
+  autocorrelation <code>lag</code>, so multi-volume lags no longer overestimate velocity
+  (<a href="https://github.com/confusius-tools/confusius/pull/313">#313</a>).</li>
 <li>NIfTI loading no longer crashes when a sidecar <code>VolumeTiming</code> length disagrees with
   the actual data. ConfUSIus now ignores the malformed sidecar timing, falls back to
   <code>pixdim[4]</code> when available, and otherwise warns before using frame indices.
@@ -3585,6 +3614,12 @@
 <li>Plotting functions now accept a slice dimension reduced to a scalar coordinate by a
   single-index selection, so <code>plot_contours(atlas.annotation.sel(z=6))</code> works like
   <code>sel(z=[6])</code> (<a href="https://github.com/confusius-tools/confusius/pull/296">#296</a>).</li>
+</ul>
+<h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fixed velocity sign interpretation in <a href="../user-guide/beamformed-iq/">Beamformed IQ user
+  guide</a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/313">#313</a>).</li>
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3673,7 +3708,7 @@
   descending <code>z</code>). Only the two display dimensions are sorted for plotting geometry now
   (<a href="https://github.com/confusius-tools/confusius/pull/268">#268</a>).</li>
 </ul>
-<h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<h3 id="documentation_1"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>The <a href="../examples/_built/registration/register_volume_same_subject/">same-subject registration
   example</a> now follows
@@ -3827,7 +3862,7 @@
   <code>step * arange(size)</code> on load. Attributes are preserved in <code>ConfUSIusDim{N}Attributes</code>
   entries. (<a href="https://github.com/confusius-tools/confusius/pull/223">#223</a>).</li>
 </ul>
-<h3 id="documentation_1"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_1" title="Permanent link">&para;</a></h3>
+<h3 id="documentation_2"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Add an <a href="../examples/_built/decomposition/nmf_single_recording/">NMF example</a> to the
   gallery, demonstrating the z-score + absolute-value standardization that makes
@@ -3977,7 +4012,7 @@
   preventing incorrect plot bounds
   (<a href="https://github.com/confusius-tools/confusius/pull/111">#111</a>).</li>
 </ul>
-<h3 id="documentation_2"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_2" title="Permanent link">&para;</a></h3>
+<h3 id="documentation_3"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Added a <a href="../examples/registration/register_volume_same_subject.py">Registration of two sessions from the same
   subject</a> example
