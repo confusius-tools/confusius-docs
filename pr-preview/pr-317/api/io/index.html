@@ -5323,6 +5323,13 @@ been validated against real files. Provenance strings are mapped to v1-style
 <code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware
 strings as anchors); the raw decoded strings are always kept in
 <code>iconeus_header_strings</code> for manual re-mapping.</p>
+<p>Acquisition settings that correspond to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> fields are also surfaced as
+attributes, in native header units: <code>probe_model</code>, <code>probe_center_frequency</code> (MHz),
+<code>probe_pitch</code> (mm), <code>probe_focal_depth</code> (mm), <code>imaging_depth</code> (mm start/end),
+<code>transmit_frequency</code> (MHz), <code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code>
+(deg), <code>svd_low_cutoff</code>, and <code>power_doppler_integration_window</code>. The probe/sequence
+subset is parsed from a structured block whose layout is anchor-validated against the
+depth origin; if that check fails, those fields are omitted rather than guessed.</p>
 <p>The <code>physical_to_lab</code> affine stored in <code>da.attrs["affines"]</code> maps ConfUSIus physical
 coordinates <code>(z, y, x)</code> to <strong>ConfUSIus-ordered</strong> Iconeus lab coordinates (mm). Apply
 as <code>da.attrs["affines"]["physical_to_lab"] @ np.array([z, y, x, 1.0])</code>. For

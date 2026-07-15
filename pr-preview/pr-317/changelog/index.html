@@ -3555,10 +3555,12 @@
 <ul>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> now opens binary Iconeus SCAN v2 files in
   addition to HDF5 SCAN v1 files, detecting the format automatically. SCAN v2 support is
-  experimental: data, timing, voxel spacing, the depth origin, and provenance
-  (subject/session/project/scan/experimenter, serial number, acquisition datetime) are
-  recovered (lateral and elevation axes are centred on zero), but there is no
-  <code>physical_to_lab</code> affine yet and multi-pose layouts are inferred
+  experimental: data, timing, voxel spacing, the depth origin, provenance
+  (subject/session/project/scan/experimenter, serial number, acquisition datetime), and
+  <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding acquisition settings (probe model, centre/transmit frequencies,
+  pitch, focal depth, imaging depth, <abbr title="Pulse Repetition Frequency">PRF</abbr>, plane-wave angles, <abbr title="Singular Value Decomposition">SVD</abbr> low cutoff, power-Doppler
+  integration window) are recovered (lateral and elevation axes are centred on zero), but
+  there is no <code>physical_to_lab</code> affine yet and multi-pose layouts are inferred
   (<a href="https://github.com/confusius-tools/confusius/pull/317">#317</a>).</li>
 <li><strong>[Napari plugin]</strong> Added an interactive registration panel for volume alignment in
   napari, including linear and non-linear transforms, progress preview, manual and
