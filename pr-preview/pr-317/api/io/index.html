@@ -5316,8 +5316,11 @@ v2 file, or if a v1 <code>acquisitionMode</code> is not one of <code>"2Dscan"</c
 number of example files. Data, temporal geometry, and voxel spacing are recovered.
 The depth (<code>y</code>) origin is read from the header when the depth range can be located;
 the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not encoded, so those axes are
-centred on zero (correct spacing, arbitrary origin). No <code>probeToLab</code>-equivalent
-affine has been located, so v2 DataArrays carry <strong>no</strong> <code>physical_to_lab</code> affine.
+centred on zero (correct spacing, arbitrary origin). A <code>physical_to_lab</code> affine is
+built from a header block interpreted as a 6DOF probe pose (translation + rotation),
+the v2 equivalent of SCAN v1's <code>probeToLab</code>; this interpretation is experimental
+(validated on a single near-identity pose, assumed axis order and Euler convention)
+and is omitted if the block cannot be validated.
 Multi-pose / multi-block v2 layouts are inferred by analogy with v1 and have not
 been validated against real files. Provenance strings are mapped to v1-style
 <code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware
