@@ -3499,9 +3499,12 @@ directly:</p>
 <p>Notice that the data remains on disk (shown by <code>dask.array&lt;...&gt;</code>) until you explicitly
 compute operations on it.</p>
 <h3 id="loading-iconeus-scan-files">Loading Iconeus SCAN Files<a class="headerlink" href="#loading-iconeus-scan-files" title="Permanent link">&para;</a></h3>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> to load Iconeus <code>.scan</code> files (HDF5 files
-produced by IcoScan) as lazy Xarray DataArrays. Three acquisition modes are supported,
-each yielding a DataArray with different dimensions:</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> to load Iconeus <code>.scan</code> files as lazy Xarray
+DataArrays. Two on-disk formats are detected automatically: the HDF5-based SCAN v1
+format and the newer binary SCAN v2 format.</p>
+<h4 id="scan-v1-hdf5-format">SCAN v1 (HDF5 format)<a class="headerlink" href="#scan-v1-hdf5-format" title="Permanent link">&para;</a></h4>
+<p>For SCAN v1, three acquisition modes are supported, each yielding a DataArray with
+different dimensions:</p>
 <table>
 <thead>
 <tr>
@@ -3567,15 +3570,15 @@ per-pose acquisition timestamps.</p>
 </div>
 </div>
 <p>The DataArray is loaded <strong>lazily</strong>: data remains on disk until explicitly computed.
-SCAN files stay open while the Dask graph is un-computed, so keep the DataArray in
+SCAN files stay open while the Dask graph remains non-computed, so keep the DataArray in
 scope or call <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.compute.html#xarray.DataArray.compute"><code>.compute()</code></a> before discarding it.</p>
 <div class="admonition warning">
 <p class="admonition-title">SCAN files and parallel processing</p>
-<p>SCAN files are HDF5 files, and h5py datasets <strong>cannot be pickled</strong>. This means
-lazy SCAN DataArrays cannot be passed to functions that use parallel workers
-(e.g., <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> with
-<code>n_jobs != 1</code>). Call <code>.compute()</code> to load the data into memory before running any
-parallel operation:</p>
+<p>SCAN v1 files are HDF5 files, and h5py datasets <strong>cannot be pickled</strong>. This means
+lazy SCAN DataArrays cannot be passed to functions that use parallel workers (e.g.,
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> with <code>n_jobs !=
+1</code>). Call <code>.compute()</code> to load the data into memory before running any parallel
+operation:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">fusi</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;recording.scan&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>  <span class="c1"># materialize first</span>
@@ -3586,6 +3589,19 @@ SCAN data).</p>
 </div>
 <p>Provenance metadata from the file is stored in <code>da.attrs</code>: <code>scan_mode</code>, <code>subject</code>,
 <code>session</code>, <code>scan</code>, <code>project</code>, <code>date</code>, <code>neuroscan_version</code>, and <code>machine_sn</code>.</p>
+<h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
+<p><code>load_scan</code> also opens the newer binary SCAN v2 format, detected automatically (no extra
+arguments needed).</p>
+<div class="admonition warning">
+<p class="admonition-title">Experimental</p>
+<p>SCAN v2 metadata were reverse-engineered from a few example files. The data, timing,
+voxel spacing, depth origin, <code>physical_to_lab</code> affine, provenance (<code>iconeus_*</code>
+attrs), acquisition datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding acquisition settings
+(<code>probe_model</code>, <code>probe_center_frequency</code>, <code>transmit_frequency</code>,
+<code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …) are
+recovered into <code>da.attrs</code>. Lateral/elevation coordinates are centered on zero. This
+and multi-pose layouts are unvalidated and may change.</p>
+</div>
 <h4 id="loading-a-bps-file">Loading a BPS File<a class="headerlink" href="#loading-a-bps-file" title="Permanent link">&para;</a></h4>
 <p>Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System.
 They contain an affine matrix that maps Iconeus brain coordinates <code>(x_brain, y_brain,

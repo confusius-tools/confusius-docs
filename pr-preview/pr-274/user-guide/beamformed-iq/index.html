@@ -3984,9 +3984,8 @@ function or the corresponding Xarray accessor method.</p>
 </span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    <span class="n">velocity_window_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 </span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>    <span class="n">filter_method</span><span class="o">=</span><span class="s2">&quot;svd_indices&quot;</span><span class="p">,</span>
 </span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                          <span class="c1"># Autocorrelation lag (volumes).</span>
-</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    <span class="n">estimation_method</span><span class="o">=</span><span class="s2">&quot;average_angle&quot;</span><span class="p">,</span>  <span class="c1"># Velocity estimation method.</span>
-</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="p">)</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># Autocorrelation lag (volumes).</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -4006,9 +4005,8 @@ function or the corresponding Xarray accessor method.</p>
 </span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>    <span class="n">velocity_window_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 </span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>    <span class="n">filter_method</span><span class="o">=</span><span class="s2">&quot;svd_indices&quot;</span><span class="p">,</span>
 </span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                          <span class="c1"># Autocorrelation lag (volumes).</span>
-</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="n">estimation_method</span><span class="o">=</span><span class="s2">&quot;average_angle&quot;</span><span class="p">,</span>  <span class="c1"># Velocity estimation method.</span>
-</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="p">)</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># Autocorrelation lag (volumes).</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4034,17 +4032,18 @@ etc.), see the API reference for
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_axial_velocity&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_axial_velocity"><code>process_iq_to_axial_velocity</code></a>.</p>
 </div>
 <h4 id="interpreting-velocity">Interpreting Velocity<a class="headerlink" href="#interpreting-velocity" title="Permanent link">&para;</a></h4>
-<p>Velocity values are returned in <strong>meters per second</strong> with sign indicating direction:</p>
-<ul>
-<li><strong>Positive values</strong>: Flow toward the transducer.</li>
-<li><strong>Negative values</strong>: Flow away from the transducer.</li>
-<li><strong>Magnitude</strong>: Speed of flow.</li>
-</ul>
+<p>Velocity values are returned in <strong>meters per second</strong> and correspond to the speed of
+scatterers along the ultrasound beam. However, the <strong>sign convention is scanner-
+dependent</strong>: it depends on choices such as the analytic-signal convention, the <abbr title="In-phase and Quadrature">IQ</abbr>
+demodulation, and other parameters. Before interpreting the sign, verify it on your
+scanner with a known flow direction (e.g., large arteries flowing from the circle of
+Willis toward the probe) or a phantom, or another acquisition where the motion direction
+is unambiguous.</p>
 <div class="admonition warning">
 <p class="admonition-title">Velocity aliasing</p>
 <p>Very high velocities may exceed the Nyquist limit and cause aliasing (wrapping). If
-you observe sudden sign reversals in high-flow regions, reduce the <code>lag</code> parameter or
-increase the pulse repetition frequency during acquisition.</p>
+you observe sudden sign reversals in high-motion regions, reduce the <code>lag</code> parameter
+or increase the pulse repetition frequency during acquisition.</p>
 </div>
 <h3 id="b-mode">B-mode<a class="headerlink" href="#b-mode" title="Permanent link">&para;</a></h3>
 <p>B-mode imaging visualizes tissue anatomy by averaging the <abbr title="In-phase and Quadrature">IQ</abbr> signal magnitude over time.
