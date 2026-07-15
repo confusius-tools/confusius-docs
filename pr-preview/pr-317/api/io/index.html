@@ -5225,7 +5225,8 @@ attribute of that coordinate.</p>
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
   payload). The returned DataArray wraps a NumPy memmap via a Dask array. Support is
-  <strong>experimental</strong> (see Notes); <code>bps_path</code> is not yet supported for v2.</li>
+  <strong>experimental</strong> (see Notes), including its <code>physical_to_lab</code> affine and, when a
+  <code>bps_path</code> is given, <code>physical_to_brain</code>.</li>
 </ul>
 <p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
 
