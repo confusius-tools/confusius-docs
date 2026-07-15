@@ -3938,8 +3938,12 @@ etc.), see the API reference for
 </div>
 <h4 id="interpreting-velocity">Interpreting Velocity<a class="headerlink" href="#interpreting-velocity" title="Permanent link">&para;</a></h4>
 <p>Velocity values are returned in <strong>meters per second</strong> and correspond to the speed of
-scatterers along the ultrasound beam. That is, positive velocities indicate motion away
-from the transducer, while negative values indicate motion toward the transducer.</p>
+scatterers along the ultrasound beam. However, the <strong>sign convention is scanner-
+dependent</strong>: it depends on choices such as the analytic-signal convention, the <abbr title="In-phase and Quadrature">IQ</abbr>
+demodulation, and other parameters. Before interpreting the sign, verify it on your
+scanner with a known flow direction (e.g., large arteries flowing from the circle of
+Willis toward the probe) or a phantom, or another acquisition where the motion direction
+is unambiguous.</p>
 <div class="admonition warning">
 <p class="admonition-title">Velocity aliasing</p>
 <p>Very high velocities may exceed the Nyquist limit and cause aliasing (wrapping). If
