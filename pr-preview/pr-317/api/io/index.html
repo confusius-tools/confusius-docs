@@ -5247,9 +5247,10 @@ attribute of that coordinate.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Path to the corresponding BPS file (<code>.bps</code>). If provided, the BPS transformation
-matrix will be added as an affine attribute to the returned DataArray. Only
-supported for v1 (HDF5) files.</p>
+            <p>Path to the corresponding BPS file (<code>.bps</code>). If provided, a <code>physical_to_brain</code>
+affine is added to <code>da.attrs["affines"]</code>. For v2 files this requires the
+(experimental) <code>physical_to_lab</code> affine to have been built; if it could not be,
+passing <code>bps_path</code> raises.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5303,8 +5304,8 @@ seconds. For v1 <code>4Dscan</code>, a <code>pose_time</code> non-dimension coor
           <div class="doc-md-description">
             <p>If <code>path</code> does not exist or is not a file, if the file is neither an
 HDF5-based SCAN (v1) nor a binary SCAN v2 file, if <code>bps_path</code> is passed for a
-v2 file, or if a v1 <code>acquisitionMode</code> is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or
-<code>"4Dscan"</code>.</p>
+v2 file whose <code>physical_to_lab</code> affine could not be built, or if a v1
+<code>acquisitionMode</code> is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>.</p>
           </div>
         </li>
     </ul>
