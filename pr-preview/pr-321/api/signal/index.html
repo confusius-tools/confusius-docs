@@ -3379,7 +3379,7 @@ coordinates.</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;filter_method&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(filter_method)">filter_method</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s2">&quot;butterworth&quot;</span><span class="p">,</span> <span class="s2">&quot;cosine&quot;</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;butterworth&quot;</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;filter_butterworth_kwargs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(filter_butterworth_kwargs)">filter_butterworth_kwargs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;filter_kwargs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(filter_kwargs)">filter_kwargs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;confounds&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(confounds)">confounds</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;standardize_confounds&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(standardize_confounds)">standardize_confounds</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ensure_finite&lt;/code&gt;&lt;/b&gt;" href="./#confusius.signal.clean(ensure_finite)">ensure_finite</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3485,14 +3485,15 @@ discrete-cosine drift basis as the <abbr title="General Linear Model">GLM</abbr>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.signal.clean(filter_butterworth_kwargs)" class="doc doc-heading doc-heading-parameter">              <b><code>filter_butterworth_kwargs</code></b>
-<a href="#confusius.signal.clean(filter_butterworth_kwargs)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>, default:
+<h4 id="confusius.signal.clean(filter_kwargs)" class="doc doc-heading doc-heading-parameter">              <b><code>filter_kwargs</code></b>
+<a href="#confusius.signal.clean(filter_kwargs)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Extra keyword arguments passed to <code>confusius.signal.filter_butterworth</code> when
-<code>filter_method="butterworth"</code>.</p>
+            <p>Extra keyword arguments passed to the selected filtering function. This means
+<code>confusius.signal.filter_butterworth</code> when <code>filter_method="butterworth"</code>
+and <code>confusius.signal.filter_cosine</code> when <code>filter_method="cosine"</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
