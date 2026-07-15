@@ -3404,9 +3404,10 @@ directly:</p>
 <p>Notice that the data remains on disk (shown by <code>dask.array&lt;...&gt;</code>) until you explicitly
 compute operations on it.</p>
 <h3 id="loading-iconeus-scan-files">Loading Iconeus SCAN Files<a class="headerlink" href="#loading-iconeus-scan-files" title="Permanent link">&para;</a></h3>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> to load Iconeus <code>.scan</code> files (HDF5 files
-produced by IcoScan) as lazy Xarray DataArrays. Three acquisition modes are supported,
-each yielding a DataArray with different dimensions:</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> to load Iconeus <code>.scan</code> files as lazy Xarray
+DataArrays. Two on-disk formats are detected automatically: the HDF5-based <strong>v1</strong> format
+(produced by IcoScan) and the newer binary <strong>v2</strong> format (see below). For v1, three
+acquisition modes are supported, each yielding a DataArray with different dimensions:</p>
 <table>
 <thead>
 <tr>
@@ -3476,7 +3477,7 @@ SCAN files stay open while the Dask graph is un-computed, so keep the DataArray 
 scope or call <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.compute.html#xarray.DataArray.compute"><code>.compute()</code></a> before discarding it.</p>
 <div class="admonition warning">
 <p class="admonition-title">SCAN files and parallel processing</p>
-<p>SCAN files are HDF5 files, and h5py datasets <strong>cannot be pickled</strong>. This means
+<p>v1 SCAN files are HDF5 files, and h5py datasets <strong>cannot be pickled</strong>. This means
 lazy SCAN DataArrays cannot be passed to functions that use parallel workers
 (e.g., <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> with
 <code>n_jobs != 1</code>). Call <code>.compute()</code> to load the data into memory before running any
@@ -3491,6 +3492,21 @@ SCAN data).</p>
 </div>
 <p>Provenance metadata from the file is stored in <code>da.attrs</code>: <code>scan_mode</code>, <code>subject</code>,
 <code>session</code>, <code>scan</code>, <code>project</code>, <code>date</code>, <code>neuroscan_version</code>, and <code>machine_sn</code>.</p>
+<h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
+<p><code>load_scan</code> also opens the newer binary SCAN v2 format, detected automatically (no extra
+arguments needed).</p>
+<div class="admonition warning">
+<p class="admonition-title">Experimental</p>
+<p>v2 field offsets were reverse-engineered from a few example files. The data, timing,
+voxel spacing, depth origin, provenance (<code>iconeus_*</code> attrs plus the raw
+<code>iconeus_header_strings</code>), acquisition datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding acquisition
+settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>transmit_frequency</code>,
+<code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …) are recovered
+into <code>da.attrs</code>. Lateral/elevation coordinates are centered on zero. A
+<code>physical_to_lab</code> affine is derived from a header block read as a 6DOF probe pose;
+this and multi-pose layouts are unvalidated and may change. <code>bps_path</code> works as for
+v1 when that affine could be built.</p>
+</div>
 <h4 id="loading-a-bps-file">Loading a BPS File<a class="headerlink" href="#loading-a-bps-file" title="Permanent link">&para;</a></h4>
 <p>Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System.
 They contain an affine matrix that maps Iconeus brain coordinates <code>(x_brain, y_brain,
