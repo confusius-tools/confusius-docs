@@ -4884,8 +4884,8 @@ millimeters, matching the convention used by <code>physical_to_lab</code> (see
 <code>_build_physical_to_lab</code>). The brain side is left in its original axis order
 (the brain coordinate units are not declared by the BPS format and are
 therefore not converted).</p>
-<p>The change of basis from ConfUSIus-ordered millimetre lab coordinates to
-Iconeus-ordered metre lab coordinates is</p>
+<p>The change of basis from ConfUSIus-ordered millimeter lab coordinates to
+Iconeus-ordered meter lab coordinates is</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius_lab_to_iconeus_lab = mm_to_m @ PHYSICAL_TO_PROBE_PERMUTATION
 </span></code></pre></div>
 <p><code>PHYSICAL_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code>
@@ -4915,7 +4915,7 @@ rescales the translation column. The returned affine is then</p>
           –
           <div class="doc-md-description">
             <p>Affine mapping Iconeus brain coordinates to ConfUSIus-ordered Iconeus lab
-coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimetres.</p>
+coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
           </div>
         </li>
     </ul>
@@ -5317,7 +5317,7 @@ v2 file whose <code>physical_to_lab</code> affine could not be built, or if a v1
 number of example files. Data, temporal geometry, and voxel spacing are recovered.
 The depth (<code>y</code>) origin is read from the header when the depth range can be located;
 the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not encoded, so those axes are
-centred on zero (correct spacing, arbitrary origin). A <code>physical_to_lab</code> affine is
+centered on zero (correct spacing, arbitrary origin). A <code>physical_to_lab</code> affine is
 built from a header block interpreted as a 6DOF probe pose (translation + rotation),
 the v2 equivalent of SCAN v1's <code>probeToLab</code>; this interpretation is experimental
 (validated on a single near-identity pose, assumed axis order and Euler convention)
