@@ -3626,15 +3626,13 @@
   the Khallaf et al. (2026) naked mole-rat <abbr title="Functional Ultrasound Imaging">fUSI</abbr> dataset from Edmond, with <code>datasets</code>,
   <code>subjects</code>, <code>sessions</code>, <code>runs</code>, <code>reconstruction</code>, and <code>sourcedata</code> filters
   (<a href="https://github.com/confusius-tools/confusius/pull/319">#319</a>).</li>
+<li>Added standalone cosine high-pass filtering via
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;filter_cosine&lt;/span&gt;" href="../api/signal/#confusius.signal.filter_cosine"><code>filter_cosine</code></a>, and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a> can now use it with <code>filter_method="cosine"</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/321">#321</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> now defaults
-  <code>learning_rate</code> to <code>1.0</code> instead of <code>0.01</code>. The previous default was generally too
-  small for the optimizer to move meaningfully within the default iteration budget, so
-  motion correction recovered only a fraction of real inter-frame shifts. The napari
-  time-series registration panel uses the same new default
-  (<a href="https://github.com/confusius-tools/confusius/issues/231">#231</a>).</li>
 <li>Axial velocity estimation now scales the Kasai phase increment by the requested
   autocorrelation <code>lag</code>, so multi-volume lags no longer overestimate velocity
   (<a href="https://github.com/confusius-tools/confusius/pull/313">#313</a>).</li>
