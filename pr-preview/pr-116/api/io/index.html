@@ -4884,8 +4884,8 @@ millimeters, matching the convention used by <code>physical_to_lab</code> (see
 <code>_build_physical_to_lab</code>). The brain side is left in its original axis order
 (the brain coordinate units are not declared by the BPS format and are
 therefore not converted).</p>
-<p>The change of basis from ConfUSIus-ordered millimetre lab coordinates to
-Iconeus-ordered metre lab coordinates is</p>
+<p>The change of basis from ConfUSIus-ordered millimeter lab coordinates to
+Iconeus-ordered meter lab coordinates is</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius_lab_to_iconeus_lab = mm_to_m @ PHYSICAL_TO_PROBE_PERMUTATION
 </span></code></pre></div>
 <p><code>PHYSICAL_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code>
@@ -4915,7 +4915,7 @@ rescales the translation column. The returned affine is then</p>
           –
           <div class="doc-md-description">
             <p>Affine mapping Iconeus brain coordinates to ConfUSIus-ordered Iconeus lab
-coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimetres.</p>
+coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
           </div>
         </li>
     </ul>
@@ -5217,12 +5217,18 @@ attribute of that coordinate.</p>
     <div class="doc doc-contents ">
 
         <p>Load an Iconeus SCAN file as a lazy Xarray DataArray.</p>
-<p>SCAN files (<code>.scan</code>) are HDF5 files produced by IcoScan/NeuroScan. They contain
-power Doppler data and spatial/temporal metadata for 2D, 3D, or 3D+t <abbr title="Functional Ultrasound Imaging">fUSI</abbr> volumes.</p>
-<p>The returned DataArray wraps an open <code>h5py</code> file handle via a Dask array. The
-file remains open while the Dask graph is un-computed. Call <code>.compute()</code> before
-closing the file, or keep the returned DataArray in scope to prevent the handle from
-being garbage-collected.</p>
+<p>SCAN files (<code>.scan</code>) come in two on-disk formats, both handled here:</p>
+<ul>
+<li><strong>v1</strong>: an HDF5 container produced by IcoScan/NeuroScan, holding power Doppler
+  data and spatial/temporal metadata for 2D, 3D, or 3D+t <abbr title="Functional Ultrasound Imaging">fUSI</abbr> volumes. The returned
+  DataArray wraps an open <code>h5py</code> handle via a Dask array; keep it in scope (or call
+  <code>.compute()</code>) before the handle is garbage-collected.</li>
+<li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
+  payload). The returned DataArray wraps a NumPy memmap via a Dask array. Support is
+  <strong>experimental</strong> (see Notes), including its <code>physical_to_lab</code> affine and, when a
+  <code>bps_path</code> is given, <code>physical_to_brain</code>.</li>
+</ul>
+<p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5242,8 +5248,10 @@ being garbage-collected.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Path to the corresponding BPS file (<code>.bps</code>). If provided, the BPS transformation
-matrix will be added as an affine attribute to the returned DataArray.</p>
+            <p>Path to the corresponding BPS file (<code>.bps</code>). If provided, a <code>physical_to_brain</code>
+affine is added to <code>da.attrs["affines"]</code>. For v2 files this requires the
+(experimental) <code>physical_to_lab</code> affine to have been built; if it could not be,
+passing <code>bps_path</code> raises.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5275,12 +5283,14 @@ matrix will be added as an affine attribute to the returned DataArray.</p>
           <div class="doc-md-description">
             <p>Lazy DataArray with dimensions and coordinates:</p>
 <ul>
-<li><code>2Dscan</code> → <code>(time, z, y, x)</code>.</li>
-<li><code>3Dscan</code> → <code>(pose, z, y, x)</code>.</li>
-<li><code>4Dscan</code> → <code>(time, pose, z, y, x)</code>.</li>
+<li>v1 <code>2Dscan</code> → <code>(time, z, y, x)</code>.</li>
+<li>v1 <code>3Dscan</code> → <code>(pose, z, y, x)</code>.</li>
+<li>v1 <code>4Dscan</code> → <code>(time, pose, z, y, x)</code>.</li>
+<li>v2 single-pose → <code>(time, z, y, x)</code>.</li>
+<li>v2 multi-pose → <code>(time, pose, z, y, x)</code>.</li>
 </ul>
 <p>All spatial coordinates are in millimeters. The <code>time</code> coordinate is in
-seconds. For <code>4Dscan</code>, a <code>pose_time</code> non-dimension coordinate of shape
+seconds. For v1 <code>4Dscan</code>, a <code>pose_time</code> non-dimension coordinate of shape
 <code>(time, pose)</code> stores the actual per-pose acquisition timestamps.</p>
           </div>
         </li>
@@ -5293,9 +5303,10 @@ seconds. For <code>4Dscan</code>, a <code>pose_time</code> non-dimension coordin
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>path</code> does not exist or is not a file, if the file is not an HDF5-based
-SCAN file supported by ConfUSIus, or if the <code>acquisitionMode</code> stored in the
-file is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>.</p>
+            <p>If <code>path</code> does not exist or is not a file, if the file is neither an
+HDF5-based SCAN (v1) nor a binary SCAN v2 file, if <code>bps_path</code> is passed for a
+v2 file whose <code>physical_to_lab</code> affine could not be built, or if a v1
+<code>acquisitionMode</code> is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>.</p>
           </div>
         </li>
     </ul>
@@ -5303,7 +5314,28 @@ file is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dsca
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>The <code>physical_to_lab</code> affine stored in <code>da.attrs["affines"]</code> maps ConfUSIus physical
+  <p><strong>v2 (experimental).</strong> The v2 field offsets were reverse-engineered from a small
+number of example files. Data, temporal geometry, and voxel spacing are recovered.
+The depth (<code>y</code>) origin is read from the header when the depth range can be located;
+the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not encoded, so those axes are
+centered on zero (correct spacing, arbitrary origin). A <code>physical_to_lab</code> affine is
+built from a header block interpreted as a 6DOF probe pose (translation + rotation),
+the v2 equivalent of SCAN v1's <code>probeToLab</code>; this interpretation is experimental
+(validated on a single near-identity pose, assumed axis order and Euler convention)
+and is omitted if the block cannot be validated.
+Multi-pose / multi-block v2 layouts are inferred by analogy with v1 and have not
+been validated against real files. Provenance strings are mapped to v1-style
+<code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware
+strings as anchors); the three still-unidentified plain-string slots are exposed as
+<code>iconeus_unknown1</code>, <code>iconeus_unknown2</code>, and <code>iconeus_unknown3</code>.</p>
+<p>Acquisition settings that correspond to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> fields are also surfaced as
+attributes, in native header units: <code>probe_model</code>, <code>probe_center_frequency</code> (MHz),
+<code>probe_pitch</code> (mm), <code>probe_focal_depth</code> (mm), <code>imaging_depth</code> (mm start/end),
+<code>transmit_frequency</code> (MHz), <code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code>
+(deg), <code>svd_low_cutoff</code>, and <code>power_doppler_integration_window</code>. The probe/sequence
+subset is parsed from a structured block whose layout is anchor-validated against the
+depth origin; if that check fails, those fields are omitted rather than guessed.</p>
+<p>The <code>physical_to_lab</code> affine stored in <code>da.attrs["affines"]</code> maps ConfUSIus physical
 coordinates <code>(z, y, x)</code> to <strong>ConfUSIus-ordered</strong> Iconeus lab coordinates (mm). Apply
 as <code>da.attrs["affines"]["physical_to_lab"] @ np.array([z, y, x, 1.0])</code>. For
 multi-pose files the shape is <code>(npose, 4, 4)</code>; index with <code>da.coords["pose"].values</code>
