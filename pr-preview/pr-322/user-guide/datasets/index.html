@@ -1310,6 +1310,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#available-brain-atlases" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Available Brain Atlases
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2301,6 +2312,8 @@
       
         
       
+        
+      
     
     
     
@@ -2388,6 +2401,33 @@
     
   
   Motion correction of a single recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/registration/register_to_allen_fusi_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Register a recording to an Allen fUSI template
 
     
   </span>
@@ -2890,6 +2930,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#available-brain-atlases" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Available Brain Atlases
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3017,7 +3068,7 @@ available atlases, templates, and <abbr title="Functional Ultrasound Imaging">fU
 <a href="https://bids.neuroimaging.io/"><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr></a> format. Each fetcher downloads the dataset
 on first call, caches it locally for offline reuse, and returns either the path to the
 root directory, or a more specific object (e.g., a DataArray for templates or an
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;Atlas&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.Atlas"><code>Atlas</code></a> instance for atlases]).</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;atlas&lt;/span&gt;" href="../../api/atlas/#confusius.atlas">atlas Dataset</a> for atlases]).</p>
 <div class="admonition tip">
 <p class="admonition-title">Try before you buy</p>
 <p>Fetchers generally accept filters (subjects, sessions, tasks, derivatives, etc.) so
@@ -3438,40 +3489,53 @@ this index from OSF and download any new files that appeared since the last call
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>A vascular mouse <abbr title="Functional Ultrasound Imaging">fUSI</abbr> template derived from Huang et al. (2025)<sup id="fnref:huang2025"><a class="footnote-ref" href="#fn:huang2025">5</a></sup> and
-distributed as a single ConfUSIus-compatible NIfTI on
-<a href="https://osf.io/am3jw/">OSF (am3jw)</a>. Total size: <strong>~16.3 MB</strong>.</p>
+distributed as a single NIfTI on <a href="https://osf.io/am3jw/">OSF (am3jw)</a>. Total size:
+<strong>~16.3 MB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_huang_2025&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_huang_2025"><code>fetch_template_huang_2025</code></a> to
 download and load the template directly:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_huang_2025</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_huang_2025</span><span class="p">()</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_50um&quot;</span><span class="p">)</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">template</span><span class="p">,</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">,</span> <span class="n">fetch_template_huang_2025</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_huang_2025</span><span class="p">()</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_50um&quot;</span><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">template</span><span class="p">,</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <p>A mouse <abbr title="Functional Ultrasound Imaging">fUSI</abbr> template derived from Pepe, Mariani et al. (2026)<sup id="fnref:pepe_mariani2026"><a class="footnote-ref" href="#fn:pepe_mariani2026">6</a></sup> and
-distributed as a single ConfUSIus-compatible NIfTI on
-<a href="https://osf.io/43tu9/">OSF (43tu9)</a>. Total size: <strong>~5.5 MB</strong>.</p>
+distributed as a single NIfTI on <a href="https://osf.io/43tu9/">OSF (43tu9)</a>. Total size:
+<strong>~5.5 MB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026"><code>fetch_template_pepe_mariani_2026</code></a> to
 download and load the template directly:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_template_pepe_mariani_2026</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">template</span><span class="p">,</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">,</span> <span class="n">fetch_template_pepe_mariani_2026</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">resampled_atlas</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="n">template</span><span class="p">,</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">template</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;physical_to_sform&quot;</span><span class="p">],</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
+<h2 id="available-brain-atlases">Available Brain Atlases<a class="headerlink" href="#available-brain-atlases" title="Permanent link">&para;</a></h2>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> fetches any
+<a href="https://brainglobe.info/">BrainGlobe</a> atlas by name and returns it as an atlas
+<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a>. ConfUSIus provides the
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;AtlasAccessor&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor"><code>.atlas</code></a> accessor for common atlas operations like
+resampling, masking, and region lookups:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">masks</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;VISp&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Unlike the <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> datasets above, BrainGlobe atlases are cached in BrainGlobe's own
+atlas directory (<code>~/.brainglobe</code>, shared with other BrainGlobe tools), so they do not
+appear in <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;list_datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.list_datasets"><code>list_datasets</code></a>. Use <code>data_dir</code> to
+override the cache location.</p>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
 <p>See the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets"><code>confusius.datasets</code> API reference</a> for the full list of
 parameters and return types.</p>

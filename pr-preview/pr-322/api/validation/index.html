@@ -1583,6 +1583,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.validation.validate_atlas_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;validate_atlas_dataset
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.validation.validate_fusi_dataarray" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2323,6 +2334,8 @@
       
         
       
+        
+      
     
     
     
@@ -2410,6 +2423,33 @@
     
   
   Motion correction of a single recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/registration/register_to_allen_fusi_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Register a recording to an Allen fUSI template
 
     
   </span>
@@ -2863,6 +2903,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.validation.validate_atlas_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;validate_atlas_dataset
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.validation.validate_fusi_dataarray" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3084,6 +3135,13 @@
 <p><span class="doc-section-title">Modules:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+          <b><code><span title="confusius.validation.atlas">atlas</span></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Atlas Dataset validation utilities.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><span title="confusius.validation.coordinates">coordinates</span></code></b>
           –
           <div class="doc-md-description">
@@ -3148,6 +3206,13 @@
             –
             <div class="doc-md-description">
               <p>Canonicalize and validate a ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_atlas_dataset&lt;/span&gt;" href="./#confusius.validation.validate_atlas_dataset">validate_atlas_dataset</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Validate that a Dataset is a well-formed atlas.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3353,6 +3418,105 @@ scalar coordinate but no longer appears in <code>dims</code>.</p>
           </div>
         </li>
     </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="confusius.validation.validate_atlas_dataset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">validate_atlas_dataset</span>
+
+
+<a href="#confusius.validation.validate_atlas_dataset" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">validate_atlas_dataset</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ds&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_atlas_dataset(ds)">ds</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.Dataset" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset">Dataset</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_mesh_use&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_atlas_dataset(require_mesh_use)">require_mesh_use</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Validate that a Dataset is a well-formed atlas.</p>
+<p>Companion to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi_dataarray&lt;/span&gt;" href="./#confusius.validation.validate_fusi_dataarray"><code>validate_fusi_dataarray</code></a>
+and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="./#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>. Checks that
+<code>ds</code> matches the atlas schema produced by
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> and consumed
+by the <code>.atlas</code> accessor:</p>
+<ol>
+<li><strong>Type</strong>: <code>ds</code> is an <code>xarray.Dataset</code>.</li>
+<li><strong>Data variables</strong>: <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> are all present as
+   data variables (a <code>hemispheres</code> stored as a coordinate is reported as missing).</li>
+<li><strong>Grid</strong>: the three variables share identical dimensions, and those dimensions are a
+   subset of <code>(z, y, x)</code> (2D or 3D, so a resampled single slice is accepted).</li>
+<li><strong>Data types</strong>: <code>reference</code> is floating-point; <code>annotation</code> and <code>hemispheres</code> are
+   integer-valued.</li>
+<li><strong>Attributes</strong>: <code>attrs["structures"]</code> is present and is a brainglobe
+   <code>StructuresDict</code>. The descriptive metadata the builder adds (<code>name</code>, <code>citation</code>,
+   <code>species</code>, <code>orientation</code>) is not required.</li>
+<li><strong>Affines</strong>: where two data variables both define an affine of the same name (in
+   <code>attrs["affines"]</code>), the matrices must be equal — a mismatch means the variables
+   are not on a common physical frame.</li>
+<li><strong>Mesh use</strong> (only when <code>require_mesh_use</code> is set): <code>attrs["physical_to_base"]</code> — the
+   pull mesh transform get_mesh needs — is present, and at least one structure
+   references a mesh file that exists on disk.</li>
+</ol>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.validation.validate_atlas_dataset(ds)" class="doc doc-heading doc-heading-parameter">              <b><code>ds</code></b>
+<a href="#confusius.validation.validate_atlas_dataset(ds)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.Dataset">Dataset</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dataset to validate as an atlas.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.validation.validate_atlas_dataset(require_mesh_use)" class="doc doc-heading doc-heading-parameter">              <b><code>require_mesh_use</code></b>
+<a href="#confusius.validation.validate_atlas_dataset(require_mesh_use)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to also require the machinery <code>get_mesh</code> needs: the <code>physical_to_base</code>
+transform attribute and at least one existing region mesh file.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>ds</code> is not an <code>xarray.Dataset</code>, or if <code>reference</code> is not floating-point or
+<code>annotation</code>/<code>hemispheres</code> are not integer-valued.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If any required data variable or attribute is missing, if the variables do not
+share dimensions that are a subset of <code>(z, y, x)</code>, if <code>attrs["structures"]</code> is not a
+brainglobe <code>StructuresDict</code>, or if <code>require_mesh_use</code> is set and <code>physical_to_base</code>
+or usable region meshes are absent.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span> <span class="o">=</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_atlas_dataset</span><span class="p">(</span><span class="n">atlas</span><span class="p">)</span>
+</span></code></pre></div>
 
 
     </div>
@@ -3807,7 +3971,7 @@ Accepts two formats:</p>
           <div class="doc-md-description">
             <p>Mask to validate. Must have boolean dtype, or integer dtype with exactly one
 non-zero value (0 = background, one region id = foreground). The latter format
-is produced by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.Atlas.get_masks"><code>Atlas.get_masks</code></a>. Coordinates
+is produced by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>. Coordinates
 must match data.</p>
           </div>
         </li>

@@ -2551,6 +2551,8 @@
       
         
       
+        
+      
     
     
     
@@ -2638,6 +2640,33 @@
     
   
   Motion correction of a single recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/registration/register_to_allen_fusi_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Register a recording to an Allen fUSI template
 
     
   </span>
@@ -3958,9 +3987,9 @@ When <code>norm</code> is provided, it overrides <code>vmin</code>, <code>vmax</
 <a class="glightbox" data-gallery="dark" data-title="Seed-based connectivity maps" data-type="image" href="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark"><img alt="Seed-based connectivity maps" src="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark" /></a></p>
 <p>This figure is generated in the <a href="../../examples/_built/connectivity/atlas_seed_map/">atlas-based seed connectivity maps
 example</a>, which walks through
-registering a recording to an Allen-space template, resampling the <autoref identifier="confusius.atlas.Atlas">Allen Mouse Brain
-Atlas</autoref> onto the recording's native grid, and computing
-voxel-wise seed-based correlation maps with
+registering a recording to an Allen-space template, resampling the <autoref identifier="confusius.datasets.fetch_brainglobe_atlas">Allen Mouse Brain
+Atlas</autoref> onto the recording's native grid, and
+computing voxel-wise seed-based correlation maps with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;SeedBasedMaps&lt;/span&gt;" href="../../api/connectivity/#confusius.connectivity.SeedBasedMaps"><code>SeedBasedMaps</code></a>.</p>
 <h2 id="overlaying-contours">Overlaying Contours<a class="headerlink" href="#overlaying-contours" title="Permanent link">&para;</a></h2>
 <p>Atlas outlines or region of interest (<abbr title="Region of Interest">ROI</abbr>) boundaries can be drawn on top of a volume
@@ -3974,20 +4003,20 @@ region.</p>
 coordinate-to-axis mapping; calling
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a> on it draws outlines
 on the matching panels. Masks produced by
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.Atlas.get_masks"><code>Atlas.get_masks</code></a> carry Allen colors in their
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a> carry Allen colors in their
 <code>attrs["rgb_lookup"]</code>, so no explicit color argument is needed:</p>
 <div class="admonition question">
 <p class="admonition-title">Registering your data to an atlas</p>
 <p>This example assumes your <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data has already been registered to the Allen Mouse
 Brain atlas. See the <a href="../atlas/">Atlases</a> guide for loading and working with brain
 atlases, and the <a href="../registration/">Registration</a> guide for how to obtain the <code>transform</code>
-used in <code>atlas.resample_like</code>.</p>
+used in <code>atlas.atlas.resample_like</code>.</p>
 </div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.atlas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atlas</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Load Atlas and resample to fUSI space (see Registration guide).</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">atlas_fusi</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span><span class="n">mean_vol</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Load atlas and resample to fUSI space (see Registration guide).</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">atlas_fusi</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">resample_like</span><span class="p">(</span><span class="n">mean_vol</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
 </span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
 </span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># Step 1: display an average power Doppler volume.</span>
 </span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
@@ -4166,7 +4195,7 @@ upper—by calling <code>plot_matrix</code> twice with complementary <code>trian
 <a class="glightbox" data-gallery="dark" data-title="Region correlation matrix" data-type="image" href="../../examples/_built/connectivity/atlas_correlation_matrix_thumb_dark.png#only-dark"><img alt="Region correlation matrix" src="../../examples/_built/connectivity/atlas_correlation_matrix_thumb_dark.png#only-dark" /></a></p>
 <p>This figure is generated in the <a href="../../examples/_built/connectivity/atlas_correlation_matrix/">atlas-based region correlation matrix
 example</a>, which walks
-through registering a recording to an Allen-space template, resampling the <autoref identifier="confusius.atlas.Atlas">Allen
+through registering a recording to an Allen-space template, resampling the <autoref identifier="confusius.atlas">Allen
 Mouse Brain Atlas</autoref> onto the recording's native grid, and
 extracting region signals—including <code>group_colors</code>, sourced directly from the atlas
 so each area is colored with its official Allen color.</p>
