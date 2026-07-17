@@ -2748,10 +2748,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-the-design-matrix" class="md-nav__link">
+  <a href="#model-physiological-noise-with-compcor" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Build the design matrix
+        Model physiological noise with CompCor
       </span>
     </span>
   </a>
@@ -2763,6 +2763,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Fit the first-level GLM
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-the-design-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Inspect the design matrix
       </span>
     </span>
   </a>
@@ -2982,10 +2993,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-the-design-matrix" class="md-nav__link">
+  <a href="#model-physiological-noise-with-compcor" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Build the design matrix
+        Model physiological noise with CompCor
       </span>
     </span>
   </a>
@@ -2997,6 +3008,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Fit the first-level GLM
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-the-design-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Inspect the design matrix
       </span>
     </span>
   </a>
@@ -3154,12 +3176,17 @@ will go through the following steps:</p>
 <li><strong>Fetch and load</strong> the five <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</li>
 <li><strong>Register</strong> the recording to a reference template aligned with an anatomical atlas,
    so we can define masks and draw region boundaries in a common space.</li>
-<li><strong>Build a design matrix</strong> per run from the stimulation events, a <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-specific <abbr title="Hemodynamic Response Function">HRF</abbr>,
-   a drift model, and CompCor noise regressors.</li>
+<li><strong>Choose a <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-specific <abbr title="Hemodynamic Response Function">HRF</abbr></strong> and <strong>extract CompCor noise regressors</strong> from a
+   non-task region.</li>
 <li><strong>Fit</strong> a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> across all
    runs and <strong>compute a contrast</strong> for the stimulation condition.</li>
 <li><strong>Threshold</strong> the resulting map for statistical significance and visualize it.</li>
 </ol>
+<div class="admonition warning">
+<p class="admonition-title">Download size</p>
+<p>Running this notebook fetches the five recordings for subject <code>5622</code>, session
+<code>IPM</code> (about 200 MB each, ~1 GB in total) into the ConfUSIus dataset cache.</p>
+</div>
 <h2 id="fetch-the-olfactory-stimulation-recordings">Fetch the olfactory-stimulation recordings<a class="headerlink" href="#fetch-the-olfactory-stimulation-recordings" title="Permanent link">&para;</a></h2>
 <p>Using <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_khallaf_2026&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_khallaf_2026"><code>fetch_khallaf_2026</code></a>,
 we take subject <code>5622</code>, session <code>IPM</code>, and the <code>resampled</code> reconstruction (the runs
@@ -3179,28 +3206,29 @@ already aligned to a common within-session space), which yields five task runs.<
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Keep notebook output compact for large DataArray displays. The coordinates section is</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># left expanded on purpose; `display_expand_data` alone does not cover the attributes.</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_expand_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">template_pepe_mariani</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_khallaf_2026</span><span class="p">(</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;5622&quot;</span><span class="p">,</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;IPM&quot;</span><span class="p">,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">reconstruction</span><span class="o">=</span><span class="s2">&quot;resampled&quot;</span><span class="p">,</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">pwd_path_pattern</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="o">/</span> <span class="s2">&quot;sub-5622&quot;</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="o">/</span> <span class="s2">&quot;ses-IPM&quot;</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="o">/</span> <span class="s2">&quot;sub-5622_ses-IPM_task-olfactory_rec-resampled_run-*_space-5622run1_pwd.nii&quot;</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">)</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">pwd_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pwd_path_pattern</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">bids_root</span><span class="p">))))</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">is_dark_theme</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">bg_color</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># Keep notebook output compact for large DataArray displays. The coordinates section is</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># left expanded on purpose; `display_expand_data` alone does not cover the attributes.</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_expand_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">template_pepe_mariani</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_khallaf_2026</span><span class="p">(</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">subjects</span><span class="o">=</span><span class="s2">&quot;5622&quot;</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">sessions</span><span class="o">=</span><span class="s2">&quot;IPM&quot;</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">reconstruction</span><span class="o">=</span><span class="s2">&quot;resampled&quot;</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">pwd_path_pattern</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="o">/</span> <span class="s2">&quot;sub-5622&quot;</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="o">/</span> <span class="s2">&quot;ses-IPM&quot;</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="o">/</span> <span class="s2">&quot;sub-5622_ses-IPM_task-olfactory_rec-resampled_run-*_space-5622run1_pwd.nii&quot;</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="p">)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="n">pwd_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pwd_path_pattern</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">bids_root</span><span class="p">))))</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">If you use this template in your work, please cite the following source:
 
@@ -3920,7 +3948,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-5622_ses-IPM_task-olfactory_rec-resampled_run-1_space-5622run1_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 55</li><li><span class='xr-has-index'>z</span>: 40</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 110</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-20773ed1-8f81-465e-a79d-cc97b3540cab' class='xr-array-in' type='checkbox' ><label for='section-20773ed1-8f81-465e-a79d-cc97b3540cab' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(55, 40, 25, 87), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-5622_ses-IPM_task-olfactory_rec-resampled_run-1_space-5622run1_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 55</li><li><span class='xr-has-index'>z</span>: 40</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 110</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-e47c2077-e2bb-4e49-93ef-1d1312275dab' class='xr-array-in' type='checkbox' ><label for='section-e47c2077-e2bb-4e49-93ef-1d1312275dab' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>dask.array&lt;chunksize=(55, 40, 25, 87), meta=np.ndarray&gt;</span></div><div class='xr-array-data'><table>
     <tr>
         <td>
             <table style="border-collapse: collapse;">
@@ -4018,15 +4046,15 @@ dl.xr-attrs {
 </svg>
         </td>
     </tr>
-</table></div></div></li><li class='xr-section-item'><input id='section-89f2a561-8f73-43f7-a6be-d5745a98f450' class='xr-section-summary-in' type='checkbox' checked /><label for='section-89f2a561-8f73-43f7-a6be-d5745a98f450' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4 6.4 12.4 ... 312.4 318.4 324.4</div><input id='attrs-805dba6d-8735-4af5-b26a-63f62ccf50b9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-805dba6d-8735-4af5-b26a-63f62ccf50b9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f81ed10c-8d19-4fd7-bf20-ef2a0865c9e9' class='xr-var-data-in' type='checkbox'><label for='data-f81ed10c-8d19-4fd7-bf20-ef2a0865c9e9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd></dl></div><div class='xr-var-data'><pre>array([  0.4,   6.4,  12.4,  18.4,  24.4,  30.4,  36.4,  42.4,  48.4,  54.4,
+</table></div></div></li><li class='xr-section-item'><input id='section-04b928ec-5261-419b-abbe-821d0fc84a8c' class='xr-section-summary-in' type='checkbox' checked /><label for='section-04b928ec-5261-419b-abbe-821d0fc84a8c' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.4 6.4 12.4 ... 312.4 318.4 324.4</div><input id='attrs-fd034f45-549d-4c29-9798-e8d8d29720b5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fd034f45-549d-4c29-9798-e8d8d29720b5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ab3e0dcf-1a34-4c2f-8351-71c6a40faa76' class='xr-var-data-in' type='checkbox'><label for='data-ab3e0dcf-1a34-4c2f-8351-71c6a40faa76' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd></dl></div><div class='xr-var-data'><pre>array([  0.4,   6.4,  12.4,  18.4,  24.4,  30.4,  36.4,  42.4,  48.4,  54.4,
         60.4,  66.4,  72.4,  78.4,  84.4,  90.4,  96.4, 102.4, 108.4, 114.4,
        120.4, 126.4, 132.4, 138.4, 144.4, 150.4, 156.4, 162.4, 168.4, 174.4,
        180.4, 186.4, 192.4, 198.4, 204.4, 210.4, 216.4, 222.4, 228.4, 234.4,
        240.4, 246.4, 252.4, 258.4, 264.4, 270.4, 276.4, 282.4, 288.4, 294.4,
-       300.4, 306.4, 312.4, 318.4, 324.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.21 0.42 ... 7.77 7.98 8.19</div><input id='attrs-4f28a413-9220-441c-958d-0e095ee86e2d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-4f28a413-9220-441c-958d-0e095ee86e2d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f03ffdb6-96b0-4501-92d2-8d6f5b323a31' class='xr-var-data-in' type='checkbox'><label for='data-f03ffdb6-96b0-4501-92d2-8d6f5b323a31' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>209.9999983329326</dd></dl></div><div class='xr-var-data'><pre>array([0.  , 0.21, 0.42, 0.63, 0.84, 1.05, 1.26, 1.47, 1.68, 1.89, 2.1 , 2.31,
+       300.4, 306.4, 312.4, 318.4, 324.4])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.21 0.42 ... 7.77 7.98 8.19</div><input id='attrs-ba481f7a-574b-450b-ae08-2fc4138d4698' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ba481f7a-574b-450b-ae08-2fc4138d4698' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-19a5eba0-3f29-4183-908b-4ae2139eb660' class='xr-var-data-in' type='checkbox'><label for='data-19a5eba0-3f29-4183-908b-4ae2139eb660' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>209.9999983329326</dd></dl></div><div class='xr-var-data'><pre>array([0.  , 0.21, 0.42, 0.63, 0.84, 1.05, 1.26, 1.47, 1.68, 1.89, 2.1 , 2.31,
        2.52, 2.73, 2.94, 3.15, 3.36, 3.57, 3.78, 3.99, 4.2 , 4.41, 4.62, 4.83,
        5.04, 5.25, 5.46, 5.67, 5.88, 6.09, 6.3 , 6.51, 6.72, 6.93, 7.14, 7.35,
-       7.56, 7.77, 7.98, 8.19])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.09856 0.1971 ... 10.84 10.94</div><input id='attrs-24e37063-b966-459c-8abf-2f6581f0e4af' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-24e37063-b966-459c-8abf-2f6581f0e4af' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1cd50c8f-7d1e-40a9-a950-59b47b3572d4' class='xr-var-data-in' type='checkbox'><label for='data-1cd50c8f-7d1e-40a9-a950-59b47b3572d4' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>98.55999815044926</dd></dl></div><div class='xr-var-data'><pre>array([ 0.     ,  0.09856,  0.19712,  0.29568,  0.39424,  0.4928 ,  0.59136,
+       7.56, 7.77, 7.98, 8.19])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.09856 0.1971 ... 10.84 10.94</div><input id='attrs-dfbf0b78-746d-46a7-ab91-2a8d8a1b909e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dfbf0b78-746d-46a7-ab91-2a8d8a1b909e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a4e37eca-441c-4a14-8803-93805b7811ce' class='xr-var-data-in' type='checkbox'><label for='data-a4e37eca-441c-4a14-8803-93805b7811ce' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>98.55999815044926</dd></dl></div><div class='xr-var-data'><pre>array([ 0.     ,  0.09856,  0.19712,  0.29568,  0.39424,  0.4928 ,  0.59136,
         0.68992,  0.78848,  0.88704,  0.9856 ,  1.08416,  1.18272,  1.28128,
         1.37984,  1.4784 ,  1.57696,  1.67552,  1.77408,  1.87264,  1.9712 ,
         2.06976,  2.16832,  2.26688,  2.36544,  2.464  ,  2.56256,  2.66112,
@@ -4041,7 +4069,7 @@ dl.xr-attrs {
         8.27904,  8.3776 ,  8.47616,  8.57472,  8.67328,  8.77184,  8.8704 ,
         8.96896,  9.06752,  9.16608,  9.26464,  9.3632 ,  9.46176,  9.56032,
         9.65888,  9.75744,  9.856  ,  9.95456, 10.05312, 10.15168, 10.25024,
-       10.3488 , 10.44736, 10.54592, 10.64448, 10.74304, 10.8416 , 10.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.11 0.22 ... 11.77 11.88 11.99</div><input id='attrs-6f3f065c-5031-4a4f-8efc-d52a5e5e852b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6f3f065c-5031-4a4f-8efc-d52a5e5e852b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-73c93869-5154-4537-aabf-93c644c06f98' class='xr-var-data-in' type='checkbox'><label for='data-73c93869-5154-4537-aabf-93c644c06f98' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>110.00000085914509</dd></dl></div><div class='xr-var-data'><pre>array([ 0.  ,  0.11,  0.22,  0.33,  0.44,  0.55,  0.66,  0.77,  0.88,  0.99,
+       10.3488 , 10.44736, 10.54592, 10.64448, 10.74304, 10.8416 , 10.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.11 0.22 ... 11.77 11.88 11.99</div><input id='attrs-db2353fb-6d0a-4dc4-aced-85616070a82a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-db2353fb-6d0a-4dc4-aced-85616070a82a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-477c761f-d41c-481f-974d-25e6458964d0' class='xr-var-data-in' type='checkbox'><label for='data-477c761f-d41c-481f-974d-25e6458964d0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>110.00000085914509</dd></dl></div><div class='xr-var-data'><pre>array([ 0.  ,  0.11,  0.22,  0.33,  0.44,  0.55,  0.66,  0.77,  0.88,  0.99,
         1.1 ,  1.21,  1.32,  1.43,  1.54,  1.65,  1.76,  1.87,  1.98,  2.09,
         2.2 ,  2.31,  2.42,  2.53,  2.64,  2.75,  2.86,  2.97,  3.08,  3.19,
         3.3 ,  3.41,  3.52,  3.63,  3.74,  3.85,  3.96,  4.07,  4.18,  4.29,
@@ -4051,7 +4079,7 @@ dl.xr-attrs {
         7.7 ,  7.81,  7.92,  8.03,  8.14,  8.25,  8.36,  8.47,  8.58,  8.69,
         8.8 ,  8.91,  9.02,  9.13,  9.24,  9.35,  9.46,  9.57,  9.68,  9.79,
         9.9 , 10.01, 10.12, 10.23, 10.34, 10.45, 10.56, 10.67, 10.78, 10.89,
-       11.  , 11.11, 11.22, 11.33, 11.44, 11.55, 11.66, 11.77, 11.88, 11.99])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-c2c9ac22-2371-4350-8c47-1e08d8e804ed' class='xr-section-summary-in' type='checkbox' /><label for='section-c2c9ac22-2371-4350-8c47-1e08d8e804ed' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>sform_code :</span></dt><dd>5</dd><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_sform&#x27;: array([[-2.22416275e-01,  9.24926886e-02,  5.66354393e-18,
+       11.  , 11.11, 11.22, 11.33, 11.44, 11.55, 11.66, 11.77, 11.88, 11.99])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-7deeeae1-ec01-43a9-9cc1-931cb5e0fa60' class='xr-section-summary-in' type='checkbox' /><label for='section-7deeeae1-ec01-43a9-9cc1-931cb5e0fa60' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>sform_code :</span></dt><dd>5</dd><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_sform&#x27;: array([[-2.22416275e-01,  9.24926886e-02,  5.66354393e-18,
         -1.32531769e+00],
        [-9.24926924e-02, -2.22416279e-01, -1.36190690e-17,
          2.25795767e+00],
@@ -4173,76 +4201,50 @@ parameter to <code>6.7</code> to find a faster peak response (around 2~3 seconds
 </span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Claron et al. 2021 fUSI HRF (beta=6.7)&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_15_0_light.png#only-light" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="light"><img src="../first_level_output_light/cell_15_0_light.png#only-light" alt="Example output from cell 15, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_15_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_15_0_dark.png#only-dark" alt="Example output from cell 15, image 0"></a></p>
-<h2 id="build-the-design-matrix">Build the design matrix<a class="headerlink" href="#build-the-design-matrix" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a>
-assembles, per run, the full set of regressors: the <abbr title="Hemodynamic Response Function">HRF</abbr>-convolved <code>"active"</code>
-condition, the CompCor confounds, and a <code>"cosine"</code> <strong>drift model</strong> that high-pass
-filters slow scanner/physiological drifts below <code>0.01</code> Hz, plus a constant baseline
-column. Each run gets its own design matrix because its CompCor regressors are
-estimated from its own data.</p>
-<div class="admonition note">
-<p class="admonition-title">Model physiological noise with CompCor</p>
-<p>Beyond the stimulus response, the signal contains structured nuisance
-fluctuations.
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> extracts
-the leading principal components from a noise region—here the atlas <code>"fiber
-tracts"</code>, that ideally carries little task signal and some amount of global
-vascular fluctuations—and we add them to the design as nuisance regressors
-(anatomical CompCor). We take three components per run.</p>
-</div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">mask</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">design_matrices</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">for</span> <span class="n">fusi</span> <span class="ow">in</span> <span class="n">resampled_fusi_list</span><span class="p">:</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">confounds</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">fusi</span><span class="p">,</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="n">mask</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">),</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="p">)</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">design_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">make_first_level_design_matrix</span><span class="p">(</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>            <span class="n">fusi</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>            <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
-</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>            <span class="n">hrf_model</span><span class="o">=</span><span class="n">modified_claron2021</span><span class="p">,</span>
-</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>            <span class="n">drift_model</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
-</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>            <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>            <span class="n">confounds</span><span class="o">=</span><span class="n">confounds</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
-</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>            <span class="n">confound_names</span><span class="o">=</span><span class="n">confounds</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        <span class="p">)</span>
-</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="p">)</span>
+<h2 id="model-physiological-noise-with-compcor">Model physiological noise with CompCor<a class="headerlink" href="#model-physiological-noise-with-compcor" title="Permanent link">&para;</a></h2>
+<p>Beyond the stimulus response, the signal contains structured nuisance fluctuations.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> extracts the
+leading principal components from a noise region—here the atlas <code>"fiber tracts"</code>, that
+ideally carries little task signal and some amount of global vascular fluctuations—and
+we add them to the design as nuisance regressors (anatomical CompCor). We take three
+components per run.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">confounds</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="n">fusi</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">noise_mask</span><span class="o">=</span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">for</span> <span class="n">fusi</span> <span class="ow">in</span> <span class="n">resampled_fusi_list</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">]</span>
 </span></code></pre></div>
-<p>Visualizing the first run's design matrix makes the model concrete. Each column is a
-regressor and each row a volume (time runs top to bottom). The leftmost <code>active</code>
-column shows the <abbr title="Hemodynamic Response Function">HRF</abbr>-convolved stimulation blocks; the CompCor and drift columns
-follow, and the constant column models the baseline.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">design_matrix</span> <span class="o">=</span> <span class="n">design_matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">CenteredNorm</span><span class="p">()</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">design_matrix</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">design_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">design_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">)</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Design matrix (run 1)&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p><a class="glightbox" href="../first_level_output_light/cell_19_0_light.png#only-light" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="light"><img src="../first_level_output_light/cell_19_0_light.png#only-light" alt="Example output from cell 19, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_19_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 19, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_19_0_dark.png#only-dark" alt="Example output from cell 19, image 0"></a></p>
 <h2 id="fit-the-first-level-glm">Fit the first-level <abbr title="General Linear Model">GLM</abbr><a class="headerlink" href="#fit-the-first-level-glm" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> fits the design to the
-data voxel by voxel. We apply a light Gaussian spatial smoothing (0.3 mm FWHM per axis)
-to boost <abbr title="Signal-to-Noise Ratio">SNR</abbr> and fit every voxel, leaving the anatomical masking to the thresholding
-step below. Passing the list of runs together combines them with a fixed-effects model;
-by default an AR(1) noise model accounts for temporal autocorrelation in the residuals.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">smoothing_fwhm</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">resampled_fusi_list</span><span class="p">,</span> <span class="n">design_matrices</span><span class="o">=</span><span class="n">design_matrices</span><span class="p">)</span>
+<p>We hand the model specification to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> up front: the <abbr title="Hemodynamic Response Function">HRF</abbr>, the
+<code>"cosine"</code> drift model that high-pass filters slow scanner/physiological drifts below
+<code>0.01</code> Hz, and the AR(1) noise model that accounts for temporal autocorrelation in the
+residuals. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel.fit"><code>fit</code></a> then takes the runs
+together with the <code>events</code> table and the per-run CompCor <code>confounds</code>, assembles a design
+matrix for each run internally, and fits it to the data voxel by voxel. We apply a light
+Gaussian spatial smoothing (0.3 mm FWHM per axis) to boost <abbr title="Signal-to-Noise Ratio">SNR</abbr> and fit every voxel,
+leaving the anatomical masking to the thresholding step below. Passing the list of runs
+together combines them with a fixed-effects model.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">smoothing_fwhm</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">},</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">hrf_model</span><span class="o">=</span><span class="n">modified_claron2021</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">drift_model</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">noise_model</span><span class="o">=</span><span class="s2">&quot;ar1&quot;</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">resampled_fusi_list</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">confounds</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>/tmp/ipykernel_3046/2713079316.py:2: UserWarning: Yule-Walker system singular for some voxels; using pseudoinverse.
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  glm.fit(resampled_fusi_list, design_matrices=design_matrices)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>/tmp/ipykernel_51862/3723705724.py:8: UserWarning: Yule-Walker system singular for some voxels; using pseudoinverse.
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 </span></code></pre></div>
 </div>
 <div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>/tmp/ipykernel_3046/2713079316.py:2: UserWarning: Yule-Walker system singular for some voxels; using pseudoinverse.
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  glm.fit(resampled_fusi_list, design_matrices=design_matrices)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>/tmp/ipykernel_51862/3723705724.py:8: UserWarning: Yule-Walker system singular for some voxels; using pseudoinverse.
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 </span></code></pre></div>
 </div>
 <div class="gallery-rich-output"><style>.sk-global {
@@ -4943,7 +4945,8 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(smoothing_fwhm={&#x27;x&#x27;: 0.3, &#x27;y&#x27;: 0.3, &#x27;z&#x27;: 0.3})</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7f6dfd0baa30&gt;, beta=6.7),
+                smoothing_fwhm={&#x27;x&#x27;: 0.3, &#x27;y&#x27;: 0.3, &#x27;z&#x27;: 0.3})</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -4952,21 +4955,21 @@ a.param-doc-link::before {
 
         <tr class="user-set">
             <td><i class="copy-paste-icon"
+                 onclick="copyToClipboard('hrf_model',
+                          this.parentElement.nextElementSibling)"
+            ></i></td>
+            <td class="param">hrf_model</td>
+            <td class="value">functools.par...30&gt;, beta=6.7)</td>
+        </tr>
+
+
+        <tr class="user-set">
+            <td><i class="copy-paste-icon"
                  onclick="copyToClipboard('smoothing_fwhm',
                           this.parentElement.nextElementSibling)"
             ></i></td>
             <td class="param">smoothing_fwhm</td>
             <td class="value">{&#x27;x&#x27;: 0.3, &#x27;y&#x27;: 0.3, &#x27;z&#x27;: 0.3}</td>
-        </tr>
-
-
-        <tr class="default">
-            <td><i class="copy-paste-icon"
-                 onclick="copyToClipboard('hrf_model',
-                          this.parentElement.nextElementSibling)"
-            ></i></td>
-            <td class="param">hrf_model</td>
-            <td class="value">None</td>
         </tr>
 
 
@@ -5097,7 +5100,7 @@ a.param-doc-link::before {
        <tr class="default">
            <td class="param"><a class="param-doc-link" style="text-decoration:none;">results_</a></td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;confusius.gl...x7f62c65cde50&gt;, &lt;confusius.gl...x7f62c7133360&gt;, &lt;confusius.gl...x7f62c79e57f0&gt;, &lt;confusius.gl...x7f62c66c3bd0&gt;, ...]</td>
+           <td>[&lt;confusius.gl...x7f6dfd000b90&gt;, &lt;confusius.gl...x7f6e40628510&gt;, &lt;confusius.gl...x7f6dfa89c4d0&gt;, &lt;confusius.gl...x7f6dfa9038a0&gt;, ...]</td>
 
 
        </tr>
@@ -5278,6 +5281,27 @@ function forceTheme(elementId) {
 
 forceTheme('sk-container-id-1');</script></body></div>
 
+<h2 id="inspect-the-design-matrix">Inspect the design matrix<a class="headerlink" href="#inspect-the-design-matrix" title="Permanent link">&para;</a></h2>
+<p>The fit assembled one design matrix per run (through
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a>) and
+stored them on the fitted model as <code>design_matrices_</code>. Each run gets its own matrix
+because its CompCor regressors are estimated from its own data. Pulling the first run's
+matrix back out lets us see exactly what the model fit.</p>
+<p>Visualizing that matrix makes the model concrete. Each column is a regressor and each
+row a volume (time runs top to bottom). The leftmost <code>active</code> column shows the
+<abbr title="Hemodynamic Response Function">HRF</abbr>-convolved stimulation blocks; the CompCor and drift columns follow, and the constant
+column models the baseline.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">design_matrix</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">design_matrices_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">CenteredNorm</span><span class="p">()</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">design_matrix</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">design_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">design_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">)</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Design matrix (run 1)&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p><a class="glightbox" href="../first_level_output_light/cell_22_0_light.png#only-light" data-type="image" data-title="Example output from cell 22, image 0" data-gallery="light"><img src="../first_level_output_light/cell_22_0_light.png#only-light" alt="Example output from cell 22, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_22_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 22, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_22_0_dark.png#only-dark" alt="Example output from cell 22, image 0"></a></p>
 <h2 id="compute-and-display-the-activation-map">Compute and display the activation map<a class="headerlink" href="#compute-and-display-the-activation-map" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_contrast&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel.compute_contrast"><code>compute_contrast</code></a> turns
 the fitted model into a statistical map. The <code>"active"</code> contrast tests, at
@@ -5290,30 +5314,29 @@ drawn on top for anatomical context.</p>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="p">(</span><span class="n">resampled_average_in_atlas</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">resampled_average_in_atlas</span><span class="o">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)</span>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">][::</span><span class="mi">4</span><span class="p">]</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">is_dark_theme</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">bg_color</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;berlin&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">vmax</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_stat_map</span><span class="p">(</span>
-</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="n">z_score</span><span class="p">,</span>
-</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
-</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
-</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
-</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="p">)</span>
-</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span>
-</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span>
-</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
-</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="p">)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;berlin&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">vmax</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_stat_map</span><span class="p">(</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">z_score</span><span class="p">,</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="p">)</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="n">_</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-output">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>/home/runner/work/confusius/confusius/src/confusius/glm/_models.py:34: RuntimeWarning: divide by zero encountered in divide
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  return np.where(x == 0, 0, 1.0 / x)
 </span></code></pre></div>
 </div>
-<p><a class="glightbox" href="../first_level_output_light/cell_23_1_light.png#only-light" data-type="image" data-title="Example output from cell 23, image 1" data-gallery="light"><img src="../first_level_output_light/cell_23_1_light.png#only-light" alt="Example output from cell 23, image 1"></a><a class="glightbox" href="../first_level_output_dark/cell_23_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 23, image 1" data-gallery="dark"><img src="../first_level_output_dark/cell_23_1_dark.png#only-dark" alt="Example output from cell 23, image 1"></a></p>
+<p><a class="glightbox" href="../first_level_output_light/cell_24_1_light.png#only-light" data-type="image" data-title="Example output from cell 24, image 1" data-gallery="light"><img src="../first_level_output_light/cell_24_1_light.png#only-light" alt="Example output from cell 24, image 1"></a><a class="glightbox" href="../first_level_output_dark/cell_24_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 24, image 1" data-gallery="dark"><img src="../first_level_output_dark/cell_24_1_dark.png#only-dark" alt="Example output from cell 24, image 1"></a></p>
 <h2 id="threshold-for-statistical-significance">Threshold for statistical significance<a class="headerlink" href="#threshold-for-statistical-significance" title="Permanent link">&para;</a></h2>
 <p>The raw z-map shows the effect at every voxel; we might want to keep only those that are
 statistically significant while controlling for the many thousands of simultaneous
@@ -5376,9 +5399,9 @@ anatomical context.</p>
 </span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
 </span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><a class="glightbox" href="../first_level_output_light/cell_28_0_light.png#only-light" data-type="image" data-title="Example output from cell 28, image 0" data-gallery="light"><img src="../first_level_output_light/cell_28_0_light.png#only-light" alt="Example output from cell 28, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_28_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 28, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_28_0_dark.png#only-dark" alt="Example output from cell 28, image 0"></a></p>
+<p><a class="glightbox" href="../first_level_output_light/cell_29_0_light.png#only-light" data-type="image" data-title="Example output from cell 29, image 0" data-gallery="light"><img src="../first_level_output_light/cell_29_0_light.png#only-light" alt="Example output from cell 29, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_29_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 29, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_29_0_dark.png#only-dark" alt="Example output from cell 29, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 250.0 s</p>
+<p><strong>Total running time:</strong> 251.5 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/docs/first-level-glm?urlpath=lab/tree/docs/examples/05_glm/01_first_level.py">Launch in Binder</a> <a class="md-button" href="../first_level.py">Download .py</a> <a class="md-button" href="../first_level.ipynb">Download .ipynb</a></p>
 
 
