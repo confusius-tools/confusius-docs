@@ -3588,9 +3588,9 @@
 <li>Geometry-sensitive registration and motion-correction APIs now require explicit
   3D <abbr title="Functional Ultrasound Imaging">fUSI</abbr> spatial geometry with <code>z</code>, <code>y</code>, and <code>x</code> dimensions. Any singleton spatial
   dimension must carry <code>voxdim</code> metadata because spacing cannot be inferred from a
-  single coordinate point. Generic <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation and dimension-generic operations
-  still accept named 2D layouts such as <code>(y, x)</code> or <code>(time, y, x)</code> when full 3D
-  geometry is not required (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
+  single coordinate point. <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation now requires <code>z</code>, <code>y</code>, and <code>x</code>; scalar-indexed
+  slices are recovered as singleton dimensions at relevant API boundaries
+  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>The <code>Atlas</code> class has been replaced by an <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> with a
   registered <code>.atlas</code> accessor. Fetch an atlas by name with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> and call operations
@@ -3717,6 +3717,9 @@
   <code>collapse</code> cell tag, with optional custom title and type (<code>collapse[&lt;type&gt;]:
   &lt;title&gt;</code>), i.e. <code># %% tags=["collapse[warning]: Collapsed warning"]</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/309">#309</a>).</li>
+<li>[Example Gallery]: Hovering a gallery card reveals the example's first paragraph as
+  an overlay over the card
+  (<a href="https://github.com/confusius-tools/confusius/pull/327">#327</a>).</li>
 </ul>
 <h2 id="052">0.5.2<a class="headerlink" href="#052" title="Permanent link">&para;</a></h2>
 <p>Released 2026-07-10.</p>
