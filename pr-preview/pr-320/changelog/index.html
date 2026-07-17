@@ -2161,6 +2161,8 @@
       
         
       
+        
+      
     
     
     
@@ -2248,6 +2250,33 @@
     
   
   Motion correction of a single recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/registration/register_to_allen_fusi_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Register a recording to an Allen fUSI template
 
     
   </span>
@@ -3651,6 +3680,14 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>The <code>Atlas</code> class has been replaced by an <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> with a
+  registered <code>.atlas</code> accessor. Fetch an atlas by name with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> and call operations
+  through <code>ds.atlas.*</code> (<code>ds.atlas.get_masks</code>, <code>ds.atlas.get_mesh</code>, <code>ds.atlas.search</code>,
+  <code>ds.atlas.ancestors</code>, <code>ds.atlas.resample_like</code>); <code>resample_like</code> now returns a Dataset.
+  Name-based loading moved to <code>confusius.datasets</code>; atlas construction from a loaded
+  BrainGlobe atlas is now internal to the datasets module
+  (<a href="https://github.com/confusius-tools/confusius/pull/274">#274</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_volume"><code>resample_volume</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_like"><code>resample_like</code></a> now use <code>fill_value</code>
   instead of <code>default_value</code> for out-of-field-of-view resampling, matching
@@ -3679,6 +3716,14 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Atlases are now serializable: save and reload a complete atlas, including its structure
+  hierarchy and region meshes, with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_atlas&lt;/span&gt;" href="../api/io/#confusius.io.save_atlas"><code>save_atlas</code></a> /
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_atlas&lt;/span&gt;" href="../api/io/#confusius.io.load_atlas"><code>load_atlas</code></a>. The region <code>.obj</code> meshes are bundled into the
+  Zarr store, so a reloaded atlas renders meshes without the BrainGlobe cache
+  (<a href="https://github.com/confusius-tools/confusius/pull/274">#274</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_atlas_dataset&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_atlas_dataset"><code>validate_atlas_dataset</code></a> checks that a
+  Dataset is a well-formed atlas
+  (<a href="https://github.com/confusius-tools/confusius/pull/274">#274</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> now opens binary Iconeus SCAN v2 files in
   addition to HDF5 SCAN v1 files, detecting the format automatically. SCAN v2 support is
   experimental: data, timing, voxel spacing, the depth origin, provenance
@@ -3710,6 +3755,10 @@
   the Khallaf et al. (2026) naked mole-rat <abbr title="Functional Ultrasound Imaging">fUSI</abbr> dataset from Edmond, with <code>datasets</code>,
   <code>subjects</code>, <code>sessions</code>, <code>runs</code>, <code>reconstruction</code>, and <code>sourcedata</code> filters
   (<a href="https://github.com/confusius-tools/confusius/pull/319">#319</a>).</li>
+<li>Added standalone cosine high-pass filtering via
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;filter_cosine&lt;/span&gt;" href="../api/signal/#confusius.signal.filter_cosine"><code>filter_cosine</code></a>, and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a> can now use it with <code>filter_method="cosine"</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/321">#321</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3718,7 +3767,7 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/313">#313</a>).</li>
 <li>NIfTI loading no longer crashes when a sidecar <code>VolumeTiming</code> length disagrees with
   the actual data. ConfUSIus now ignores the malformed sidecar timing, falls back to
-  <code>pixdim[4]</code> when available, and otherwise warns before using frame indices.
+  <code>pixdim[4]</code> when available, and otherwise warns before using frame indices
   (<a href="https://github.com/confusius-tools/confusius/pull/304">#304</a>).</li>
 <li>Motion parameter tables from
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_motion_dataframe&lt;/span&gt;" href="../api/registration/#confusius.registration.create_motion_dataframe"><code>create_motion_dataframe</code></a> now label
@@ -3728,7 +3777,8 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/301">#301</a>).</li>
 <li><strong>[Napari plugin]</strong> The signal import dialog now finds <abbr title="Brain Imaging Data Structure">BIDS</abbr> physio files ending in
   <code>.tsv.gz</code>, keeps the x-axis cursor visible for imported-only plots when enabled, and
-  lets you import multiple signal files in one go (<a href="https://github.com/confusius-tools/confusius/pull/294">#294</a>).</li>
+  lets you import multiple signal files in one go
+  (<a href="https://github.com/confusius-tools/confusius/pull/294">#294</a>).</li>
 <li>Opening a <code>.scan</code> file that is not the legacy HDF5-based Iconeus format now raises a
   clear error that points users to newer SCAN v2 files and to converting them to NIfTI
   with Iconeus tools first (<a href="https://github.com/confusius-tools/confusius/pull/297">#297</a>).</li>
@@ -3952,7 +4002,7 @@
   plugin]</strong> The reader now falls back to the <code>"gray"</code> colormap (with a napari warning)
   instead of crashing when a layer's <code>cmap</code> attr is not a valid napari colormap name
   (<a href="https://github.com/confusius-tools/confusius/pull/255">#255</a>).</li>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../api/atlas/#confusius.atlas.Atlas.get_masks"><code>Atlas.get_masks</code></a> now suffixes the <code>mask</code>
+<li><code>Atlas.get_masks</code> now suffixes the <code>mask</code>
   coordinate with <code>_L</code>/<code>_R</code> for <code>sides="left"</code>/<code>"right"</code>, so requesting the same region
   on both hemispheres no longer produces duplicate <code>mask</code> values.
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> no longer requires
