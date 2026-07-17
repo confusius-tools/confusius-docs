@@ -3585,12 +3585,13 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Geometry-sensitive registration and motion-correction APIs now require explicit
-  3D <abbr title="Functional Ultrasound Imaging">fUSI</abbr> spatial geometry with <code>z</code>, <code>y</code>, and <code>x</code> dimensions. Any singleton spatial
-  dimension must carry <code>voxdim</code> metadata because spacing cannot be inferred from a
-  single coordinate point. Generic <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation and dimension-generic operations
-  still accept named 2D layouts such as <code>(y, x)</code> or <code>(time, y, x)</code> when full 3D
-  geometry is not required (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
+<li><abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays now require explicit 3D spatial geometry with <code>z</code>, <code>y</code>, and <code>x</code>
+  dimensions. Any singleton spatial dimension must carry <code>voxdim</code> metadata because
+  spacing cannot be inferred from a single coordinate point. Scalar-indexed slices are
+  recovered as singleton dimensions at relevant API boundaries; use
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to add singleton
+  axes and coordinate metadata from raw 2D or 2D+t arrays
+  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>The <code>Atlas</code> class has been replaced by an <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> with a
   registered <code>.atlas</code> accessor. Fetch an atlas by name with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> and call operations
