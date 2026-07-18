@@ -3290,7 +3290,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contrast_matrix&lt;/span&gt;" href="./#confusius.plotting.plot_contrast_matrix">plot_contrast_matrix</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Plot a <abbr title="General Linear Model">GLM</abbr> contrast as a strip of weights aligned with the design regressors.</p>
+              <p>Plot a <abbr title="General Linear Model">GLM</abbr> contrast as an array of weights aligned with the design regressors.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5663,12 +5663,12 @@ coordinate-to-axis mapping, so you can overlay a volume afterwards with
 
     <div class="doc doc-contents ">
 
-        <p>Plot a <abbr title="General Linear Model">GLM</abbr> contrast as a strip of weights aligned with the design regressors.</p>
+        <p>Plot a <abbr title="General Linear Model">GLM</abbr> contrast as an array of weights aligned with the design regressors.</p>
 <p>Visualizes the same <code>contrast_def</code> you would pass to
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_contrast&lt;/span&gt;" href="../glm/#confusius.glm.FirstLevelModel.compute_contrast"><code>compute_contrast</code></a>,
-laid out under <code>design_matrix</code>'s regressor columns. Each contrast is drawn as one row
-of a heatmap on a symmetric range <code>[-m, m]</code> (<code>m = max(|weights|)</code>), so positive and
-negative weights read symmetrically.</p>
+laid out under <code>design_matrix</code>'s regressor columns. Each contrast is drawn as one
+column of a heatmap on a symmetric range <code>[-m, m]</code> (<code>m = max(|weights|)</code>), so
+positive and negative weights read symmetrically.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5781,8 +5781,7 @@ floored at 2 inches.</p>
           –
           <div class="doc-md-description">
             <p>Figure width contributed per regressor, in inches, used only when <code>ax</code> is not
-provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches so a
-few-column design does not render as a sliver.</p>
+provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5862,7 +5861,7 @@ names to resolve it against.</p>
     <div class="doc doc-contents ">
 
         <p>Plot a first-level <abbr title="General Linear Model">GLM</abbr> design matrix as a heatmap.</p>
-<p>Renders each regressor (column) against acquisition time (row). Values are shown on a
+<p>Renders each regressor (column) against acquisition volumes (row). Values are shown on a
 norm centered at zero, so positive and negative regressor weights read symmetrically.
 When <code>ax</code> is not provided, the figure width scales with the number of regressors so
 wide designs stay legible.</p>
@@ -5981,8 +5980,7 @@ provided, uses the active Matplotlib defaults.</p>
           –
           <div class="doc-md-description">
             <p>Figure width contributed per regressor, in inches, used only when <code>ax</code> is not
-provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches so a
-few-column design does not render as a sliver.</p>
+provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
