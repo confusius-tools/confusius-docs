@@ -29,7 +29,7 @@
     
     
       
-        <title>First-level GLM analysis of fUSI data with a continuous variable of interest - ConfUSIus</title>
+        <title>First-level lagged GLM analysis of fUSI data with a continuous regressor - ConfUSIus</title>
       
     
     
@@ -97,7 +97,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#first-level-glm-analysis-of-fusi-data-with-a-continuous-variable-of-interest" class="md-skip">
+        <a href="#first-level-lagged-glm-analysis-of-fusi-data-with-a-continuous-regressor" class="md-skip">
           Skip to content
         </a>
       
@@ -134,7 +134,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              First-level GLM analysis of fUSI data with a continuous variable of interest
+              First-level lagged GLM analysis of fUSI data with a continuous regressor
             
           </span>
         </div>
@@ -2690,7 +2690,7 @@
   <span class="md-ellipsis">
     
   
-  First-level GLM with a continuous variable of interest
+  First-level lagged GLM analysis of fUSI data with a continuous variable of interest
 
     
   </span>
@@ -2707,7 +2707,7 @@
   <span class="md-ellipsis">
     
   
-  First-level GLM with a continuous variable of interest
+  First-level lagged GLM analysis of fUSI data with a continuous variable of interest
 
     
   </span>
@@ -2766,10 +2766,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-the-speed-regressor-from-the-motion-track" class="md-nav__link">
+  <a href="#build-the-animal-speed-regressor-from-the-pose-estimation" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Build the speed regressor from the motion track
+        Build the animal speed regressor from the pose estimation
       </span>
     </span>
   </a>
@@ -3011,10 +3011,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-the-speed-regressor-from-the-motion-track" class="md-nav__link">
+  <a href="#build-the-animal-speed-regressor-from-the-pose-estimation" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Build the speed regressor from the motion track
+        Build the animal speed regressor from the pose estimation
       </span>
     </span>
   </a>
@@ -3191,21 +3191,21 @@
   
 
 
-<h1 id="first-level-glm-analysis-of-fusi-data-with-a-continuous-variable-of-interest">First-level <abbr title="General Linear Model">GLM</abbr> analysis of <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data with a continuous variable of interest<a class="headerlink" href="#first-level-glm-analysis-of-fusi-data-with-a-continuous-variable-of-interest" title="Permanent link">&para;</a></h1>
+<h1 id="first-level-lagged-glm-analysis-of-fusi-data-with-a-continuous-regressor">First-level lagged <abbr title="General Linear Model">GLM</abbr> analysis of <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data with a continuous regressor<a class="headerlink" href="#first-level-lagged-glm-analysis-of-fusi-data-with-a-continuous-regressor" title="Permanent link">&para;</a></h1>
 <p>This example reproduces the lagged-<abbr title="General Linear Model">GLM</abbr> analysis of <a href="https://doi.org/10.1016/j.celrep.2025.116791">Cybis Pereira et al.
 2026</a>, functional ultrasound of a
 freely-moving rat exploring an open field with its body position tracked from video.
 Unlike the block-design task in the <a href="../first_level/">First-level <abbr title="General Linear Model">GLM</abbr> analysis of <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 data</a> example, the regressor of interest is a <em>continuous</em> variable
 measured throughout the recording, the animal's locomotion speed, and we ask at every
-voxel how much of the power Doppler time course tracks it.</p>
+voxel how much of the power Doppler time course tracks it at different lags.</p>
 <p>Rather than convolving the speed regressor with a hemodynamic response function, the
-analysis shifts it across a range of temporal lags and fits one model per lag, much like
-a voxel-wise cross-correlation between speed and the vascular signal. The notebook goes
-through:</p>
+analysis shifts it across a range of temporal lags and fits one model per lag, much
+like a voxel-wise cross-correlation between speed and the vascular signal. The
+notebook goes through:</p>
 <ol>
 <li><strong>Fetch and load</strong> one open-field recording and its motion track.</li>
-<li><strong>Build a speed regressor</strong> from the tracked body position.</li>
+<li><strong>Build an animal speed regressor</strong> from the animal's pose estimation.</li>
 <li><strong>Encode speed</strong> as a per-volume parametric modulator and <strong>extract CompCor</strong> noise
    regressors.</li>
 <li><strong>Fit</strong> a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> at a range of
@@ -3213,53 +3213,54 @@ through:</p>
 <li><strong>Threshold</strong> the resulting maps and visualize the response at each lag.</li>
 </ol>
 <h2 id="fetch-the-recording">Fetch the recording<a class="headerlink" href="#fetch-the-recording" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a> downloads the
-<abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> dataset. We take subject <code>rat75</code>, session <code>20220524</code>, acquisition <code>slice32</code> of
-the <code>openfield</code> task, which gives one power Doppler recording together with its motion
-track.</p>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a> downloads
+the <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> dataset. We take subject <code>rat75</code>, session <code>20220524</code>, acquisition
+<code>slice32</code> of the <code>openfield</code> task, which gives one power Doppler recording together
+with its motion track.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">is_dark_theme</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">bg_color</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Keep notebook output compact for large DataArray displays. The coordinates section is</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># left expanded on purpose; `display_expand_data` alone does not cover the attributes.</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_expand_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;rat75&quot;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">session</span> <span class="o">=</span> <span class="s2">&quot;20220524&quot;</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">acq</span> <span class="o">=</span> <span class="s2">&quot;slice32&quot;</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_cybis_pereira_2026</span><span class="p">(</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">subjects</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">sessions</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">acqs</span><span class="o">=</span><span class="n">acq</span><span class="p">,</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_pwd.nii.gz&quot;</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">)</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">motion_path</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="o">/</span> <span class="s2">&quot;motion&quot;</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield_tracksys-DLC_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_motion.tsv&quot;</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">is_dark_theme</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">bg_color</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Keep notebook output compact for large DataArray displays. The coordinates section is</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># left expanded on purpose; `display_expand_data` alone does not cover the attributes.</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">display_expand_attrs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;rat75&quot;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">session</span> <span class="o">=</span> <span class="s2">&quot;20220524&quot;</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">acq</span> <span class="o">=</span> <span class="s2">&quot;slice32&quot;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_cybis_pereira_2026</span><span class="p">(</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">subjects</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">sessions</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">acqs</span><span class="o">=</span><span class="n">acq</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_pwd.nii.gz&quot;</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="p">)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="n">motion_path</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="o">/</span> <span class="s2">&quot;motion&quot;</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield_tracksys-DLC_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_motion.tsv&quot;</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">If you use this dataset in your work, please cite the following source:
 
@@ -3269,8 +3270,9 @@ track.</p>
 </pre></div>
 
 <h2 id="load-the-recording">Load the recording<a class="headerlink" href="#load-the-recording" title="Permanent link">&para;</a></h2>
-<p><code>cf.load</code> reads the power Doppler NIfTI into an <code>xarray.DataArray</code>. We call <code>.compute()</code>
-to pull it fully into memory, since it is reused across many model fits below.</p>
+<p><code>cf.load</code> reads the power Doppler NIfTI into an <code>xarray.DataArray</code>. We call
+<code>.compute()</code> to pull it fully into memory, since it is reused across many model fits
+below.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">data</span>
 </span></code></pre></div>
@@ -3816,7 +3818,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-rat75_ses-20220524_task-openfield_acq-slice32_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 1440</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-f4e654df-e168-436d-9e5f-b19f9869cae9' class='xr-array-in' type='checkbox' ><label for='section-f4e654df-e168-436d-9e5f-b19f9869cae9' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>192.7 197.2 226.9 229.9 278.7 278.7 ... 61.31 60.61 64.25 65.22 55.23</span></div><div class='xr-array-data'><pre>array([[[[ 192.71379271,  197.1830354 ,  226.89889524, ...,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-rat75_ses-20220524_task-openfield_acq-slice32_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 1440</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-2581840b-7dad-46d2-8f8a-8fe0c8171d1d' class='xr-array-in' type='checkbox' ><label for='section-2581840b-7dad-46d2-8f8a-8fe0c8171d1d' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>192.7 197.2 226.9 229.9 278.7 278.7 ... 61.31 60.61 64.25 65.22 55.23</span></div><div class='xr-array-data'><pre>array([[[[ 192.71379271,  197.1830354 ,  226.89889524, ...,
            135.64715222,  117.71528254,  111.25769231],
          [ 269.26946815,  218.92078634,  218.29339147, ...,
            153.14631565,  135.36809639,  122.19806324],
@@ -3856,8 +3858,8 @@ dl.xr-attrs {
             65.18981048,   79.52728571,   72.33484683],
          [  53.38009269,   51.48751045,   64.40242875, ...,
             64.25058854,   65.21577368,   55.2309584 ]]]],
-      shape=(1440, 1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-5b792abe-9dfb-4eaf-8b32-a343cb0569b4' class='xr-section-summary-in' type='checkbox' checked /><label for='section-5b792abe-9dfb-4eaf-8b32-a343cb0569b4' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.0 1.5 ... 719.0 719.5 720.0</div><input id='attrs-bd26636b-6e54-42f2-bd3f-453cf38faca2' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bd26636b-6e54-42f2-bd3f-453cf38faca2' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-245fb7e0-3947-4069-b31d-da725ab5c247' class='xr-var-data-in' type='checkbox'><label for='data-245fb7e0-3947-4069-b31d-da725ab5c247' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.5000249999999369</dd></dl></div><div class='xr-var-data'><pre>array([5.000000e-01, 1.000025e+00, 1.500025e+00, ..., 7.190184e+02,
-       7.195184e+02, 7.200184e+02], shape=(1440,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-1e51c9ff-5ad3-4bce-a890-fd8859a93b51' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1e51c9ff-5ad3-4bce-a890-fd8859a93b51' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a774bc35-7db5-4a55-9848-6d3a6332f7e8' class='xr-var-data-in' type='checkbox'><label for='data-a774bc35-7db5-4a55-9848-6d3a6332f7e8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-a8b4dd85-6c6c-4607-9103-cc4806ee7cbd' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-a8b4dd85-6c6c-4607-9103-cc4806ee7cbd' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-62d50888-9a31-4cc8-a752-adf00c7c2655' class='xr-var-data-in' type='checkbox'><label for='data-62d50888-9a31-4cc8-a752-adf00c7c2655' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
+      shape=(1440, 1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-f3b9697a-3adf-4500-b505-c20d9c4cbaad' class='xr-section-summary-in' type='checkbox' checked /><label for='section-f3b9697a-3adf-4500-b505-c20d9c4cbaad' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.0 1.5 ... 719.0 719.5 720.0</div><input id='attrs-2ba86df1-4f08-4b5d-b740-d054988b2266' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2ba86df1-4f08-4b5d-b740-d054988b2266' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5c69339e-8e45-4b65-abf5-198bb856d044' class='xr-var-data-in' type='checkbox'><label for='data-5c69339e-8e45-4b65-abf5-198bb856d044' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.5000249999999369</dd></dl></div><div class='xr-var-data'><pre>array([5.000000e-01, 1.000025e+00, 1.500025e+00, ..., 7.190184e+02,
+       7.195184e+02, 7.200184e+02], shape=(1440,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-aee97f79-3314-4f3e-81df-b4bab34fe619' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-aee97f79-3314-4f3e-81df-b4bab34fe619' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a94d3482-cd89-4090-a220-0880e37815b5' class='xr-var-data-in' type='checkbox'><label for='data-a94d3482-cd89-4090-a220-0880e37815b5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-7a6a337f-8dc3-43f5-af55-84e26345e4ab' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-7a6a337f-8dc3-43f5-af55-84e26345e4ab' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f1137f26-ff89-4255-bebb-f853bcb52273' class='xr-var-data-in' type='checkbox'><label for='data-f1137f26-ff89-4255-bebb-f853bcb52273' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
         5.68992,  5.78848,  5.88704,  5.9856 ,  6.08416,  6.18272,  6.28128,
         6.37984,  6.4784 ,  6.57696,  6.67552,  6.77408,  6.87264,  6.9712 ,
         7.06976,  7.16832,  7.26688,  7.36544,  7.464  ,  7.56256,  7.66112,
@@ -3872,7 +3874,7 @@ dl.xr-attrs {
        13.27904, 13.3776 , 13.47616, 13.57472, 13.67328, 13.77184, 13.8704 ,
        13.96896, 14.06752, 14.16608, 14.26464, 14.3632 , 14.46176, 14.56032,
        14.65888, 14.75744, 14.856  , 14.95456, 15.05312, 15.15168, 15.25024,
-       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-30b6f901-68b4-4dd8-9e5b-7431ffdbde0f' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-30b6f901-68b4-4dd8-9e5b-7431ffdbde0f' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8da37f54-ee7e-484c-bb24-4f872cf9f3be' class='xr-var-data-in' type='checkbox'><label for='data-8da37f54-ee7e-484c-bb24-4f872cf9f3be' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
+       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-e78cb99e-be96-422d-abdc-f94cda9ad012' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e78cb99e-be96-422d-abdc-f94cda9ad012' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-34e4cfa3-cc72-4ef7-9e4b-e7dd8ded4246' class='xr-var-data-in' type='checkbox'><label for='data-34e4cfa3-cc72-4ef7-9e4b-e7dd8ded4246' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
        -5.995, -5.885, -5.775, -5.665, -5.555, -5.445, -5.335, -5.225, -5.115,
        -5.005, -4.895, -4.785, -4.675, -4.565, -4.455, -4.345, -4.235, -4.125,
        -4.015, -3.905, -3.795, -3.685, -3.575, -3.465, -3.355, -3.245, -3.135,
@@ -3886,7 +3888,7 @@ dl.xr-attrs {
         3.905,  4.015,  4.125,  4.235,  4.345,  4.455,  4.565,  4.675,  4.785,
         4.895,  5.005,  5.115,  5.225,  5.335,  5.445,  5.555,  5.665,  5.775,
         5.885,  5.995,  6.105,  6.215,  6.325,  6.435,  6.545,  6.655,  6.765,
-        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-2412b509-c748-431f-ad2d-839fece316ce' class='xr-section-summary-in' type='checkbox' /><label for='section-2412b509-c748-431f-ad2d-839fece316ce' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(20)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-59437d21-a731-4410-b620-0764b93fda71' class='xr-section-summary-in' type='checkbox' /><label for='section-59437d21-a731-4410-b620-0764b93fda71' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(20)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
@@ -3899,19 +3901,20 @@ statistical robustness in the maps below.</p>
 <div class="admonition note">
 <p class="admonition-title">Recommended in a real analysis</p>
 <p>Register every volume to a reference frame with
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> before building
-the regressors, then continue with the corrected <code>data</code>. Removing motion-driven
-variance sharpens the speed maps and their statistics. See the <a href="../../registration/volumewise_motion_correction/">Motion correction of
-a single recording</a> example for the
-full workflow and diagnostics.</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> before
+building the regressors, then continue with the corrected <code>data</code>. Removing
+motion-driven variance sharpens the speed maps and their statistics. See the
+<a href="../../registration/volumewise_motion_correction/">Motion correction of a single
+recording</a> example for the full
+workflow and diagnostics.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">registration</span><span class="o">.</span><span class="n">register_volumewise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
-<h2 id="build-the-speed-regressor-from-the-motion-track">Build the speed regressor from the motion track<a class="headerlink" href="#build-the-speed-regressor-from-the-motion-track" title="Permanent link">&para;</a></h2>
+<h2 id="build-the-animal-speed-regressor-from-the-pose-estimation">Build the animal speed regressor from the pose estimation<a class="headerlink" href="#build-the-animal-speed-regressor-from-the-pose-estimation" title="Permanent link">&para;</a></h2>
 <p>The motion <code>.tsv</code> holds the body position (<code>body_x</code>, <code>body_y</code>) tracked with
 <a href="https://www.deeplabcut.org/">DeepLabCut</a> at 50 fps. We take the frame-to-frame
-Euclidean displacement, scale it by the frame rate to obtain speed, smooth it with a 1 s
-centered rolling mean, and resample it onto the <abbr title="Functional Ultrasound Imaging">fUSI</abbr> volume times.</p>
+Euclidean displacement, scale it by the frame rate to obtain speed, smooth it with a 1
+s centered rolling mean, and resample it onto the <abbr title="Functional Ultrasound Imaging">fUSI</abbr> volume times.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">fps</span> <span class="o">=</span> <span class="mi">50</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">motion_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">motion_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">squared_diff</span> <span class="o">=</span> <span class="n">motion_df</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span>
@@ -3928,13 +3931,16 @@ centered rolling mean, and resample it onto the <abbr title="Functional Ultrasou
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">)</span>
 </span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">speed</span> <span class="o">=</span> <span class="n">speed</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">speed</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#d93a54&quot;</span><span class="p">)</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Animal speed (m/s)&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+<p><a class="glightbox" href="../first_level_continuous_output_light/cell_07_0_light.png#only-light" data-type="image" data-title="Example output from cell 7, image 0" data-gallery="light"><img src="../first_level_continuous_output_light/cell_07_0_light.png#only-light" alt="Example output from cell 7, image 0"></a><a class="glightbox" href="../first_level_continuous_output_dark/cell_07_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 7, image 0" data-gallery="dark"><img src="../first_level_continuous_output_dark/cell_07_0_dark.png#only-dark" alt="Example output from cell 7, image 0"></a></p>
 <h2 id="encode-speed-as-a-parametric-modulator">Encode speed as a parametric modulator<a class="headerlink" href="#encode-speed-as-a-parametric-modulator" title="Permanent link">&para;</a></h2>
 <p>We build an <code>events</code> table with one entry per <abbr title="Functional Ultrasound Imaging">fUSI</abbr> volume, each carrying the speed at
-that volume as its <code>modulation</code>, which turns speed into a single continuous regressor.
-The model's <abbr title="Hemodynamic Response Function">HRF</abbr> is left unset, so the regressor enters the design without convolution;
-following the original study, the delay between behavior and signal is recovered by the
-lag sweep below rather than by an assumed response shape.</p>
+that volume as its <code>modulation</code>, which turns speed into a single continuous regressor.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">events</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="p">{</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="s2">&quot;onset&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
@@ -3946,8 +3952,8 @@ lag sweep below rather than by an assumed response shape.</p>
 </span></code></pre></div>
 <h2 id="model-physiological-noise-with-compcor">Model physiological noise with CompCor<a class="headerlink" href="#model-physiological-noise-with-compcor" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../../../../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> extracts the
-three leading principal components of the highest-variance voxels (the top 5%) to add as
-nuisance regressors (temporal CompCor).</p>
+three leading principal components of the highest-variance voxels (the top 5%) to add
+as nuisance regressors (temporal CompCor).</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">confounds</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">data</span><span class="p">,</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">variance_threshold</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
@@ -3955,13 +3961,13 @@ nuisance regressors (temporal CompCor).</p>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="build-the-model-and-design-matrix">Build the model and design matrix<a class="headerlink" href="#build-the-model-and-design-matrix" title="Permanent link">&para;</a></h2>
-<p>We instantiate the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> with a
-light 0.3 mm Gaussian spatial smoothing (the default AR(1) noise model handles temporal
-autocorrelation) and build the design matrix with
+<p>We instantiate the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> with
+a light 0.3 mm Gaussian spatial smoothing (the default AR(1) noise model handles
+temporal autocorrelation) and build the design matrix with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a>: the
-speed regressor, the CompCor confounds, a <code>"cosine"</code> drift basis that high-pass filters
-drifts below <code>0.01</code> Hz, and a constant.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">smoothing_fwhm</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+speed regressor, the CompCor confounds, a <code>"cosine"</code> drift basis that high-pass
+filters drifts below <code>0.01</code> Hz, and a constant.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">smoothing_fwhm</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">design_matrix</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">make_first_level_design_matrix</span><span class="p">(</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
@@ -3972,60 +3978,53 @@ drifts below <code>0.01</code> Hz, and a constant.</p>
 </span></code></pre></div>
 <h2 id="fit-the-glm-across-temporal-lags">Fit the <abbr title="General Linear Model">GLM</abbr> across temporal lags<a class="headerlink" href="#fit-the-glm-across-temporal-lags" title="Permanent link">&para;</a></h2>
 <p>The vascular response follows a change in speed with a delay. Instead of fixing that
-delay with an <abbr title="Hemodynamic Response Function">HRF</abbr>, we sweep it: for each integer-volume lag we shift <em>only</em> the speed
-regressor, leaving the confounds, drift, and data window fixed, fit the model, and
-compute the <code>"speed"</code> contrast. This yields one z-map per lag, like a cross-correlation
-between speed and the signal. Holding the window fixed across lags keeps the maps
-comparable, and a positive lag means the signal responds after the change in speed.
-<code>run_lagged_glm</code> returns the per-lag maps, which we stack along a <code>lag</code> dimension whose
-coordinate is the delay in seconds (one volume per lag). The original study sweeps a
-wider window (about -2 to 10 s); here we use a short positive range to keep the example
-quick.</p>
+delay with an <abbr title="Hemodynamic Response Function">HRF</abbr>, we sweep it: for each temporal lag we shift <em>only</em> the speed
+regressor, leaving the confounds, drift, and data window fixed. We fit the model, and
+compute the <code>"speed"</code> contrast. This yields one z-map per lag, like a
+cross-correlation between speed and the signal of each voxel. Holding the window fixed
+across lags keeps the maps comparable, and a positive lag means the signal responds
+after the change in speed. <code>run_lagged_glm</code> returns the per-lag maps, which we stack
+along a <code>lag</code> dimension whose coordinate is the delay in seconds (one volume per lag).
+The original study sweeps a wider window (about -2 to 10 s); here we use a short
+positive range to keep the example quick.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_lagged_glm</span><span class="p">(</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">data</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">,</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">glm</span><span class="p">:</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">,</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">design_matrix</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">lags</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]:</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit the GLM at a range of lags, shifting only the speed regressor.</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="sd">    For each lag, the ``speed`` column is shifted by that many volumes while the</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="sd">    confound and drift regressors stay time-locked to the data. Every lag is fit on</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="sd">    the same data window (the first ``max(lags)`` volumes are dropped) so the</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="sd">    resulting z-scores are directly comparable. A positive lag models the fUSI signal</span>
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="sd">    responding ``lag`` volumes after the change in speed.</span>
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="n">max_lag</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lags</span><span class="p">)</span>
-</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">design_matrix</span><span class="p">)</span>
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>    <span class="c1"># Fixed data window and time-locked nuisance regressors, shared by every lag.</span>
-</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="n">data_window</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">max_lag</span><span class="p">:]</span>
-</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>    <span class="n">fixed_design</span> <span class="o">=</span> <span class="n">design_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">max_lag</span><span class="p">:]</span>
-</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
-</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>    <span class="n">z_scores</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>
-</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>        <span class="n">design</span> <span class="o">=</span> <span class="n">fixed_design</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>        <span class="c1"># Shift only the regressor of interest: speed at volume t - lag predicts the</span>
-</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>        <span class="c1"># signal at volume t.</span>
-</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>        <span class="n">design</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">design_matrix</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">max_lag</span> <span class="o">-</span> <span class="n">lag</span> <span class="p">:</span> <span class="n">n</span> <span class="o">-</span> <span class="n">lag</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>        <span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">data_window</span><span class="p">],</span> <span class="n">design_matrices</span><span class="o">=</span><span class="p">[</span><span class="n">design</span><span class="p">])</span>
-</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>        <span class="n">z_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">glm</span><span class="o">.</span><span class="n">compute_contrast</span><span class="p">(</span><span class="s2">&quot;speed&quot;</span><span class="p">))</span>
-</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
-</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>    <span class="k">return</span> <span class="n">z_scores</span>
-</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>
-</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>
-</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="n">lags</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="n">z_scores</span> <span class="o">=</span> <span class="n">run_lagged_glm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">glm</span><span class="p">,</span> <span class="n">design_matrix</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="n">lags</span><span class="p">)</span>
-</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="n">z_score</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">z_scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lag&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span>
-</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a>    <span class="n">lag</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">spacing</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lags</span><span class="p">)</span>
-</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="p">)</span>
-</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="n">z_score</span><span class="o">.</span><span class="n">lag</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">units</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit the GLM at a range of lags, shifting only the speed regressor.&quot;&quot;&quot;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">max_lag</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lags</span><span class="p">)</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">design_matrix</span><span class="p">)</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="c1"># Fixed data window and time-locked nuisance regressors, shared by every lag.</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">data_window</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">max_lag</span><span class="p">:]</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="n">fixed_design</span> <span class="o">=</span> <span class="n">design_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">max_lag</span><span class="p">:]</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="n">z_scores</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">:</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="n">design</span> <span class="o">=</span> <span class="n">fixed_design</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="c1"># Shift only the regressor of interest: speed at volume t - lag predicts the</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="c1"># signal at volume t.</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="n">design</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">design_matrix</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">max_lag</span> <span class="o">-</span> <span class="n">lag</span> <span class="p">:</span> <span class="n">n</span> <span class="o">-</span> <span class="n">lag</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>        <span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">data_window</span><span class="p">],</span> <span class="n">design_matrices</span><span class="o">=</span><span class="p">[</span><span class="n">design</span><span class="p">])</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>        <span class="n">z_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">glm</span><span class="o">.</span><span class="n">compute_contrast</span><span class="p">(</span><span class="s2">&quot;speed&quot;</span><span class="p">))</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>    <span class="k">return</span> <span class="n">z_scores</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="n">lags</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="n">z_scores</span> <span class="o">=</span> <span class="n">run_lagged_glm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">glm</span><span class="p">,</span> <span class="n">design_matrix</span><span class="p">,</span> <span class="n">lags</span><span class="o">=</span><span class="n">lags</span><span class="p">)</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="n">z_score</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">z_scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lag&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">(</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>    <span class="n">lag</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">spacing</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lags</span><span class="p">)</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="p">)</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="n">z_score</span><span class="o">.</span><span class="n">lag</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">units</span>
 </span></code></pre></div>
 <h2 id="threshold-and-display-the-maps">Threshold and display the maps<a class="headerlink" href="#threshold-and-display-the-maps" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_statistical_threshold&lt;/span&gt;" href="../../../../api/stats/#confusius.stats.apply_statistical_threshold"><code>apply_statistical_threshold</code></a> applies a
-Bonferroni correction at <code>alpha=0.001</code> followed by a 30-voxel cluster-extent threshold,
-zeroing the voxels that do not survive. We plot the thresholded z-map at each lag over
-the mean power Doppler image (in dB).</p>
+Bonferroni correction at <code>alpha=0.001</code> followed by a 30-voxel cluster-extent
+threshold, zeroing the voxels that do not survive. We plot the thresholded z-map at
+each lag over the mean power Doppler image (in dB).</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">thresholded_zscore</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">apply_statistical_threshold</span><span class="p">(</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">z_score</span><span class="p">,</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
@@ -4037,20 +4036,19 @@ the mean power Doppler image (in dB).</p>
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="n">thresholded_zscore</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">stat_map</span><span class="p">(</span>
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">bg_volume</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">lag</span><span class="o">=</span><span class="n">z_score</span><span class="o">.</span><span class="n">lag</span><span class="p">),</span>
 </span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;lag&quot;</span><span class="p">,</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
 </span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
 </span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
 </span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>/home/runner/work/confusius/confusius/src/confusius/plotting/image.py:1747: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  self.figure.show()
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>&lt;confusius.plotting.image.VolumePlotter at 0x7fe5e1fa78c0&gt;
 </span></code></pre></div>
 </div>
 <p><a class="glightbox" href="../first_level_continuous_output_light/cell_17_1_light.png#only-light" data-type="image" data-title="Example output from cell 17, image 1" data-gallery="light"><img src="../first_level_continuous_output_light/cell_17_1_light.png#only-light" alt="Example output from cell 17, image 1"></a><a class="glightbox" href="../first_level_continuous_output_dark/cell_17_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 17, image 1" data-gallery="dark"><img src="../first_level_continuous_output_dark/cell_17_1_dark.png#only-dark" alt="Example output from cell 17, image 1"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 44.9 s</p>
+<p><strong>Total running time:</strong> 48.5 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/docs/first-level-glm?urlpath=lab/tree/docs/examples/05_glm/02_first_level_continuous.py">Launch in Binder</a> <a class="md-button" href="../first_level_continuous.py">Download .py</a> <a class="md-button" href="../first_level_continuous.ipynb">Download .ipynb</a></p>
 
 
