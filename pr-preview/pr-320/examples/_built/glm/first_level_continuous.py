@@ -244,7 +244,7 @@ z_score.lag.attrs["units"] = data.time.units
 # threshold, zeroing the voxels that do not survive. We plot the thresholded z-map at
 # each lag over the mean power Doppler image (in dB).
 
-# %%
+# %% tags=["thumbnail"]
 thresholded_zscore, threshold = cf.stats.apply_statistical_threshold(
     z_score,
     alpha=0.001,
@@ -253,7 +253,7 @@ thresholded_zscore, threshold = cf.stats.apply_statistical_threshold(
 )
 
 cmap = "berlin" if is_dark_theme else None
-thresholded_zscore.fusi.plot.stat_map(
+_ = thresholded_zscore.fusi.plot.stat_map(
     bg_volume=data.mean("time").fusi.scale.db().expand_dims(lag=z_score.lag),
     slice_mode="lag",
     nrows=3,
