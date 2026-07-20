@@ -1714,6 +1714,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_contrast_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_contrast_matrix
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_design_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_design_matrix
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.plot_matrix" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -2958,6 +2980,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_contrast_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_contrast_matrix
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confusius.plotting.plot_design_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plot_design_matrix
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.plot_matrix" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3240,6 +3284,20 @@
             –
             <div class="doc-md-description">
               <p>Plot mask contours as a grid of 2D slice panels.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contrast_matrix&lt;/span&gt;" href="./#confusius.plotting.plot_contrast_matrix">plot_contrast_matrix</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Plot a GLM contrast as an array of weights aligned with the design regressors.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_design_matrix&lt;/span&gt;" href="./#confusius.plotting.plot_design_matrix">plot_design_matrix</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Plot a first-level GLM design matrix as a heatmap.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5573,6 +5631,389 @@ coordinate-to-axis mapping, so you can overlay a volume afterwards with
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span> <span class="o">=</span> <span class="n">plot_volume</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
 </span></code></pre></div>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="confusius.plotting.plot_contrast_matrix" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">plot_contrast_matrix</span>
+
+
+<a href="#confusius.plotting.plot_contrast_matrix" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">plot_contrast_matrix</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;contrast_def&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(contrast_def)">contrast_def</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">],</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;design_matrix&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(design_matrix)">design_matrix</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">],</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;cmap&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(cmap)">cmap</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.colors.Colormap" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;title&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(title)">title</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;bg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(bg_color)">bg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(fg_color)">fg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fontsize&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(fontsize)">fontsize</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_colorbar&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(show_colorbar)">show_colorbar</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;row_height&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(row_height)">row_height</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;column_width&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(column_width)">column_width</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ax&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_contrast_matrix(ax)">ax</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.figure.SubFigure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.SubFigure.html#matplotlib.figure.SubFigure">SubFigure</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></span><span class="p">]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a GLM contrast as an array of weights aligned with the design regressors.</p>
+<p>Visualizes the same <code>contrast_def</code> you would pass to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_contrast&lt;/span&gt;" href="../glm/#confusius.glm.FirstLevelModel.compute_contrast"><code>compute_contrast</code></a>,
+laid out under <code>design_matrix</code>'s regressor columns. Each contrast is drawn as one
+row of a heatmap on a symmetric range <code>[-m, m]</code> (<code>m = max(|weights|)</code>), so
+positive and negative weights read symmetrically.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(contrast_def)" class="doc doc-heading doc-heading-parameter">              <b><code>contrast_def</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(contrast_def)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="numpy.ndarray" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray">ndarray</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Contrast definition. A string is parsed as an expression over the design-matrix
+column names (e.g. <code>"stim_A - stim_B"</code>); a 1D <code>(n_columns,)</code> array is a <em>t</em>-contrast
+(one row) and a 2D <code>(q, n_columns)</code> array an <em>F</em>-contrast (<code>q</code> rows). Arrays
+narrower than the design are zero-padded on the right, mirroring <code>compute_contrast</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(design_matrix)" class="doc doc-heading doc-heading-parameter">              <b><code>design_matrix</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(design_matrix)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(n_volumes, n_regressors) pandas.DataFrame or numpy.ndarray</code>)
+          –
+          <div class="doc-md-description">
+            <p>Design matrix the contrast applies to, used for its regressor count and column
+labels. When a DataFrame is passed, its column names label the regressors. A bare
+array has no column names, so a string <code>contrast_def</code> cannot be resolved against it
+and raises.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(cmap)" class="doc doc-heading doc-heading-parameter">              <b><code>cmap</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(cmap)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="matplotlib.colors.Colormap" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></code>, default:
+                  <code>&#34;gray&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Colormap for the weights.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(title)" class="doc doc-heading doc-heading-parameter">              <b><code>title</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(title)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Plot title.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(bg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>bg_color</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(bg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#34;white&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Background color for the figure and axes. Any matplotlib-compatible color string
+(e.g. <code>"black"</code>, <code>"white"</code>, <code>"#1a1a2e"</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(fg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>fg_color</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(fg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Color for text, labels, ticks, and spines. If not provided, derived automatically
+from <code>bg_color</code> using the WCAG relative luminance formula (white on dark
+backgrounds, black on light ones).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(fontsize)" class="doc doc-heading doc-heading-parameter">              <b><code>fontsize</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(fontsize)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Base font size for text elements. Title uses <code>fontsize</code> directly; the y-axis label
+uses <code>0.9 * fontsize</code> and the tick labels use <code>0.85 * fontsize</code>. If not provided,
+uses the active Matplotlib defaults.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(show_colorbar)" class="doc doc-heading doc-heading-parameter">              <b><code>show_colorbar</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(show_colorbar)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to add a colorbar for the weights to the figure.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(row_height)" class="doc doc-heading doc-heading-parameter">              <b><code>row_height</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(row_height)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>0.5</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure height contributed per contrast row, in inches, used only when <code>ax</code> is not
+provided. The height is <code>1.5 + row_height * n_contrasts</code> (the 1.5 in base leaves
+room for the rotated regressor labels and a colorbar taller than the strip),
+floored at 2 inches.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(column_width)" class="doc doc-heading doc-heading-parameter">              <b><code>column_width</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(column_width)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>0.6</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure width contributed per regressor, in inches, used only when <code>ax</code> is not
+provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_contrast_matrix(ax)" class="doc doc-heading doc-heading-parameter">              <b><code>ax</code></b>
+<a href="#confusius.plotting.plot_contrast_matrix(ax)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Axes to plot on. If not provided, creates a new figure and axes sized from
+<code>row_height</code> and <code>column_width</code>. If provided, the Axes is cleared before plotting.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<b><code>figure</code></b> (              <code><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a> or <a class="autorefs autorefs-external" title="matplotlib.figure.SubFigure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.SubFigure.html#matplotlib.figure.SubFigure">SubFigure</a></code>
+)          –
+          <div class="doc-md-description">
+            <p>Figure object containing the contrast plot.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<b><code>axes</code></b> (              <code><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></code>
+)          –
+          <div class="doc-md-description">
+            <p>Axes object with the contrast plot.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>contrast_def</code> is a string but <code>design_matrix</code> is a bare array with no column
+names to resolve it against.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="confusius.plotting.plot_design_matrix" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">plot_design_matrix</span>
+
+
+<a href="#confusius.plotting.plot_design_matrix" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">plot_design_matrix</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;design_matrix&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(design_matrix)">design_matrix</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="pandas.DataFrame" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame">DataFrame</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">],</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;cmap&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(cmap)">cmap</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.colors.Colormap" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;title&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(title)">title</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;index_yaxis&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(index_yaxis)">index_yaxis</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;yaxis_label&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(yaxis_label)">yaxis_label</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;bg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(bg_color)">bg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fg_color&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(fg_color)">fg_color</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;fontsize&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(fontsize)">fontsize</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;height&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(height)">height</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;column_width&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(column_width)">column_width</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ax&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_design_matrix(ax)">ax</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.figure.SubFigure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.SubFigure.html#matplotlib.figure.SubFigure">SubFigure</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></span><span class="p">]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a first-level GLM design matrix as a heatmap.</p>
+<p>Renders each regressor (column) against acquisition volumes (row). Values are shown on a
+norm centered at zero, so positive and negative regressor weights read symmetrically.
+When <code>ax</code> is not provided, the figure width scales with the number of regressors so
+wide designs stay legible.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(design_matrix)" class="doc doc-heading doc-heading-parameter">              <b><code>design_matrix</code></b>
+<a href="#confusius.plotting.plot_design_matrix(design_matrix)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(n_volumes, n_regressors) pandas.DataFrame or numpy.ndarray</code>)
+          –
+          <div class="doc-md-description">
+            <p>Design matrix to plot, e.g. an entry of the <code>design_matrices_</code> attribute of a
+fitted <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a>. Volumes run
+along the rows (top to bottom) and regressors along the columns. When a DataFrame
+is passed, its column names label the regressors and its index (the per-volume
+acquisition times, in seconds) labels the y-axis (see <code>index_yaxis</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(cmap)" class="doc doc-heading doc-heading-parameter">              <b><code>cmap</code></b>
+<a href="#confusius.plotting.plot_design_matrix(cmap)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="matplotlib.colors.Colormap" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Colormap for the design matrix. If not provided, the active Matplotlib default is
+used.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(title)" class="doc doc-heading doc-heading-parameter">              <b><code>title</code></b>
+<a href="#confusius.plotting.plot_design_matrix(title)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Plot title.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(index_yaxis)" class="doc doc-heading doc-heading-parameter">              <b><code>index_yaxis</code></b>
+<a href="#confusius.plotting.plot_design_matrix(index_yaxis)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to label the y-axis with the design matrix's index (the per-volume
+acquisition times, in seconds), titled "Time (s)". When False, the y-axis instead
+shows the integer volume index titled "Volume". A bare array, or a DataFrame with a
+trivial <code>pandas.RangeIndex</code>, has no meaningful index and always uses the volume
+index regardless of this flag.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(yaxis_label)" class="doc doc-heading doc-heading-parameter">              <b><code>yaxis_label</code></b>
+<a href="#confusius.plotting.plot_design_matrix(yaxis_label)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Override for the y-axis label. If not provided, the label is "Time (s)" when
+<code>index_yaxis</code> selects the acquisition-time index and "Volume" otherwise.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(bg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>bg_color</code></b>
+<a href="#confusius.plotting.plot_design_matrix(bg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#34;white&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Background color for the figure and axes. Any matplotlib-compatible color string
+(e.g. <code>"black"</code>, <code>"white"</code>, <code>"#1a1a2e"</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(fg_color)" class="doc doc-heading doc-heading-parameter">              <b><code>fg_color</code></b>
+<a href="#confusius.plotting.plot_design_matrix(fg_color)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Color for text, labels, ticks, and spines. If not provided, derived automatically
+from <code>bg_color</code> using the WCAG relative luminance formula (white on dark
+backgrounds, black on light ones).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(fontsize)" class="doc doc-heading doc-heading-parameter">              <b><code>fontsize</code></b>
+<a href="#confusius.plotting.plot_design_matrix(fontsize)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Base font size for text elements. Title uses <code>fontsize</code> directly; the y-axis label
+uses <code>0.9 * fontsize</code> and the regressor tick labels use <code>0.85 * fontsize</code>. If not
+provided, uses the active Matplotlib defaults.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(height)" class="doc doc-heading doc-heading-parameter">              <b><code>height</code></b>
+<a href="#confusius.plotting.plot_design_matrix(height)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>5.0</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure height in inches, used only when <code>ax</code> is not provided.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(column_width)" class="doc doc-heading doc-heading-parameter">              <b><code>column_width</code></b>
+<a href="#confusius.plotting.plot_design_matrix(column_width)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>0.6</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Figure width contributed per regressor, in inches, used only when <code>ax</code> is not
+provided. The width is <code>column_width * n_regressors</code>, floored at 4 inches.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_design_matrix(ax)" class="doc doc-heading doc-heading-parameter">              <b><code>ax</code></b>
+<a href="#confusius.plotting.plot_design_matrix(ax)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Axes to plot on. If not provided, creates a new figure and axes sized from
+<code>height</code> and <code>column_width</code>. If provided, the Axes is cleared before plotting.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<b><code>figure</code></b> (              <code><a class="autorefs autorefs-external" title="matplotlib.figure.Figure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">Figure</a> or <a class="autorefs autorefs-external" title="matplotlib.figure.SubFigure" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.SubFigure.html#matplotlib.figure.SubFigure">SubFigure</a></code>
+)          –
+          <div class="doc-md-description">
+            <p>Figure object containing the design matrix plot.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<b><code>axes</code></b> (              <code><a class="autorefs autorefs-external" title="matplotlib.axes.Axes" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes">Axes</a></code>
+)          –
+          <div class="doc-md-description">
+            <p>Axes object with the design matrix plot.</p>
+          </div>
+        </li>
+    </ul>
 
 
     </div>
