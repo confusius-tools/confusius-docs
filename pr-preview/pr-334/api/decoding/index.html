@@ -3287,7 +3287,12 @@ each.</p>
           –
           <div class="doc-md-description">
             <p>Mean cross-validation score at each <code>process_mask</code> center, in the spatial
-geometry of <code>process_mask</code>. Voxels outside <code>process_mask</code> are <code>numpy.nan</code>.</p>
+geometry of <code>process_mask</code>. Voxels outside <code>process_mask</code> are <code>numpy.nan</code>. The
+input's attributes are carried over, including any <code>affines</code>, so the map stays in
+the same physical space. <code>long_name</code> is set to <code>"Searchlight CV score"</code> and
+<code>units</code> to the metric implied by <code>scoring</code>: the scorer string when one is given,
+otherwise <code>"accuracy"</code> for a classifier or <code>"R²"</code> for a regressor. A callable
+scorer leaves <code>units</code> unset.</p>
           </div>
         </li>
     </ul>
