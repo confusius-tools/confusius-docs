@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../../images/confusius-favicon.ico">
-      <meta name="generator" content="zensical-0.0.40">
+      <meta name="generator" content="zensical-0.0.50">
     
     
       
@@ -32,7 +32,7 @@
       
         
       
-      <link rel="stylesheet" href="../../../../assets/stylesheets/modern/main.fba56155.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/modern/main.62c9b9cc.min.css">
       
         
           
@@ -229,6 +229,49 @@
   
   
     
+      
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
     
       <li class="md-tabs__item">
         <a href="../../../../user-guide/getting-started/" class="md-tabs__link">
@@ -247,6 +290,15 @@
   
   
   
+    
+      
+      
+        
+      
+        
+      
+    
+    
     
     
       <li class="md-tabs__item">
@@ -267,6 +319,53 @@
   
   
     
+      
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
     
       <li class="md-tabs__item">
         <a href="../../../../api/" class="md-tabs__link">
@@ -285,6 +384,23 @@
   
   
   
+    
+      
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
     
     
       <li class="md-tabs__item">
@@ -2030,6 +2146,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -2090,6 +2210,60 @@
     
   
   Registration of two sessions from the same subject
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../registration/volumewise_motion_correction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Motion correction of a single recording
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../registration/register_to_allen_fusi_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Register a recording to an Allen fUSI template
 
     
   </span>
@@ -2521,19 +2695,22 @@
 
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span></code></pre></div>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">Atlas</span><span class="o">.</span><span class="n">from_brainglobe</span><span class="p">(</span><span class="s2">&quot;allen_mouse_25um&quot;</span><span class="p">)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span><span class="n">atlas</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_mesh</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">),</span> <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">atlas</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_25um&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># The mesh, layer name, and color are all pulled from the atlas region.</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="gallery-output">
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>WARNING: could not determine DPI
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>WARNING: could not determine DPI
+</div>
+<div class="gallery-output">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>(Viewer(mouse_move_callbacks=[], mouse_wheel_callbacks=[&lt;function dims_scroll at 0x7ff68d90b8a0&gt;], mouse_drag_callbacks=[&lt;function drag_to_zoom at 0x7ff68d930ca0&gt;], mouse_double_click_callbacks=[&lt;function double_click_to_zoom at 0x7ff68d930bf0&gt;], camera=Camera(center=(6.587835150000001, 3.987499999999999, 5.68750000000003), zoom=63.99999999999966, angles=(0.0, 0.0, 0.0), perspective=0.0, mouse_pan=True, mouse_zoom=True, orientation=(&lt;DepthAxisOrientation.TOWARDS: &#39;towards&#39;&gt;, &lt;VerticalAxisOrientation.DOWN: &#39;down&#39;&gt;, &lt;HorizontalAxisOrientation.RIGHT: &#39;right&#39;&gt;)), cursor=Cursor(position=(6.583170300000094, 0.0, 0.0), viewbox=None, scaled=True, size=1.0, style=&lt;CursorStyle.STANDARD: &#39;standard&#39;&gt;), dims=Dims(ndim=3, ndisplay=3, order=(0, 1, 2), axis_labels=(&#39;z&#39;, &#39;y&#39;, &#39;x&#39;), rollable=(True, True, True), range=(RangeTuple(start=-0.0168297, stop=13.1925, step=0.025000000000000355), RangeTuple(start=0.0, stop=7.974999999999998, step=0.024999999999999994), RangeTuple(start=0.0, stop=11.37500000000006, step=0.025000000000000133)), margin_left=(0.0, 0.0, 0.0), margin_right=(0.0, 0.0, 0.0), point=(6.583170300000094, 3.974999999999999, 5.67500000000003), units=(&lt;Unit(&#39;millimeter&#39;)&gt;, &lt;Unit(&#39;millimeter&#39;)&gt;, &lt;Unit(&#39;millimeter&#39;)&gt;), last_used=0), grid=GridCanvas(stride=1, shape=(-1, -1), enabled=False, spacing=0.0), layers=[&lt;Image layer &#39;reference&#39; at 0x7ff674a43e00&gt;, &lt;Surface layer &#39;root&#39; at 0x7ff64fc963c0&gt;], help=&#39;use &lt;2&gt; for transform&#39;, status=&#39;Ready&#39;, tooltip=Tooltip(visible=False, text=&#39;&#39;), theme=&#39;dark&#39;, title=&#39;napari&#39;, mouse_over_canvas=False),
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a> &lt;Surface layer &#39;root&#39; at 0x7ff64fc963c0&gt;)
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>(Viewer(mouse_move_callbacks=[], mouse_wheel_callbacks=[&lt;function dims_scroll at 0x7efc8f735430&gt;], mouse_drag_callbacks=[&lt;function drag_to_zoom at 0x7efc8f736770&gt;], mouse_double_click_callbacks=[&lt;function double_click_to_zoom at 0x7efc8f7366c0&gt;], camera=Camera(center=(6.587835150000001, 3.8490849999999996, 5.688164500000001), zoom=74.13835308481958, angles=(0.0, 0.0, 0.0), perspective=0.0, mouse_pan=True, mouse_zoom=True, orientation=(&lt;DepthAxisOrientation.TOWARDS: &#39;towards&#39;&gt;, &lt;VerticalAxisOrientation.DOWN: &#39;down&#39;&gt;, &lt;HorizontalAxisOrientation.RIGHT: &#39;right&#39;&gt;)), cursor=Cursor(position=(5.9831703, 0.0, 0.0), viewbox=None, scaled=True, size=1.0, style=&lt;CursorStyle.STANDARD: &#39;standard&#39;&gt;), dims=Dims(ndim=3, ndisplay=3, order=(0, 1, 2), axis_labels=(&#39;-3&#39;, &#39;-2&#39;, &#39;-1&#39;), rollable=(True, True, True), range=(RangeTuple(start=-0.0168297, stop=13.1925, step=1.0), RangeTuple(start=0.13393000000000002, stop=7.56424, step=1.0), RangeTuple(start=0.485729, stop=10.890600000000001, step=1.0)), margin_left=(0.0, 0.0, 0.0), margin_right=(0.0, 0.0, 0.0), point=(5.9831703, 3.13393, 5.485729), units=(&lt;Unit(&#39;pixel&#39;)&gt;, &lt;Unit(&#39;pixel&#39;)&gt;, &lt;Unit(&#39;pixel&#39;)&gt;), last_used=0), grid=GridCanvas(stride=1, shape=(-1, -1), enabled=False, spacing=0.0), layers=[&lt;Surface layer &#39;surface_data&#39; at 0x7efc5391d6a0&gt;], help=&#39;use &lt;2&gt; for transform&#39;, status=&#39;Ready&#39;, tooltip=Tooltip(visible=False, text=&#39;&#39;), theme=&#39;dark&#39;, title=&#39;napari&#39;, mouse_over_canvas=False),
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a> &lt;Surface layer &#39;surface_data&#39; at 0x7efc5391d6a0&gt;)
-</span></code></pre></div>
+</div>
 <hr />
-<p><strong>Total running time:</strong> 23.8 s</p>
+<p><strong>Total running time:</strong> 24.7 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-plot-surface?urlpath=lab/tree/docs/examples/99_other/plot_surface.py">Launch in Binder</a> <a class="md-button" href="../plot_surface.py">Download .py</a> <a class="md-button" href="../plot_surface.ipynb">Download .ipynb</a></p>
 
 
@@ -2623,10 +2800,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"../../../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips"],"search":"../../../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../../../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips"],"search":"../../../../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.dbc0afdc.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.d7f30b55.min.js"></script>
       
         <script src="../../../../javascripts/theme.js"></script>
       
