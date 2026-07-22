@@ -3579,27 +3579,50 @@ spatial dimensions:</p>
 <li><code>transmit_frequency</code>: Frequency of the transmitted ultrasound pulse (Hz).</li>
 <li><code>beamforming_sound_velocity</code>: Speed of sound used for beamforming (m/s).</li>
 </ul>
-<p>For unsupported <abbr title="In-phase and Quadrature">IQ</abbr> formats, load the complex array with your system-specific loader,
-wrap it as a DataArray, and validate the result before processing:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_iq_dataarray</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">raw_iq</span> <span class="o">=</span> <span class="n">load_my_iq_file</span><span class="p">(</span><span class="s2">&quot;path/to/iq.mat&quot;</span><span class="p">)</span>  <span class="c1"># complex array, (time, z, y, x)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">raw_iq</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="s2">&quot;compound_sampling_frequency&quot;</span><span class="p">:</span> <span class="mf">500.0</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="mf">15.625e6</span><span class="p">,</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="s2">&quot;beamforming_sound_velocity&quot;</span><span class="p">:</span> <span class="mf">1540.0</span><span class="p">,</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="p">},</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">)</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">validate_iq_dataarray</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Here is what a valid <abbr title="In-phase and Quadrature">IQ</abbr> DataArray looks like once loaded:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_iq.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">&lt;xarray.DataArray &#39;iq&#39; (time: 50000, z: 1, y: 118, x: 52)&gt; Size: 24GB</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">dask.array&lt;...&gt;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">Coordinates:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">  * time     (time) float64 400kB 0.0 0.002 0.004 ... 99.994 99.996 99.998</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">  * z        (z) float64 8B 0.0</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">  * y        (y) float64 944B 4.656 4.705 4.753 ... 10.231 10.279 10.328</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">  * x        (x) float64 416B -2.671 -2.57 -2.469 ... 2.268 2.369 2.469</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">Attributes:</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">    transmit_frequency:           15625000.0</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">    compound_sampling_frequency:  500.0</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">    pulse_repetition_frequency:   15000.0</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="go">    beamforming_sound_velocity:   1540.0</span>
+</span></code></pre></div>
+<p>In this example, the <abbr title="Pulse Repetition Frequency">PRF</abbr> is 15 kHz, but the data uses compound imaging with a
+<code>compound_sampling_frequency</code> of 500 Hz. This means each <abbr title="In-phase and Quadrature">IQ</abbr> sample (compound volume)
+results from combining 30 individual pulses, giving an effective temporal sampling
+period of 2 ms rather than 67 μs.</p>
+<p>If your acquisition system isn't directly supported by ConfUSIus, load the complex
+array with your system-specific loader, wrap it as a DataArray, and validate the
+result before processing:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_iq_dataarray</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">raw_iq</span> <span class="o">=</span> <span class="n">load_my_iq_file</span><span class="p">(</span><span class="s2">&quot;path/to/iq.mat&quot;</span><span class="p">)</span>  <span class="c1"># complex array, (time, z, y, x)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">raw_iq</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>  <span class="c1"># 500 Hz compound sampling frequency</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="s2">&quot;compound_sampling_frequency&quot;</span><span class="p">:</span> <span class="mf">500.0</span><span class="p">,</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="mf">15.625e6</span><span class="p">,</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="s2">&quot;beamforming_sound_velocity&quot;</span><span class="p">:</span> <span class="mf">1540.0</span><span class="p">,</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="p">},</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="p">)</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="n">validate_iq_dataarray</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition question">
 <p class="admonition-title">Finding attribute values</p>
@@ -3615,25 +3638,6 @@ wrap it as a DataArray, and validate the result before processing:</p>
   with temperature and tissue type.</li>
 </ul>
 </div>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_iq.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">&lt;xarray.DataArray &#39;iq&#39; (time: 50000, z: 1, y: 118, x: 52)&gt; Size: 24GB</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">dask.array&lt;...&gt;</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">Coordinates:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">  * time     (time) float64 400kB 0.0 0.002 0.004 ... 99.994 99.996 99.998</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">  * z        (z) float64 8B 0.0</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="go">  * y        (y) float64 944B 4.656 4.705 4.753 ... 10.231 10.279 10.328</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">  * x        (x) float64 416B -2.671 -2.57 -2.469 ... 2.268 2.369 2.469</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">Attributes:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">    transmit_frequency:           15625000.0</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">    compound_sampling_frequency:  500.0</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    pulse_repetition_frequency:   15000.0</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    beamforming_sound_velocity:   1540.0</span>
-</span></code></pre></div>
-<p>In this example, the <abbr title="Pulse Repetition Frequency">PRF</abbr> is 15 kHz, but the data uses compound imaging with a
-<code>compound_sampling_frequency</code> of 500 Hz. This means each <abbr title="In-phase and Quadrature">IQ</abbr> sample (compound volume)
-results from combining 30 individual pulses, giving an effective temporal sampling
-period of 2 ms rather than 67 μs.</p>
 <h2 id="how-confusius-processes-iq-data">How ConfUSIus Processes <abbr title="In-phase and Quadrature">IQ</abbr> Data<a class="headerlink" href="#how-confusius-processes-iq-data" title="Permanent link">&para;</a></h2>
 <p>ConfUSIus offers a flexible framework for processing <abbr title="In-phase and Quadrature">IQ</abbr> data using sliding windows. At
 its core is the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> function, which

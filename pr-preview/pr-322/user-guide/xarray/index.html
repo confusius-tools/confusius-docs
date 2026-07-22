@@ -820,7 +820,7 @@
   <a href="#creating-fusi-dataarrays-from-raw-arrays" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Creating fUSI DataArrays from raw arrays
+        Creating fUSI DataArrays from Raw Arrays
       </span>
     </span>
   </a>
@@ -831,7 +831,7 @@
   <a href="#canonical-fusi-dimensions-and-scalar-indexing" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Canonical fUSI dimensions and scalar indexing
+        Canonical fUSI Dimensions and Scalar Indexing
       </span>
     </span>
   </a>
@@ -3087,7 +3087,7 @@
   <a href="#creating-fusi-dataarrays-from-raw-arrays" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Creating fUSI DataArrays from raw arrays
+        Creating fUSI DataArrays from Raw Arrays
       </span>
     </span>
   </a>
@@ -3098,7 +3098,7 @@
   <a href="#canonical-fusi-dimensions-and-scalar-indexing" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Canonical fUSI dimensions and scalar indexing
+        Canonical fUSI Dimensions and Scalar Indexing
       </span>
     </span>
   </a>
@@ -3430,7 +3430,14 @@ a Dataset:</p>
 when loading data, or to store multiple related variables together (e.g.,
 <code>power_doppler</code> for the power Doppler signals and <code>brain_mask</code> for a corresponding brain
 mask).</p>
-<h3 id="creating-fusi-dataarrays-from-raw-arrays">Creating <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays from raw arrays<a class="headerlink" href="#creating-fusi-dataarrays-from-raw-arrays" title="Permanent link">&para;</a></h3>
+<div class="admonition question">
+<p class="admonition-title">New to Xarray?</p>
+<p>If you are not yet familiar with Xarray, the <a href="https://docs.xarray.dev/en/stable/getting-started-guide/quick-overview.html">Xarray quick
+overview</a>
+is the best place to start. Understanding indexing, selection, and broadcasting will
+make working with ConfUSIus much easier.</p>
+</div>
+<h3 id="creating-fusi-dataarrays-from-raw-arrays">Creating <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays from Raw Arrays<a class="headerlink" href="#creating-fusi-dataarrays-from-raw-arrays" title="Permanent link">&para;</a></h3>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> when you already
 have a NumPy, Dask, or array-like object and want to attach ConfUSIus-compatible
 dimensions, coordinates, and metadata. Dimensions can be supplied in any order; by
@@ -3462,7 +3469,7 @@ its spacing and ConfUSIus adds it for you:</p>
 <p>Acquisition metadata that describes the whole recording, such as
 <code>transmit_frequency</code> or <code>beamforming_sound_velocity</code>, belongs in <code>attrs</code>. Coordinate
 metadata such as <code>units</code> and <code>voxdim</code> is added automatically.</p>
-<h3 id="canonical-fusi-dimensions-and-scalar-indexing">Canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> dimensions and scalar indexing<a class="headerlink" href="#canonical-fusi-dimensions-and-scalar-indexing" title="Permanent link">&para;</a></h3>
+<h3 id="canonical-fusi-dimensions-and-scalar-indexing">Canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> Dimensions and Scalar Indexing<a class="headerlink" href="#canonical-fusi-dimensions-and-scalar-indexing" title="Permanent link">&para;</a></h3>
 <p>ConfUSIus stores <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings with the spatial dimensions <code>z</code>, <code>y</code>, and <code>x</code>.
 Single-slice acquisitions still keep a singleton <code>z</code> axis, so the canonical shape is
 <code>(time, z, y, x)</code> with <code>z=1</code>, not <code>(time, y, x)</code>.</p>
@@ -3484,13 +3491,6 @@ shape.</p>
 scalar coordinate. A manually constructed bare <code>(time, y, x)</code> array with no <code>z</code>
 coordinate is rejected because ConfUSIus cannot infer its physical position, units, or
 voxel size.</p>
-<div class="admonition question">
-<p class="admonition-title">New to Xarray?</p>
-<p>If you are not yet familiar with Xarray, the <a href="https://docs.xarray.dev/en/stable/getting-started-guide/quick-overview.html">Xarray quick
-overview</a>
-is the best place to start. Understanding indexing, selection, and broadcasting will
-make working with ConfUSIus much easier.</p>
-</div>
 <h2 id="the-fusi-accessor">The <code>.fusi</code> Accessor<a class="headerlink" href="#the-fusi-accessor" title="Permanent link">&para;</a></h2>
 <p>Importing ConfUSIus registers the <code>.fusi</code> accessor on every DataArray:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
