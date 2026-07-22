@@ -406,6 +406,8 @@
       
         
       
+        
+      
     
     
     
@@ -2215,6 +2217,8 @@
       
         
       
+        
+      
     
     
     
@@ -2280,6 +2284,8 @@
       
         
       
+        
+      
     
     
     
@@ -2340,6 +2346,33 @@
     
   
   ConfUSIus and Xarray 101
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Create a fUSI DataArray from a MAT file
 
     
   </span>
@@ -2758,6 +2791,126 @@
     
   
   Atlas-based seed connectivity maps
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  GLM
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  GLM
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/glm/first_level/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  First-level GLM analysis of fUSI data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/glm/first_level_continuous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Lagged first-level GLM analysis of fUSI data with a continuous regressor
 
     
   </span>
@@ -3216,49 +3369,47 @@ extending the Xarray API with <abbr title="Functional Ultrasound Imaging">fUSI</
 <p>Xarray has two core data structures: Dataset and DataArray.</p>
 <p>A <strong><a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset">Dataset</a></strong> is a dictionary-like container of multiple named arrays that share
 the same coordinate system. When you open a Zarr archive, you get a Dataset:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;power_doppler.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">ds</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&lt;xarray.Dataset&gt; Size: 76MB
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Dimensions:        (time: 860, z: 1, y: 128, x: 86)
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Coordinates:
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  * time           (time) float64 7kB 0.299 0.899 1.499 ... 514.5 515.1 515.7
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  * z              (z) float64 8B 0.0
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  * y              (y) float64 1kB 5.664 5.713 5.762 5.811 ... 11.77 11.82 11.87
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  * x              (x) float64 688B -3.583 -3.492 -3.402 ... 3.946 4.037 4.127
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Data variables:
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    power_doppler  (time, z, y, x) float64 76MB dask.array&lt;chunksize=(215, 1, 32, 22), meta=np.ndarray&gt;
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">&gt;&gt;&gt; </span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;power_doppler.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="go">&lt;xarray.Dataset&gt; Size: 76MB</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="go">Dimensions:        (time: 860, z: 1, y: 128, x: 86)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="go">Coordinates:</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="go">  * time           (time) float64 7kB 0.299 0.899 1.499 ... 514.5 515.1 515.7</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="go">  * z              (z) float64 8B 0.0</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="go">  * y              (y) float64 1kB 5.664 5.713 5.762 5.811 ... 11.77 11.82 11.87</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="go">  * x              (x) float64 688B -3.583 -3.492 -3.402 ... 3.946 4.037 4.127</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="go">Data variables:</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="go">    power_doppler  (time, z, y, x) float64 76MB dask.array&lt;chunksize=(215, 1, 32, 22), meta=np.ndarray&gt;</span>
 </span></code></pre></div>
 <p>A <strong><a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></strong> is a single variable from that collection—one array with its own
 dimensions, coordinates, and attributes. You would get a DataArray if you opened a
 NIfTI file through <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a>, or if you extract a variable from
 a Dataset:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">pwd</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;xarray.DataArray &#39;power_doppler&#39; (time: 860, z: 1, y: 128, x: 86)&gt; Size: 76MB
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>dask.array&lt;open_dataset-power_doppler, shape=(860, 1, 128, 86), dtype=float64, chunksize=(215, 1, 32, 22), chunktype=numpy.ndarray&gt;
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Coordinates:
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  * time     (time) float64 7kB 0.299 0.899 1.499 2.099 ... 514.5 515.1 515.7
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  * z        (z) float64 8B 0.0
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  * y        (y) float64 1kB 5.664 5.713 5.762 5.811 ... 11.72 11.77 11.82 11.87
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  * x        (x) float64 688B -3.583 -3.492 -3.402 -3.311 ... 3.946 4.037 4.127
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>Attributes: (11/16)
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    transmit_frequency:             15625000.0
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    probe_number_of_elements:       128
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    probe_pitch:                    8.999999999999999e-05
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    beamforming_sound_velocity:     1520.0
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    plane_wave_angles:              [-10.0, -9.310344696044922, -8.620689392089...
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    ...                             ...
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    clutter_filter_method:          svd_indices
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    clutter_window_width:           300
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    clutter_window_stride:          300
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    doppler_window_width:           300
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    doppler_window_stride:          300
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    clutter_low_cutoff:             40
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="go">&lt;xarray.DataArray &#39;power_doppler&#39; (time: 860, z: 1, y: 128, x: 86)&gt; Size: 76MB</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="go">dask.array&lt;open_dataset-power_doppler, shape=(860, 1, 128, 86), dtype=float64, chunksize=(215, 1, 32, 22), chunktype=numpy.ndarray&gt;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="go">Coordinates:</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="go">  * time     (time) float64 7kB 0.299 0.899 1.499 2.099 ... 514.5 515.1 515.7</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go">  * z        (z) float64 8B 0.0</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go">  * y        (y) float64 1kB 5.664 5.713 5.762 5.811 ... 11.72 11.77 11.82 11.87</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="go">  * x        (x) float64 688B -3.583 -3.492 -3.402 -3.311 ... 3.946 4.037 4.127</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="go">Attributes: (11/16)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="go">    transmit_frequency:             15625000.0</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="go">    probe_number_of_elements:       128</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="go">    probe_pitch:                    8.999999999999999e-05</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="go">    beamforming_sound_velocity:     1520.0</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="go">    plane_wave_angles:              [-10.0, -9.310344696044922, -8.620689392089...</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="go">    ...                             ...</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="go">    clutter_filter_method:          svd_indices</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="go">    clutter_window_width:           300</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="go">    clutter_window_stride:          300</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="go">    doppler_window_width:           300</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="go">    doppler_window_stride:          300</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="go">    clutter_low_cutoff:             40</span>
 </span></code></pre></div>
 <p>Reading the output from top to bottom, a DataArray has four components:</p>
 <ul>
@@ -3284,28 +3435,28 @@ mask).</p>
 have a NumPy, Dask, or array-like object and want to attach ConfUSIus-compatible
 dimensions, coordinates, and metadata. Dimensions can be supplied in any order; by
 default, the result is transposed to canonical <code>(time, z, y, x)</code> order:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">recording</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">raw_power</span><span class="p">,</span>  <span class="c1"># shape: (time, z, y, x)</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>    <span class="c1"># seconds</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>    <span class="c1"># mm</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>   <span class="c1"># mm</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>    <span class="c1"># mm</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Power Doppler from my system&quot;</span><span class="p">},</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">recording</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">raw_power</span><span class="p">,</span>  <span class="c1"># shape: (time, z, y, x)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>    <span class="c1"># seconds</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>    <span class="c1"># mm</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>   <span class="c1"># mm</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>    <span class="c1"># mm</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Power Doppler from my system&quot;</span><span class="p">},</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Single-slice recordings can omit the singleton spatial axis in the raw array; provide
 its spacing and ConfUSIus adds it for you:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">single_slice</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">raw_power</span><span class="p">,</span>  <span class="c1"># shape: (time, y, x)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">single_slice</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">raw_power</span><span class="p">,</span>  <span class="c1"># shape: (time, y, x)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">dz</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">dy</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Pass <code>canonical_order=False</code> only when you need to preserve the input dimension order.</p>
 <p>Acquisition metadata that describes the whole recording, such as
@@ -3317,12 +3468,12 @@ Single-slice acquisitions still keep a singleton <code>z</code> axis, so the can
 <code>(time, z, y, x)</code> with <code>z=1</code>, not <code>(time, y, x)</code>.</p>
 <p>Xarray scalar indexing drops the indexed dimension but usually keeps its coordinate as a
 scalar coordinate:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">slice_movie</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">slice_movie</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># (&#39;time&#39;, &#39;y&#39;, &#39;x&#39;)</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">slice_movie</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># scalar coordinate: z = 0.0 mm, with the original coordinate metadata</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">slice_movie</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">slice_movie</span><span class="o">.</span><span class="n">dims</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># (&#39;time&#39;, &#39;y&#39;, &#39;x&#39;)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">slice_movie</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># scalar coordinate: z = 0.0 mm, with the original coordinate metadata</span>
 </span></code></pre></div>
 <p>Most geometry-sensitive ConfUSIus functions automatically restore such scalar-indexed
 spatial coordinates as singleton dimensions before validating the data. For example,
@@ -3342,8 +3493,8 @@ make working with ConfUSIus much easier.</p>
 </div>
 <h2 id="the-fusi-accessor">The <code>.fusi</code> Accessor<a class="headerlink" href="#the-fusi-accessor" title="Permanent link">&para;</a></h2>
 <p>Importing ConfUSIus registers the <code>.fusi</code> accessor on every DataArray:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>  <span class="c1"># Registers the .fusi accessor automatically.</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>  <span class="c1"># Registers the .fusi accessor automatically.</span>
 </span></code></pre></div>
 <p>The accessor is organized into six focused sub-accessors, plus a set of global helper
 properties:</p>
@@ -3397,15 +3548,14 @@ function calls for readability.</p>
   &lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.spacing"><code>.fusi.spacing</code></a>, which returns the step size
   along each dimension as a dictionary:</li>
 </ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">spacing</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># {&#39;time&#39;: 0.6, &#39;z&#39;: 0.4, &#39;y&#39;: 0.049, &#39;x&#39;: 0.091}</span>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">spacing</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">{&#39;time&#39;: 0.6, &#39;z&#39;: 0.4, &#39;y&#39;: 0.049, &#39;x&#39;: 0.091}</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code>This is particularly useful for sanity-checking voxel sizes or sampling periods
-before passing data to functions that require regular spacing (e.g., temporal
-filters, affine registration). `None` is returned with a warning for any dimension
-where spacing cannot be determined: non-uniform coordinates, a single coordinate
-point without a `voxdim` attribute, or no coordinate at all.
-</code></pre></div>
+<p>This is particularly useful for sanity-checking voxel sizes or sampling periods
+  before passing data to functions that require regular spacing (e.g., temporal
+  filters, affine registration). <code>None</code> is returned with a warning for any dimension
+  where spacing cannot be determined: non-uniform coordinates, a single coordinate
+  point without a <code>voxdim</code> attribute, or no coordinate at all.</p>
 <ul>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;origin&lt;/span&gt;
 
@@ -3415,8 +3565,8 @@ point without a `voxdim` attribute, or no coordinate at all.
   &lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.origin"><code>.fusi.origin</code></a>, which returns the coordinate
   values at the origin along each dimension as a dictionary:</li>
 </ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">origin</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1"># {&#39;time&#39;: 0.299, &#39;z&#39;: 0.0, &#39;y&#39;: 5.664, &#39;x&#39;: -3.583}</span>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">origin</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">{&#39;time&#39;: 0.299, &#39;z&#39;: 0.0, &#39;y&#39;: 5.664, &#39;x&#39;: -3.583}</span>
 </span></code></pre></div>
 <p>This is typically used for computing the affine transformation corresponding to the
   physical coordinates of the DataArray, for example when saving to NIfTI.</p>
@@ -3426,53 +3576,53 @@ point without a `voxdim` attribute, or no coordinate at all.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_axial_velocity&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_axial_velocity"><code>process_iq_to_axial_velocity</code></a> functions
 directly on a DataArray containing beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data. Refer to the <a href="../beamformed-iq/">Beamformed <abbr title="In-phase and Quadrature">IQ</abbr>
 guide</a> for background <abbr title="In-phase and Quadrature">IQ</abbr> processing.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>  <span class="c1"># Registers the .fusi accessor.</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;iq.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># Power Doppler with SVD clutter filtering (default).</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_power_doppler</span><span class="p">(</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">doppler_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="p">)</span>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
-</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="c1"># Axial velocity (in m/s).</span>
-</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="n">velocity</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_axial_velocity</span><span class="p">(</span>
-</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>    <span class="n">velocity_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="p">)</span>
-</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>
-</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">velocity</span><span class="p">)</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">velocity</span><span class="p">)</span>  <span class="c1"># Compute both in a single pass.</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>  <span class="c1"># Registers the .fusi accessor.</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;iq.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># Power Doppler with SVD clutter filtering (default).</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_power_doppler</span><span class="p">(</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">doppler_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="p">)</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1"># Axial velocity (in m/s).</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="n">velocity</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_axial_velocity</span><span class="p">(</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="n">velocity_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="p">)</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">velocity</span><span class="p">)</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">velocity</span><span class="p">)</span>  <span class="c1"># Compute both in a single pass.</span>
 </span></code></pre></div>
 <h3 id="scaling-fusiscale">Scaling (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIScaleAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIScaleAccessor"><code>.fusi.scale</code></a>)<a class="headerlink" href="#scaling-fusiscale" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIScaleAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIScaleAccessor"><code>.fusi.scale</code></a> accessor provides common
 scaling transformations: decibel, natural log, and power scaling.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">pwd_db</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>  <span class="c1"># Default factor=10 for power quantities.</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">iq_db</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">iq</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Use factor=20 for amplitude quantities.</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">pwd_log</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">pwd_sqrt</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">exponent</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">pwd_db</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>  <span class="c1"># Default factor=10 for power quantities.</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">iq_db</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">iq</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Use factor=20 for amplitude quantities.</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">pwd_log</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">pwd_sqrt</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">exponent</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Because the accessor returns a DataArray, it chains naturally with standard Xarray
 operations:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">pwd_db</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwd</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">pwd_db</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwd</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
 </span></code></pre></div>
 <h3 id="registration-fusiregister">Registration (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIRegistrationAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIRegistrationAccessor"><code>.fusi.register</code></a>)<a class="headerlink" href="#registration-fusiregister" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIRegistrationAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIRegistrationAccessor"><code>.fusi.register</code></a> accessor provides easy
 access to the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a>
 function for motion correction.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">registered</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">register</span><span class="o">.</span><span class="n">volumewise</span><span class="p">(</span><span class="n">reference_time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">registered</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">register</span><span class="o">.</span><span class="n">volumewise</span><span class="p">(</span><span class="n">reference_time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </span></code></pre></div>
-<p>By default, both translation and rotation are allowed (with a penalty to keep
-rotations small). Pass <code>allow_rotation=False</code> for translation-only correction, or
-increase <code>rotation_penalty</code> to constrain rotations more strongly.</p>
+<p>By default, rigid registration allows translation and rotation. Pass
+<code>transform="translation"</code> for translation-only correction. For rigid registration,
+set the first three <code>optimizer_weights</code> values to <code>0</code> to freeze rotation.</p>
 <h3 id="signal-extraction-fusiextract">Signal Extraction (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIExtractAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIExtractAccessor"><code>.fusi.extract</code></a>)<a class="headerlink" href="#signal-extraction-fusiextract" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIExtractAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIExtractAccessor"><code>.fusi.extract</code></a> accessor provides access to
 signal extraction and reconstruction functions, making it easy to pass <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data to
@@ -3481,10 +3631,10 @@ scikit-learn, pandas, or other tools that expect a 2D matrix of shape
 <h4 id="mask-based-extraction">Mask-based extraction<a class="headerlink" href="#mask-based-extraction" title="Permanent link">&para;</a></h4>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_mask&lt;/span&gt;" href="../../api/extract/#confusius.extract.extract_with_mask"><code>extract_with_mask</code></a> flattens all voxels selected
 by a boolean (or single-label integer) mask into a <code>voxels</code> dimension:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1"># signals has dims (time, voxels).</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># signals has dims (time, voxels).</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 </span></code></pre></div>
 <p>For a quick round-trip,
 <a href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.unstack.html"><code>.unstack("voxels")</code></a>
@@ -3492,18 +3642,18 @@ reconstructs the spatial dimensions within the bounding box of the mask. To reco
 the full spatial volume, use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;unmask&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIExtractAccessor.unmask"><code>.fusi.extract.unmask()</code></a> with the
 original mask:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># reconstructed has dims (time, z, y, x).</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># reconstructed has dims (time, z, y, x).</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 </span></code></pre></div>
 <p>For decomposition workflows, use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../../api/decomposition/#confusius.decomposition.PCA"><code>PCA</code></a> to keep component
 signals and component maps as DataArray objects:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">component_signals</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>  <span class="c1"># (time, component)</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">spatial_components</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># spatial_components has dims (component, z, y, x).</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">component_signals</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>  <span class="c1"># (time, component)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">spatial_components</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># spatial_components has dims (component, z, y, x).</span>
 </span></code></pre></div>
 <h4 id="label-based-extraction">Label-based extraction<a class="headerlink" href="#label-based-extraction" title="Permanent link">&para;</a></h4>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> aggregates signals by
@@ -3515,73 +3665,73 @@ brain region using an integer label map. It accepts two label formats:</p>
   <code>{0, region_id}</code>. Regions may overlap. This is the format returned by
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>.</li>
 </ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Using a flat label map (e.g., atlas annotations).</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">label_map</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;atlas_labels.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># region_signals has dims (time, regions).</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">region_signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># Use a different aggregation (default is &quot;mean&quot;).</span>
-</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="n">region_signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Using a flat label map (e.g., atlas annotations).</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">label_map</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;atlas_labels.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1"># region_signals has dims (time, regions).</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">region_signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1"># Use a different aggregation (default is &quot;mean&quot;).</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">region_signals</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="visualization-fusiplot">Visualization (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIPlotAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor"><code>.fusi.plot</code></a>)<a class="headerlink" href="#visualization-fusiplot" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIPlotAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor"><code>.fusi.plot</code></a> accessor provides easy access to
 visualization functions for quick data inspection and quality control.</p>
 <p>Display data in <a href="https://napari.org/">napari</a> (decibel-scaled by default):</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </span></code></pre></div>
 <p>Carpet plots show voxel time-series as a raster image, useful for quality control:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="saving-to-files-fusisave">Saving to Files (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a>)<a class="headerlink" href="#saving-to-files-fusisave" title="Permanent link">&para;</a></h3>
 <p>Save to NIfTI or Zarr by extension. For NIfTI, an accompanying <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON sidecar
 is always written alongside, storing converted metadata fields, custom attributes, and
 timing fields derived from the <code>time</code> coordinate when available:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Creates sub-01_task-awake_pwd.nii.gz and sub-01_task-awake_pwd.json</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Creates sub-01_task-awake_pwd.nii.gz and sub-01_task-awake_pwd.json</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="complete-workflow-example">Complete Workflow Example<a class="headerlink" href="#complete-workflow-example" title="Permanent link">&para;</a></h2>
 <p>The following example shows a typical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> analysis from raw <abbr title="In-phase and Quadrature">IQ</abbr> to saved results:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1"># 1. Load beamformed IQ data and corresponding brain mask.</span>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;iq.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1"># 2. Process IQ into power Doppler.</span>
-</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_power_doppler</span><span class="p">(</span>
-</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>    <span class="n">doppler_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>    <span class="n">clutter_mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">,</span>
-</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="p">)</span>
-</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a>
-</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="c1"># 3. Inspect in napari (decibel-scaled by default).</span>
-</span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-</span><span id="__span-23-19"><a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a>
-</span><span id="__span-23-20"><a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="c1"># 4. Motion correction.</span>
-</span><span id="__span-23-21"><a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="n">registered</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">register</span><span class="o">.</span><span class="n">volumewise</span><span class="p">(</span><span class="n">reference_time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-23-22"><a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a>
-</span><span id="__span-23-23"><a id="__codelineno-23-23" name="__codelineno-23-23" href="#__codelineno-23-23"></a><span class="c1"># 5. Quick quality check with a carpet plot.</span>
-</span><span id="__span-23-24"><a id="__codelineno-23-24" name="__codelineno-23-24" href="#__codelineno-23-24"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
-</span><span id="__span-23-25"><a id="__codelineno-23-25" name="__codelineno-23-25" href="#__codelineno-23-25"></a>
-</span><span id="__span-23-26"><a id="__codelineno-23-26" name="__codelineno-23-26" href="#__codelineno-23-26"></a><span class="c1"># 6. Save registered power Doppler to NIfTI with a fUSI-BIDS JSON sidecar.</span>
-</span><span id="__span-23-27"><a id="__codelineno-23-27" name="__codelineno-23-27" href="#__codelineno-23-27"></a><span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-23-28"><a id="__codelineno-23-28" name="__codelineno-23-28" href="#__codelineno-23-28"></a>
-</span><span id="__span-23-29"><a id="__codelineno-23-29" name="__codelineno-23-29" href="#__codelineno-23-29"></a><span class="c1"># 7. Extract global signal using the brain mask.</span>
-</span><span id="__span-23-30"><a id="__codelineno-23-30" name="__codelineno-23-30" href="#__codelineno-23-30"></a><span class="n">global_signal</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">brain_mask</span><span class="p">)</span>
-</span><span id="__span-23-31"><a id="__codelineno-23-31" name="__codelineno-23-31" href="#__codelineno-23-31"></a>
-</span><span id="__span-23-32"><a id="__codelineno-23-32" name="__codelineno-23-32" href="#__codelineno-23-32"></a><span class="c1"># 8. Denoise and standardize power Doppler signals.</span>
-</span><span id="__span-23-33"><a id="__codelineno-23-33" name="__codelineno-23-33" href="#__codelineno-23-33"></a><span class="n">pwd_denoised</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span>
-</span><span id="__span-23-34"><a id="__codelineno-23-34" name="__codelineno-23-34" href="#__codelineno-23-34"></a>    <span class="n">registered</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">global_signal</span><span class="p">,</span> <span class="n">standardize_method</span><span class="o">=</span><span class="s2">&quot;zscore&quot;</span>
-</span><span id="__span-23-35"><a id="__codelineno-23-35" name="__codelineno-23-35" href="#__codelineno-23-35"></a><span class="p">)</span>
-</span><span id="__span-23-36"><a id="__codelineno-23-36" name="__codelineno-23-36" href="#__codelineno-23-36"></a>
-</span><span id="__span-23-37"><a id="__codelineno-23-37" name="__codelineno-23-37" href="#__codelineno-23-37"></a><span class="c1"># 9. Decompose brain signals with PCA.</span>
-</span><span id="__span-23-38"><a id="__codelineno-23-38" name="__codelineno-23-38" href="#__codelineno-23-38"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-23-39"><a id="__codelineno-23-39" name="__codelineno-23-39" href="#__codelineno-23-39"></a><span class="n">component_signals</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">pwd_denoised</span><span class="p">)</span>
-</span><span id="__span-23-40"><a id="__codelineno-23-40" name="__codelineno-23-40" href="#__codelineno-23-40"></a><span class="n">spatial_maps</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="c1"># 1. Load beamformed IQ data and corresponding brain mask.</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;iq.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="n">brain_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;brain_mask.zarr&quot;</span><span class="p">)</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="c1"># 2. Process IQ into power Doppler.</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">iq</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_to_power_doppler</span><span class="p">(</span>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>    <span class="n">doppler_window_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>    <span class="n">clutter_mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">,</span>
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="p">)</span>
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="c1"># 3. Inspect in napari (decibel-scaled by default).</span>
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="c1"># 4. Motion correction.</span>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="n">registered</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">register</span><span class="o">.</span><span class="n">volumewise</span><span class="p">(</span><span class="n">reference_time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="c1"># 5. Quick quality check with a carpet plot.</span>
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">brain_mask</span><span class="p">)</span>
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a><span class="c1"># 6. Save registered power Doppler to NIfTI with a fUSI-BIDS JSON sidecar.</span>
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
+</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a><span class="c1"># 7. Extract global signal using the brain mask.</span>
+</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a><span class="n">global_signal</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_labels</span><span class="p">(</span><span class="n">brain_mask</span><span class="p">)</span>
+</span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>
+</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a><span class="c1"># 8. Denoise and standardize power Doppler signals.</span>
+</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a><span class="n">pwd_denoised</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span>
+</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a>    <span class="n">registered</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">global_signal</span><span class="p">,</span> <span class="n">standardize_method</span><span class="o">=</span><span class="s2">&quot;zscore&quot;</span>
+</span><span id="__span-21-35"><a id="__codelineno-21-35" name="__codelineno-21-35" href="#__codelineno-21-35"></a><span class="p">)</span>
+</span><span id="__span-21-36"><a id="__codelineno-21-36" name="__codelineno-21-36" href="#__codelineno-21-36"></a>
+</span><span id="__span-21-37"><a id="__codelineno-21-37" name="__codelineno-21-37" href="#__codelineno-21-37"></a><span class="c1"># 9. Decompose brain signals with PCA.</span>
+</span><span id="__span-21-38"><a id="__codelineno-21-38" name="__codelineno-21-38" href="#__codelineno-21-38"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-21-39"><a id="__codelineno-21-39" name="__codelineno-21-39" href="#__codelineno-21-39"></a><span class="n">component_signals</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">pwd_denoised</span><span class="p">)</span>
+</span><span id="__span-21-40"><a id="__codelineno-21-40" name="__codelineno-21-40" href="#__codelineno-21-40"></a><span class="n">spatial_maps</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">maps_</span>
 </span></code></pre></div>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
 <p>For full parameter documentation, see the <a href="../../api/xarray/">Xarray Integration API
