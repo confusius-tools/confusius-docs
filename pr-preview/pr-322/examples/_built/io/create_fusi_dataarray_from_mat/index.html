@@ -3224,9 +3224,11 @@ timestamps, task labels, and ultrasound metadata.</p>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>            <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </span></code></pre></div>
 <h2 id="load-the-power-doppler-array-and-metadata">Load the power Doppler array and metadata<a class="headerlink" href="#load-the-power-doppler-array-and-metadata" title="Permanent link">&para;</a></h2>
-<p>This MAT file v7.3 is HDF5-backed, so we use [<code>h5py.File</code>][] to open it.</p>
+<p>This MAT file v7.3 is HDF5-backed, so we use [<code>h5py.File</code>][] to open it. We
+transpose the Doppler array to <code>(time, y, x)</code> and flip the lateral axis to match the
+orientation of the original paper figures.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">mat_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mat</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">doppler</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;dop&quot;</span><span class="p">][()]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">doppler</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;dop&quot;</span><span class="p">][()]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;timestamps&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">wavelength</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;UF/Lambda&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -3815,47 +3817,47 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;power_doppler&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 270</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 97</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-7e14e03b-4564-45b2-8cc1-3d0211938c1b' class='xr-array-in' type='checkbox' ><label for='section-7e14e03b-4564-45b2-8cc1-3d0211938c1b' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>1.245e+11 1.249e+11 1.403e+11 ... 3.206e+11 3.025e+11 2.937e+11</span></div><div class='xr-array-data'><pre>array([[[[1.24517777e+11, 1.24857090e+11, 1.40320457e+11, ...,
-          3.04037921e+11, 2.70662992e+11, 2.10577752e+11],
-         [1.19126106e+11, 1.25527794e+11, 1.39885674e+11, ...,
-          3.43384588e+11, 2.85069410e+11, 2.14506717e+11],
-         [1.03471677e+11, 1.29280238e+11, 1.35647912e+11, ...,
-          2.40582951e+11, 2.33571320e+11, 2.28316201e+11],
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;power_doppler&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 270</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 97</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-ece2864c-d9c8-426f-927f-d115b9863506' class='xr-array-in' type='checkbox' ><label for='section-ece2864c-d9c8-426f-927f-d115b9863506' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>2.106e+11 2.707e+11 3.04e+11 ... 2.945e+11 2.652e+11 2.58e+11</span></div><div class='xr-array-data'><pre>array([[[[2.10577752e+11, 2.70662992e+11, 3.04037921e+11, ...,
+          1.40320457e+11, 1.24857090e+11, 1.24517777e+11],
+         [2.14506717e+11, 2.85069410e+11, 3.43384588e+11, ...,
+          1.39885674e+11, 1.25527794e+11, 1.19126106e+11],
+         [2.28316201e+11, 2.33571320e+11, 2.40582951e+11, ...,
+          1.35647912e+11, 1.29280238e+11, 1.03471677e+11],
          ...,
-         [2.63551336e+11, 2.69979779e+11, 2.91363127e+11, ...,
-          3.13475138e+11, 3.12990728e+11, 2.79672553e+11],
-         [2.88501793e+11, 3.20567771e+11, 3.15664105e+11, ...,
-          2.94284689e+11, 2.91544793e+11, 2.83264451e+11],
-         [2.96275345e+11, 2.91014967e+11, 3.05831346e+11, ...,
-          2.98198532e+11, 3.03924871e+11, 2.64020197e+11]]],
+         [2.79672553e+11, 3.12990728e+11, 3.13475138e+11, ...,
+          2.91363127e+11, 2.69979779e+11, 2.63551336e+11],
+         [2.83264451e+11, 2.91544793e+11, 2.94284689e+11, ...,
+          3.15664105e+11, 3.20567771e+11, 2.88501793e+11],
+         [2.64020197e+11, 3.03924871e+11, 2.98198532e+11, ...,
+          3.05831346e+11, 2.91014967e+11, 2.96275345e+11]]],
 
 
-       [[[1.16492990e+11, 1.28603264e+11, 1.40351818e+11, ...,
-          2.91034403e+11, 2.83655943e+11, 2.40716352e+11],
-         [1.19212331e+11, 1.35002079e+11, 1.50428025e+11, ...,
-          3.31479128e+11, 2.71761266e+11, 2.23595700e+11],
-         [1.17544737e+11, 1.20960728e+11, 1.40890522e+11, ...,
+       [[[2.40716352e+11, 2.83655943e+11, 2.91034403e+11, ...,
+          1.40351818e+11, 1.28603264e+11, 1.16492990e+11],
+         [2.23595700e+11, 2.71761266e+11, 3.31479128e+11, ...,
+          1.50428025e+11, 1.35002079e+11, 1.19212331e+11],
+         [2.60899869e+11, 2.21150151e+11, 2.92841696e+11, ...,
 ...
-         [2.60658780e+11, 2.83746202e+11, 3.06916498e+11, ...,
-          3.04962160e+11, 2.97345883e+11, 2.65342913e+11],
-         [2.67835313e+11, 2.89581501e+11, 3.13945462e+11, ...,
-          2.99803367e+11, 3.07075603e+11, 3.05788289e+11]]],
+         [2.65342913e+11, 2.97345883e+11, 3.04962160e+11, ...,
+          3.06916498e+11, 2.83746202e+11, 2.60658780e+11],
+         [3.05788289e+11, 3.07075603e+11, 2.99803367e+11, ...,
+          3.13945462e+11, 2.89581501e+11, 2.67835313e+11]]],
 
 
-       [[[1.19496068e+11, 1.36244835e+11, 1.52472939e+11, ...,
-          2.89336457e+11, 2.70543169e+11, 2.67361939e+11],
-         [1.27337899e+11, 1.39294126e+11, 1.55218769e+11, ...,
-          2.77770194e+11, 2.21729586e+11, 1.91441988e+11],
-         [1.17371700e+11, 1.28960110e+11, 1.46543792e+11, ...,
-          2.62727546e+11, 2.30568764e+11, 1.93200875e+11],
+       [[[2.67361939e+11, 2.70543169e+11, 2.89336457e+11, ...,
+          1.52472939e+11, 1.36244835e+11, 1.19496068e+11],
+         [1.91441988e+11, 2.21729586e+11, 2.77770194e+11, ...,
+          1.55218769e+11, 1.39294126e+11, 1.27337899e+11],
+         [1.93200875e+11, 2.30568764e+11, 2.62727546e+11, ...,
+          1.46543792e+11, 1.28960110e+11, 1.17371700e+11],
          ...,
-         [2.87594611e+11, 2.67253181e+11, 2.80144034e+11, ...,
-          3.06788047e+11, 2.92960119e+11, 2.76503547e+11],
-         [2.55675877e+11, 2.79444401e+11, 2.86310089e+11, ...,
-          3.09633139e+11, 2.77860583e+11, 2.90532280e+11],
-         [2.58004634e+11, 2.65201840e+11, 2.94487661e+11, ...,
-          3.20574481e+11, 3.02512800e+11, 2.93681132e+11]]]],
-      shape=(270, 1, 97, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-a58a9d43-52b5-4256-9b25-eef679b86afb' class='xr-section-summary-in' type='checkbox' checked /><label for='section-a58a9d43-52b5-4256-9b25-eef679b86afb' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 1.614 3.228 ... 432.6 434.2</div><input id='attrs-2adbdb9f-dc54-465e-a45a-86fe9dc27996' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2adbdb9f-dc54-465e-a45a-86fe9dc27996' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7fdc8832-197b-4c02-930d-3b875a4cdd1a' class='xr-var-data-in' type='checkbox'><label for='data-7fdc8832-197b-4c02-930d-3b875a4cdd1a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>1.613999999994121</dd></dl></div><div class='xr-var-data'><pre>array([  0.   ,   1.614,   3.228, ..., 430.938, 432.552, 434.166], shape=(270,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-6da1c4cf-7225-4919-8f28-f1d3fb896c84' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6da1c4cf-7225-4919-8f28-f1d3fb896c84' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-20b67750-df37-4b09-b970-d0f57316f172' class='xr-var-data-in' type='checkbox'><label for='data-20b67750-df37-4b09-b970-d0f57316f172' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>1.0</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.16 10.37 10.57 ... 29.67 29.88</div><input id='attrs-dc6862f8-cc3a-408a-aae9-94f739f76c92' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dc6862f8-cc3a-408a-aae9-94f739f76c92' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2a9aa90e-bfb0-42a2-b401-eaa385e478a9' class='xr-var-data-in' type='checkbox'><label for='data-2a9aa90e-bfb0-42a2-b401-eaa385e478a9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.2053333333333338</dd></dl></div><div class='xr-var-data'><pre>array([10.164   , 10.369333, 10.574667, 10.78    , 10.985333, 11.190667,
+         [2.76503547e+11, 2.92960119e+11, 3.06788047e+11, ...,
+          2.80144034e+11, 2.67253181e+11, 2.87594611e+11],
+         [2.90532280e+11, 2.77860583e+11, 3.09633139e+11, ...,
+          2.86310089e+11, 2.79444401e+11, 2.55675877e+11],
+         [2.93681132e+11, 3.02512800e+11, 3.20574481e+11, ...,
+          2.94487661e+11, 2.65201840e+11, 2.58004634e+11]]]],
+      shape=(270, 1, 97, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-a24f7234-b5f3-4b92-b2d7-ebf453c4bad3' class='xr-section-summary-in' type='checkbox' checked /><label for='section-a24f7234-b5f3-4b92-b2d7-ebf453c4bad3' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 1.614 3.228 ... 432.6 434.2</div><input id='attrs-2ec1da83-38a3-41c0-b906-174bce148dc4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2ec1da83-38a3-41c0-b906-174bce148dc4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cda880f8-24bc-46f3-a365-1509d9e71a4a' class='xr-var-data-in' type='checkbox'><label for='data-cda880f8-24bc-46f3-a365-1509d9e71a4a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>1.613999999994121</dd></dl></div><div class='xr-var-data'><pre>array([  0.   ,   1.614,   3.228, ..., 430.938, 432.552, 434.166], shape=(270,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-e8b359a9-15f5-4d8c-818f-900972ca5f48' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e8b359a9-15f5-4d8c-818f-900972ca5f48' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f070e621-fa94-4d5a-81bd-8aa2826b5a92' class='xr-var-data-in' type='checkbox'><label for='data-f070e621-fa94-4d5a-81bd-8aa2826b5a92' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>1.0</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.16 10.37 10.57 ... 29.67 29.88</div><input id='attrs-8fc0d3dc-bc17-4b01-91f1-a591ebb88892' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8fc0d3dc-bc17-4b01-91f1-a591ebb88892' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a29c1f91-99a2-4476-bf9e-c7f276a61276' class='xr-var-data-in' type='checkbox'><label for='data-a29c1f91-99a2-4476-bf9e-c7f276a61276' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.2053333333333338</dd></dl></div><div class='xr-var-data'><pre>array([10.164   , 10.369333, 10.574667, 10.78    , 10.985333, 11.190667,
        11.396   , 11.601333, 11.806667, 12.012   , 12.217333, 12.422667,
        12.628   , 12.833333, 13.038667, 13.244   , 13.449333, 13.654667,
        13.86    , 14.065333, 14.270667, 14.476   , 14.681333, 14.886667,
@@ -3871,7 +3873,7 @@ dl.xr-attrs {
        26.18    , 26.385333, 26.590667, 26.796   , 27.001333, 27.206667,
        27.412   , 27.617333, 27.822667, 28.028   , 28.233333, 28.438667,
        28.644   , 28.849333, 29.054667, 29.26    , 29.465333, 29.670667,
-       29.876   ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.15 0.45 0.75 ... 37.95 38.25</div><input id='attrs-ba2cec0d-9c42-4a70-9cce-5c4e210468c9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ba2cec0d-9c42-4a70-9cce-5c4e210468c9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-bc9db677-93ec-4523-9dc8-39bd589b1f5d' class='xr-var-data-in' type='checkbox'><label for='data-bc9db677-93ec-4523-9dc8-39bd589b1f5d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3000000000000007</dd></dl></div><div class='xr-var-data'><pre>array([ 0.15,  0.45,  0.75,  1.05,  1.35,  1.65,  1.95,  2.25,  2.55,  2.85,
+       29.876   ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.15 0.45 0.75 ... 37.95 38.25</div><input id='attrs-2a92968b-68c8-419d-acf0-b2bfe94a72cf' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2a92968b-68c8-419d-acf0-b2bfe94a72cf' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fa7fedf4-99fc-406a-853f-27647c5482e9' class='xr-var-data-in' type='checkbox'><label for='data-fa7fedf4-99fc-406a-853f-27647c5482e9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3000000000000007</dd></dl></div><div class='xr-var-data'><pre>array([ 0.15,  0.45,  0.75,  1.05,  1.35,  1.65,  1.95,  2.25,  2.55,  2.85,
         3.15,  3.45,  3.75,  4.05,  4.35,  4.65,  4.95,  5.25,  5.55,  5.85,
         6.15,  6.45,  6.75,  7.05,  7.35,  7.65,  7.95,  8.25,  8.55,  8.85,
         9.15,  9.45,  9.75, 10.05, 10.35, 10.65, 10.95, 11.25, 11.55, 11.85,
@@ -3883,7 +3885,7 @@ dl.xr-attrs {
        27.15, 27.45, 27.75, 28.05, 28.35, 28.65, 28.95, 29.25, 29.55, 29.85,
        30.15, 30.45, 30.75, 31.05, 31.35, 31.65, 31.95, 32.25, 32.55, 32.85,
        33.15, 33.45, 33.75, 34.05, 34.35, 34.65, 34.95, 35.25, 35.55, 35.85,
-       36.15, 36.45, 36.75, 37.05, 37.35, 37.65, 37.95, 38.25])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-7ce9a5ba-b065-47e9-96af-c0cc63300feb' class='xr-section-summary-in' type='checkbox' /><label for='section-7ce9a5ba-b065-47e9-96af-c0cc63300feb' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>source :</span></dt><dd>https://doi.org/10.22002/f3y3k-em558</dd><dt><span>source_member :</span></dt><dd>data/human/S2R1.mat</dd></dl></div></li></ul></div></div>
+       36.15, 36.45, 36.75, 37.05, 37.35, 37.65, 37.95, 38.25])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-334888e0-dfd1-449e-99e6-872c12b4e9d2' class='xr-section-summary-in' type='checkbox' /><label for='section-334888e0-dfd1-449e-99e6-872c12b4e9d2' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>source :</span></dt><dd>https://doi.org/10.22002/f3y3k-em558</dd><dt><span>source_member :</span></dt><dd>data/human/S2R1.mat</dd></dl></div></li></ul></div></div>
 <style>.xr-array-preview,.xr-array-preview span,.xr-preview,.xr-var-preview,.xr-var-dtype,.xr-var-dims,.xr-var-name,.xr-obj-type,.xr-obj-name{color:var(--xr-font-color0)!important;}.gallery-rich-output{overflow-x:auto;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-dim-list,.gallery-rich-output .xr-attrs{padding-left:0!important;margin:0!important;list-style:none!important;}.gallery-rich-output .xr-dim-list li{margin-left:0!important;}.gallery-rich-output .xr-sections{display:grid!important;}.gallery-rich-output .xr-var-list,.gallery-rich-output .xr-var-item{display:contents!important;}.gallery-rich-output .xr-var-name,.gallery-rich-output .xr-var-dims,.gallery-rich-output .xr-var-dtype,.gallery-rich-output .xr-var-preview{margin:0!important;}.gallery-rich-output .xr-array-data table,.gallery-rich-output .xr-array-data td,.gallery-rich-output .xr-array-data svg{overflow:visible!important;}.gallery-rich-output .xr-array-data svg text,.gallery-rich-output .xr-array-data svg tspan,.gallery-rich-output .xr-array-preview svg text,.gallery-rich-output .xr-array-preview svg tspan,.gallery-rich-output .xr-preview svg text,.gallery-rich-output .xr-preview svg tspan{fill:var(--xr-font-color0)!important;}.gallery-rich-output .xr-array-data svg{color:var(--xr-font-color0)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg{stroke:rgba(255,255,255,0.5)!important;}[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg text,[data-md-color-scheme='slate'] .gallery-rich-output .xr-array-data svg tspan{fill:rgba(255,255,255,0.92)!important;stroke:none!important;}[data-md-color-scheme='default'] .xr-wrap{--xr-font-color0: rgba(0,0,0,1);--xr-font-color2: rgba(0,0,0,0.62);--xr-font-color3: rgba(0,0,0,0.42);--xr-border-color: var(--md-default-bg-color--lightest);--xr-disabled-color: rgba(0,0,0,0.35);--xr-background-color: #fff;--xr-background-color-row-even: #f8f9fb;--xr-background-color-row-odd: #edf0f5;}[data-md-color-scheme='slate'] .xr-wrap{--xr-font-color0: rgba(255,255,255,0.95);--xr-font-color2: rgba(255,255,255,0.68);--xr-font-color3: rgba(255,255,255,0.45);--xr-border-color: #2a3347;--xr-disabled-color: rgba(255,255,255,0.28);--xr-background-color: #111720;--xr-background-color-row-even: #161d29;--xr-background-color-row-odd: #1d2533;}</style></div>
 
 <h2 id="plot-the-mean-power-doppler-image">Plot the mean power Doppler image<a class="headerlink" href="#plot-the-mean-power-doppler-image" title="Permanent link">&para;</a></h2>
@@ -4493,19 +4495,19 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 97</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-672de920-ed52-4c30-8520-ff8e8d464c5c' class='xr-array-in' type='checkbox' ><label for='section-672de920-ed52-4c30-8520-ff8e8d464c5c' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-6.991 -7.793 -8.746 -9.346 -8.885 ... 6.3 4.176 4.261 3.687 1.523</span></div><div class='xr-array-data'><pre>array([[[ -6.9910038 ,  -7.7934519 ,  -8.74608067, ...,  -3.50061825,
-          -3.58374388,  -3.8937532 ],
-        [ -4.75516857,  -5.89104405,  -7.08660289, ...,  -0.89801277,
-          -1.08157347,  -1.51661246],
-        [ -3.78234729,  -4.30102831,  -4.53545928, ...,   3.89770414,
-           3.98647903,   2.85558461],
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 97</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-e4ae4e68-66ed-47ef-9809-7fb5792ac3ab' class='xr-array-in' type='checkbox' ><label for='section-e4ae4e68-66ed-47ef-9809-7fb5792ac3ab' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-3.894 -3.584 -3.501 -3.76 -3.985 ... -8.179 -10.94 -13.72 -12.56</span></div><div class='xr-array-data'><pre>array([[[ -3.8937532 ,  -3.58374388,  -3.50061825, ...,  -8.74608067,
+          -7.7934519 ,  -6.9910038 ],
+        [ -1.51661246,  -1.08157347,  -0.89801277, ...,  -7.08660289,
+          -5.89104405,  -4.75516857],
+        [  2.85558461,   3.98647903,   3.89770414, ...,  -4.53545928,
+          -4.30102831,  -3.78234729],
         ...,
-        [-12.27100517, -12.4964886 ,  -9.40418916, ...,   6.30793229,
-           3.81929143,   1.85772468],
-        [-12.42946417, -13.19299524, -10.92740815, ...,   5.8298708 ,
-           3.91859188,   1.80686747],
-        [-12.56125728, -13.72436736, -10.94084381, ...,   4.26127411,
-           3.68687158,   1.52253385]]], shape=(1, 97, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-bc101b31-f547-40f6-9a0c-2b74e62410d4' class='xr-section-summary-in' type='checkbox' checked /><label for='section-bc101b31-f547-40f6-9a0c-2b74e62410d4' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-b3b89bcb-d59d-46e0-9fc9-9f731fbfe24d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b3b89bcb-d59d-46e0-9fc9-9f731fbfe24d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5610692c-6e91-4116-8c8e-57f17b7451ab' class='xr-var-data-in' type='checkbox'><label for='data-5610692c-6e91-4116-8c8e-57f17b7451ab' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>1.0</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.16 10.37 10.57 ... 29.67 29.88</div><input id='attrs-b9d81b03-3dbd-454c-b118-e398ae798b7c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b9d81b03-3dbd-454c-b118-e398ae798b7c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-55b117f8-c839-4a48-a67b-be8058b728d1' class='xr-var-data-in' type='checkbox'><label for='data-55b117f8-c839-4a48-a67b-be8058b728d1' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.2053333333333338</dd></dl></div><div class='xr-var-data'><pre>array([10.164   , 10.369333, 10.574667, 10.78    , 10.985333, 11.190667,
+        [  1.85772468,   3.81929143,   6.30793229, ...,  -9.40418916,
+         -12.4964886 , -12.27100517],
+        [  1.80686747,   3.91859188,   5.8298708 , ..., -10.92740815,
+         -13.19299524, -12.42946417],
+        [  1.52253385,   3.68687158,   4.26127411, ..., -10.94084381,
+         -13.72436736, -12.56125728]]], shape=(1, 97, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-fe2ae75b-c2f0-482d-86d1-79414efd35ae' class='xr-section-summary-in' type='checkbox' checked /><label for='section-fe2ae75b-c2f0-482d-86d1-79414efd35ae' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-d766ff12-acc5-4e77-b474-53de80de7264' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d766ff12-acc5-4e77-b474-53de80de7264' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8d6943b2-40b2-4f2b-ae68-dc89b64cc2a6' class='xr-var-data-in' type='checkbox'><label for='data-8d6943b2-40b2-4f2b-ae68-dc89b64cc2a6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>1.0</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>10.16 10.37 10.57 ... 29.67 29.88</div><input id='attrs-ab499472-87a8-4433-a530-53f237319022' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ab499472-87a8-4433-a530-53f237319022' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d11ce0b0-5b5f-4ec8-bf9a-2ff8d9eef88d' class='xr-var-data-in' type='checkbox'><label for='data-d11ce0b0-5b5f-4ec8-bf9a-2ff8d9eef88d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.2053333333333338</dd></dl></div><div class='xr-var-data'><pre>array([10.164   , 10.369333, 10.574667, 10.78    , 10.985333, 11.190667,
        11.396   , 11.601333, 11.806667, 12.012   , 12.217333, 12.422667,
        12.628   , 12.833333, 13.038667, 13.244   , 13.449333, 13.654667,
        13.86    , 14.065333, 14.270667, 14.476   , 14.681333, 14.886667,
@@ -4521,7 +4523,7 @@ dl.xr-attrs {
        26.18    , 26.385333, 26.590667, 26.796   , 27.001333, 27.206667,
        27.412   , 27.617333, 27.822667, 28.028   , 28.233333, 28.438667,
        28.644   , 28.849333, 29.054667, 29.26    , 29.465333, 29.670667,
-       29.876   ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.15 0.45 0.75 ... 37.95 38.25</div><input id='attrs-329d6661-9282-4d29-a904-3c72cc6a12eb' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-329d6661-9282-4d29-a904-3c72cc6a12eb' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-39ad0d68-832a-47e2-a873-9cc53754f68d' class='xr-var-data-in' type='checkbox'><label for='data-39ad0d68-832a-47e2-a873-9cc53754f68d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3000000000000007</dd></dl></div><div class='xr-var-data'><pre>array([ 0.15,  0.45,  0.75,  1.05,  1.35,  1.65,  1.95,  2.25,  2.55,  2.85,
+       29.876   ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.15 0.45 0.75 ... 37.95 38.25</div><input id='attrs-78982032-d687-426b-b862-76cebafae606' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-78982032-d687-426b-b862-76cebafae606' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5b368722-8acf-4f40-9624-e46fcce02e45' class='xr-var-data-in' type='checkbox'><label for='data-5b368722-8acf-4f40-9624-e46fcce02e45' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3000000000000007</dd></dl></div><div class='xr-var-data'><pre>array([ 0.15,  0.45,  0.75,  1.05,  1.35,  1.65,  1.95,  2.25,  2.55,  2.85,
         3.15,  3.45,  3.75,  4.05,  4.35,  4.65,  4.95,  5.25,  5.55,  5.85,
         6.15,  6.45,  6.75,  7.05,  7.35,  7.65,  7.95,  8.25,  8.55,  8.85,
         9.15,  9.45,  9.75, 10.05, 10.35, 10.65, 10.95, 11.25, 11.55, 11.85,
@@ -4533,33 +4535,33 @@ dl.xr-attrs {
        27.15, 27.45, 27.75, 28.05, 28.35, 28.65, 28.95, 29.25, 29.55, 29.85,
        30.15, 30.45, 30.75, 31.05, 31.35, 31.65, 31.95, 32.25, 32.55, 32.85,
        33.15, 33.45, 33.75, 34.05, 34.35, 34.65, 34.95, 35.25, 35.55, 35.85,
-       36.15, 36.45, 36.75, 37.05, 37.35, 37.65, 37.95, 38.25])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-e5b6c280-a3c3-4be7-b8c1-26916ce48be8' class='xr-section-summary-in' type='checkbox' /><label for='section-e5b6c280-a3c3-4be7-b8c1-26916ce48be8' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>source :</span></dt><dd>https://doi.org/10.22002/f3y3k-em558</dd><dt><span>source_member :</span></dt><dd>data/human/S2R1.mat</dd><dt><span>reference_time :</span></dt><dd>0</dd><dt><span>motion_params :</span></dt><dd>                rot_x         rot_y     rot_z   trans_x   trans_y  \
+       36.15, 36.45, 36.75, 37.05, 37.35, 37.65, 37.95, 38.25])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-15996ec2-ea96-4b3f-8202-7a9df04bb715' class='xr-section-summary-in' type='checkbox' /><label for='section-15996ec2-ea96-4b3f-8202-7a9df04bb715' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>source :</span></dt><dd>https://doi.org/10.22002/f3y3k-em558</dd><dt><span>source_member :</span></dt><dd>data/human/S2R1.mat</dd><dt><span>reference_time :</span></dt><dd>0</dd><dt><span>motion_params :</span></dt><dd>                rot_x         rot_y     rot_z   trans_x   trans_y  \
 time                                                                
 0.000    0.000000e+00 -0.000000e+00  0.000000  0.000000  0.000000   
-1.614    8.448666e-22  3.462462e-21  0.000113 -0.018049 -0.033287   
-3.228    2.213239e-20  7.066976e-21 -0.000429 -0.013649 -0.037703   
-4.842    1.766535e-20  6.572126e-21  0.002249 -0.057629  0.008238   
-6.456    1.017427e-20  2.230746e-21  0.000514 -0.018774 -0.016230   
+1.614    2.275708e-20  1.691092e-21 -0.000113  0.018050 -0.037619   
+3.228    4.204360e-20 -3.628060e-22  0.000429  0.013652 -0.021224   
+4.842   -4.459516e-20  4.270513e-21 -0.002249  0.057726 -0.078129   
+6.456    8.968555e-21  4.822893e-22 -0.000514  0.018779 -0.035970   
 ...               ...           ...       ...       ...       ...   
-427.710  5.821676e-22  1.378785e-21  0.002377 -0.481876 -0.155766   
-429.324 -1.332713e-21  7.573270e-22  0.002686 -0.494557 -0.154785   
-430.938  8.598512e-21 -9.761615e-22  0.002658 -0.489751 -0.151716   
-432.552 -1.587010e-22 -2.153269e-21  0.002656 -0.486346 -0.150466   
-434.166  7.012562e-21 -3.538797e-22  0.002366 -0.478959 -0.152027   
+427.710 -1.953331e-20 -2.943374e-22 -0.002377  0.481985 -0.247054   
+429.324  1.079797e-20 -1.493779e-22 -0.002686  0.494695 -0.257933   
+430.938 -3.084885e-21 -1.509588e-21 -0.002658  0.489886 -0.253796   
+432.552  1.148340e-21  3.219297e-21 -0.002656  0.486482 -0.252439   
+434.166 -2.513507e-20  1.531188e-21 -0.002366  0.479066 -0.242878   
 
               trans_z   mean_fd    max_fd    rms_fd  final_metric_value  \
 time                                                                      
 0.000    0.000000e+00  0.038819  0.041227  0.038837           -1.000000   
-1.614   -4.957470e-20  0.010275  0.020129  0.011103           -0.955446   
-3.228    3.076476e-19  0.032327  0.067029  0.035230           -0.965001   
-4.842    2.264160e-19  0.021443  0.047030  0.023788           -0.925374   
-6.456    1.607351e-19  0.029920  0.043512  0.030456           -0.959677   
+1.614    4.231808e-19  0.010275  0.020129  0.011103           -0.955446   
+3.228    8.483353e-19  0.032327  0.067029  0.035230           -0.965001   
+4.842   -9.765201e-19  0.021443  0.047030  0.023788           -0.925374   
+6.456    1.703840e-19  0.029920  0.043512  0.030456           -0.959677   
 ...               ...       ...       ...       ...                 ...   
-427.710 -1.490982e-20  0.008720  0.014461  0.009051           -0.722658   
-429.324 -4.119344e-20  0.005579  0.006129  0.005584           -0.722090   
-430.938  1.904969e-19  0.003594  0.003639  0.003594           -0.724732   
-432.552  3.828800e-20  0.004982  0.010523  0.005636           -0.736636   
-434.166  1.468838e-19  0.000000  0.000000  0.000000           -0.743093   
+427.710 -3.863102e-19  0.008720  0.014461  0.009051           -0.722658   
+429.324  2.195914e-19  0.005579  0.006129  0.005584           -0.722090   
+430.938 -3.301300e-20  0.003594  0.003639  0.003594           -0.724732   
+432.552 -3.859090e-20  0.004982  0.010523  0.005636           -0.736636   
+434.166 -5.336707e-19  0.000000  0.000000  0.000000           -0.743093   
 
          n_iterations     status  
 time                              
@@ -4620,7 +4622,7 @@ clearly than the whole-plane average.</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../create_fusi_dataarray_from_mat_output_light/cell_16_0_light.png#only-light" data-type="image" data-title="Example output from cell 16, image 0" data-gallery="light"><img src="../create_fusi_dataarray_from_mat_output_light/cell_16_0_light.png#only-light" alt="Example output from cell 16, image 0"></a><a class="glightbox" href="../create_fusi_dataarray_from_mat_output_dark/cell_16_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 16, image 0" data-gallery="dark"><img src="../create_fusi_dataarray_from_mat_output_dark/cell_16_0_dark.png#only-dark" alt="Example output from cell 16, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 61.2 s</p>
+<p><strong>Total running time:</strong> 59.7 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/issue-149-231-zyx?urlpath=lab/tree/docs/examples/01_io/02_create_fusi_dataarray_from_mat.py">Launch in Binder</a> <a class="md-button" href="../create_fusi_dataarray_from_mat.py">Download .py</a> <a class="md-button" href="../create_fusi_dataarray_from_mat.ipynb">Download .ipynb</a></p>
 <div class="footnote">
 <hr />
