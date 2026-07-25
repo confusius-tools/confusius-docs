@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/examples/_built/decoding/searchlight_speed/">
       
       
-        <link rel="prev" href="../../connectivity/atlas_seed_map/">
+        <link rel="prev" href="../../glm/first_level_continuous/">
       
       
         <link rel="next" href="../../../../changelog/">
@@ -400,6 +400,8 @@
       
         
           
+        
+      
         
       
         
@@ -2069,6 +2071,8 @@
       
         
       
+        
+      
     
     
     
@@ -2649,6 +2653,129 @@
                 
   
   
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  GLM
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+  GLM
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glm/first_level/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  First-level GLM analysis of fUSI data
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glm/first_level_continuous/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Lagged first-level GLM analysis of fUSI data with a continuous regressor
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -2674,10 +2801,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
             
   
   
@@ -2694,8 +2821,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3149,6 +3276,8 @@
       
         
       
+        
+      
     
     
     
@@ -3221,41 +3350,40 @@ actually want to make.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">colorcet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cc</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">RidgeCV</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;rat75&quot;</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">session</span> <span class="o">=</span> <span class="s2">&quot;20220524&quot;</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">acq</span> <span class="o">=</span> <span class="s2">&quot;slice32&quot;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">RidgeCV</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Adapt background color to the current Matplotlib style.</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">bg_color</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.facecolor&quot;</span><span class="p">])</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;rat75&quot;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">session</span> <span class="o">=</span> <span class="s2">&quot;20220524&quot;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">acq</span> <span class="o">=</span> <span class="s2">&quot;slice32&quot;</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_cybis_pereira_2026</span><span class="p">(</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">subjects</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">sessions</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">acqs</span><span class="o">=</span><span class="n">acq</span><span class="p">,</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">session_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">stem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield&quot;</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="n">session_dir</span> <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_pwd.nii.gz&quot;</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">motion_path</span> <span class="o">=</span> <span class="n">session_dir</span> <span class="o">/</span> <span class="s2">&quot;motion&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">_tracksys-DLC_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_motion.tsv&quot;</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="n">data</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_cybis_pereira_2026</span><span class="p">(</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">datasets</span><span class="o">=</span><span class="s2">&quot;rawdata&quot;</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">subjects</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">sessions</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">acqs</span><span class="o">=</span><span class="n">acq</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">session_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">bids_root</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">stem</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">_ses-</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_task-openfield&quot;</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">pwd_path</span> <span class="o">=</span> <span class="n">session_dir</span> <span class="o">/</span> <span class="s2">&quot;fusi&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_pwd.nii.gz&quot;</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">motion_path</span> <span class="o">=</span> <span class="n">session_dir</span> <span class="o">/</span> <span class="s2">&quot;motion&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2">_tracksys-DLC_acq-</span><span class="si">{</span><span class="n">acq</span><span class="si">}</span><span class="s2">_motion.tsv&quot;</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">data</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">If you use this dataset in your work, please cite the following source:
 
@@ -3806,7 +3934,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-rat75_ses-20220524_task-openfield_acq-slice32_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 1440</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-e80243d8-fc30-4c3b-9718-bead322ebfac' class='xr-array-in' type='checkbox' ><label for='section-e80243d8-fc30-4c3b-9718-bead322ebfac' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>192.7 197.2 226.9 229.9 278.7 278.7 ... 61.31 60.61 64.25 65.22 55.23</span></div><div class='xr-array-data'><pre>array([[[[ 192.71379271,  197.1830354 ,  226.89889524, ...,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'>&#x27;sub-rat75_ses-20220524_task-openfield_acq-slice32_pwd&#x27;</div><ul class='xr-dim-list'><li><span class='xr-has-index'>time</span>: 1440</li><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-5b15faf5-0c88-4547-b8fa-6d1d5cc1600c' class='xr-array-in' type='checkbox' ><label for='section-5b15faf5-0c88-4547-b8fa-6d1d5cc1600c' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>192.7 197.2 226.9 229.9 278.7 278.7 ... 61.31 60.61 64.25 65.22 55.23</span></div><div class='xr-array-data'><pre>array([[[[ 192.71379271,  197.1830354 ,  226.89889524, ...,
            135.64715222,  117.71528254,  111.25769231],
          [ 269.26946815,  218.92078634,  218.29339147, ...,
            153.14631565,  135.36809639,  122.19806324],
@@ -3846,8 +3974,8 @@ dl.xr-attrs {
             65.18981048,   79.52728571,   72.33484683],
          [  53.38009269,   51.48751045,   64.40242875, ...,
             64.25058854,   65.21577368,   55.2309584 ]]]],
-      shape=(1440, 1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-bf41e42f-28df-4b73-baec-ff7c1814797a' class='xr-section-summary-in' type='checkbox' checked /><label for='section-bf41e42f-28df-4b73-baec-ff7c1814797a' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.0 1.5 ... 719.0 719.5 720.0</div><input id='attrs-df47475b-c66e-4e13-8310-366f6a1539d4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-df47475b-c66e-4e13-8310-366f6a1539d4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cecdca74-298e-4d88-b27b-ca61ac76939e' class='xr-var-data-in' type='checkbox'><label for='data-cecdca74-298e-4d88-b27b-ca61ac76939e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.5000249999999369</dd></dl></div><div class='xr-var-data'><pre>array([5.000000e-01, 1.000025e+00, 1.500025e+00, ..., 7.190184e+02,
-       7.195184e+02, 7.200184e+02], shape=(1440,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-1c26066a-0f01-4c17-bbee-327bf3c73e8d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1c26066a-0f01-4c17-bbee-327bf3c73e8d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c1d02fd4-d293-4759-b925-f777737c8f37' class='xr-var-data-in' type='checkbox'><label for='data-c1d02fd4-d293-4759-b925-f777737c8f37' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-3c487781-6a29-4686-818a-6bdc88f0cb7a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3c487781-6a29-4686-818a-6bdc88f0cb7a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-511c40f0-41b6-4f88-9d63-a137cad9ab7b' class='xr-var-data-in' type='checkbox'><label for='data-511c40f0-41b6-4f88-9d63-a137cad9ab7b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
+      shape=(1440, 1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-4ea812a1-c3f3-4517-8ec6-dedfe910f171' class='xr-section-summary-in' type='checkbox' checked /><label for='section-4ea812a1-c3f3-4517-8ec6-dedfe910f171' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.0 1.5 ... 719.0 719.5 720.0</div><input id='attrs-1920df80-74e6-4fd7-a20a-d8bfea0c650c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1920df80-74e6-4fd7-a20a-d8bfea0c650c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1f30e1f1-eac2-40c0-8fb5-3b14216f8b0d' class='xr-var-data-in' type='checkbox'><label for='data-1f30e1f1-eac2-40c0-8fb5-3b14216f8b0d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>s</dd><dt><span>volume_acquisition_reference :</span></dt><dd>start</dd><dt><span>volume_acquisition_duration :</span></dt><dd>0.5000249999999369</dd></dl></div><div class='xr-var-data'><pre>array([5.000000e-01, 1.000025e+00, 1.500025e+00, ..., 7.190184e+02,
+       7.195184e+02, 7.200184e+02], shape=(1440,))</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-96881e17-6fa0-4fc9-8916-4a77d735ef7e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-96881e17-6fa0-4fc9-8916-4a77d735ef7e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7b08407b-5362-4c54-bb10-88164376fb55' class='xr-var-data-in' type='checkbox'><label for='data-7b08407b-5362-4c54-bb10-88164376fb55' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-397eb925-8e31-4802-b4bf-917c939ae328' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-397eb925-8e31-4802-b4bf-917c939ae328' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d04d516c-0bf0-4b50-920e-0be0b2ab9790' class='xr-var-data-in' type='checkbox'><label for='data-d04d516c-0bf0-4b50-920e-0be0b2ab9790' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
         5.68992,  5.78848,  5.88704,  5.9856 ,  6.08416,  6.18272,  6.28128,
         6.37984,  6.4784 ,  6.57696,  6.67552,  6.77408,  6.87264,  6.9712 ,
         7.06976,  7.16832,  7.26688,  7.36544,  7.464  ,  7.56256,  7.66112,
@@ -3862,7 +3990,7 @@ dl.xr-attrs {
        13.27904, 13.3776 , 13.47616, 13.57472, 13.67328, 13.77184, 13.8704 ,
        13.96896, 14.06752, 14.16608, 14.26464, 14.3632 , 14.46176, 14.56032,
        14.65888, 14.75744, 14.856  , 14.95456, 15.05312, 15.15168, 15.25024,
-       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-3ee6ac19-6454-48a5-9b22-6fe9d32e5a29' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3ee6ac19-6454-48a5-9b22-6fe9d32e5a29' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-9e7774f9-4da2-4b0f-81a5-f3b5a4c4cae6' class='xr-var-data-in' type='checkbox'><label for='data-9e7774f9-4da2-4b0f-81a5-f3b5a4c4cae6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
+       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-c83b59bc-c2fc-401c-8303-9994cdf03756' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c83b59bc-c2fc-401c-8303-9994cdf03756' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3376548d-9a59-463d-921e-6bbc7ccfa177' class='xr-var-data-in' type='checkbox'><label for='data-3376548d-9a59-463d-921e-6bbc7ccfa177' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
        -5.995, -5.885, -5.775, -5.665, -5.555, -5.445, -5.335, -5.225, -5.115,
        -5.005, -4.895, -4.785, -4.675, -4.565, -4.455, -4.345, -4.235, -4.125,
        -4.015, -3.905, -3.795, -3.685, -3.575, -3.465, -3.355, -3.245, -3.135,
@@ -3876,7 +4004,7 @@ dl.xr-attrs {
         3.905,  4.015,  4.125,  4.235,  4.345,  4.455,  4.565,  4.675,  4.785,
         4.895,  5.005,  5.115,  5.225,  5.335,  5.445,  5.555,  5.665,  5.775,
         5.885,  5.995,  6.105,  6.215,  6.325,  6.435,  6.545,  6.655,  6.765,
-        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-92deb2cb-8d23-4b50-b079-a3bc55034b5d' class='xr-section-summary-in' type='checkbox' /><label for='section-92deb2cb-8d23-4b50-b079-a3bc55034b5d' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(20)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-8634c638-9764-4b88-bea5-a7b99f005921' class='xr-section-summary-in' type='checkbox' /><label for='section-8634c638-9764-4b88-bea5-a7b99f005921' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(20)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd></dl></div></li></ul></div></div>
@@ -4573,7 +4701,7 @@ dl.xr-attrs {
   filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
   stroke-width: 0.8px;
 }
-</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-ce6b2054-2b04-49e9-895f-9d992114751b' class='xr-array-in' type='checkbox' ><label for='section-ce6b2054-2b04-49e9-895f-9d992114751b' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-0.04186 -0.04583 -0.05186 -0.0598 -0.06268 ... nan nan nan nan nan</span></div><div class='xr-array-data'><pre>array([[[-0.04185839, -0.04582578, -0.05186282, ..., -0.15304316,
+</style><div class='xr-wrap'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-obj-name'></div><ul class='xr-dim-list'><li><span class='xr-has-index'>z</span>: 1</li><li><span class='xr-has-index'>y</span>: 112</li><li><span class='xr-has-index'>x</span>: 128</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-4eaeaef0-77ac-43cd-8b8e-7ee8bd34cd39' class='xr-array-in' type='checkbox' ><label for='section-4eaeaef0-77ac-43cd-8b8e-7ee8bd34cd39' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>-0.04186 -0.04583 -0.05186 -0.0598 -0.06268 ... nan nan nan nan nan</span></div><div class='xr-array-data'><pre>array([[[-0.04185839, -0.04582578, -0.05186282, ..., -0.15304316,
          -0.18103184, -0.16589569],
         [-0.04157416, -0.04360269, -0.04272866, ..., -0.14518918,
          -0.49228095, -0.58586543],
@@ -4585,7 +4713,7 @@ dl.xr-attrs {
         [        nan,         nan,         nan, ...,         nan,
                  nan,         nan],
         [        nan,         nan,         nan, ...,         nan,
-                 nan,         nan]]], shape=(1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-3b5d5307-22ba-4327-831a-c6da81c852ee' class='xr-section-summary-in' type='checkbox' checked /><label for='section-3b5d5307-22ba-4327-831a-c6da81c852ee' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-51ca2a60-717a-4606-90c0-73e0b251ba22' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-51ca2a60-717a-4606-90c0-73e0b251ba22' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-78626bff-21ae-4654-b67d-680f4689d28a' class='xr-var-data-in' type='checkbox'><label for='data-78626bff-21ae-4654-b67d-680f4689d28a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-54b4cb4f-49e4-42a1-80f9-38acf7016082' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-54b4cb4f-49e4-42a1-80f9-38acf7016082' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-290605e2-2460-4300-afd7-f406fdeb8e9e' class='xr-var-data-in' type='checkbox'><label for='data-290605e2-2460-4300-afd7-f406fdeb8e9e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
+                 nan,         nan]]], shape=(1, 112, 128))</pre></div></div></li><li class='xr-section-item'><input id='section-98122b47-d9cf-4494-a289-9f5215903863' class='xr-section-summary-in' type='checkbox' checked /><label for='section-98122b47-d9cf-4494-a289-9f5215903863' class='xr-section-summary' title='Expand/collapse section'>Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>z</span></div><div class='xr-var-dims'>(z)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-3dca1384-f798-4047-9056-0de2d397235a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3dca1384-f798-4047-9056-0de2d397235a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f631ba67-6df7-4b01-b723-830df4ea9dbc' class='xr-var-data-in' type='checkbox'><label for='data-f631ba67-6df7-4b01-b723-830df4ea9dbc' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.3999999761581421</dd></dl></div><div class='xr-var-data'><pre>array([0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>y</span></div><div class='xr-var-dims'>(y)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>5.0 5.099 5.197 ... 15.84 15.94</div><input id='attrs-deb5bc64-edfb-4f48-aabb-e7e0c8656952' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-deb5bc64-edfb-4f48-aabb-e7e0c8656952' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2c46a404-00ca-485c-a15b-3cac01b34e1d' class='xr-var-data-in' type='checkbox'><label for='data-2c46a404-00ca-485c-a15b-3cac01b34e1d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.09855999797582626</dd></dl></div><div class='xr-var-data'><pre>array([ 5.     ,  5.09856,  5.19712,  5.29568,  5.39424,  5.4928 ,  5.59136,
         5.68992,  5.78848,  5.88704,  5.9856 ,  6.08416,  6.18272,  6.28128,
         6.37984,  6.4784 ,  6.57696,  6.67552,  6.77408,  6.87264,  6.9712 ,
         7.06976,  7.16832,  7.26688,  7.36544,  7.464  ,  7.56256,  7.66112,
@@ -4600,7 +4728,7 @@ dl.xr-attrs {
        13.27904, 13.3776 , 13.47616, 13.57472, 13.67328, 13.77184, 13.8704 ,
        13.96896, 14.06752, 14.16608, 14.26464, 14.3632 , 14.46176, 14.56032,
        14.65888, 14.75744, 14.856  , 14.95456, 15.05312, 15.15168, 15.25024,
-       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-c441a991-a464-442b-bb0a-f46f1c3b5856' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c441a991-a464-442b-bb0a-f46f1c3b5856' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b0ab8147-2b2f-4370-bba5-7199f36974f8' class='xr-var-data-in' type='checkbox'><label for='data-b0ab8147-2b2f-4370-bba5-7199f36974f8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
+       15.3488 , 15.44736, 15.54592, 15.64448, 15.74304, 15.8416 , 15.94016])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>x</span></div><div class='xr-var-dims'>(x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-6.985 -6.875 ... 6.875 6.985</div><input id='attrs-e339accf-ca53-4e83-8100-6979a62e0312' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e339accf-ca53-4e83-8100-6979a62e0312' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a654a3a7-449c-481f-bdca-b360f928dc55' class='xr-var-data-in' type='checkbox'><label for='data-a654a3a7-449c-481f-bdca-b360f928dc55' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>mm</dd><dt><span>voxdim :</span></dt><dd>0.10999999940395355</dd></dl></div><div class='xr-var-data'><pre>array([-6.985, -6.875, -6.765, -6.655, -6.545, -6.435, -6.325, -6.215, -6.105,
        -5.995, -5.885, -5.775, -5.665, -5.555, -5.445, -5.335, -5.225, -5.115,
        -5.005, -4.895, -4.785, -4.675, -4.565, -4.455, -4.345, -4.235, -4.125,
        -4.015, -3.905, -3.795, -3.685, -3.575, -3.465, -3.355, -3.245, -3.135,
@@ -4614,7 +4742,7 @@ dl.xr-attrs {
         3.905,  4.015,  4.125,  4.235,  4.345,  4.455,  4.565,  4.675,  4.785,
         4.895,  5.005,  5.115,  5.225,  5.335,  5.445,  5.555,  5.665,  5.775,
         5.885,  5.995,  6.105,  6.215,  6.325,  6.435,  6.545,  6.655,  6.765,
-        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-60a00ccc-0628-4feb-b863-234875593541' class='xr-section-summary-in' type='checkbox' /><label for='section-60a00ccc-0628-4feb-b863-234875593541' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(22)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
+        6.875,  6.985])</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f775466b-2f52-451d-8bb1-d5448a1aa3c3' class='xr-section-summary-in' type='checkbox' /><label for='section-f775466b-2f52-451d-8bb1-d5448a1aa3c3' class='xr-section-summary' title='Expand/collapse section'>Attributes: <span>(22)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>qform_code :</span></dt><dd>1</dd><dt><span>manufacturer :</span></dt><dd>Iconeus</dd><dt><span>manufacturers_model_name :</span></dt><dd>Iconeus One</dd><dt><span>probe_type :</span></dt><dd>linear</dd><dt><span>probe_model :</span></dt><dd>IcoPrime light</dd><dt><span>probe_central_frequency :</span></dt><dd>15.625</dd><dt><span>probe_number_of_elements :</span></dt><dd>128</dd><dt><span>probe_pitch :</span></dt><dd>0.11</dd><dt><span>probe_radius_of_curvature :</span></dt><dd>0</dd><dt><span>ProbeElevationAperture :</span></dt><dd>1.5</dd><dt><span>ProbeElevationFocus :</span></dt><dd>8</dd><dt><span>pulse_repetition_frequency :</span></dt><dd>3200.0</dd><dt><span>plane_wave_angles :</span></dt><dd>[-7.0, -5.0, -3.0, -1.0, 1.0, 3.0, 5.0, 7.0]</dd><dt><span>IsHadamard :</span></dt><dd>True</dd><dt><span>UltrafastSamplingFrequency :</span></dt><dd>400.0</dd><dt><span>probe_voltage :</span></dt><dd>15</dd><dt><span>clutter_filter_window_duration :</span></dt><dd>200.0</dd><dt><span>clutter_filters :</span></dt><dd>[&#x27;svd:remove_first_60_components&#x27;]</dd><dt><span>power_doppler_integration_duration :</span></dt><dd>200.0</dd><dt><span>affines :</span></dt><dd>{&#x27;physical_to_qform&#x27;: array([[1., 0., 0., 0.],
        [0., 1., 0., 0.],
        [0., 0., 1., 0.],
        [0., 0., 0., 1.]])}</dd><dt><span>units :</span></dt><dd>R²</dd><dt><span>long_name :</span></dt><dd>Searchlight CV score</dd></dl></div></li></ul></div></div>
@@ -4624,7 +4752,7 @@ dl.xr-attrs {
 <p>We now fit a <abbr title="General Linear Model">GLM</abbr> with the design matrix built earlier, so it tests the same
 <abbr title="Hemodynamic Response Function">HRF</abbr>-convolved speed regressor against the same drift model, on data smoothed with the
 same kernel.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">smoothing_fwhm</span><span class="o">=</span><span class="n">smoothing_fwhm</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">smoothing_fwhm</span><span class="o">=</span><span class="n">smoothing_fwhm</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">design_matrices</span><span class="o">=</span><span class="n">design_matrix</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">z_scores</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">compute_contrast</span><span class="p">(</span><span class="s2">&quot;speed&quot;</span><span class="p">)</span>
 </span></code></pre></div>
@@ -4634,7 +4762,7 @@ below zero mean the local neighborhood predicts the speed regressor no better th
 fold mean; we clip the color scale at zero. The <abbr title="General Linear Model">GLM</abbr> reports a z-score for the speed
 contrast. Both maps cover the whole plane.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">is_dark_theme</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">bg_color</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">searchlight_cmap</span> <span class="o">=</span> <span class="s2">&quot;inferno&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="n">cc</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">CET_L17</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">searchlight_cmap</span> <span class="o">=</span> <span class="s2">&quot;inferno&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="s2">&quot;inferno_r&quot;</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">glm_cmap</span> <span class="o">=</span> <span class="s2">&quot;berlin&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="s2">&quot;coolwarm&quot;</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">background_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span>
@@ -4684,7 +4812,7 @@ is univariate and asks, at each voxel, whether that voxel's signal tracks the sp
 regressor. The searchlight is multivariate and cross-validated, and asks whether the
 local pattern around each voxel predicts the regressor in held-out blocks of time.</p>
 <hr />
-<p><strong>Total running time:</strong> 88.3 s</p>
+<p><strong>Total running time:</strong> 83.8 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-feat-searchlight-decoding?urlpath=lab/tree/docs/examples/06_decoding/01_searchlight_speed.py">Launch in Binder</a> <a class="md-button" href="../searchlight_speed.py">Download .py</a> <a class="md-button" href="../searchlight_speed.ipynb">Download .ipynb</a></p>
 
 

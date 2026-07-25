@@ -22,7 +22,6 @@
 from functools import partial
 from pathlib import Path
 
-import colorcet as cc
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -242,7 +241,7 @@ searchlight.scores_
 # same kernel.
 
 # %%
-glm = cf.glm.FirstLevelModel(smoothing_fwhm=smoothing_fwhm)
+glm = cf.glm.FirstLevelModel(smoothing_fwhm=smoothing_fwhm, mask=mask)
 glm.fit(data, design_matrices=design_matrix)
 z_scores = glm.compute_contrast("speed")
 
@@ -254,9 +253,9 @@ z_scores = glm.compute_contrast("speed")
 # fold mean; we clip the color scale at zero. The GLM reports a z-score for the speed
 # contrast. Both maps cover the whole plane.
 
-# %%
+# %% tags=["thumbnail"]
 is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-searchlight_cmap = "inferno" if is_dark_theme else cc.cm.CET_L17
+searchlight_cmap = "inferno" if is_dark_theme else "inferno_r"
 glm_cmap = "berlin" if is_dark_theme else "coolwarm"
 
 background_data = data.mean("time").fusi.scale.db()
