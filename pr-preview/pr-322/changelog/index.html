@@ -3816,9 +3816,15 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Renamed <code>validate_fusi_dataarray</code> to <code>validate_fusi</code>, <code>validate_iq_dataarray</code>
+  to <code>validate_iq</code>, <code>validate_bspline_dataarray</code> to <code>validate_bspline</code>, and
+  <code>validate_atlas_dataset</code> to <code>validate_atlas</code>; renamed the <abbr title="In-phase and Quadrature">IQ</abbr> validator option
+  <code>require_attrs</code> to <code>require_velocity_attrs</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li><abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays now require explicit 3D spatial geometry with <code>z</code>, <code>y</code>, and <code>x</code>
-  dimensions. Any singleton spatial dimension must carry <code>voxdim</code> metadata because
-  spacing cannot be inferred from a single coordinate point. Scalar-indexed slices are
+  dimensions. Spatial coordinates must carry <code>units</code> metadata, time coordinates must
+  carry <code>units</code> metadata when present, and singleton spatial dimensions must carry
+  <code>voxdim</code> metadata because spacing cannot be inferred from a single coordinate point. Scalar-indexed slices are
   recovered as singleton dimensions at relevant API boundaries; use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to add singleton
   axes and coordinate metadata from raw 2D or 2D+t arrays
@@ -3826,6 +3832,8 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_iq&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_iq"><code>ensure_iq</code></a> to canonicalize and validate <abbr title="In-phase and Quadrature">IQ</abbr>
+  inputs with one call (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> (also exposed
   as <code>confusius.create_fusi_dataarray</code>) to build a canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a raw
   array plus higher-level metadata (<code>dt</code>, <code>dz</code>, <code>dy</code>, <code>dx</code>, and axis origins). It
@@ -3877,7 +3885,7 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_atlas&lt;/span&gt;" href="../api/io/#confusius.io.load_atlas"><code>load_atlas</code></a>. The region <code>.obj</code> meshes are bundled into the
   Zarr store, so a reloaded atlas renders meshes without the BrainGlobe cache
   (<a href="https://github.com/confusius-tools/confusius/pull/274">#274</a>).</li>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_atlas_dataset&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_atlas_dataset"><code>validate_atlas_dataset</code></a> checks that a
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_atlas&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_atlas"><code>validate_atlas_dataset</code></a> checks that a
   Dataset is a well-formed atlas
   (<a href="https://github.com/confusius-tools/confusius/pull/274">#274</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> now opens binary Iconeus SCAN v2 files in
@@ -4289,7 +4297,7 @@
   called with <code>keep_diagnostics=True</code> to avoid retaining the full optimizer metric
   trace by default (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
 <li>Renamed <code>validate_iq</code> to
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a>
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq"><code>validate_iq_dataarray</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 </ul>
 <h3 id="enhancements_5"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements_5" title="Permanent link">&para;</a></h3>
@@ -4313,10 +4321,10 @@
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>
-<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi_dataarray&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_fusi_dataarray"><code>validate_fusi_dataarray</code></a>
+<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_fusi"><code>validate_fusi_dataarray</code></a>
   validator and refactored <abbr title="In-phase and Quadrature">IQ</abbr>/registration validation to use it. Core dimension
-  coordinates are now validated as 1D, numeric, finite, and strictly increasing,
-  while extra/non-dimension coordinates remain allowed
+  coordinates are now validated as 1D, numeric, finite, and strictly increasing, while
+  extra/non-dimension coordinates remain allowed
   (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 <li>Added shared <code>fontsize</code> parameter to <code>plot_volume</code>, <code>plot_contours</code>, and carpet
   plotting entry points so text sizing is consistent across all plotting APIs
