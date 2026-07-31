@@ -3765,6 +3765,9 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>NIfTI and EchoFrame loading now stay lazy when backed by Dask arrays, avoiding
+  unnecessary data reads during file opening
+  (<a href="https://github.com/confusius-tools/confusius/pull/343">#343</a>).</li>
 <li>Confound regression now z-scores confounds when <code>standardize_confounds=True</code>, so
   motion-confound cleaning removes fluctuations without regressing baseline-related
   signal by default (<a href="https://github.com/confusius-tools/confusius/pull/351">#351</a>).</li>
