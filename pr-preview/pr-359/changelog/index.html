@@ -3793,6 +3793,10 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> now follows the <abbr title="Brain Imaging Data Structure">BIDS</abbr> inheritance principle
+  for matching JSON sidecars, so shared metadata stored at the dataset root or parent
+  folders is preserved when loading recordings
+  (<a href="https://github.com/confusius-tools/confusius/pull/359">#359</a>).</li>
 <li>NIfTI loading now keeps nibabel data lazy under Dask, EchoFrame <code>.dat</code> loading is now
   lazily chunked, and EchoFrame metadata reads current <code>xAxis</code>/<code>zAxis</code> fields
   (<a href="https://github.com/confusius-tools/confusius/pull/343">#343</a>).</li>
