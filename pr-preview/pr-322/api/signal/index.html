@@ -3698,8 +3698,10 @@ signals exactly. If not provided, no confound regression is applied.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to standardize confounds by their maximum absolute value before
-regression. This improves numerical stability while preserving constant terms.</p>
+            <p>Whether to z-score confounds before regression. If <code>False</code>, confounds are
+divided by their maximum absolute value for numerical stability without
+centering. When <code>filter_method="cosine"</code>, confounds are not z-scored because
+the cosine drift matrix includes a constant column.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4708,8 +4710,9 @@ the default coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=
 )
           –
           <div class="doc-md-description">
-            <p>Whether to standardize confounds by their maximum absolute value before
-regression. This improves numerical stability while preserving constant terms.</p>
+            <p>Whether to z-score confounds before regression. If <code>False</code>, confounds are
+divided by their maximum absolute value for numerical stability without
+centering.</p>
           </div>
         </li>
     </ul>
