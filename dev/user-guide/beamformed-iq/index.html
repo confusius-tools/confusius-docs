@@ -2432,6 +2432,8 @@
       
         
       
+        
+      
     
     
     
@@ -2492,6 +2494,33 @@
     
   
   ConfUSIus and Xarray 101
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Create a fUSI DataArray from a MAT file
 
     
   </span>
@@ -3697,28 +3726,27 @@ sampling rate, the <strong>compound frequency</strong>, is the PRF divided by th
 typically hundreds of Hz. </p>
 <h3 id="expected-data-structure">Expected Data Structure<a class="headerlink" href="#expected-data-structure" title="Permanent link">&para;</a></h3>
 <p>Beamformed IQ data in ConfUSIus should be a complex-valued Xarray DataArray with
-dimensions <code>(time, z, y, x)</code>, where <code>time</code> is the slow-time dimension and <code>(z, y, x)</code>
-are the spatial dimensions. ConfUSIus typically adopts the following convention for the
+dimensions exactly ordered as <code>(time, z, y, x)</code>, where <code>time</code> is the slow-time
+dimension and <code>(z, y, x)</code> are the spatial dimensions. IQ processing works on temporal
+blocks and flattens the spatial axes, so this stricter order keeps the data layout
+unambiguous and efficient. ConfUSIus typically adopts the following convention for the
 spatial dimensions:</p>
 <ul>
 <li><code>z</code>: Elevation dimension (out-of-plane dimension for linear arrays).</li>
 <li><code>y</code>: Axial dimension (depth dimension).</li>
 <li><code>x</code>: Lateral dimension (dimension along the transducer array).</li>
 </ul>
-<p>Additionally, ConfUSIus expects certain metadata attributes to be present:</p>
+<p>Additionally, IQ processing needs timing metadata. Prefer storing the acquisition
+window duration on the <code>time</code> coordinate as
+<code>time.attrs["volume_acquisition_duration"]</code>; legacy datasets may instead provide
+<code>compound_sampling_frequency</code> as scanner provenance. Axial velocity estimation also
+requires these DataArray attributes:</p>
 <ul>
-<li><code>compound_sampling_frequency</code>: Effective sampling frequency of the IQ data (Hz).</li>
 <li><code>transmit_frequency</code>: Frequency of the transmitted ultrasound pulse (Hz).</li>
 <li><code>beamforming_sound_velocity</code>: Speed of sound used for beamforming (m/s).</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Loading IQ data from unsupported formats</p>
-<p>If you've loaded IQ data from an unsupported format (i.e., not using ConfUSIus
-converters), use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq_dataarray&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_iq_dataarray"><code>validate_iq_dataarray</code></a> to check that your
-data has the required structure and attributes. See <a href="../io/#other-systems">Other Systems</a>
-for details.</p>
-</div>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<p>Here is what a valid IQ DataArray looks like once loaded:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_iq.zarr&quot;</span><span class="p">)</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span>
@@ -3739,6 +3767,22 @@ for details.</p>
 <code>compound_sampling_frequency</code> of 500 Hz. This means each IQ sample (compound volume)
 results from combining 30 individual pulses, giving an effective temporal sampling
 period of 2 ms rather than 67 μs.</p>
+<p>If your acquisition system isn't directly supported by ConfUSIus, see
+<a href="../io/#other-systems">Other Systems</a> for how to wrap a custom complex array as an IQ
+DataArray.</p>
+<div class="admonition question">
+<p class="admonition-title">Finding metadata values</p>
+<p>If you're unsure about the correct values:</p>
+<ul>
+<li><code>volume_acquisition_duration</code>: Check your acquisition software settings. For
+  regularly sampled IQ, this is usually the inverse effective volume rate.</li>
+<li><code>transmit_frequency</code>: Found in your probe specifications or acquisition
+  settings. Generally around 5-10 MHz for clinical probes, and 12-20 MHz for
+  high-frequency probes used in small animal imaging.</li>
+<li><code>beamforming_sound_velocity</code>: Typically 1540 m/s for brain tissues, but may vary
+  with temperature and tissue type.</li>
+</ul>
+</div>
 <h2 id="how-confusius-processes-iq-data">How ConfUSIus Processes IQ Data<a class="headerlink" href="#how-confusius-processes-iq-data" title="Permanent link">&para;</a></h2>
 <p>ConfUSIus offers a flexible framework for processing IQ data using sliding windows. At
 its core is the <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> function, which
