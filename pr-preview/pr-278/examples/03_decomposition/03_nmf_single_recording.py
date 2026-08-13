@@ -47,6 +47,7 @@ bids_root = cf.datasets.fetch_nunez_elizalde_2022(
     acqs="slice03",
 )
 
+# %%
 pwd_path = (
     Path(bids_root)
     / "sub-CR022"
@@ -100,7 +101,7 @@ data_nmf = xr.concat(
 #
 # - [`maps_`][confusius.decomposition.NMF]: non-negative spatial maps. Because we split
 #   the input into positive and negative channels, the maps here have shape
-#   `(component, sign, z, y, x)`.
+#   `(component, sign, k, j, i)`.
 # - [`fit_transform`][confusius.decomposition.NMF.fit_transform]: non-negative time
 #   courses of shape `(time, component)`.
 
@@ -187,7 +188,7 @@ _ = fig.suptitle(
 
 # %%
 nmf_s = cf.decomposition.NMF(
-    n_components=10, mode="spatial", random_state=0, max_iter=500
+    n_components=10, mode="spatial", random_state=0, max_iter=1000
 )
 signals_s = nmf_s.fit_transform(data_nmf)
 signals_s

@@ -47,7 +47,7 @@ bids_root = cf.datasets.fetch_nunez_elizalde_2022(
 # function reads any compatible fUSI file (NIfTI, Iconeus SCAN, Zarr, etc.) and returns
 # a [DataArray][xarray.DataArray] with the data values, coordinates, and metadata all in
 # one instance. In the recording representation below, note the named dimensions,
-# physical coordinates, and representative acquisition attributes attached to the array.
+# world coordinates, and representative acquisition attributes attached to the array.
 
 # %%
 pwd_path = (
@@ -100,7 +100,7 @@ first_50_volumes = data.isel(time=slice(0, 50))
 first_50_volumes
 
 # %% [markdown]
-# Here we define a region of interest (ROI) in physical coordinates. This is often more
+# Here we define a region of interest (ROI) in world coordinates. This is often more
 # meaningful than index-based slicing because the bounds are expressed directly in
 # physical units (e.g., millimeters) rather than in terms of array indices, which may
 # not be as intuitive to interpret.
@@ -114,11 +114,14 @@ roi
 #
 # To summarize the ROI over time, we average over the spatial dimensions. With Xarray,
 # reductions such as [`.mean`][xarray.DataArray.mean] take dimension names like
-# `("z", "y", "x")` rather than integer axis indices, which makes the intent much
-# clearer than the NumPy-style `axis=(...)` equivalent.
+# `("k", "j", "i")` rather than integer axis indices, which makes the intent much
+# clearer than the NumPy-style `axis=(...)` equivalent. Note that the underlying array
+# dimensions are the voxel-space `k`/`j`/`i` axes; the world `z`/`y`/`x` coordinates
+# attached to them are what makes coordinate-based `.sel` calls like the ROI selection
+# above possible.
 
 # %%
-roi_trace = roi.mean(("z", "y", "x"))
+roi_trace = roi.mean(("k", "j", "i"))
 roi_trace
 
 # %% [markdown]
