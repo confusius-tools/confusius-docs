@@ -5213,7 +5213,7 @@ reduction functions return DataArrays with attributes.</p>
 not JSON-serializable and are dropped on save), <code>cmap</code>/<code>norm</code> are rebuilt via
 [<code>build_atlas_cmap_and_norm</code>][confusius._utils.atlas.build_atlas_cmap_and_norm] so
 atlas-derived masks and annotations keep their canonical colors after reload.</p>
-<p>A Zarr-saved voxel-affine DataArray stores <code>attrs["voxel_to_world"]</code> instead of
+<p>A Zarr-saved voxel-to-world DataArray stores <code>attrs["voxel_to_world"]</code> instead of
 dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays (see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a>); this rebuilds the world coordinates and
 <code>VoxelToWorldIndex</code> from that affine.</p>
@@ -5928,7 +5928,7 @@ after <code>isel</code>.</p>
 <li><strong>NIfTI</strong> (<code>.nii</code>, <code>.nii.gz</code>): saved via
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="./#confusius.io.save_nifti"><code>save_nifti</code></a>.</li>
 <li><strong>Zarr</strong> (<code>.zarr</code>): saved via
-  <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.to_zarr.html#xarray.DataArray.to_zarr"><code>xarray.DataArray.to_zarr</code></a>. Voxel-affine geometry is
+  <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.to_zarr.html#xarray.DataArray.to_zarr"><code>xarray.DataArray.to_zarr</code></a>. Voxel-to-world geometry is
   stored as <code>attrs["voxel_to_world"]</code> rather than dense <code>z</code>/<code>y</code>/<code>x</code> coordinate
   arrays, since those are cheaply derived from the affine on load and, for
   oblique geometry, would otherwise duplicate a full dense array per axis.</li>
@@ -6006,7 +6006,7 @@ stored as a basename, so a loaded atlas can render meshes without the BrainGlobe
 The non-serializable <code>cmap</code>/<code>norm</code> matplotlib objects in <code>annotation.attrs</code> are stripped
 before writing (the caller's in-memory Dataset is left untouched);
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_atlas&lt;/span&gt;" href="./#confusius.io.load_atlas"><code>load_atlas</code></a> rebuilds the <code>StructuresDict</code>, the <code>cmap</code>/<code>norm</code>
-from <code>rgb_lookup</code>, and re-points the mesh paths on load. Voxel-affine geometry is stored
+from <code>rgb_lookup</code>, and re-points the mesh paths on load. Voxel-to-world geometry is stored
 as <code>attrs["voxel_to_world"]</code> rather than dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays.</p>
 
 
