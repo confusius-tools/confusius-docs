@@ -5412,7 +5412,7 @@ means all minus one, and so on.</p>
         <p>Register a single 3D volume to a fixed reference.</p>
 <p>Voxel spacing and origin are automatically extracted from the DataArray coordinates.
 Both inputs must be spatial-only (no <code>time</code> dimension). Single-slice recordings are
-supported as 3D volumes with a singleton <code>z</code> axis.</p>
+supported as 3D volumes with a singleton <code>k</code> axis.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5422,8 +5422,8 @@ supported as 3D volumes with a singleton <code>z</code> axis.</p>
 <a href="#confusius.registration.register_volume(moving)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Volume to register to <code>fixed</code>. Must be a 3D volume with dimensions <code>z</code>, <code>y</code>, <code>x</code>
-(single-slice recordings use a singleton <code>z</code> axis).</p>
+            <p>Volume to register to <code>fixed</code>. Must be a 3D volume with dimensions <code>k</code>, <code>j</code>, <code>i</code>
+(single-slice recordings use a singleton <code>k</code> axis).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5431,7 +5431,7 @@ supported as 3D volumes with a singleton <code>z</code> axis.</p>
 <a href="#confusius.registration.register_volume(fixed)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Reference volume. Must be a 3D volume with dimensions <code>z</code>, <code>y</code>, <code>x</code>. Need not
+            <p>Reference volume. Must be a 3D volume with dimensions <code>k</code>, <code>j</code>, <code>i</code>. Need not
 have the same shape as <code>moving</code>.
 When spatial coordinate <code>units</code> metadata is present on both <code>moving</code> and
 <code>fixed</code>, it must match.</p>
@@ -5779,7 +5779,7 @@ space. Follows SimpleITK's pull/inverse convention: the matrix maps fixed-space
 coordinates to moving-space coordinates. For <code>transform_type="bspline"</code>,
 returns an <code>xarray.DataArray</code> containing the B-spline control-point grid, not a
 dense deformation field. The first dimension is <code>component</code> with length 3,
-followed by spatial dimensions in ConfUSIus order (<code>("z", "y", "x")</code>). The
+followed by spatial dimensions in ConfUSIus order (<code>("k", "j", "i")</code>). The
 coordinate values along each spatial axis are
 the world positions of the control points. Attributes include <code>type =
 "bspline_transform"</code>, the spline <code>order</code>, and the control-grid <code>direction</code>
@@ -5813,7 +5813,7 @@ runs, and detecting registrations that did not converge.</p>
             –
           <div class="doc-md-description">
             <p>If either input contains a <code>time</code> dimension or does not contain the spatial
-dimensions <code>z</code>, <code>y</code>, and <code>x</code>.</p>
+dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6293,7 +6293,7 @@ position-anchored output grid (<code>shape</code>, <code>spacing</code>, <code>o
           –
           <div class="doc-md-description">
             <p>3D spatial DataArray to resample, or a 3D+t DataArray with a time dimension
-(single-slice recordings use a singleton <code>z</code> axis). If a time dimension is
+(single-slice recordings use a singleton <code>k</code> axis). If a time dimension is
 present, the same transform is applied to all time points.</p>
           </div>
         </li>
@@ -6303,7 +6303,7 @@ present, the same transform is applied to all time points.</p>
           –
           <div class="doc-md-description">
             <p>DataArray defining the output grid. Must be a 3D spatial volume with dimensions
-<code>z</code>, <code>y</code>, <code>x</code> (no time dimension). When spatial coordinate <code>units</code> metadata is
+<code>k</code>, <code>j</code>, <code>i</code> (no time dimension). When spatial coordinate <code>units</code> metadata is
 present on both <code>moving</code> and <code>reference</code>, they must match.</p>
           </div>
         </li>
@@ -6363,12 +6363,15 @@ values are provided, <code>fill_value</code> takes precedence.</p>
         <li class="doc-section-item field-body">
 <h4 id="confusius.registration.resample_like(sitk_threads)" class="doc doc-heading doc-heading-parameter">              <b><code>sitk_threads</code></b>
 <a href="#confusius.registration.resample_like(sitk_threads)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
-                  <code>os.cpu_count() or 1</code>
+                  <code>-1</code>
 )
           –
           <div class="doc-md-description">
-            <p>Number of threads SimpleITK may use for the <code>Resample</code> call.
-Defaults to all available CPUs.</p>
+            <p>Number of threads SimpleITK may use internally. Negative values resolve to
+<code>max(1, os.cpu_count() + 1 + sitk_threads)</code>, so <code>-1</code> means all CPUs, <code>-2</code>
+means all minus one, and so on. You may want to set this to a lower value or
+<code>1</code> when running multiple registrations in parallel (e.g. with joblib) to
+avoid over-subscribing the CPU.</p>
           </div>
         </li>
     </ul>
@@ -6396,7 +6399,7 @@ also have a time dimension.</p>
             –
           <div class="doc-md-description">
             <p>If <code>reference</code> contains a <code>time</code> dimension or does not contain the spatial
-dimensions <code>z</code>, <code>y</code>, and <code>x</code>.</p>
+dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
           </div>
         </li>
     </ul>
@@ -6750,9 +6753,8 @@ control-point DataArrays produced by
           –
           <div class="doc-md-description">
             <p>DataArray defining the output grid. Must be a 3D spatial volume (no time
-dimension) with either dimensions <code>z</code>, <code>y</code>, <code>x</code> or voxel-to-world dimensions
-<code>k</code>, <code>j</code>, <code>i</code>. When spatial coordinate <code>units</code> metadata is present on both
-<code>transform</code> and <code>reference</code>, they must match.</p>
+dimension) with dimensions <code>k</code>, <code>j</code>, <code>i</code>. When spatial coordinate <code>units</code>
+metadata is present on both <code>transform</code> and <code>reference</code>, they must match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6789,7 +6791,7 @@ all minus one, and so on.</p>
             –
           <div class="doc-md-description">
             <p>If <code>reference</code> contains a <code>time</code> dimension or does not contain the spatial
-dimensions <code>z</code>, <code>y</code>, and <code>x</code>.</p>
+dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
           </div>
         </li>
     </ul>
