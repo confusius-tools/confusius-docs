@@ -4881,37 +4881,35 @@ attributes.</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.iq</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_processed_volume_timings</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 100 volumes at 10 Hz, volume_duration = 0.1 s</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>            <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span>            <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">... </span>                <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">... </span>                <span class="s2">&quot;volume_acquisition_duration&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">... </span>                <span class="s2">&quot;volume_acquisition_reference&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">... </span>            <span class="p">},</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">... </span>        <span class="p">),</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">... </span>        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">... </span>        <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">... </span>        <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">... </span>    <span class="p">},</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_timings</span><span class="p">,</span> <span class="n">output_durations</span> <span class="o">=</span> <span class="n">compute_processed_volume_timings</span><span class="p">(</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gp">... </span>    <span class="n">iq</span><span class="p">,</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gp">... </span>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gp">... </span>    <span class="n">clutter_window_stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gp">... </span>    <span class="n">inner_window_width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gp">... </span>    <span class="n">inner_window_stride</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gp">... </span>    <span class="n">processed_time_reference</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_timings</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="go">array([1.25, 3.75, 6.25, 8.75])</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_durations</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="go">array([2.5, 2.5, 2.5, 2.5])</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 100 volumes at 10 Hz, volume_duration = 0.1 s</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">time</span><span class="o">=</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>        <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span>        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">... </span>            <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">... </span>            <span class="s2">&quot;volume_acquisition_duration&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">... </span>            <span class="s2">&quot;volume_acquisition_reference&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">... </span>        <span class="p">},</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">... </span>    <span class="p">),</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">... </span>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">... </span>    <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_timings</span><span class="p">,</span> <span class="n">output_durations</span> <span class="o">=</span> <span class="n">compute_processed_volume_timings</span><span class="p">(</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">... </span>    <span class="n">iq</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gp">... </span>    <span class="n">clutter_window_width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gp">... </span>    <span class="n">clutter_window_stride</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gp">... </span>    <span class="n">inner_window_width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="gp">... </span>    <span class="n">inner_window_stride</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="gp">... </span>    <span class="n">processed_time_reference</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_timings</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="go">array([1.25, 3.75, 6.25, 8.75])</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">output_durations</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="go">array([2.5, 2.5, 2.5, 2.5])</span>
 </span></code></pre></div>
 
 
@@ -5441,8 +5439,8 @@ window approach.</p>
           –
           <div class="doc-md-description">
             <p>Xarray DataArray containing complex beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data with dimensions
-<code>(time, z, y, x)</code>, where <code>time</code> is the temporal dimension and
-<code>(z, y, x)</code> are spatial dimensions. The DataArray must have the
+<code>(time, k, j, i)</code>, where <code>time</code> is the temporal dimension and <code>(k, j, i)</code> are
+native voxel spatial dimensions. The DataArray must have the
 following attributes:</p>
 <ul>
 <li><code>transmit_frequency</code>: Ultrasound transmit frequency in hertz.</li>
@@ -5491,15 +5489,14 @@ provided, equals <code>clutter_window_width</code>.</p>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.iq.process_iq_to_axial_velocity(clutter_mask)" class="doc doc-heading doc-heading-parameter">              <b><code>clutter_mask</code></b>
-<a href="#confusius.iq.process_iq_to_axial_velocity(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(z, y, x) xarray.DataArray</code>, default:
+<a href="#confusius.iq.process_iq_to_axial_velocity(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(k, j, i) xarray.DataArray</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Boolean mask to define clutter regions. Only used by <abbr title="Singular Value Decomposition">SVD</abbr>-based clutter filters
 to compute clutter vectors from masked voxels. If not provided, all voxels are
-used. The mask spatial coordinates <code>(z, y, x)</code> must match the <abbr title="In-phase and Quadrature">IQ</abbr> data
-coordinates.</p>
+used. The mask spatial dimensions and coordinates must match the <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5587,12 +5584,13 @@ applied.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(clutter_windows * velocity_windows, z, y, x) xarray.DataArray</code>
+              <code>(clutter_windows * velocity_windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p>Axial velocity volumes as an Xarray DataArray with updated time coordinates,
-where <code>clutter_windows</code> is the number of clutter filter sliding windows and
-<code>velocity_windows</code> is the number of velocity sliding windows per clutter window.
+            <p>Axial velocity volumes as an Xarray DataArray with updated time coordinates
+and <code>iq</code>'s voxel-affine geometry carried over, where <code>clutter_windows</code> is the
+number of clutter filter sliding windows and <code>velocity_windows</code> is the number
+of velocity sliding windows per clutter window.
 Velocity values are in meters per second.</p>
           </div>
         </li>
@@ -5675,8 +5673,8 @@ magnitude (not squared magnitude) of the <abbr title="In-phase and Quadrature">I
           –
           <div class="doc-md-description">
             <p>Xarray DataArray containing complex beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data with dimensions
-<code>(time, z, y, x)</code>, where <code>time</code> is the temporal dimension and
-<code>(z, y, x)</code> are spatial dimensions.</p>
+<code>(time, k, j, i)</code>, where <code>time</code> is the temporal dimension and <code>(k, j, i)</code> are
+native voxel spatial dimensions.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5707,11 +5705,12 @@ provided, uses the chunk size of the <abbr title="In-phase and Quadrature">IQ</a
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(windows, z, y, x) xarray.DataArray</code>
+              <code>(windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p>B-mode volumes as an Xarray DataArray with updated time coordinates, where
-<code>windows</code> is the number of sliding windows.</p>
+            <p>B-mode volumes as an Xarray DataArray with updated time coordinates and <code>iq</code>'s
+voxel-affine geometry carried over, where <code>windows</code> is the number of sliding
+windows.</p>
           </div>
         </li>
     </ul>
@@ -5766,8 +5765,8 @@ window approach.</p>
           –
           <div class="doc-md-description">
             <p>Xarray DataArray containing complex beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data with dimensions
-<code>(time, z, y, x)</code>, where <code>time</code> is the temporal dimension and
-<code>(z, y, x)</code> are spatial dimensions. The DataArray may carry a
+<code>(time, k, j, i)</code>, where <code>time</code> is the temporal dimension and <code>(k, j, i)</code> are
+native voxel spatial dimensions. The DataArray may carry a
 <code>compound_sampling_frequency</code> attribute as scanner provenance, but processing
 uses the <code>time</code> coordinate as the source of truth for temporal spacing.</p>
           </div>
@@ -5812,15 +5811,14 @@ provided, equals <code>clutter_window_width</code>.</p>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.iq.process_iq_to_power_doppler(clutter_mask)" class="doc doc-heading doc-heading-parameter">              <b><code>clutter_mask</code></b>
-<a href="#confusius.iq.process_iq_to_power_doppler(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(z, y, x) xarray.DataArray</code>, default:
+<a href="#confusius.iq.process_iq_to_power_doppler(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(k, j, i) xarray.DataArray</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Boolean mask to define clutter regions. Only used by <abbr title="Singular Value Decomposition">SVD</abbr>-based clutter filters
 to compute clutter vectors from masked voxels. If not provided, all voxels are
-used. The mask spatial coordinates <code>(z, y, x)</code> must match the <abbr title="In-phase and Quadrature">IQ</abbr> data
-coordinates.</p>
+used. The mask spatial dimensions and coordinates must match the <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5884,13 +5882,13 @@ If not provided, equals <code>doppler_window_width</code>.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(clutter_windows * doppler_windows, z, y, x) xarray.DataArray</code>
+              <code>(clutter_windows * doppler_windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p>Power Doppler volumes as an Xarray DataArray with updated time coordinates,
-where <code>clutter_windows</code> is the number of clutter filter sliding windows and
-<code>doppler_windows</code> is the number of power Doppler sliding windows per clutter
-window.</p>
+            <p>Power Doppler volumes as an Xarray DataArray with updated time coordinates and
+<code>iq</code>'s voxel-affine geometry carried over, where <code>clutter_windows</code> is the
+number of clutter filter sliding windows and <code>doppler_windows</code> is the number
+of power Doppler sliding windows per clutter window.</p>
           </div>
         </li>
     </ul>
