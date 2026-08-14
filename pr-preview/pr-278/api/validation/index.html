@@ -3898,8 +3898,9 @@ by the <code>.atlas</code> accessor:</p>
 <li><strong>Type</strong>: <code>ds</code> is an <code>xarray.Dataset</code>.</li>
 <li><strong>Data variables</strong>: <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> are all present as
    data variables (a <code>hemispheres</code> stored as a coordinate is reported as missing).</li>
-<li><strong>Grid</strong>: the three variables share identical dimensions, and those dimensions are a
-   subset of <code>(z, y, x)</code> (2D or 3D, so a resampled single slice is accepted).</li>
+<li><strong>Grid</strong>: the three variables share identical dimensions, those dimensions are a
+   subset of <code>(k, j, i)</code> (a resampled single slice has a singleton <code>k</code>), and each
+   variable carries a <code>VoxelToWorldIndex</code> deriving its world <code>z</code>/<code>y</code>/<code>x</code> coordinates.</li>
 <li><strong>Data types</strong>: <code>reference</code> is floating-point; <code>annotation</code> and <code>hemispheres</code> are
    integer-valued.</li>
 <li><strong>Attributes</strong>: <code>attrs["structures"]</code> is present and is a brainglobe
@@ -3953,9 +3954,10 @@ transform attribute and at least one existing region mesh file.</p>
             –
           <div class="doc-md-description">
             <p>If any required data variable or attribute is missing, if the variables do not
-share dimensions that are a subset of <code>(z, y, x)</code>, if <code>attrs["structures"]</code> is not a
-brainglobe <code>StructuresDict</code>, or if <code>require_mesh_use</code> is set and <code>world_to_base</code>
-or usable region meshes are absent.</p>
+share dimensions that are a subset of <code>(k, j, i)</code>, if a variable lacks a
+<code>VoxelToWorldIndex</code>, if <code>attrs["structures"]</code> is not a brainglobe
+<code>StructuresDict</code>, or if <code>require_mesh_use</code> is set and <code>world_to_base</code> or usable
+region meshes are absent.</p>
           </div>
         </li>
     </ul>
