@@ -6878,10 +6878,11 @@ a per-label color dict is built automatically from those attributes.</p>
 <details class="note" open>
   <summary>Notes</summary>
   <p>Complex-valued data is converted to magnitude (<code>abs(data)</code>) before display.</p>
-<p>Napari display always uses world <code>z/y/x</code> axes. Axis-aligned data is promoted to
-a plain world grid without interpolation. Oblique or sheared data is resampled
-to an axis-aligned world grid because this display path does not yet pass
-<code>data.fusi.affine</code>'s rotation/shear through as a napari layer <code>affine</code>.</p>
+<p>Napari's axis labels always show world <code>z</code>/<code>y</code>/<code>x</code> names, even though the
+displayed layer keeps <code>data</code>'s native voxel dims and index. Oblique or sheared
+data is resampled to an axis-aligned world grid first, because this display path
+does not yet pass <code>data.fusi.affine</code>'s rotation/shear through as a napari layer
+<code>affine</code>.</p>
 <p>If all displayed dimensions have coordinates, their spacing is used as the scale
 parameter for napari to ensure correct world scaling. If any displayed dimension
 is missing coordinates, no scaling is applied for that dimension. The spacing is
