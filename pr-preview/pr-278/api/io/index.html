@@ -4955,9 +4955,11 @@ them produces physically meaningless voxel-index coordinates.</p>
 
         <p>Convert an EchoFrame DAT file to Zarr format compatible with Xarray.</p>
 <p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is converted to a Zarr group with an <code>iq</code> array of shape
-<code>(time, z, y, x)</code> chunked along the first dimension. Coordinates are stored as
-separate Zarr arrays following Xarray conventions, allowing the data to be opened
-directly with <code>xarray.open_zarr()</code>.</p>
+<code>(time, k, j, i)</code> chunked along the first dimension. Voxel-to-world geometry is
+stored as <code>attrs["voxel_to_world"]</code> on the <code>iq</code> array rather than dense <code>z</code>/<code>y</code>/<code>x</code>
+coordinate arrays, matching <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>confusius.io.save</code></a>'s Zarr
+convention. Coordinates are stored as separate Zarr arrays following Xarray
+conventions, allowing the data to be opened directly with <code>xarray.open_zarr()</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5165,16 +5167,25 @@ Can be opened directly with <code>xarray.open_zarr()</code>.</p>
 ds = xr.open_zarr(&quot;output.zarr&quot;)
 iq = ds[&quot;iq&quot;]
 </code></pre></div>
+<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a canonical voxel-to-world
+DataArray -- <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
+<code>VoxelToWorldIndex</code> from <code>attrs["voxel_to_world"]</code>. Load with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load"><code>confusius.io.load</code></a> instead to get the world coordinates back:</p>
+<div class="language-text highlight"><pre><span></span><code>import confusius as cf
+iq = cf.io.load(&quot;output.zarr&quot;)
+</code></pre></div>
 <p>Metadata attributes (e.g., <code>transmit_frequency</code>, <code>beamforming_sound_velocity</code>) are stored
 on the <code>iq</code> DataArray (accessible via <code>iq.attrs</code>), consistent with how
 reduction functions return DataArrays with attributes.</p>
 <p>The group contains:</p>
 <ul>
-<li><code>iq</code>: The main data array with dimensions <code>(time, z, y, x)</code>.</li>
+<li><code>iq</code>: The main data array with dimensions <code>(time, k, j, i)</code>. Voxel-to-world
+  geometry is stored as <code>attrs["voxel_to_world"]</code>/<code>attrs["world_coord_attrs"]</code>
+  rather than dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays.</li>
 <li><code>time</code>: Time coordinate array.</li>
-<li><code>z</code>: Elevation coordinate array (always <code>[0]</code> for 2D data).</li>
-<li><code>y</code>: Axial (depth) coordinate array (from metadata).</li>
-<li><code>x</code>: Lateral coordinate array (from metadata).</li>
+<li><code>k</code>: Elevation voxel coordinate array (always <code>[0]</code> for 2D data).</li>
+<li><code>j</code>: Axial (depth) voxel coordinate array.</li>
+<li><code>i</code>: Lateral voxel coordinate array.</li>
 </ul>
 </details>
 
@@ -5444,13 +5455,13 @@ coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
     <div class="doc doc-contents ">
 
         <p>Load an EchoFrame DAT file as a lazy, ConfUSIus-ordered DataArray.</p>
-<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as a DataArray with dimensions <code>(time, z, y, x)</code>,
-matching ConfUSIus conventions. Coordinates (<code>time</code>, <code>z</code>, <code>y</code>, <code>x</code>) and acquisition
-metadata (e.g. <code>transmit_frequency</code>, <code>beamforming_sound_velocity</code>) are attached
-from the EchoFrame sequence parameter file. The <code>time</code> coordinate is computed from
-frame indices and the compound sampling frequency; callers with acquisition
-timestamps for each block should override it (e.g. via
-<code>data.assign_coords(time=...)</code>).</p>
+<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as a canonical DataArray with voxel dimensions
+<code>(time, k, j, i)</code> and a voxel-to-world index deriving world coordinates <code>z</code>, <code>y</code>,
+<code>x</code>. Coordinates and acquisition metadata (e.g. <code>transmit_frequency</code>,
+<code>beamforming_sound_velocity</code>) are attached from the EchoFrame sequence parameter
+file. The <code>time</code> coordinate is computed from frame indices and the compound
+sampling frequency; callers with acquisition timestamps for each block should
+override it (e.g. via <code>data.assign_coords(time=...)</code>).</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5514,7 +5525,7 @@ filename EchoFrame's storage writer uses by convention.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Lazy DataArray with dimensions <code>(time, z, y, x)</code>, where <code>z</code> is a singleton
+            <p>Lazy DataArray with dimensions <code>(time, k, j, i)</code>, where <code>k</code> is a singleton
 elevation dimension. Data is wrapped in a Dask array, chunked so that each
 chunk corresponds to one acquisition block's volumes; individual blocks
 remain accessible via <code>data.isel(time=slice(i * n, (i + 1) * n))</code>, where <code>n</code>
