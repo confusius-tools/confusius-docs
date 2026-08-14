@@ -4612,9 +4612,11 @@ is performed, meaning the path may not exist.</p>
 
         <p>Convert <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> DAT files to Zarr format compatible with Xarray.</p>
 <p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is converted to a Zarr group with an <code>iq</code> array of shape
-<code>(time, z, y, x)</code> chunked along the first dimension. Coordinates are stored as
-separate Zarr arrays following Xarray conventions, allowing the data to be opened
-directly with <code>xarray.open_zarr()</code>.</p>
+<code>(time, k, j, i)</code> chunked along the first dimension. Voxel-to-world geometry is
+stored as <code>attrs["voxel_to_world"]</code> on the <code>iq</code> array rather than dense <code>z</code>/<code>y</code>/<code>x</code>
+coordinate arrays, matching <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>confusius.io.save</code></a>'s Zarr
+convention. Coordinates are stored as separate Zarr arrays following Xarray
+conventions, allowing the data to be opened directly with <code>xarray.open_zarr()</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4899,16 +4901,25 @@ Can be opened directly with <code>xarray.open_zarr()</code>.</p>
 ds = xr.open_zarr(&quot;output.zarr&quot;)
 iq = ds[&quot;iq&quot;]
 </code></pre></div>
+<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a canonical voxel-to-world
+DataArray -- <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
+<code>VoxelToWorldIndex</code> from <code>attrs["voxel_to_world"]</code>. Load with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load"><code>confusius.io.load</code></a> instead to get the world coordinates back:</p>
+<div class="language-text highlight"><pre><span></span><code>import confusius as cf
+iq = cf.io.load(&quot;output.zarr&quot;)
+</code></pre></div>
 <p>Metadata attributes (e.g., <code>transmit_frequency</code>, <code>beamforming_sound_velocity</code>) are stored
 on the <code>iq</code> DataArray (accessible via <code>iq.attrs</code>), consistent with how
 reduction functions return DataArrays with attributes.</p>
 <p>The group contains:</p>
 <ul>
-<li><code>iq</code>: The main data array with dimensions <code>(time, z, y, x)</code>.</li>
+<li><code>iq</code>: The main data array with dimensions <code>(time, k, j, i)</code>. Voxel-to-world
+  geometry is stored as <code>attrs["voxel_to_world"]</code>/<code>attrs["world_coord_attrs"]</code>
+  rather than dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays.</li>
 <li><code>time</code>: Time coordinate array.</li>
-<li><code>z</code>: Elevation coordinate array (always <code>[0.0]</code> mm for 2D data).</li>
-<li><code>y</code>: Axial (depth) coordinate array in probe-relative mm.</li>
-<li><code>x</code>: Lateral coordinate array in probe-relative mm.</li>
+<li><code>k</code>: Elevation voxel coordinate array (always <code>[0]</code> for 2D data).</li>
+<li><code>j</code>: Axial (depth) voxel coordinate array.</li>
+<li><code>i</code>: Lateral voxel coordinate array.</li>
 </ul>
 <p>Spatial coordinates (<code>z</code>, <code>y</code>, <code>x</code>) follow the ConfUSIus probe-relative
 coordinate system: world distances in millimeters along each voxel axis, with the
