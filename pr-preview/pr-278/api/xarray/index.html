@@ -9546,8 +9546,9 @@ the DataArray's voxel-to-world affine, or if <code>affine</code> is a string and
 <a href="#confusius.xarray.create_fusi_dataarray(dims)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="sequence">sequence</span>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Input dimension names. Spatial dimensions may be named <code>z/y/x</code> or <code>k/j/i</code>;
-the returned DataArray uses native voxel dimensions in canonical core order.</p>
+            <p>Input dimension names. Spatial dimensions must be native voxel names
+(<code>k</code>/<code>j</code>/<code>i</code>). The returned DataArray uses native voxel dimensions in canonical
+core order.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -9713,7 +9714,8 @@ used.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If dimensions, coordinates, geometry, timing, or <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation fail.</p>
+            <p>If <code>dims</code> uses world <code>z</code>/<code>y</code>/<code>x</code> names instead of native voxel names, or if
+dimensions, coordinates, geometry, timing, or <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation otherwise fail.</p>
           </div>
         </li>
     </ul>
@@ -9780,7 +9782,8 @@ used.</p>
 <a href="#confusius.xarray.create_iq_dataarray(dims)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="sequence">sequence</span>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>)
           –
           <div class="doc-md-description">
-            <p>Input dimension names. Spatial dimensions may be named <code>z/y/x</code> or <code>k/j/i</code>.</p>
+            <p>Input dimension names. Spatial dimensions must be native voxel names
+(<code>k</code>/<code>j</code>/<code>i</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
