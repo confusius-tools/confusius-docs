@@ -4302,12 +4302,12 @@ present in the DataArray attributes.</p>
             <p>Label map to validate. Must have integer dtype and coordinates must match data.
 Accepts two formats:</p>
 <ul>
-<li><strong>Flat label map</strong>: Spatial dims only, e.g. <code>(z, y, x)</code>. Background voxels
+<li><strong>Flat label map</strong>: Spatial dims only, e.g. <code>(k, j, i)</code>. Background voxels
   labeled <code>0</code>; each unique non-zero integer identifies a distinct,
   non-overlapping region. The <code>regions</code> coordinate of the output holds the
   integer label values.</li>
 <li><strong>Stacked mask format</strong>: Has a leading <code>mask</code> dimension followed by
-  spatial dims, e.g. <code>(mask, z, y, x)</code>. Each layer has values in <code>{0,
+  spatial dims, e.g. <code>(mask, k, j, i)</code>. Each layer has values in <code>{0,
   region_id}</code> and regions may overlap. The <code>region</code> coordinate of the
   output holds the <code>mask</code> coordinate values (e.g., region label).</li>
 </ul>
@@ -4661,7 +4661,7 @@ are checked.</p>
 <a href="#confusius.validation.validate_matching_spatial_units(arrays)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>sequence of tuple[str, xarray.DataArray]</code>)
           –
           <div class="doc-md-description">
-            <p>Named DataArrays to compare. Spatial dimensions present in more than one array
+            <p>Named DataArrays to compare. Spatial coordinates present in more than one array
 must carry matching <code>coord.attrs["units"]</code> values when that metadata is
 defined.</p>
           </div>
@@ -4675,7 +4675,7 @@ defined.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If any shared spatial dimension has conflicting <code>units</code> metadata.</p>
+            <p>If any shared spatial coordinate has conflicting <code>units</code> metadata.</p>
           </div>
         </li>
     </ul>

@@ -5299,28 +5299,32 @@ spatial dimensions, and reconstructing N-D volumes from processed signals.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3D+t data: (time, z, y, x)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">],</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">],</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Extract signals</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="go">(&quot;time&quot;, &quot;space&quot;)</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Reconstruct full spatial volume from signals</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="go">(&quot;time&quot;, &quot;z&quot;, &quot;y&quot;, &quot;x&quot;)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># 3D+t data: (time, k, j, i), native voxel dims with world z/y/x derived</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># from the attached VoxelToWorldIndex.</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">... </span>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">&gt;&gt;&gt;</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Extract signals</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">dims</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="go">(&#39;time&#39;, &#39;space&#39;)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">&gt;&gt;&gt;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Reconstruct full spatial volume from signals</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="go">(&#39;time&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
 
 
@@ -5426,8 +5430,8 @@ and coordinates for reconstruction.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Reconstructed DataArray with shape <code>(..., z, y, x)</code> where spatial
-coordinates come from the mask.</p>
+            <p>Reconstructed DataArray with shape <code>(..., k, j, i)</code> where spatial
+dimensions and coordinates come from the mask.</p>
           </div>
         </li>
     </ul>
@@ -5436,10 +5440,10 @@ coordinates come from the mask.</p>
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">(&quot;time&quot;, &quot;space&quot;)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">(&#39;time&#39;, &#39;space&#39;)</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">unmask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">(&quot;time&quot;, &quot;z&quot;, &quot;y&quot;, &quot;x&quot;)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">(&#39;time&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
 
 
@@ -5477,12 +5481,12 @@ coordinates come from the mask.</p>
           <div class="doc-md-description">
             <p>Integer label map in one of two formats:</p>
 <ul>
-<li><strong>Flat label map</strong>: Spatial dims only, e.g. <code>(z, y, x)</code>. Background voxels
+<li><strong>Flat label map</strong>: Spatial dims only, e.g. <code>(k, j, i)</code>. Background voxels
   labeled <code>0</code>; each unique non-zero integer identifies a distinct,
   non-overlapping region. The <code>regions</code> coordinate of the output holds the
   integer label values.</li>
 <li><strong>Stacked mask format</strong>: Has a leading <code>mask</code> dimension followed by
-  spatial dims, e.g. <code>(mask, z, y, x)</code>. Each layer has values in <code>{0,
+  spatial dims, e.g. <code>(mask, k, j, i)</code>. Each layer has values in <code>{0,
   region_id}</code> and regions may overlap. The <code>region</code> coordinate of the
   output holds the <code>mask</code> coordinate values (e.g., region label).</li>
 </ul>
@@ -5521,9 +5525,9 @@ coordinates come from the mask.</p>
 non-zero label in <code>labels</code>. All non-spatial dimensions are preserved.</p>
 <p>For example:</p>
 <ul>
-<li><code>(time, z, y, x)</code> → <code>(time, region)</code></li>
-<li><code>(time, pose, z, y, x)</code> → <code>(time, pose, region)</code></li>
-<li><code>(z, y, x)</code> → <code>(region,)</code></li>
+<li><code>(time, k, j, i)</code> → <code>(time, region)</code></li>
+<li><code>(time, pose, k, j, i)</code> → <code>(time, pose, region)</code></li>
+<li><code>(k, j, i)</code> → <code>(region,)</code></li>
 </ul>
           </div>
         </li>
@@ -5689,7 +5693,7 @@ derived quantities such as power Doppler and axial velocity.</p>
           –
           <div class="doc-md-description">
             <p>The DataArray to wrap. Must contain complex beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data
-with dimensions <code>(time, z, y, x)</code>.</p>
+with dimensions <code>(time, k, j, i)</code>.</p>
           </div>
         </li>
     </ul>
@@ -5836,15 +5840,15 @@ If not provided, equals <code>clutter_window_width</code>.</p>
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIIQAccessor.process_to_axial_velocity(clutter_mask)" class="doc doc-heading doc-heading-parameter">              <b><code>clutter_mask</code></b>
-<a href="#confusius.xarray.FUSIIQAccessor.process_to_axial_velocity(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(z, y, x) xarray.DataArray</code>, default:
+<a href="#confusius.xarray.FUSIIQAccessor.process_to_axial_velocity(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(k, j, i) xarray.DataArray</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Boolean mask to define clutter regions. Only used by <abbr title="Singular Value Decomposition">SVD</abbr>-based clutter
 filters to compute clutter vectors from masked voxels. If not provided,
-all voxels are used. The mask spatial coordinates (z, y, x) must match
-the <abbr title="In-phase and Quadrature">IQ</abbr> data coordinates.</p>
+all voxels are used. The mask spatial dimensions and coordinates must
+match the <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5921,7 +5925,7 @@ If not provided, equals <code>velocity_window_width</code>.</p>
           <div class="doc-md-description">
             <p>Size of the median filter kernel applied spatially to denoise. A scalar
 uses the same kernel size on all spatial axes; a length-3 sequence
-specifies <code>(z, y, x)</code> sizes directly. Values must be positive. Any even
+specifies <code>(k, j, i)</code> sizes directly. Values must be positive. Any even
 sizes are rounded up to the next odd size. If all sizes are <code>1</code>, no
 spatial filtering is applied.</p>
           </div>
@@ -5932,7 +5936,7 @@ spatial filtering is applied.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(clutter_windows * velocity_windows, z, y, x) xarray.DataArray</code>
+              <code>(clutter_windows * velocity_windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
             <p>Axial velocity volumes with updated time coordinates, where
@@ -6013,7 +6017,7 @@ dimension.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(windows, z, y, x) xarray.DataArray</code>
+              <code>(windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
             <p>B-mode volumes with updated time coordinates, where <code>windows</code> is the number
@@ -6113,15 +6117,15 @@ If not provided, equals <code>clutter_window_width</code>.</p>
         </li>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIIQAccessor.process_to_power_doppler(clutter_mask)" class="doc doc-heading doc-heading-parameter">              <b><code>clutter_mask</code></b>
-<a href="#confusius.xarray.FUSIIQAccessor.process_to_power_doppler(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(z, y, x) xarray.DataArray</code>, default:
+<a href="#confusius.xarray.FUSIIQAccessor.process_to_power_doppler(clutter_mask)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(k, j, i) xarray.DataArray</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>Boolean mask to define clutter regions. Only used by <abbr title="Singular Value Decomposition">SVD</abbr>-based clutter
 filters to compute clutter vectors from masked voxels. If not provided,
-all voxels are used. The mask spatial coordinates (z, y, x) must match
-the <abbr title="In-phase and Quadrature">IQ</abbr> data coordinates.</p>
+all voxels are used. The mask spatial dimensions and coordinates must
+match the <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6185,7 +6189,7 @@ volumes. If not provided, equals <code>doppler_window_width</code>.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(clutter_windows * doppler_windows, z, y, x) xarray.DataArray</code>
+              <code>(clutter_windows * doppler_windows, k, j, i) xarray.DataArray</code>
           –
           <div class="doc-md-description">
             <p>Power Doppler volumes with updated time coordinates, where

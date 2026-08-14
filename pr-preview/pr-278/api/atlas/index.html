@@ -3978,6 +3978,13 @@ the same region would otherwise share an acronym).</p>
 <p><span class="doc-section-title">Raises:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>ds</code> is not a well-formed atlas Dataset.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#KeyError">KeyError</a></code>
             –
           <div class="doc-md-description">
@@ -4100,6 +4107,13 @@ nonlinear resample, vertices warped outside the reference grid are dropped.</p>
 <p><span class="doc-section-title">Raises:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>ds</code> is not a well-formed atlas Dataset.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#KeyError">KeyError</a></code>
             –
           <div class="doc-md-description">
@@ -4192,7 +4206,10 @@ world coordinates. Affine, B-spline, or displacement-field, as for
 <a href="#confusius.atlas.AtlasAccessor.resample(dims)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>sequence of str</code>)
           –
           <div class="doc-md-description">
-            <p>Dimension names of the output atlas grid.</p>
+            <p>Dimension names of the output atlas grid, in the same order as <code>shape</code>,
+<code>spacing</code>, and <code>origin</code>. Must be a subset of the native voxel dims
+<code>("k", "j", "i")</code>; entries outside that set are silently excluded when
+building the voxel-to-world affine.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4225,6 +4242,20 @@ world coordinates. Affine, B-spline, or displacement-field, as for
           –
           <div class="doc-md-description">
             <p>Resampled atlas Dataset on the requested grid.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>dims</code>, <code>shape</code>, <code>spacing</code>, and <code>origin</code> do not all have the same
+length, or if <code>dims</code> contains none of the native voxel dims <code>"k"</code>, <code>"j"</code>,
+<code>"i"</code>.</p>
           </div>
         </li>
     </ul>
@@ -4551,6 +4582,13 @@ region would otherwise share an acronym).</p>
 <p><span class="doc-section-title">Raises:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>ds</code> is not a well-formed atlas Dataset.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#KeyError">KeyError</a></code>
             –
           <div class="doc-md-description">
@@ -4677,6 +4715,13 @@ resample, vertices warped outside the reference grid are dropped.</p>
 
 <p><span class="doc-section-title">Raises:</span></p>
     <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>ds</code> is not a well-formed atlas Dataset.</p>
+          </div>
+        </li>
         <li class="doc-section-item field-body">
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#KeyError">KeyError</a></code>
             –
