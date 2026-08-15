@@ -3264,7 +3264,7 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
           <b><code><span title="confusius.decoding.searchlight">searchlight</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Searchlight decoding for <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>Searchlight decoding for canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
           </div>
         </li>
     </ul>
@@ -3324,7 +3324,8 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
 score.</p>
 <p>This estimator wraps scikit-learn while keeping xarray metadata:</p>
 <ul>
-<li>Input data are expected as <code>(time, ...)</code> where <code>...</code> are spatial dimensions.</li>
+<li>Input data must be a canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray (a real
+  <code>VoxelToWorldIndex</code>, no <code>pose</code> or extra dimensions).</li>
 <li>The <code>time</code> dimension is the sample axis. It need not be temporally ordered. For
   trial-averaged data, rename the trial dimension with <code>.rename(trial="time")</code>.</li>
 <li><code>scores_</code> is returned in the spatial geometry of <code>process_mask</code>.</li>
@@ -3349,9 +3350,9 @@ score.</p>
           –
           <div class="doc-md-description">
             <p>Boolean spatial mask selecting the voxels that may act as <em>features</em>. If not
-provided, every voxel of the input data is used as a feature voxel. Every
-spatial dimension must carry a numeric coordinate, because <code>radius</code> is measured
-in coordinate units.</p>
+provided, every voxel of the input data is used as a feature voxel. Must carry
+a <code>VoxelToWorldIndex</code> matching <code>X</code>'s grid, because <code>radius</code> is measured in
+world coordinates.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3362,7 +3363,7 @@ in coordinate units.</p>
           –
           <div class="doc-md-description">
             <p>Neighborhood radius, in the units of the data's spatial coordinates. Check
-<code>X[dim].attrs.get("units")</code> if unsure. Radii are measured in world
+<code>X.coords[dim].attrs.get("units")</code> if unsure. Radii are measured in world
 coordinates rather than voxel indices, so anisotropic voxels behave correctly.</p>
           </div>
         </li>
@@ -3374,9 +3375,10 @@ coordinates rather than voxel indices, so anisotropic voxels behave correctly.</
           –
           <div class="doc-md-description">
             <p>Boolean mask selecting the voxels that act as neighborhood <em>centers</em>. Must be
-a subset of <code>mask</code>. If not provided, a score is computed at every <code>mask</code> voxel.
-Use it to restrict the searchlight to a region of interest while still drawing
-features from the surrounding tissue.</p>
+a subset of <code>mask</code>, and carry a <code>VoxelToWorldIndex</code> matching <code>X</code>'s grid. If not
+provided, a score is computed at every <code>mask</code> voxel. Use it to restrict the
+searchlight to a region of interest while still drawing features from the
+surrounding tissue.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3435,7 +3437,7 @@ each.</p>
     <ul>
         <li class="doc-section-item field-body">
           <b><code><span title="confusius.decoding.SearchLight.scores_">scores_</span></code></b>
-              (<code>(...) xarray.DataArray</code>)
+              (<code>(k, j, i) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
             <p>Mean cross-validation score at each <code>process_mask</code> center, in the spatial
@@ -3492,28 +3494,24 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decoding</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchLight</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decoding</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchLight</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">create_fusi_dataarray</span><span class="p">(</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">],</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span>        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">],</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">... </span>        <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">... </span>        <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">... </span>    <span class="p">},</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">searchlight</span> <span class="o">=</span> <span class="n">SearchLight</span><span class="p">(</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">... </span>    <span class="n">estimator</span><span class="o">=</span><span class="n">Ridge</span><span class="p">(),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">searchlight</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span><span class="o">.</span><span class="n">scores_</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="go">(&#39;z&#39;, &#39;y&#39;, &#39;x&#39;)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">speed</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">&gt;&gt;&gt;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">searchlight</span> <span class="o">=</span> <span class="n">SearchLight</span><span class="p">(</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">... </span>    <span class="n">estimator</span><span class="o">=</span><span class="n">Ridge</span><span class="p">(),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">searchlight</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span><span class="o">.</span><span class="n">scores_</span><span class="o">.</span><span class="n">dims</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="go">(&#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
 
 
@@ -3606,10 +3604,10 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
     <ul>
         <li class="doc-section-item field-body">
 <h5 id="confusius.decoding.SearchLight.fit(X)" class="doc doc-heading doc-heading-parameter">              <b><code>X</code></b>
-<a href="#confusius.decoding.SearchLight.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
+<a href="#confusius.decoding.SearchLight.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, k, j, i) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Functional ultrasound data. The <code>time</code> dimension is the sample axis.</p>
+            <p>Canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data. The <code>time</code> dimension is the sample axis.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3652,10 +3650,11 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>X</code> is h5py-backed, if <code>radius</code> is negative, if <code>process_mask</code> is not a
-subset of <code>mask</code>, if <code>y</code> or <code>groups</code> do not align with <code>X</code>, if a spatial
-dimension lacks a numeric coordinate, or if the masked data contains
-non-finite values.</p>
+            <p>If <code>X</code> is h5py-backed, is not a canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray,
+or lacks a <code>VoxelToWorldIndex</code>; if <code>radius</code> is negative; if <code>mask</code> or
+<code>process_mask</code> lacks a <code>VoxelToWorldIndex</code>; if <code>process_mask</code> is not a
+subset of <code>mask</code>; if <code>y</code> or <code>groups</code> do not align with <code>X</code>; or if the masked
+data contains non-finite values.</p>
           </div>
         </li>
     </ul>
