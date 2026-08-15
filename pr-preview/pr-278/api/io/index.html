@@ -5244,8 +5244,11 @@ reduction functions return DataArrays with attributes.</p>
 <li><strong>NIfTI</strong> (<code>.nii</code>, <code>.nii.gz</code>): loaded via <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="./#confusius.io.load_nifti"><code>load_nifti</code></a>.</li>
 <li><strong>SCAN</strong> (<code>.scan</code>): loaded via <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="./#confusius.io.load_scan"><code>load_scan</code></a>.</li>
 <li><strong>Zarr</strong> (<code>.zarr</code>): opened via <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> and a single
-  variable is extracted. For loading the full dataset, use
-  <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> directly.</li>
+  variable is extracted. Must be a store previously written by
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a> (identified by <code>attrs["voxel_to_world"]</code>); for an
+  arbitrary/foreign Zarr store, use <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> directly
+  and build a canonical DataArray yourself (e.g. via
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>).</li>
 </ul>
 <p>If <code>attrs["rgb_lookup"]</code> is present but <code>attrs["cmap"]</code>/<code>attrs["norm"]</code> are missing
 (as happens after a save/load round-trip, since matplotlib colormap/norm objects are
@@ -5310,7 +5313,8 @@ first variable in the dataset is returned.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If the file extension is not supported.</p>
+            <p>If the file extension is not supported, or the Zarr store at <code>path</code> wasn't
+written by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a> (no <code>attrs["voxel_to_world"]</code>).</p>
           </div>
         </li>
     </ul>
