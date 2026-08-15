@@ -3672,14 +3672,14 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_labels&lt;/span&gt;" href="./#confusius.validation.validate_labels">validate_labels</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a label map matches data spatial dimensions and coordinates.</p>
+              <p>Validate that a label map shares data's canonical voxel grid.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_mask&lt;/span&gt;" href="./#confusius.validation.validate_mask">validate_mask</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a mask matches data spatial dimensions and coordinates.</p>
+              <p>Validate that a mask shares data's canonical voxel grid.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4440,14 +4440,16 @@ present in the DataArray attributes.</p>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_labels(labels)">labels</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_labels(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels_name&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_labels(labels_name)">labels_name</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;labels&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_labels(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_labels(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a label map matches data spatial dimensions and coordinates.</p>
+        <p>Validate that a label map shares data's canonical voxel grid.</p>
+<p>Both <code>labels</code> and <code>data</code> are canonicalized via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
+after restoring any scalar-reduced voxel dims) a canonical voxel-grid DataArray
+carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4457,8 +4459,7 @@ present in the DataArray attributes.</p>
 <a href="#confusius.validation.validate_labels(labels)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Label map to validate. Must have integer dtype and coordinates must match data.
-Accepts two formats:</p>
+            <p>Label map to validate. Must have integer dtype. Accepts two formats:</p>
 <ul>
 <li><strong>Flat label map</strong>: Spatial dims only, e.g. <code>(k, j, i)</code>. Background voxels
   labeled <code>0</code>; each unique non-zero integer identifies a distinct,
@@ -4489,24 +4490,16 @@ Accepts two formats:</p>
             <p>Name of the labels parameter (used in error messages).</p>
           </div>
         </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
         <li class="doc-section-item field-body">
-<h4 id="confusius.validation.validate_labels(rtol)" class="doc doc-heading doc-heading-parameter">              <b><code>rtol</code></b>
-<a href="#confusius.validation.validate_labels(rtol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>1e-5</code>
-)
+              <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Relative tolerance for coordinate comparison.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.validation.validate_labels(atol)" class="doc doc-heading doc-heading-parameter">              <b><code>atol</code></b>
-<a href="#confusius.validation.validate_labels(atol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>1e-8</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Absolute tolerance for coordinate comparison.</p>
+            <p>The canonicalized <code>labels</code>.</p>
           </div>
         </li>
     </ul>
@@ -4525,7 +4518,8 @@ Accepts two formats:</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>labels</code> dimensions don't match <code>data</code> or if coordinates don't match.</p>
+            <p>If <code>labels</code> or <code>data</code> isn't a canonical voxel-grid DataArray, or if <code>labels</code>'s
+voxel grid doesn't match <code>data</code>'s.</p>
           </div>
         </li>
     </ul>
@@ -4547,16 +4541,18 @@ Accepts two formats:</p>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;mask&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(mask)">mask</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;mask_name&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(mask_name)">mask_name</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;mask&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_exact_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(require_exact_dims)">require_exact_dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;coerce_bool&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(coerce_bool)">coerce_bool</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_exact_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(require_exact_dims)">require_exact_dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;coerce_bool&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_mask(coerce_bool)">coerce_bool</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a mask matches data spatial dimensions and coordinates.</p>
+        <p>Validate that a mask shares data's canonical voxel grid.</p>
+<p>Both <code>mask</code> and <code>data</code> are canonicalized via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
+after restoring any scalar-reduced voxel dims) a canonical voxel-grid DataArray
+carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4568,8 +4564,7 @@ Accepts two formats:</p>
           <div class="doc-md-description">
             <p>Mask to validate. Must have boolean dtype, or integer dtype with exactly one
 non-zero value (0 = background, one region id = foreground). The latter format
-is produced by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>. Coordinates
-must match data.</p>
+is produced by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4588,26 +4583,6 @@ must match data.</p>
           –
           <div class="doc-md-description">
             <p>Name of the mask parameter (used in error messages).</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.validation.validate_mask(rtol)" class="doc doc-heading doc-heading-parameter">              <b><code>rtol</code></b>
-<a href="#confusius.validation.validate_mask(rtol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>1e-5</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Relative tolerance for coordinate comparison.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.validation.validate_mask(atol)" class="doc doc-heading doc-heading-parameter">              <b><code>atol</code></b>
-<a href="#confusius.validation.validate_mask(atol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
-                  <code>1e-8</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Absolute tolerance for coordinate comparison.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4643,8 +4618,8 @@ False, <code>mask</code> is returned with its original dtype unchanged.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>The validated <code>mask</code>, coerced to boolean dtype when <code>coerce_bool</code> is <code>True</code> (the
-default), otherwise returned with its original dtype.</p>
+            <p>The canonicalized <code>mask</code>, coerced to boolean dtype when <code>coerce_bool</code> is <code>True</code>
+(the default), otherwise returned with its original dtype.</p>
           </div>
         </li>
     </ul>
@@ -4663,7 +4638,9 @@ default), otherwise returned with its original dtype.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> dimensions don't match <code>data</code> or if coordinates don't match.</p>
+            <p>If <code>mask</code> or <code>data</code> isn't a canonical voxel-grid DataArray, if <code>mask</code>'s voxel
+grid doesn't match <code>data</code>'s, or if <code>require_exact_dims</code> is set and <code>mask</code>'s
+dimensions don't match <code>data</code>'s.</p>
           </div>
         </li>
     </ul>
