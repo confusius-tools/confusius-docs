@@ -4414,7 +4414,9 @@ sampled voxel under the DataArray's voxel-to-world affine.</p>
 <code>k/j/i</code>, each voxel-space dimension receives its world step length derived
 from the voxel-to-world affine column norm and the 1D voxel-coordinate
 step. A coordinate is considered uniform if every interval is within 1% of the
-median interval (per-interval <code>|diff - median| &lt;= 0.01 * |median|</code>).</p>
+median interval (per-interval <code>|diff - median| &lt;= 0.01 * |median|</code>). A
+singleton <code>time</code> dimension falls back to the <code>volume_acquisition_duration</code>
+coordinate attribute when present.</p>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
