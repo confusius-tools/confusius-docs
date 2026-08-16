@@ -3522,14 +3522,19 @@ formats for your workflow, and convert beamformed <abbr title="In-phase and Quad
 representing multi-dimensional <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data. Xarray provides several advantages over raw
 NumPy arrays:</p>
 <ul>
-<li><strong>Named dimensions</strong>: Access data using meaningful names (e.g., <code>time</code>, <code>k</code>, <code>j</code>, <code>i</code>)
+<li><strong>Named dimensions</strong>: Access data using meaningful names (e.g., <code>i</code>, <code>j</code>, <code>k</code>, <code>time</code>)
   instead of remembering axis indices.</li>
 <li><strong>Coordinates</strong>: Associate time and world coordinates with the native dimensions
-  (e.g., <code>z</code>, <code>y</code>, and <code>x</code> in millimeters).</li>
+  (e.g., <code>x</code>, <code>y</code>, and <code>z</code> in millimeters).</li>
 <li><strong>Metadata storage</strong>: Keep acquisition parameters, units, and other metadata alongside
   your data.</li>
 <li><strong>Unified API</strong>: Use the same operations regardless of the underlying storage format.</li>
 </ul>
+<p>Every loader in this guide returns <strong>VoxelData</strong> arrays: a DataArray with trailing
+<code>k</code>/<code>j</code>/<code>i</code> voxel dimensions backed by a <code>VoxelToWorldIndex</code>, which derives world
+coordinates <code>z</code>/<code>y</code>/<code>x</code> (in millimeters) from a single voxel-to-world affine. World
+coordinates are never stored directly—they're always this index's output. See <a href="../spatial-conventions/">Spatial
+Conventions</a> for details on the coordinate model.</p>
 <h3 id="xarray-compatible-formats">Xarray-Compatible Formats<a class="headerlink" href="#xarray-compatible-formats" title="Permanent link">&para;</a></h3>
 <p>Xarray can read and write data from multiple storage formats, including:</p>
 <ul>
@@ -3586,9 +3591,9 @@ performance with large-scale datasets.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Complex-valued signals resulting from ultrasound beamforming of RF signals. These
-signals are typically further processed to extract derived signals such as power Doppler
-or velocity. Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> datasets are typically very large (10s to 100s of GB per
-acquisition session), and stored in system-specific layouts depending on the
+signals are typically further processed to extract derived signals such as power
+Doppler or velocity. Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> datasets are typically very large (10s to 100s of
+GB per acquisition session), and stored in system-specific layouts depending on the
 acquisition system (e.g., Iconeus, <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>, EchoFrame).</p>
 </div>
 <div class="tabbed-block">
