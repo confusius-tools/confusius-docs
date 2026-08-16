@@ -3300,21 +3300,21 @@
           <b><code><span title="confusius.decomposition.fastica">fastica</span></code></b>
           –
           <div class="doc-md-description">
-            <p>FastICA decomposition for <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>FastICA decomposition for <code>(time, ...)</code> VoxelData.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="confusius.decomposition.nmf">nmf</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Non-negative matrix factorization for <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>Non-negative matrix factorization for <code>(time, ...)</code> VoxelData.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="confusius.decomposition.pca">pca</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Principal component decomposition for <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>Principal component decomposition for <code>(time, ...)</code> VoxelData.</p>
           </div>
         </li>
     </ul>
@@ -3330,21 +3330,21 @@
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FastICA&lt;/span&gt;" href="./#confusius.decomposition.FastICA">FastICA</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+            <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="./#confusius.decomposition.NMF">NMF</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+            <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="./#confusius.decomposition.PCA">PCA</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+            <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData.</p>
           </div>
         </li>
     </ul>
@@ -3382,7 +3382,7 @@
 
 
 
-        <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData.</p>
 <p>The FastICA algorithm is based on Hyvarinen <em>et al.</em> (2000).</p>
 <p>This estimator wraps
 <a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.FastICA.html#sklearn.decomposition.FastICA"><code>sklearn.decomposition.FastICA</code></a> while keeping
@@ -3559,7 +3559,7 @@ an int for reproducible results across multiple function calls.</p>
           –
           <div class="doc-md-description">
             <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for a canonical voxel-grid input, or features, for an
+projection: voxels, for VoxelData input, or features, for an
 already-extracted signals input (e.g.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
 match the non-<code>time</code> dimensions of the input data in the same order.</p>
@@ -3654,7 +3654,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>Spatial <abbr title="Independent Component Analysis">ICA</abbr> (default, matches FSL MELODIC), on canonical voxel-grid data:</p>
+    <p>Spatial <abbr title="Independent Component Analysis">ICA</abbr> (default, matches FSL MELODIC), on VoxelData:</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastICA</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
@@ -3706,7 +3706,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.FastICA.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit FastICA on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+              <p>Fit FastICA on <code>(time, ...)</code> VoxelData.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3789,7 +3789,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 
     <div class="doc doc-contents ">
 
-        <p>Fit FastICA on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Fit FastICA on <code>(time, ...)</code> VoxelData.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3799,7 +3799,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 <a href="#confusius.decomposition.FastICA.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a canonical voxel-grid DataArray, or an already-extracted
+            <p>Input data: VoxelData, or an already-extracted
 signals array (see class docstring).</p>
           </div>
         </li>
@@ -4260,7 +4260,7 @@ during fit.</p>
 
 
 
-        <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData.</p>
 <p>Find two non-negative matrices, i.e. matrices with all non-negative elements,
 (<code>W</code>, <code>H</code>) whose product approximates the non-negative matrix <code>X</code>. This
 factorization can be used for example for dimensionality reduction, source
@@ -4476,7 +4476,7 @@ no regularization on <code>H</code>. If <code>"same"</code>, it takes the same v
           –
           <div class="doc-md-description">
             <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for a canonical voxel-grid input, or features, for an
+projection: voxels, for VoxelData input, or features, for an
 already-extracted signals input (e.g.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
 match the non-<code>time</code> dimensions of the input data in the same order.</p>
@@ -4578,7 +4578,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>On canonical voxel-grid data:</p>
+    <p>On VoxelData:</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
@@ -4634,7 +4634,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.NMF.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+              <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on <code>(time, ...)</code> VoxelData.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4717,7 +4717,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 
     <div class="doc doc-contents ">
 
-        <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on <code>(time, ...)</code> VoxelData.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4727,7 +4727,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 <a href="#confusius.decomposition.NMF.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a canonical voxel-grid DataArray, or an already-extracted
+            <p>Input data: VoxelData, or an already-extracted
 signals array (see class docstring). Must be non-negative.</p>
           </div>
         </li>
@@ -5182,7 +5182,7 @@ during fit.</p>
 
 
 
-        <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData.</p>
 <p>Linear dimensionality reduction using singular value decomposition (<abbr title="Singular Value Decomposition">SVD</abbr>) of the data
 to project it to a lower dimensional space. The input data is centered but not
 scaled for each feature before applying the <abbr title="Singular Value Decomposition">SVD</abbr>.</p>
@@ -5358,7 +5358,7 @@ reproducible results across multiple function calls.</p>
           –
           <div class="doc-md-description">
             <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for a canonical voxel-grid input, or features, for an
+projection: voxels, for VoxelData input, or features, for an
 already-extracted signals input (e.g.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
 match the non-<code>time</code> dimensions of the input data in the same order.</p>
@@ -5486,7 +5486,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>Fitting on canonical voxel-grid data:</p>
+    <p>Fitting on VoxelData:</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
@@ -5538,7 +5538,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.PCA.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+              <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on <code>(time, ...)</code> VoxelData.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5621,7 +5621,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 
     <div class="doc doc-contents ">
 
-        <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on <code>(time, ...)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
+        <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on <code>(time, ...)</code> VoxelData.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5631,7 +5631,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 <a href="#confusius.decomposition.PCA.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a canonical voxel-grid DataArray, or an already-extracted
+            <p>Input data: VoxelData, or an already-extracted
 signals array (see class docstring).</p>
           </div>
         </li>

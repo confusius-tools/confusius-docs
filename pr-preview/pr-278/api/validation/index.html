@@ -3556,7 +3556,7 @@
           <b><code><span title="confusius.validation.fusi">fusi</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Validation helpers for ConfUSIus-style <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>Validation helpers for the ConfUSIus VoxelData model and <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3616,7 +3616,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi">ensure_fusi</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Canonicalize and validate a ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray.</p>
+              <p>Canonicalize and validate a DataArray against the ConfUSIus VoxelData model.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3651,7 +3651,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="./#confusius.validation.validate_fusi">validate_fusi</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a DataArray follows the ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data model.</p>
+              <p>Validate that a DataArray follows the ConfUSIus VoxelData model.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3672,14 +3672,14 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_labels&lt;/span&gt;" href="./#confusius.validation.validate_labels">validate_labels</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a label map shares data's canonical voxel grid.</p>
+              <p>Validate that a label map shares data's VoxelData grid.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_mask&lt;/span&gt;" href="./#confusius.validation.validate_mask">validate_mask</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a mask shares data's canonical voxel grid.</p>
+              <p>Validate that a mask shares data's VoxelData grid.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3799,7 +3799,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Canonicalize and validate a ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray.</p>
+        <p>Canonicalize and validate a DataArray against the ConfUSIus VoxelData model.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3832,7 +3832,7 @@
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Canonicalized DataArray that passed <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation.</p>
+            <p>Canonicalized DataArray that passed VoxelData validation.</p>
           </div>
         </li>
     </ul>
@@ -4158,7 +4158,13 @@ voxel-grid DataArray.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a DataArray follows the ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data model.</p>
+        <p>Validate that a DataArray follows the ConfUSIus VoxelData model.</p>
+<p>This is the general-purpose VoxelData checker: by default it enforces only the
+universal <code>k</code>/<code>j</code>/<code>i</code> + <code>VoxelToWorldIndex</code> structure required of any
+VoxelData-compatible DataArray, so it is the right tool for any VoxelData array,
+not only <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings. The optional flags below layer on genuine
+<abbr title="Functional Ultrasound Imaging">fUSI</abbr>-recording-specific requirements (e.g. acquisition timing) and should only be
+enabled for actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4179,7 +4185,8 @@ world coordinates <code>z</code>, <code>y</code>, <code>x</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to require a <code>time</code> dimension with more than one timepoint.</p>
+            <p>Whether to require a <code>time</code> dimension with more than one timepoint, as in an
+actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4445,11 +4452,11 @@ present in the DataArray attributes.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a label map shares data's canonical voxel grid.</p>
+        <p>Validate that a label map shares data's VoxelData grid.</p>
 <p>Both <code>labels</code> and <code>data</code> are canonicalized via
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
-after restoring any scalar-reduced voxel dims) a canonical voxel-grid DataArray
-carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
+after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
+<code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4518,7 +4525,7 @@ carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<c
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>labels</code> or <code>data</code> isn't a canonical voxel-grid DataArray, or if <code>labels</code>'s
+            <p>If <code>labels</code> or <code>data</code> isn't VoxelData-compatible, or if <code>labels</code>'s
 voxel grid doesn't match <code>data</code>'s.</p>
           </div>
         </li>
@@ -4548,11 +4555,11 @@ voxel grid doesn't match <code>data</code>'s.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a mask shares data's canonical voxel grid.</p>
+        <p>Validate that a mask shares data's VoxelData grid.</p>
 <p>Both <code>mask</code> and <code>data</code> are canonicalized via
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
-after restoring any scalar-reduced voxel dims) a canonical voxel-grid DataArray
-carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
+after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
+<code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4638,7 +4645,7 @@ False, <code>mask</code> is returned with its original dtype unchanged.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> or <code>data</code> isn't a canonical voxel-grid DataArray, if <code>mask</code>'s voxel
+            <p>If <code>mask</code> or <code>data</code> isn't VoxelData-compatible, if <code>mask</code>'s voxel
 grid doesn't match <code>data</code>'s, or if <code>require_exact_dims</code> is set and <code>mask</code>'s
 dimensions don't match <code>data</code>'s.</p>
           </div>

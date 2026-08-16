@@ -3693,7 +3693,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load">load</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from file, dispatching by extension.</p>
+              <p>Load VoxelData from file, dispatching by extension.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3742,7 +3742,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save">save</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Save a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray to file, dispatching by extension.</p>
+              <p>Save VoxelData to file, dispatching by extension.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4914,8 +4914,8 @@ provided without <code>compound_sampling_frequency</code>.</p>
 ds = xr.open_zarr(&quot;output.zarr&quot;)
 iq = ds[&quot;iq&quot;]
 </code></pre></div>
-<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a canonical voxel-to-world
-DataArray -- <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
+<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not VoxelData --
+<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
 <code>VoxelToWorldIndex</code> from <code>attrs["voxel_to_world"]</code>. Load with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load"><code>confusius.io.load</code></a> instead to get the world coordinates back:</p>
 <div class="language-text highlight"><pre><span></span><code>import confusius as cf
@@ -5195,8 +5195,8 @@ Can be opened directly with <code>xarray.open_zarr()</code>.</p>
 ds = xr.open_zarr(&quot;output.zarr&quot;)
 iq = ds[&quot;iq&quot;]
 </code></pre></div>
-<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a canonical voxel-to-world
-DataArray -- <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
+<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not VoxelData --
+<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
 <code>VoxelToWorldIndex</code> from <code>attrs["voxel_to_world"]</code>. Load with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load"><code>confusius.io.load</code></a> instead to get the world coordinates back:</p>
 <div class="language-text highlight"><pre><span></span><code>import confusius as cf
@@ -5238,7 +5238,7 @@ reduction functions return DataArrays with attributes.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Load a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from file, dispatching by extension.</p>
+        <p>Load VoxelData from file, dispatching by extension.</p>
 <p>Supported formats:</p>
 <ul>
 <li><strong>NIfTI</strong> (<code>.nii</code>, <code>.nii.gz</code>): loaded via <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="./#confusius.io.load_nifti"><code>load_nifti</code></a>.</li>
@@ -5247,7 +5247,7 @@ reduction functions return DataArrays with attributes.</p>
   variable is extracted. Must be a store previously written by
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a> (identified by <code>attrs["voxel_to_world"]</code>); for an
   arbitrary/foreign Zarr store, use <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> directly
-  and build a canonical DataArray yourself (e.g. via
+  and build VoxelData yourself (e.g. via
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>).</li>
 </ul>
 <p>If <code>attrs["rgb_lookup"]</code> is present but <code>attrs["cmap"]</code>/<code>attrs["norm"]</code> are missing
@@ -5255,7 +5255,7 @@ reduction functions return DataArrays with attributes.</p>
 not JSON-serializable and are dropped on save), <code>cmap</code>/<code>norm</code> are rebuilt via
 [<code>build_atlas_cmap_and_norm</code>][confusius._utils.atlas.build_atlas_cmap_and_norm] so
 atlas-derived masks and annotations keep their canonical colors after reload.</p>
-<p>A Zarr-saved voxel-to-world DataArray stores <code>attrs["voxel_to_world"]</code> instead of
+<p>A Zarr-saved VoxelData DataArray stores <code>attrs["voxel_to_world"]</code> instead of
 dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays (see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a>); this rebuilds the world coordinates and
 <code>VoxelToWorldIndex</code> from that affine.</p>
@@ -5487,7 +5487,7 @@ coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
     <div class="doc doc-contents ">
 
         <p>Load an EchoFrame DAT file as a lazy, ConfUSIus-ordered DataArray.</p>
-<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as a canonical DataArray with voxel dimensions
+<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as VoxelData with voxel dimensions
 <code>(time, k, j, i)</code> and a voxel-to-world index deriving world coordinates <code>z</code>, <code>y</code>,
 <code>x</code>. Coordinates and acquisition metadata (e.g. <code>transmit_frequency</code>,
 <code>beamforming_sound_velocity</code>) are attached from the EchoFrame sequence parameter
@@ -5966,7 +5966,7 @@ after <code>isel</code>.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Save a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray to file, dispatching by extension.</p>
+        <p>Save VoxelData to file, dispatching by extension.</p>
 <p>Supported formats:</p>
 <ul>
 <li><strong>NIfTI</strong> (<code>.nii</code>, <code>.nii.gz</code>): saved via
