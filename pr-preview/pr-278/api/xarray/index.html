@@ -3743,7 +3743,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="./#confusius.xarray.apply_affine">apply_affine</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Apply a world-space affine to voxel-to-world geometry.</p>
+              <p>Apply a world-space affine to a DataArray's world coordinates.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4658,7 +4658,7 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="./#confusius.xarray.FUSIAffineAccessor.apply">apply</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Apply a world-space affine to voxel-to-world geometry.</p>
+              <p>Apply a world-space affine to a DataArray's world coordinates.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4776,18 +4776,17 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Apply a world-space affine to voxel-to-world geometry.</p>
+        <p>Apply a world-space affine to a DataArray's world coordinates.</p>
 <p>The transform is composed into the DataArray's <code>VoxelToWorldIndex</code>, derived
 world coordinates are regenerated, and existing <code>attrs["affines"]</code> entries
-are re-expressed against the new world frame. Per-pose <code>(npose, N, N)</code>
-stacks are handled by NumPy broadcasting.</p>
+are re-expressed against the new world frame.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIAffineAccessor.apply(affine)" class="doc doc-heading doc-heading-parameter">              <b><code>affine</code></b>
-<a href="#confusius.xarray.FUSIAffineAccessor.apply(affine)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>numpy.ndarray, shape (N, N), or str</code>)
+<a href="#confusius.xarray.FUSIAffineAccessor.apply(affine)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(4, 4) numpy.ndarray or str</code>)
           –
           <div class="doc-md-description">
             <p>Homogeneous world-space affine matrix to apply. If a string, it is
@@ -4814,10 +4813,7 @@ looked up as a key in <code>self.attrs["affines"]</code>.</p>
           –
           <div class="doc-md-description">
             <p>The DataArray with updated spatial coordinates and <code>attrs["affines"]</code>.
-When <code>affine</code> is a string, that key is dropped from the result:
-composing a stored affine with itself is deterministically identity,
-so the entry would carry no information -- the world frame now
-simply <em>is</em> that named space.</p>
+When <code>affine</code> is a string, that key is dropped from the result.</p>
           </div>
         </li>
     </ul>
@@ -4921,7 +4917,7 @@ undefined for any voxel dimension.</p>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">i</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reindexed</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">reindex_voxels</span><span class="p">()</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reindexed</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;j&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">array([0., 1., 2.])</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">array([0, 1, 2])</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">reindexed</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">2.0</span>
 </span></code></pre></div>
@@ -9481,11 +9477,10 @@ squaring, etc.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Apply a world-space affine to voxel-to-world geometry.</p>
+        <p>Apply a world-space affine to a DataArray's world coordinates.</p>
 <p>The transform is composed into the DataArray's <code>VoxelToWorldIndex</code>, derived
 world coordinates are regenerated, and existing <code>attrs["affines"]</code> entries are
-re-expressed against the new world frame. Per-pose <code>(npose, N, N)</code> stacks
-are handled by NumPy broadcasting.</p>
+re-expressed against the new world frame.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9500,11 +9495,11 @@ are handled by NumPy broadcasting.</p>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.xarray.apply_affine(affine)" class="doc doc-heading doc-heading-parameter">              <b><code>affine</code></b>
-<a href="#confusius.xarray.apply_affine(affine)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>numpy.ndarray, shape (N, N), or str</code>)
+<a href="#confusius.xarray.apply_affine(affine)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(4, 4) numpy.ndarray or str</code>)
           –
           <div class="doc-md-description">
-            <p>Homogeneous world-space affine matrix to apply. If a string, it is
-looked up as a key in <code>da.attrs["affines"]</code>.</p>
+            <p>Homogeneous world-space affine matrix to apply. If a string, it is looked up as
+a key in <code>da.attrs["affines"]</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -9526,11 +9521,8 @@ looked up as a key in <code>da.attrs["affines"]</code>.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p><code>da</code> with updated spatial coordinates and updated <code>attrs["affines"]</code>.
-When <code>affine</code> is a string, that key is dropped from the result: composing
-a stored affine with itself is deterministically identity, so the entry
-would carry no information -- the world frame now simply <em>is</em> that
-named space.</p>
+            <p><code>da</code> with updated spatial coordinates and updated <code>attrs["affines"]</code>. When
+<code>affine</code> is a string, that key is dropped from the result.</p>
           </div>
         </li>
     </ul>
@@ -9542,9 +9534,9 @@ named space.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>da</code> lacks voxel-to-world geometry, if <code>affine</code> shape does not match
-the DataArray's voxel-to-world affine, or if <code>affine</code> is a string and
-<code>da</code> has no <code>"affines"</code> entry in <code>attrs</code>.</p>
+            <p>If <code>da</code> lacks voxel-to-world geometry, if <code>affine</code> shape does not match the
+DataArray's voxel-to-world affine, or if <code>affine</code> is a string and <code>da</code> has no
+<code>"affines"</code> entry in <code>attrs</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

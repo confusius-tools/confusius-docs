@@ -831,10 +831,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#axis-ordering-time-z-y-x" class="md-nav__link">
+  <a href="#dimension-ordering-time-pose-k-j-i" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Axis Ordering: <code>(time, z, y, x)</code>
+        Dimension Ordering: <code>(..., time, pose, k, j, i)</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-voxeldata-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The VoxelData Model
       </span>
     </span>
   </a>
@@ -899,23 +910,6 @@
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Switching World Spaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rotations-and-shears" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Rotations and Shears
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3145,10 +3139,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#axis-ordering-time-z-y-x" class="md-nav__link">
+  <a href="#dimension-ordering-time-pose-k-j-i" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Axis Ordering: <code>(time, z, y, x)</code>
+        Dimension Ordering: <code>(..., time, pose, k, j, i)</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-voxeldata-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        The VoxelData Model
       </span>
     </span>
   </a>
@@ -3213,23 +3218,6 @@
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Switching World Spaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rotations-and-shears" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Rotations and Shears
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3349,61 +3337,73 @@
 <h1 id="spatial-conventions">Spatial Conventions<a class="headerlink" href="#spatial-conventions" title="Permanent link">&para;</a></h1>
 <p>ConfUSIus works with three kinds of coordinate systems:</p>
 <ul>
-<li>the <strong>voxel space</strong>, linked to the underlying array storage and indexed by integer
-  voxel coordinates,</li>
-<li>the <strong>world space</strong> embedded in every DataArray's coordinates,</li>
+<li>the <strong>voxel space</strong>, linked to the underlying array storage and indexed by the integer
+  dimension coordinates <code>i</code>/<code>j</code>/<code>k</code> (in dimension order <code>(k, j, i)</code>—see <a href="#dimension-ordering-time-pose-k-j-i">Dimension
+  Ordering</a> below),</li>
+<li>the <strong>world space</strong>, derived from voxel space through a single affine and exposed as
+  the coordinates <code>x</code>/<code>y</code>/<code>z</code> on every DataArray,</li>
 <li>and any number of <strong>reference spaces</strong> (atlas, scanner, etc.) linked to the world
   space through affine transforms stored in <code>attrs["affines"]</code>.</li>
 </ul>
-<p>Understanding these three spaces and the axis-ordering convention used throughout
-ConfUSIus makes it much easier to reason about I/O, registration, and downstream
+<p>Understanding these spaces and the axis-ordering convention used throughout ConfUSIus
+makes it much easier to reason about visualization, registration, and downstream
 statistical analysis.</p>
 <pre class="mermaid"><code>---
 config:
   layout: elk
 ---
 flowchart LR
-    V["&lt;b&gt;Voxel space&lt;/b&gt;&lt;br&gt;(integer indices)"]
-    P["&lt;b&gt;World space&lt;/b&gt;&lt;br&gt;(probe-relative)"]
+    V["&lt;b&gt;Voxel space&lt;/b&gt;"]
+    P["&lt;b&gt;World space&lt;/b&gt;"]
     W1["&lt;b&gt;Scanner space&lt;/b&gt;"]
     ellipsis{{"..."}}
     W2["&lt;b&gt;Atlas space&lt;/b&gt;"]
 
-    V --&gt;|".coords"| P
+    V --&gt;|"VoxelToWorldIndex"| P
     P --&gt;|".attrs[affines]"| W1
     P --&gt;|".attrs[affines]"| W2
     P --&gt; ellipsis
 
     ellipsis@{ shape: text }</code></pre>
-<h2 id="axis-ordering-time-z-y-x">Axis Ordering: <code>(time, z, y, x)</code><a class="headerlink" href="#axis-ordering-time-z-y-x" title="Permanent link">&para;</a></h2>
+<h2 id="dimension-ordering-time-pose-k-j-i">Dimension Ordering: <code>(..., time, pose, k, j, i)</code><a class="headerlink" href="#dimension-ordering-time-pose-k-j-i" title="Permanent link">&para;</a></h2>
 <p>Every ConfUSIus DataArray that represents a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording uses the dimension order
-<code>(time, z, y, x)</code>, where:</p>
+<code>(..., time, pose, k, j, i)</code>, where:</p>
 <table>
 <thead>
 <tr>
 <th>Dimension</th>
-<th>World axis</th>
+<th>Typical probe axis</th>
 <th>Typical size</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>...</code></td>
+<td>Any extra dimensions</td>
+<td></td>
+</tr>
 <tr>
 <td><code>time</code></td>
 <td>Acquisition time</td>
 <td>Thousands</td>
 </tr>
 <tr>
-<td><code>z</code></td>
-<td>Elevation (stacking direction)</td>
-<td>1 for 2D acquisitions</td>
+<td><code>pose</code></td>
+<td>Probe poses</td>
+<td>Tens</td>
 </tr>
 <tr>
-<td><code>y</code></td>
+<td><code>k</code></td>
+<td>Elevation (stacking direction)</td>
+<td>One to tens</td>
+</tr>
+<tr>
+<td><code>j</code></td>
 <td>Axial / depth</td>
 <td>Tens to hundreds</td>
 </tr>
 <tr>
-<td><code>x</code></td>
+<td><code>i</code></td>
 <td>Lateral</td>
 <td>Tens to hundreds</td>
 </tr>
@@ -3412,51 +3412,129 @@ flowchart LR
 <div class="admonition tip">
 <p class="admonition-title">Dimension ordering is mostly transparent in Xarray</p>
 <p>Users familiar with neuroimaging may be more accustomed to spatiotemporal
-conventions like <code>(x, y, z, t)</code>. Thankfully, Xarray makes dimension ordering largely
-transparent in practice: you can always refer to dimensions by name and in any
-order (e.g. <code>data.mean("time")</code>, <code>data.sel(x=4.54, y=-2.48, z=0.0)</code>) rather than by
-axis index, so you won't have to remember the order of the dimensions.</p>
+conventions like <code>(i, j, k, time)</code>. Thankfully, Xarray makes dimension ordering
+largely transparent in practice: you can always refer to dimensions by name and in
+any order (e.g. <code>data.mean("time")</code>, <code>data.sel(x=4.54, y=-2.48, z=0.0)</code>) rather than
+by axis index, so you won't have to remember the order of the dimensions.</p>
 </div>
 <p>This ordering is motivated by several considerations.</p>
 <ul>
 <li><strong>Equivalence with NIfTI:</strong> NIfTI stores arrays in column-major (Fortran) order as
-  <code>(x, y, z, time)</code>. Transposing to the more Pythonic row-major (C) order is a zero-copy
-  operation that yields <code>(time, z, y, x)</code>.</li>
+  <code>(i, j, k, time)</code>. Transposing to the more Pythonic row-major (C) order is a zero-copy
+  operation that yields <code>(time, k, j, i)</code>.</li>
 <li><strong>Memory layout for volume-wise processing:</strong> In row-major order the last axes are
-  contiguous in memory, so <code>data[t]</code>—a single spatial volume—is a contiguous block,
+  contiguous in memory, so <code>data[t]</code> (a single spatial volume) is a contiguous block,
   which is the natural unit of work for <abbr title="In-phase and Quadrature">IQ</abbr> processing, motion correction, and similar
   operations.</li>
 <li><strong>Statistical analysis convention:</strong> After spatial processing, <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data is typically
-  reshaped to <code>(time, voxels)</code> for <abbr title="General Linear Models">GLMs</abbr> and dimensionality reduction. This is
-  <code>data.stack(voxels=["z", "y", "x"])</code> in Xarray, matching the standard
-  <code>(samples, features)</code> convention of
+  reshaped to <code>(time, space)</code> for statistical analysis. This is <code>data.stack(space=["k",
+  "j", "i"])</code> in Xarray, matching the standard <code>(samples, features)</code> convention of
   <a href="https://scikit-learn.org/stable/">scikit-learn</a> and
   <a href="https://www.statsmodels.org/stable/index.html">statsmodels</a>.</li>
-<li><strong>Alignment with neuroanatomical atlases:</strong> For coronal preclinical <abbr title="Functional Ultrasound Imaging">fUSI</abbr>,
-  <code>(z, y, x) = (elevation, axial/depth, lateral)</code> maps to
-  <code>(antero-posterior, superior-inferior, left-right)</code>, sharing the first two axes with
-  <a href="https://brainglobe.info">BrainGlobe</a> atlases (e.g. Allen CCFv3). The world →
-  reference affine captures any remaining orientation difference (e.g. a lateral
-  mirror).</li>
+<li><strong>Alignment with neuroanatomical atlases:</strong> For typical coronal preclinical <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
+  recordings, <code>(k, j, i) = (elevation, axial/depth, lateral)</code> maps to
+  <code>(antero-posterior, superior-inferior, left-right)</code>, which is the same orientation as
+  <a href="https://brainglobe.info">BrainGlobe</a> atlases (e.g. Allen CCFv3).</li>
 <li><strong>Visualization:</strong> Most visualization tools (e.g. napari) expect the last two axes to
-  be the display axes of a 2D image. <code>data.sel(time=t, z=z)</code> yields a <code>(y, x)</code> array
-  that plots correctly without transposing.</li>
+  be the display axes of a volume. Plotting a <code>(time, k, j, i)</code> array directly would
+  yield a <code>(j, i)</code> slice with <code>time</code> and <code>k</code> sliders, correctly oriented for display.</li>
 </ul>
+<h2 id="the-voxeldata-model">The VoxelData Model<a class="headerlink" href="#the-voxeldata-model" title="Permanent link">&para;</a></h2>
+<p><strong>VoxelData</strong> is ConfUSIus's canonical DataArray model for any spatially referenced
+voxel array—beamformed <abbr title="In-phase and Quadrature">IQ</abbr> and <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings, atlas volumes, decomposition component
+maps, displacement fields, and anything else gridded in space. Every VoxelData array
+has:</p>
+<ul>
+<li>native voxel dims <code>k</code>/<code>j</code>/<code>i</code> (integer coordinates), always last and always present,
+  optionally preceded by <code>pose</code> (integer coordinates), <code>time</code> (floating coordinates),
+  and any number of extra non-spatial dims (<abbr title="Principal Component Analysis">PCA</abbr>/<abbr title="Independent Component Analysis">ICA</abbr> components, stacked masks, etc.);</li>
+<li>a single <strong><code>VoxelToWorldIndex</code></strong> attached to <code>k</code>/<code>j</code>/<code>i</code>, which derives the world
+  coordinates <code>z</code>/<code>y</code>/<code>x</code> from one voxel-to-world affine;</li>
+<li>required metadata: <code>voxdim</code> and <code>units</code> on each world coordinate, plus—whenever
+  <code>time</code> is present—<code>units</code>, <code>volume_acquisition_reference</code>, and
+  <code>volume_acquisition_duration</code> on <code>time</code>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Lives on</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>voxdim</code></td>
+<td><code>x</code>/<code>y</code>/<code>z</code></td>
+<td>Native voxel size along that axis (see <a href="#world-space">World Space</a> below).</td>
+</tr>
+<tr>
+<td><code>units</code></td>
+<td><code>x</code>/<code>y</code>/<code>z</code>/<code>time</code></td>
+<td>Physical unit of the coordinate values (<code>"mm"</code> and <code>"s"</code> are typical).</td>
+</tr>
+<tr>
+<td><code>volume_acquisition_reference</code></td>
+<td><code>time</code></td>
+<td>Which point of the acquisition window each <code>time</code> value marks: <code>"start"</code>, <code>"center"</code>, or <code>"end"</code>.</td>
+</tr>
+<tr>
+<td><code>volume_acquisition_duration</code></td>
+<td><code>time</code></td>
+<td>Duration of one volume's acquisition, in the same units as <code>time</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a> build a
+VoxelData-compatible DataArray satisfying all of this from raw data, and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_fusi"><code>validate_fusi</code></a> checks an existing DataArray
+against it. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a> additionally fixes small
+deviations with sensible defaults first—for example filling in missing <code>time</code>
+metadata, or restoring a voxel dimension collapsed to a scalar coordinate by a prior
+<code>.isel()</code>—before validating. ConfUSIus functions that expect a spatial DataArray call
+<code>ensure_fusi</code> on their input.</p>
+<p>See <a href="../xarray/">Working with Xarray</a> for the accessor API this backs
+(<code>.fusi.affine.voxel_to_world</code>, <code>.fusi.spacing</code>, <code>.fusi.direction</code>, ...).</p>
 <h2 id="coordinate-systems">Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Permanent link">&para;</a></h2>
 <h3 id="voxel-space">Voxel Space<a class="headerlink" href="#voxel-space" title="Permanent link">&para;</a></h3>
-<p>Voxel space has its origin at voxel <code>(0, 0, 0)</code> and integer indices along each
-spatial axis. It is the natural indexing space of the underlying array: DataArrays can
-be indexed in voxel space using the standard Xarray integer-location indexer (<code>.isel</code>).</p>
+<p>Voxel space has its origin at voxel <code>(0, 0, 0)</code> and integer indices along each spatial
+axis. It is the natural indexing space of the underlying array: DataArrays can be
+indexed in voxel space either by array position with <code>.isel</code>, or by voxel label with
+<code>.sel</code>. The two coincide for a freshly built DataArray, but diverge once voxel labels
+stop matching dense positions, for example after cropping:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">cropped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">cropped</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">array([3, 4, 5])</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">cropped</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>  <span class="c1"># First voxel in the cropped array.</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">3</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">cropped</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>   <span class="c1"># Third voxel from the original voxel space.</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">3</span>
+</span></code></pre></div>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.reindex_voxels"><code>reindex_voxels</code></a> to rebase voxel labels back to
+dense positions—see <a href="../xarray/#rebasing-voxel-coordinates-to-dense-positions">Rebasing voxel coordinates to dense
+positions</a> in Working with
+Xarray.</p>
 <h3 id="world-space">World Space<a class="headerlink" href="#world-space" title="Permanent link">&para;</a></h3>
-<p>The world space is the coordinate system embedded in the DataArray's dimension
-coordinates. Its axes are <code>(z, y, x)</code> corresponding to <code>(elevation, axial/depth,
-lateral)</code>. The unit of the coordinates is determined by the <code>units</code> attribute of each
-coordinate array and is not fixed by ConfUSIus — millimeters are typical for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>, but
-any consistent unit can be used.</p>
-<p>The origin is typically the center of the probe surface, but users are free to define
-any world space they find convenient. What matters is that the coordinate values
-are internally consistent and carry a meaningful world scale.</p>
-<p>World coordinates are set at data-loading time and depend on the source format:</p>
+<p>The world space is derived from voxel space by the DataArray's <code>VoxelToWorldIndex</code> and
+exposed as the coordinates <code>x</code>, <code>y</code>, <code>z</code>. The unit of the coordinates is stored in the
+<code>units</code> attribute of each coordinate array; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
+recordings (e.g. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>'s
+default).</p>
+<div class="admonition warning">
+<p class="admonition-title">Units are not enforced</p>
+<p>ConfUSIus does not check or convert between units across its APIs—<code>units</code> is
+metadata only. We plan to make the data model more unit-aware in the future.</p>
+</div>
+<p>World space is not tied to any one physical space—it's whatever space the DataArray's
+voxel-to-world affine currently encodes, and that changes over the course of a pipeline.
+A freshly loaded recording is typically expressed in <strong>scanner space</strong>: the space of the
+first acquired probe pose, with origin at the probe surface and axes along lateral,
+depth, and elevation. Once the data is resampled or registered, world space becomes
+whatever space that operation targeted instead: an atlas template (e.g. Allen CCFv3),
+another recording's grid, or any other space you choose.</p>
+<p>World coordinates are set when attaching a <code>VoxelToWorldIndex</code> to the DataArray.
+Different loaders derive them in different ways:</p>
 <ul>
 <li><strong>EchoFrame</strong>: Lateral and axial coordinates are read from the acquisition metadata
   file.</li>
@@ -3467,228 +3545,116 @@ are internally consistent and carry a meaningful world scale.</p>
   the SCAN file. The axial coordinate (<code>y</code>) is sign-flipped so that it is always
   positive and increases with depth.</li>
 <li><strong>NIfTI</strong>: Coordinates are derived from the translation and scale components of the
-  "best" affine transformation found in the file header.</li>
-<li><strong>Hand-constructed DataArrays</strong>: The world space is whatever the user assigns to
-  the dimension coordinates.</li>
+  "best" affine transformation found in the file header, or from whichever one
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a>'s <code>coordinate_affine</code> argument selects
+  explicitly.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">The "best" NIfTI affine</p>
-<p>NIfTI files can store two affine transforms in their header: an <code>sform</code> and a
-<code>qform</code>, each with an associated integer code indicating whether the affine is
-valid (<code>code &gt; 0</code>) and which space it points to. ConfUSIus follows the NIfTI
-specification: if <code>sform_code &gt; 0</code> the <code>sform</code> is used; otherwise, if
+<p>NIfTI files can store two affine transforms in their header: <code>qform</code> and a
+<code>sform</code>, each with an associated integer code indicating whether the affine is
+valid (<code>code &gt; 0</code>) and which space it points to.</p>
+<ul>
+<li><code>qform</code> cannot contain shears and is typically used to encode transforms from
+  voxel space to scanner space. </li>
+<li><code>sform</code> can be any arbitrary affine transformation and is typically used to encode
+  transforms from voxel space to "standard" reference spaces, such as a recording's
+  world space or an atlas space.</li>
+</ul>
+<p>By default, ConfUSIus follows the <a href="https://nipy.org/nibabel/nifti_images.html#choosing-the-image-affine">same logic as
+NiBabel</a>: if
+<code>sform_code &gt; 0</code> the <code>sform</code> is used to define the world coordinates; otherwise, if
 <code>qform_code &gt; 0</code> the <code>qform</code> is used. If both codes are zero a warning is emitted
-and coordinates fall back to a diagonal affine built from the <code>pixdim</code> field.</p>
+and coordinates fall back to a diagonal affine built from the NIfTI <code>pixdim</code> field.
+Pass <code>coordinate_affine="sform"</code>/<code>"qform"</code> to force one explicitly.</p>
 </div>
+<p>Hand-constructed DataArrays get whatever voxel-to-world affine the user provides via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>.</p>
 <p>Each spatial coordinate also carries a <code>voxdim</code> attribute that records the native voxel
 size along that dimension:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;voxdim&quot;</span><span class="p">]</span>  <span class="c1"># native axial voxel size.</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;voxdim&quot;</span><span class="p">]</span>  <span class="c1"># native axial voxel size.</span>
 </span></code></pre></div>
 <p>This is set at load time alongside the world coordinates and is preserved through
 any Xarray operation that propagates coordinate attributes. It is particularly useful
 after downsampling: the coordinate values themselves reflect the new, coarser spacing,
-but <code>voxdim</code> retains the original acquisition resolution. It is used wherever native
-voxel dimensions are needed — for example, for aspect-ratio-correct visualization,
-NIfTI export, and as a fallback when a dimension is later reduced to a single point
-(e.g. after <code>.isel(z=0)</code>):</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">da_down</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># da_down.coords[&quot;y&quot;].attrs[&quot;voxdim&quot;] still holds the native voxel size.</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">da_slice</span> <span class="o">=</span> <span class="n">da_down</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># da_slice.coords[&quot;z&quot;].attrs[&quot;voxdim&quot;] is now the only record of the z voxel size,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># since the coordinate has been collapsed to a scalar.</span>
+but <code>voxdim</code> retains the original acquisition resolution:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">da_down</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">i</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># da_down.coords[&quot;y&quot;].attrs[&quot;voxdim&quot;] still holds the native voxel size.</span>
 </span></code></pre></div>
 <h3 id="reference-spaces">Reference Spaces<a class="headerlink" href="#reference-spaces" title="Permanent link">&para;</a></h3>
-<p>ConfUSIus stores affine transformations between the DataArray's world space and any
-other reference world space in <code>da.attrs["affines"]</code>, a dictionary keyed by affine
-name. These target spaces can be external coordinate systems defined by other tools or
-standards, for example an atlas space (Allen CCFv3), a scanner space, or a user-defined
-stereotactic space. Each value is a <code>(4, 4)</code> homogeneous matrix in <code>(z, y, x)</code>
-convention that maps a world-space point to the corresponding point in the reference
-space:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">A</span> <span class="o">@</span> <span class="p">[</span><span class="n">pz</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">rz</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-</span></code></pre></div>
-<p>where <code>(pz, py, px)</code> are the world coordinates stored in <code>da.coords</code>.</p>
+<p>ConfUSIus stores affine transformations relating the DataArray's current world space to
+any number of other named spaces in <code>attrs["affines"]</code>, a dictionary keyed by affine
+name. Reference spaces can be an atlas space, a scanner or lab space, another
+recording's world space, or a space the data has already moved away from (e.g. the raw
+probe-relative space a recording started in).</p>
+<p>A space counts as a "reference space" rather than <em>the</em> world space only because
+reaching it currently takes an affine.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> can turn any one of
+them into the world space itself (see <a href="#switching-world-spaces">Switching World
+Spaces</a>). Each reference space is stored in <code>attrs["affines"]</code>
+as a <code>(4, 4)</code> homogeneous affine matrix in <code>(z, y, x)</code> convention that maps a
+world-space point to the corresponding point in the reference space.</p>
 <p>Several loaders populate <code>da.attrs["affines"]</code> automatically:</p>
 <ul>
-<li><strong>NIfTI</strong>: NIfTI files store <code>qform</code> and <code>sform</code> affines in their header that map
-  voxel indices to reference coordinates. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> reads
-  the relevant affine(s), converts them from voxel → reference to world → reference
-  form, and stores them under the keys <code>"world_to_sform"</code> and/or
-  <code>"world_to_qform"</code> depending on which codes are valid in the header. When a file
-  declares both forms, the world coordinates come from the primary (usually <code>sform</code>)
-  affine, and <code>world_to_{secondary}</code> (usually <code>world_to_qform</code>) is anchored to
-  that same world space, so both keys map the one set of coordinates in <code>da.coords</code>,
-  just to different reference spaces. When saving back to NIfTI,
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> can write any named affine in
-  <code>attrs["affines"]</code> to the header via its <code>qform=</code> and <code>sform=</code> arguments, with
-  <code>"world_to_qform"</code> and <code>"world_to_sform"</code> used as convenience fallbacks.</li>
+<li><strong>NIfTI</strong>: The world space is whichever affine (<code>sform</code> or <code>qform</code>) was selected—it
+  never appears in <code>attrs["affines"]</code> itself. When the other one is also valid, it is
+  stored as <code>"world_to_sform"</code> or <code>"world_to_qform"</code> accordingly, so the world space can
+  be switched between the two. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> can write any
+  named affine in <code>attrs["affines"]</code> back to the header via its <code>qform=</code>/<code>sform=</code>
+  arguments, defaulting to <code>"world_to_qform"</code>/<code>"world_to_sform"</code> when not specified.</li>
 <li><strong>Iconeus SCAN</strong>: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> stores a
-  <code>"world_to_lab"</code> affine mapping ConfUSIus world coordinates <code>(z, y, x)</code> to the
-  Iconeus lab coordinate system. For multi-pose acquisitions (<code>3Dscan</code>, <code>4Dscan</code>),
-  one affine per pose is stored, with shape <code>(npose, 4, 4)</code>.</li>
+  <code>"world_to_lab"</code> affine mapping ConfUSIus world coordinates to the Iconeus lab
+  coordinate system. For multi-pose acquisitions (<code>3Dscan</code>, <code>4Dscan</code>), one affine per
+  pose is stored, with shape <code>(pose, 4, 4)</code>.</li>
 </ul>
 <p>Registration transforms are handled separately from <code>attrs["affines"]</code>.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> returns the estimated
-transform explicitly; for linear registration it follows the SimpleITK pull convention
-and maps fixed world coordinates to moving world coordinates. That pull transform
-is useful for resampling, but it is not stored automatically in <code>attrs["affines"]</code>.</p>
-<p>When registration is run with <code>resample=True</code>, the returned DataArray already lives on
-the fixed/reference grid. In that case ConfUSIus copies <code>fixed.attrs["affines"]</code> onto
-the result, so any named world-space relationships already attached to the
-fixed/reference DataArray are preserved automatically.</p>
+transform explicitly but does not store automatically in <code>attrs["affines"]</code>.</p>
 <div class="admonition question">
-<p class="admonition-title">Why world → reference, not voxel → reference?</p>
-<p>The standard NIfTI affine maps <strong>voxel indices → reference coordinates</strong>. ConfUSIus
-uses a <strong>world → reference</strong> affine instead, for one practical reason: it is
-<strong>invariant to slicing and downsampling</strong>.</p>
-<p>A voxel → reference affine encodes the origin as the reference position of voxel
-<code>(0,0,0)</code> specifically. The moment you crop or subsample the DataArray—even a simple
-<code>.isel(y=slice(10, 50))</code>—voxel <code>(0,0,0)</code> is no longer in the array, and the affine
-silently points to the wrong location.</p>
-<p>A world → reference affine operates on the coordinate values already stored in
-<code>da.coords</code>. Those values travel with the data through any Xarray operation that
-preserves coordinates, so the affine remains valid without any adjustment.</p>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> reconstructs the full voxel → reference
-NIfTI affine internally by composing the world → reference affine with the
-voxel → world map built from the dimension coordinate origin and spacing. Using
-the full affine (not just its orientation) means each affine keeps its own origin, so
-a file with distinct <code>sform</code> and <code>qform</code> round-trips faithfully.</p>
+<p class="admonition-title">Why store affines as world → reference instead of voxel → reference?</p>
+<p>A voxel → reference affine breaks the moment the voxel space is reindexed—via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.reindex_voxels"><code>reindex_voxels</code></a> or when saving to NIfTI. A world
+→ reference affine doesn't have this problem: it operates on world coordinate
+values, which stay physically correct through reindexing.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> reconstructs the voxel → reference NIfTI
+affine it needs by composing the stored world → reference affine with the
+DataArray's current voxel → world affine at save time.</p>
 </div>
 <h2 id="switching-world-spaces">Switching World Spaces<a class="headerlink" href="#switching-world-spaces" title="Permanent link">&para;</a></h2>
-<p>The world space is a <em>choice of coordinate frame</em>, not a fixed property of the data.
-When a DataArray carries an affine from its current world space (described by its
-coordinates) to a reference space in <code>attrs["affines"]</code>, you can use
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> to re-express its
-world coordinates in that reference frame.</p>
-<p>ConfUSIus world coordinates are stored as three independent 1D arrays, so they can
-encode scaling and translation but not rotations and shears. Consequently,
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> may perform either a
-complete or partial change of world frame:</p>
-<ul>
-<li>If the affine can be represented by the coordinate arrays (that is, it is
-  axis-aligned), <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>
-  absorbs the full transform. The requested reference frame becomes the new world
-  frame, and the returned <code>orientation</code> is the identity.</li>
-<li>If the affine contains axis-mixing components (rotation or shear),
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> absorbs only the
-  axis-aligned part into the coordinates and returns the remaining transform as
-  <code>orientation</code>. In that case, the change of frame is incomplete until the residual
-  transform is handled separately.</li>
-</ul>
-<p>This operation is useful for visualization, because representable changes appear
-directly in coordinate ticks and world axes. It can also provide a useful initialization
-for registration by expressing datasets in approximately the same frame. Any returned
-residual orientation must still be included when comparing or registering datasets.</p>
+<p>To switch a DataArray's world space to one of its reference spaces, apply the affine
+that relates them: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>
+takes a <code>(4, 4)</code> affine (or a key into <code>attrs["affines"]</code>) and re-expresses the
+DataArray's world coordinates in that space, which becomes the new world space.</p>
 <p>Take the <code>sform</code>/<code>qform</code> example from <a href="#reference-spaces">Reference Spaces</a>. A NIfTI
-file with <code>sform_code &gt; 0</code> anchors its world space to the <code>sform</code> frame, absorbing
-only its axis-aligned part. The remaining orientation component of <code>sform</code> is carried on
-the <code>world_to_sform</code> affine attribute, while <code>world_to_qform</code> records the mapping
-of the world space to the <code>qform</code> frame.</p>
-<p>The following example uses an axis-aligned <code>sform</code>, so <code>world_to_sform</code> is the
-identity. The <code>qform</code> is shifted by +10 along <code>z</code> and +5 along <code>y</code> relative to the
-<code>sform</code>, so <code>world_to_qform</code> contains only a translation:</p>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">array([0., 1., 2.])</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="go">array([0., 1., 2., 3.])</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># identity</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go">array([[1., 0., 0., 0.],</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="go">       [0., 1., 0., 0.],</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="go">       [0., 0., 1., 0.],</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="go">       [0., 0., 0., 1.]])</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># (+10, +5) shift in (z, y):</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="go">array([[ 1.,  0.,  0., 10.],</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="go">       [ 0.,  1.,  0.,  5.],</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="go">       [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="go">       [ 0.,  0.,  0.,  1.]])</span>
+file with <code>sform_code &gt; 0</code> anchors its world space to the <code>sform</code> space, and the
+relationship to the <code>qform</code> space (a 90° rotation in the <code>(z, y)</code> plane, here) is
+carried on the <code>world_to_qform</code> affine attribute:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">array([-1., -1., -1., -1.,  0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="go">array([0.5, 1.5, 2.5, 3.5, 0.5, 1.5, 2.5, 3.5, 0.5, 1.5, 2.5, 3.5])</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">]</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="go">array([[ 0., -1.,  0.,  0.],</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go">       [ 1.,  0.,  0.,  0.],</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go">       [ 0.,  0.,  1.,  0.],</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="go">       [ 0.,  0.,  0.,  1.]])</span>
 </span></code></pre></div>
-<p>Applying <code>world_to_qform</code> absorbs the translation into the coordinate arrays. The
-<code>qform</code> frame therefore becomes the new world frame: <code>world_to_qform</code> becomes the
-identity, while every other stored affine is re-expressed relative to the new world
-coordinates.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>confusius.xarray.apply_affine</code></label><label for="__tabbed_1_2">Xarray accessor</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">xarray</span><span class="o">.</span><span class="n">apply_affine</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">])</span>
+<p>Applying <code>world_to_qform</code> absorbs the rotation into the DataArray's voxel-to-world
+affine, and the derived <code>z</code>/<code>y</code> coordinates change accordingly. The <code>qform</code> space
+becomes the new world space, and <code>"world_to_qform"</code> is dropped from the result:
+applying a stored affine by its own key re-anchors the world space to exactly that
+space, so the entry would carry no information any more.</p>
+<div class="language-pycon highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">array([-0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">       -3.5])</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">array([-1., -1., -1., -1.,  0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">]</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="go">{}</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">])</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">array([10., 11., 12.])</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">array([5., 6., 7., 8.])</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># (-10, -5) shift back to sform</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="go">array([[  1.,   0.,   0., -10.],</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="go">       [  0.,   1.,   0.,  -5.],</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="go">       [  0.,   0.,   1.,   0.],</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="go">       [  0.,   0.,   0.,   1.]])</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># identity, the new world frame</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="go">array([[1., 0., 0., 0.],</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="go">       [0., 1., 0., 0.],</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="go">       [0., 0., 1., 0.],</span>
-</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="go">       [0., 0., 0., 1.]])</span>
-</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="gp">&gt;&gt;&gt;</span>
-</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">orientation</span>  <span class="c1"># identity, nothing left over</span>
-</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="go">array([[1., 0., 0., 0.],</span>
-</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="go">       [0., 1., 0., 0.],</span>
-</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="go">       [0., 0., 1., 0.],</span>
-</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="go">       [0., 0., 0., 1.]])</span>
-</span></code></pre></div>
-<p>Because <code>orientation</code> is the identity, the change of world frame is complete.</p>
-<h3 id="rotations-and-shears">Rotations and Shears<a class="headerlink" href="#rotations-and-shears" title="Permanent link">&para;</a></h3>
-<p>Independent one-dimensional coordinate arrays cannot represent a transform that mixes
-axes. For example, consider a <code>world_to_qform</code> containing a 90° rotation in the
-<code>(z, y)</code> plane:</p>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">]</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">array([[ 0., -1.,  0.,  0.],</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="go">       [ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="go">       [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="go">       [ 0.,  0.,  0.,  1.]])</span>
-</span></code></pre></div>
-<p>After calling <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>, the
-coordinate arrays remain unchanged because none of this rotation can be represented as
-independent changes to <code>z</code>, <code>y</code>, and <code>x</code>:</p>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">])</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">array([0., 1., 2.])</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">array([0., 1., 2., 3.])</span>
-</span></code></pre></div>
-<p>The unabsorbed transform is returned as orientation:</p>
-<div class="language-pycon highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">orientation</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">array([[ 0., -1.,  0.,  0.],</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">       [ 1.,  0.,  0.,  0.],</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="go">       [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="go">       [ 0.,  0.,  0.,  1.]])</span>
-</span></code></pre></div>
-<p>Because the residual is non-identity, the DataArray has not been fully re-anchored to
-the <code>qform</code> frame. The stored affines remain valid relative to the unchanged world
-coordinates:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_sform&quot;</span><span class="p">]</span>  <span class="c1"># identity</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">da_q</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">]</span>  <span class="c1"># unchanged 90° rotation</span>
-</span></code></pre></div>
-<p>In general, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> absorbs
-the diagonal scale and translation components into the coordinate arrays and returns any
-remaining axis-mixing component, such that</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">orientation</span> <span class="o">@</span> <span class="n">new_world</span> <span class="o">==</span> <span class="n">affine</span> <span class="o">@</span> <span class="n">old_world</span>
-</span></code></pre></div>
-<p>Always check the returned <code>orientation</code>. When it is non-identity, retain or compose it
-with subsequent transformations—or resample the data onto the target grid—rather than
-treating the coordinate arrays alone as coordinates in the target frame.</p>
+<p>See <a href="../xarray/#affine-transforms">Affine Transforms</a> in Working with Xarray for
+the rest of the <code>.fusi.affine</code> API (<code>voxel_to_world</code>, <code>set_voxel_to_world</code>, <code>to</code>).</p>
 
 
 
