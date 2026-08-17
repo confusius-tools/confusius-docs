@@ -3707,9 +3707,9 @@ we only care about:</p>
 high-frequency carrier, allowing for a significant reduction in sampling rate and thus
 drastically reducing data volume. A beamformed <abbr title="In-phase and Quadrature">IQ</abbr> sample can be represented as</p>
 <div class="arithmatex">\[
-\text{IQ}(x, y, z, k) = A(x, y, z, k) \, e^{j\phi(x, y, z, k)},
+\text{IQ}(i, j, k, t) = A(i, j, k, t) \, e^{j\phi(i, j, k, t)},
 \]</div>
-<p>where <span class="arithmatex">\(A\)</span> is amplitude, <span class="arithmatex">\(\phi\)</span> is phase, <span class="arithmatex">\((x, y, z)\)</span> are spatial coordinates, and <span class="arithmatex">\(k\)</span> is
+<p>where <span class="arithmatex">\(A\)</span> is amplitude, <span class="arithmatex">\(\phi\)</span> is phase, <span class="arithmatex">\((i, j, k)\)</span> are spatial coordinates, and <span class="arithmatex">\(t\)</span> is
 the <strong>slow-time</strong> index.</p>
 <div class="admonition info">
 <p class="admonition-title">Slow time vs. fast time</p>
@@ -3723,62 +3723,54 @@ pulse repetition frequency (<abbr title="Pulse Repetition Frequency">PRF</abbr>)
 in <abbr title="Functional Ultrasound Imaging">fUSI</abbr>), multiple plane waves are emitted at different angles and their echoes are
 combined to form a single compound volume<sup id="fnref:montaldo2009"><a class="footnote-ref" href="#fn:montaldo2009">1</a></sup>. In this case, the effective
 sampling rate, the <strong>compound frequency</strong>, is the <abbr title="Pulse Repetition Frequency">PRF</abbr> divided by the number of angles,
-typically hundreds of Hz. </p>
+typically hundreds of hertz.</p>
 <h3 id="expected-data-structure">Expected Data Structure<a class="headerlink" href="#expected-data-structure" title="Permanent link">&para;</a></h3>
-<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data in ConfUSIus should be a complex-valued Xarray DataArray with
-dimensions exactly ordered as <code>(time, z, y, x)</code>, where <code>time</code> is the slow-time
-dimension and <code>(z, y, x)</code> are the spatial dimensions. <abbr title="In-phase and Quadrature">IQ</abbr> processing works on temporal
-blocks and flattens the spatial axes, so this stricter order keeps the data layout
-unambiguous and efficient. ConfUSIus typically adopts the following convention for the
-spatial dimensions:</p>
-<ul>
-<li><code>z</code>: Elevation dimension (out-of-plane dimension for linear arrays).</li>
-<li><code>y</code>: Axial dimension (depth dimension).</li>
-<li><code>x</code>: Lateral dimension (dimension along the transducer array).</li>
-</ul>
-<p>Additionally, <abbr title="In-phase and Quadrature">IQ</abbr> processing needs timing metadata. Prefer storing the acquisition
-window duration on the <code>time</code> coordinate as
-<code>time.attrs["volume_acquisition_duration"]</code>; legacy datasets may instead provide
-<code>compound_sampling_frequency</code> as scanner provenance. Axial velocity estimation also
-requires these DataArray attributes:</p>
-<ul>
-<li><code>transmit_frequency</code>: Frequency of the transmitted ultrasound pulse (Hz).</li>
-<li><code>beamforming_sound_velocity</code>: Speed of sound used for beamforming (m/s).</li>
-</ul>
+<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data in ConfUSIus is a complex-valued, <a href="../spatial-conventions/#the-voxeldata-model">VoxelData
+model</a> DataArray, with <code>time</code> as
+the slow-time dimension. This dimension order keeps <abbr title="In-phase and Quadrature">IQ</abbr> processing's sliding-window
+operations efficient.</p>
+<p>Beyond the VoxelData requirements, axial velocity estimation also requires the
+<code>transmit_frequency</code> and <code>beamforming_sound_velocity</code> DataArray attributes.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a> accepts both as optional
+arguments, and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_axial_velocity&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_axial_velocity"><code>process_iq_to_axial_velocity</code></a>
+checks for their presence internally via
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_iq"><code>validate_iq</code></a>.</p>
 <p>Here is what a valid <abbr title="In-phase and Quadrature">IQ</abbr> DataArray looks like once loaded:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_iq.zarr&quot;</span><span class="p">)</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">iq</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">&lt;xarray.DataArray &#39;iq&#39; (time: 50000, z: 1, y: 118, x: 52)&gt; Size: 24GB</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">dask.array&lt;...&gt;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">&lt;xarray.DataArray &#39;iq&#39; (time: 50000, k: 1, j: 118, i: 52)&gt; Size: 2GB</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">dask.array&lt;xarray-&lt;this-array&gt;, shape=(50000, 1, 118, 52), dtype=complex64, chunksize=(1000, 1, 118, 52), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">Coordinates:</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">  * time     (time) float64 400kB 0.0 0.002 0.004 ... 99.994 99.996 99.998</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">  * z        (z) float64 8B 0.0</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">  * y        (y) float64 944B 4.656 4.705 4.753 ... 10.231 10.279 10.328</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">  * x        (x) float64 416B -2.671 -2.57 -2.469 ... 2.268 2.369 2.469</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">Attributes:</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">    transmit_frequency:           15625000.0</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">    compound_sampling_frequency:  500.0</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">    pulse_repetition_frequency:   15000.0</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="go">    beamforming_sound_velocity:   1540.0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">  * time     (time) float64 400kB 0.0 0.002 0.004 ... 99.99 100.0 100.0</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">  * k        (k) int64 8B 0</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">  * j        (j) int64 944B 0 1 2 3 4 5 6 7 ... 110 111 112 113 114 115 116 117</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">  * i        (i) int64 416B 0 1 2 3 4 5 6 7 8 9 ... 43 44 45 46 47 48 49 50 51</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">  * z        (k, j, i) float64 49kB dask.array&lt;chunksize=(1, 118, 52), meta=np.ndarray&gt;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">  * y        (k, j, i) float64 49kB dask.array&lt;chunksize=(1, 118, 52), meta=np.ndarray&gt;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">  * x        (k, j, i) float64 49kB dask.array&lt;chunksize=(1, 118, 52), meta=np.ndarray&gt;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">Indexes:</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="go">  │ y</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="go">  └ x</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="go">Attributes:</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="go">    compound_sampling_frequency:  500.0</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="go">    pulse_repetition_frequency:   15000.0</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="go">    transmit_frequency:           15625000.0</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="go">    beamforming_sound_velocity:   1540.0</span>
 </span></code></pre></div>
-<p>In this example, the <abbr title="Pulse Repetition Frequency">PRF</abbr> is 15 kHz, but the data uses compound imaging with a
-<code>compound_sampling_frequency</code> of 500 Hz. This means each <abbr title="In-phase and Quadrature">IQ</abbr> sample (compound volume)
-results from combining 30 individual pulses, giving an effective temporal sampling
-period of 2 ms rather than 67 μs.</p>
-<p>If your acquisition system isn't directly supported by ConfUSIus, see
-<a href="../io/#other-systems">Other Systems</a> for how to wrap a custom complex array as an <abbr title="In-phase and Quadrature">IQ</abbr>
-DataArray.</p>
+<p>If your acquisition system isn't directly supported by ConfUSIus, see <a href="../io/#other-systems">Other
+Systems</a> for how to wrap a custom complex array as an <abbr title="In-phase and Quadrature">IQ</abbr> DataArray.</p>
 <div class="admonition question">
 <p class="admonition-title">Finding metadata values</p>
 <p>If you're unsure about the correct values:</p>
 <ul>
-<li><code>volume_acquisition_duration</code>: Check your acquisition software settings. For
-  regularly sampled <abbr title="In-phase and Quadrature">IQ</abbr>, this is usually the inverse effective volume rate.</li>
-<li><code>transmit_frequency</code>: Found in your probe specifications or acquisition
-  settings. Generally around 5-10 MHz for clinical probes, and 12-20 MHz for
-  high-frequency probes used in small animal imaging.</li>
+<li><code>volume_acquisition_duration</code>: This is usually equal to the number of plane wave
+  angles divided by the pulse repetition frequency.</li>
+<li><code>transmit_frequency</code>: Found in your probe specifications or acquisition settings.
+  Generally around 5-10 MHz for clinical probes, and 12-20 MHz for high-frequency
+  probes used in small animal imaging.</li>
 <li><code>beamforming_sound_velocity</code>: Typically 1540 m/s for brain tissues, but may vary
   with temperature and tissue type.</li>
 </ul>
@@ -4179,36 +4171,43 @@ function or the corresponding Xarray accessor method.</p>
 <p>The resulting power Doppler DataArray will be backed by a Dask array (even if the input
 wasn't Dask-backed) and rely on lazy evaluation.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">&lt;xarray.DataArray &#39;power_doppler&#39; (time: 860, z: 1, y: 128, x: 86)&gt; Size: 76MB</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">dask.array&lt;...&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">&lt;xarray.DataArray &#39;power_doppler&#39; (time: 20, k: 1, j: 32, i: 24)&gt; Size: 123kB</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">dask.array&lt;compute_power_doppler_volume, shape=(20, 1, 32, 24), dtype=float64, chunksize=(2, 1, 32, 24), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="go">Coordinates:</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">  * time     (time) float64 7kB 0.299 0.899 1.499 2.099 ... 514.5 515.1 515.7</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="go">  * z        (z) float64 8B 0.0</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="go">  * y        (y) float64 1kB 5.664 5.713 5.762 5.811 ... 11.72 11.77 11.82 11.87</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="go">  * x        (x) float64 688B -3.583 -3.492 -3.402 -3.311 ... 3.946 4.037 4.127</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="go">Attributes: (11/16)</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="go">    transmit_frequency:             15625000.0</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="go">    compound_sampling_frequency:    500.0</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="go">    pulse_repetition_frequency:     15000.0</span>
-</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="go">    beamforming_sound_velocity:     1540.0</span>
-</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="go">    units:                          &#39;a.u.&#39;</span>
-</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="go">    long_name:                      &#39;Power Doppler intensity&#39;</span>
-</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="go">    clutter_filter_method:          svd_indices</span>
-</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="go">    clutter_window_width:           300</span>
-</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="go">    clutter_window_stride:          300</span>
-</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="go">    doppler_window_width:           300</span>
-</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="go">    doppler_window_stride:          300</span>
-</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="go">    clutter_low_cutoff:             40</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">  * time     (time) float64 160B 0.0 0.2 0.4 0.6 0.8 1.0 ... 3.0 3.2 3.4 3.6 3.8</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="go">  * k        (k) int64 8B 0</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="go">  * j        (j) int64 256B 0 1 2 3 4 5 6 7 8 9 ... 23 24 25 26 27 28 29 30 31</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="go">  * i        (i) int64 192B 0 1 2 3 4 5 6 7 8 9 ... 15 16 17 18 19 20 21 22 23</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="go">  * z        (k, j, i) float64 6kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="go">  * y        (k, j, i) float64 6kB 4.656 4.656 4.656 4.656 ... 7.756 7.756 7.756</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="go">  * x        (k, j, i) float64 6kB -2.671 -2.571 -2.471 ... -0.571 -0.471 -0.371</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="go">Indexes:</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="go">  │ y</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="go">  └ x</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="go">Attributes:</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="go">    compound_sampling_frequency:         500.0</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="go">    pulse_repetition_frequency:          15000.0</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="go">    transmit_frequency:                  15625000.0</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="go">    beamforming_sound_velocity:          1540.0</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="go">    units:                               a.u.</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="go">    long_name:                           Power Doppler intensity</span>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="go">    cmap:                                 gray</span>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="go">    clutter_filters:                      Index-based SVD [50, +inf[</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="go">    clutter_filter_window_duration:       0.4</span>
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="go">    clutter_filter_window_stride:         0.3999999999999999</span>
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="go">    power_doppler_integration_duration:   0.19999999999999996</span>
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="go">    power_doppler_integration_stride:     0.19999999999999998</span>
 </span></code></pre></div>
 <p>To actually compute the power Doppler values and load them into memory, you must call
 <code>.compute()</code>:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">&lt;xarray.DataArray &#39;power_doppler&#39; (time: 860, z: 1, y: 128, x: 86)&gt; Size: 76MB</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="go">array([[[[74.26474299, 76.99585806, 84.46316397, ..., 79.11284661,</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="go">          77.6835962 , 69.19274666],</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="go">         [70.16886299, 83.84617566, 76.62624364, ..., 74.06344271,</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="go">          74.82030741, 74.48822094],</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">&lt;xarray.DataArray &#39;power_doppler&#39; (time: 20, k: 1, j: 32, i: 24)&gt; Size: 123kB</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="go">array([[[[1.07897822, 1.233959  , 1.26681306, ..., 1.10582708,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="go">          1.15312583, 1.01522477],</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="go">         [1.03980397, 1.1777878 , 1.34812695, ..., 1.14753257,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="go">          1.18028614, 0.99100816],</span>
 </span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="go">         ...</span>
 </span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="go">...</span>
 </span></code></pre></div>
@@ -4275,15 +4274,35 @@ function or the corresponding Xarray accessor method.</p>
 <p>The resulting axial velocity DataArray will be backed by a Dask array (even if the input
 wasn't Dask-backed) and rely on lazy evaluation.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">velocity</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="go">&lt;xarray.DataArray (time: 1000, z: 1, y: 118, x: 52)&gt; Size: 24MB</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="go">dask.array&lt;...&gt;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="go">&lt;xarray.DataArray &#39;axial_velocity&#39; (time: 20, k: 1, j: 32, i: 24)&gt; Size: 123kB</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="go">dask.array&lt;compute_axial_velocity_volume, shape=(20, 1, 32, 24), dtype=float64, chunksize=(2, 1, 32, 24), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="go">Coordinates:</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="go">  * time     (time) float64 8kB 0.024 0.074 0.124 ... 99.874 99.924 99.974</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="go">  * z        (z) float64 8B 0.0</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="go">  * y        (y) float64 944B 4.656 4.705 4.753 ... 10.231 10.279 10.328</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="go">  * x        (x) float64 416B -2.671 -2.57 -2.469 ... 2.268 2.369 2.469</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="go">Attributes:</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="go">    units:    m/s</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="go">  * time     (time) float64 160B 0.0 0.2 0.4 0.6 0.8 1.0 ... 3.0 3.2 3.4 3.6 3.8</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="go">  * k        (k) int64 8B 0</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="go">  * j        (j) int64 256B 0 1 2 3 4 5 6 7 8 9 ... 23 24 25 26 27 28 29 30 31</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="go">  * i        (i) int64 192B 0 1 2 3 4 5 6 7 8 9 ... 15 16 17 18 19 20 21 22 23</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="go">  * z        (k, j, i) float64 6kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="go">  * y        (k, j, i) float64 6kB 4.656 4.656 4.656 4.656 ... 7.756 7.756 7.756</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="go">  * x        (k, j, i) float64 6kB -2.671 -2.571 -2.471 ... -0.571 -0.471 -0.371</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="go">Indexes:</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="go">  │ y</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="go">  └ x</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="go">Attributes:</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="go">    compound_sampling_frequency:          500.0</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="go">    pulse_repetition_frequency:           15000.0</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="go">    transmit_frequency:                   15625000.0</span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="go">    beamforming_sound_velocity:           1540.0</span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="go">    units:                                m/s</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="go">    long_name:                            Axial velocity</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="go">    cmap:                                 coolwarm</span>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="go">    clutter_filters:                      Index-based SVD [50, +inf[</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="go">    clutter_filter_window_duration:       0.4</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="go">    clutter_filter_window_stride:         0.3999999999999999</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="go">    axial_velocity_lag:                   1</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="go">    axial_velocity_spatial_kernel:        3</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="go">    axial_velocity_integration_duration:  0.19999999999999996</span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="go">    axial_velocity_integration_stride:    0.19999999999999998</span>
 </span></code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Processing parameters</p>
