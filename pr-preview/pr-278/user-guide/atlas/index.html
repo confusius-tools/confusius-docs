@@ -3346,29 +3346,30 @@
 
 <h1 id="atlases">Atlases<a class="headerlink" href="#atlases" title="Permanent link">&para;</a></h1>
 <p>A brain atlas ties every voxel of a reference volume to a named region. In ConfUSIus an
-atlas is a plain <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> with three data variables on a
-common <code>(z, y, x)</code> grid (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;reference&lt;/span&gt;
+atlas is a plain <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> on a common <a href="../spatial-conventions/#the-voxeldata-model">VoxelData
+grid</a> (<code>k</code>/<code>j</code>/<code>i</code> voxel dims, derived world
+<code>z</code>/<code>y</code>/<code>x</code> coordinates), with three data variables
+(<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;reference&lt;/span&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.reference"><code>reference</code></a>, the
-template volume; <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;annotation&lt;/span&gt;
+  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.reference"><code>reference</code></a>, the template volume;
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;annotation&lt;/span&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.annotation"><code>annotation</code></a>, integer
-region labels; and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;hemispheres&lt;/span&gt;
+  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.annotation"><code>annotation</code></a>, integer region labels; and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;hemispheres&lt;/span&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.hemispheres"><code>hemispheres</code></a>, 1 = left,
-2 = right), plus an <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;AtlasAccessor&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor"><code>.atlas</code></a> accessor that
-carries all atlas-aware operations. The structure hierarchy rides along in
-<code>Dataset.attrs["structures"]</code>, so a single object fully describes the atlas and its
-region tree.</p>
+  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.hemispheres"><code>hemispheres</code></a>, 1 = left, 2 = right), plus an
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;AtlasAccessor&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor"><code>.atlas</code></a> accessor that carries all atlas-aware
+operations. The structure hierarchy rides along in <code>Dataset.attrs["structures"]</code>, so a
+single object fully describes the atlas and its region tree.</p>
 <h2 id="brainglobe-atlases">BrainGlobe Atlases<a class="headerlink" href="#brainglobe-atlases" title="Permanent link">&para;</a></h2>
 <p>ConfUSIus does not ship its own atlases. It builds on the
 <a href="https://brainglobe.info/documentation/brainglobe-atlasapi/index.html">BrainGlobe Atlas API</a>,
@@ -3386,23 +3387,30 @@ cache. Any name from the
 works, covering mouse, rat, human, zebrafish, and more, at several resolutions.</p>
 <p>The returned object is the Dataset described above:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">&lt;xarray.Dataset&gt; Size: 11MB</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">Dimensions:      (z: 132, y: 80, x: 114)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">&lt;xarray.Dataset&gt; Size: 40MB</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">Dimensions:      (k: 132, j: 80, i: 114)</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">Coordinates:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">  * z            (z) float64 1kB 0.0 0.1 0.2 0.3 0.4 ... 12.8 12.9 13.0 13.1</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">  * y            (y) float64 640B 0.0 0.1 0.2 0.3 0.4 ... 7.5 7.6 7.7 7.8 7.9</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">  * x            (x) float64 912B 0.0 0.1 0.2 0.3 0.4 ... 11.0 11.1 11.2 11.3</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="go">Data variables:</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">    reference    (z, y, x) float32 5MB 0.0 0.0 0.0 0.0 0.0 ... 1.0 1.0 1.0 1.0</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">    annotation   (z, y, x) int32 5MB 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">    hemispheres  (z, y, x) int8 1MB 2 2 2 2 2 2 2 2 2 2 ... 1 1 1 1 1 1 1 1 1 1</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">Attributes:</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    name:              allen_mouse</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    citation:          Wang et al 2020, https://doi.org/10.1016/j.cell.2020.0...</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="go">    species:           Mus musculus</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="go">    orientation:       asr</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="go">    structures:        root (997) ...</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="go">    world_to_base:  [[1. 0. 0. 0.] ...</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">  * k            (k) int64 1kB 0 1 2 3 4 5 6 7 ... 125 126 127 128 129 130 131</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">  * j            (j) int64 640B 0 1 2 3 4 5 6 7 8 ... 71 72 73 74 75 76 77 78 79</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">  * i            (i) int64 912B 0 1 2 3 4 5 6 7 ... 107 108 109 110 111 112 113</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="go">  * z            (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 ... 13.1 13.1 13.1 13.1</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">  * y            (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 7.9 7.9 7.9 7.9</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">  * x            (k, j, i) float64 10MB 0.0 0.1 0.2 0.3 ... 11.0 11.1 11.2 11.3</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">Data variables:</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">    reference    (k, j, i) float32 5MB 0.0 0.0 0.0 0.0 0.0 ... 1.0 1.0 1.0 1.0</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    annotation   (k, j, i) int32 5MB 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    hemispheres  (k, j, i) int8 1MB 2 2 2 2 2 2 2 2 2 2 ... 1 1 1 1 1 1 1 1 1 1</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="go">Indexes:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="go">  │ y</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="go">  └ x</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="go">Attributes:</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="go">    name:           allen_mouse</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="go">    citation:       Wang et al 2020, https://doi.org/10.1016/j.cell.2020.04.007</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="go">    species:        Mus musculus</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="go">    orientation:    asr</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="go">    structures:     root (997)\n├── VS (73)\n│   ├── AQ (140)\n│   ├── V3 (12...</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="go">    world_to_base:  [[1. 0. 0. 0.]\n [0. 1. 0. 0.]\n [0. 0. 1. 0.]\n [0. 0. 0...</span>
 </span></code></pre></div>
 <p>Coordinates are in millimeters, so an atlas plots and registers against <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings
 directly.</p>
@@ -3444,7 +3452,8 @@ region, including its full path from the root:</p>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="go"> &#39;name&#39;: &#39;Hippocampal region&#39;,</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="go"> &#39;structure_id_path&#39;: [997, 8, 567, 688, 695, 1089, 1080],</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="go"> &#39;rgb_triplet&#39;: [126, 208, 75],</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go"> &#39;mesh_filename&#39;: PosixPath(&#39;.../allen_mouse_100um_v1.2/meshes/1080.obj&#39;)}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go"> &#39;mesh_filename&#39;: PosixPath(&#39;.../allen_mouse_100um_v1.2/meshes/1080.obj&#39;),</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go"> &#39;mesh&#39;: None}</span>
 </span></code></pre></div>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ancestors&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.ancestors"><code>ancestors</code></a> returns the same path as tree
 nodes, from the root down to (but excluding) the region:</p>
@@ -3526,25 +3535,32 @@ a resample (see below).</p>
 masks stacked along a <code>mask</code> dimension, automatically including every descendant in the
 hierarchy. Pass one region or many, and optionally restrict each to a hemisphere:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">([</span><span class="s2">&quot;VISp&quot;</span><span class="p">,</span> <span class="s2">&quot;AUDp&quot;</span><span class="p">,</span> <span class="s2">&quot;MOp&quot;</span><span class="p">])</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">&lt;xarray.DataArray (mask: 3, z: 132, y: 80, x: 114)&gt; Size: 14MB</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">&lt;xarray.DataArray &#39;annotation&#39; (mask: 3, k: 132, j: 80, i: 114)&gt; Size: 14MB</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="go">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="go">Coordinates:</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="go">  * mask     (mask) &lt;U4 48B &#39;VISp&#39; &#39;AUDp&#39; &#39;MOp&#39;</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="go">  * z        (z) float64 1kB 0.0 0.1 0.2 0.3 0.4 ... 12.7 12.8 12.9 13.0 13.1</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="go">  * y        (y) float64 640B 0.0 0.1 0.2 0.3 0.4 0.5 ... 7.5 7.6 7.7 7.8 7.9</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="go">  * x        (x) float64 912B 0.0 0.1 0.2 0.3 0.4 ... 10.9 11.0 11.1 11.2 11.3</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="go">Attributes:</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="go">    rgb_lookup:  {997: [255, 255, 255], 8: [191, 218, 227], 567: [176, 240, 2...</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="go">    roi_labels:  {997: &#39;root (root)&#39;, 8: &#39;Basic cell groups and regions (grey...</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="go">    cmap:        &lt;matplotlib.colors.ListedColormap object at 0x71ba5c798050&gt;</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="go">    norm:        &lt;matplotlib.colors.BoundaryNorm object at 0x71ba5cb3f230&gt;</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">left_hip</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;HIP&quot;</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">left_hip</span><span class="o">.</span><span class="n">mask</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="go">&lt;xarray.DataArray &#39;mask&#39; (mask: 1)&gt; Size: 20B</span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="go">&#39;HIP_L&#39;</span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="go">Coordinates:</span>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="go">  * mask     (mask) &lt;U5 20B &#39;HIP_L&#39;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="go">  * k        (k) int64 1kB 0 1 2 3 4 5 6 7 8 ... 124 125 126 127 128 129 130 131</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="go">  * j        (j) int64 640B 0 1 2 3 4 5 6 7 8 9 ... 71 72 73 74 75 76 77 78 79</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="go">  * i        (i) int64 912B 0 1 2 3 4 5 6 7 ... 106 107 108 109 110 111 112 113</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="go">  * z        (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 13.1 13.1 13.1 13.1</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="go">  * y        (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 7.9 7.9 7.9 7.9 7.9</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="go">  * x        (k, j, i) float64 10MB 0.0 0.1 0.2 0.3 0.4 ... 11.0 11.1 11.2 11.3</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="go">Indexes:</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="go">  │ y</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="go">  └ x</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="go">Attributes:</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="go">    rgb_lookup:  {997: [255, 255, 255], 8: [191, 218, 227], 567: [176, 240, 2...</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="go">    roi_labels:  {997: &#39;root (root)&#39;, 8: &#39;Basic cell groups and regions (grey...</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="go">    cmap:        &lt;matplotlib.colors.ListedColormap object at 0x7fa5782537d0&gt;</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="go">    norm:        &lt;matplotlib.colors.BoundaryNorm object at 0x7fa5782dbcb0&gt;</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">left_hip</span> <span class="o">=</span> <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;HIP&quot;</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">left_hip</span><span class="o">.</span><span class="n">mask</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="go">&lt;xarray.DataArray &#39;mask&#39; (mask: 1)&gt; Size: 20B</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="go">&#39;HIP_L&#39;</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="go">Coordinates:</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="go">  * mask     (mask) &lt;U5 20B &#39;HIP_L&#39;</span>
 </span></code></pre></div>
 <p>These masks feed directly into signal extraction and connectivity; see the examples
 <a href="../../examples/_built/connectivity/atlas_correlation_matrix/">Atlas-based region correlation
