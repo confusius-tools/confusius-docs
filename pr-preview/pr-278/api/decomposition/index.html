@@ -3458,10 +3458,10 @@ Suitable when temporal independence is the relevant prior.</p>
           <div class="doc-md-description">
             <p>Whether to find spatially or temporally independent components:</p>
 <ul>
-<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. The independent components are
+<li><code>"spatial"</code>: fit on <code>(space, time)</code>. The independent components are
   spatial maps; the projected time courses are their temporal mixing weights.
   Matches FSL MELODIC's default for single-subject data.</li>
-<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The independent components are time
+<li><code>"temporal"</code>: fit on <code>(time, space)</code>. The independent components are time
   courses; the spatial maps are their voxel-wise mixing weights.</li>
 </ul>
           </div>
@@ -4487,10 +4487,10 @@ no regularization on <code>H</code>. If <code>"same"</code>, it takes the same v
           <div class="doc-md-description">
             <p>Whether to fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> along temporal or spatial orientation:</p>
 <ul>
-<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The transformed data <code>W</code> are
+<li><code>"temporal"</code>: fit on <code>(time, space)</code>. The transformed data <code>W</code> are
   non-negative temporal time courses and the components matrix <code>H</code> reshapes to
   spatial maps.</li>
-<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. In the underlying sklearn fit, <code>W</code> lives
+<li><code>"spatial"</code>: fit on <code>(space, time)</code>. In the underlying sklearn fit, <code>W</code> lives
   on voxels and <code>H</code> lives on timepoints because the data matrix is transposed.
   This wrapper still exposes <code>maps_</code> as spatial maps and <code>transform</code> as <code>(time,
   component)</code> signals.</li>
@@ -4581,9 +4581,9 @@ labels are all strings.</p>
 is named <code>H</code>. In much of the <abbr title="Non-negative Matrix Factorization">NMF</abbr> literature the convention is often the opposite
 because the data matrix is transposed.</p>
 <p>In <code>"spatial"</code> mode, the estimator is still fitted with <code>sklearn.decomposition.NMF</code>,
-but on the transposed data matrix <code>(voxels, time)</code>. The wrapper then computes
-<code>(time, component)</code> signals by projecting the original <code>(time, voxel)</code> matrix onto
-the fitted spatial maps, so that <code>transform</code> and <code>inverse_transform</code> keep the same
+but on the transposed data matrix <code>(space, time)</code>. The wrapper then computes <code>(time,
+component)</code> signals by projecting the original <code>(time, voxel)</code> matrix onto the
+fitted spatial maps, so that <code>transform</code> and <code>inverse_transform</code> keep the same
 public API in both modes.</p>
 </details>
 
@@ -5370,10 +5370,10 @@ reproducible results across multiple function calls.</p>
           <div class="doc-md-description">
             <p>Whether to fit <abbr title="Principal Component Analysis">PCA</abbr> along temporal or spatial orientation:</p>
 <ul>
-<li><code>"temporal"</code>: fit on <code>(time, voxels)</code>. The principal axes are
+<li><code>"temporal"</code>: fit on <code>(time, space)</code>. The principal axes are
   spatial maps; the projected components are temporal time courses that capture
   dominant variance across voxels.</li>
-<li><code>"spatial"</code>: fit on <code>(voxels, time)</code>. The principal axes are time courses; the
+<li><code>"spatial"</code>: fit on <code>(space, time)</code>. The principal axes are time courses; the
   projected components are spatial maps that capture dominant variance across
   time.</li>
 </ul>
