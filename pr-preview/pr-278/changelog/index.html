@@ -4172,6 +4172,13 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to add singleton
   axes and coordinate metadata from raw 2D or 2D+t arrays
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
+<li>Removed <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>'s
+  <code>sweep_dim</code> parameter. The swept voxel dimension is now always auto-detected
+  from the per-pose voxel-to-world geometry (the pose-translation direction
+  matched against each voxel dimension's world-space direction); a sweep that
+  isn't cleanly aligned with a single voxel dimension can never form the
+  regular grid consolidation requires, so no override was needed
+  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>

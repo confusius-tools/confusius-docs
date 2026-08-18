@@ -962,23 +962,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Pose Consolidation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Parameters
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -3348,23 +3331,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Pose Consolidation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Parameters
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -3583,7 +3549,7 @@ probe</strong>—four linear probes stacked along the elevation axis, giving 4 e
 per pose—translated across multiple regularly spaced positions:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_scan</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fus</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 409, pose: 4, k: 4, j: 92, i: 118)&gt; Size: 568MB</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">dask.array&lt;transpose, shape=(409, 4, 4, 92, 118), dtype=float64, chunksize=(106, 4, 4, 92, 106), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">Coordinates:</span>
@@ -3658,7 +3624,7 @@ arrays exactly as on any other VoxelData array—reductions, arithmetic, <code>.
 extraction, and so on all treat <code>pose</code> as an ordinary dimension.</p>
 <p>Operations that resolve <em>positions</em> or <em>timestamps</em>, however, need a scalar <code>pose</code>
 first, per <a href="#the-multi-pose-data-model">The Multi-Pose Data Model</a> above:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">pose0</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">pose0</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">shallow</span> <span class="o">=</span> <span class="n">pose0</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>       <span class="c1"># world-coordinate selection now works.</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">subset</span> <span class="o">=</span> <span class="n">pose0</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>     <span class="c1"># time is now 1D, .sel(time=...) works too.</span>
 </span></code></pre></div>
@@ -3701,17 +3667,20 @@ coordinates, producing a VoxelData array with a single, non-pose-dependent
 voxel-to-world affine. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>
 performs the following steps:</p>
 <ol>
-<li>Read the per-pose affines to compute the world position of every <code>(pose, sweep_dim)</code>
-   voxel.</li>
-<li>Find the primary sweep direction via <abbr title="Singular Value Decomposition">SVD</abbr> of all voxel positions.</li>
-<li>Project each voxel onto that axis and check that the resulting positions form a
-   regular grid.</li>
-<li>Reindex the data in ascending position order, replacing <code>pose</code> and <code>sweep_dim</code> with
-   a single consolidated coordinate in world space.</li>
+<li>Detect the swept voxel dimension (<code>sweep_dim</code>) from the per-pose affines: match
+   the pose-translation direction against each voxel dimension's world-space
+   direction, and take the best-aligned one.</li>
+<li>Read the per-pose affines to compute the world position of every <code>(pose,
+   sweep_dim)</code> voxel.</li>
+<li>Find the precise sweep direction via <abbr title="Singular Value Decomposition">SVD</abbr> of all these voxel positions, and
+   project each voxel onto that axis.</li>
+<li>Check that the resulting positions form a regular grid.</li>
+<li>Reindex the data in ascending position order, replacing <code>pose</code> and <code>sweep_dim</code>
+   with a single consolidated coordinate in world space.</li>
 </ol>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">fus</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 409, k: 16, j: 92, i: 118)&gt; Size: 568MB</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="go">array([...])</span>
@@ -3740,9 +3709,6 @@ and a <code>slice_time</code> coordinate with dims <code>(time, k)</code>: each 
 of the pose it came from.</p>
 <p>After consolidation, the per-pose affine stack is reduced to a single <code>(4, 4)</code> matrix
 representing the consolidated volume's orientation in world space.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p>Adjust <strong><code>sweep_dim</code></strong> (default: <code>"k"</code>) if your probe sweep is along a different voxel
-dimension.</p>
 <div class="admonition warning">
 <p class="admonition-title">Regularity requirement</p>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> will raise a
