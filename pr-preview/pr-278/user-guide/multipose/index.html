@@ -3730,22 +3730,22 @@ came from.</p>
 <p>After consolidation, the per-pose affine stack is reduced to a single <code>(4, 4)</code> matrix
 representing the consolidated volume's orientation in world space.</p>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> accepts two parameters that
-may need adjusting depending on your setup:</p>
-<ul>
-<li><strong><code>sweep_dim</code></strong> (default: <code>"z"</code>): the spatial dimension being swept across poses.
-  Change this if your sweep is along a different axis.</li>
-<li><strong><code>affines_key</code></strong> (default: <code>"world_to_lab"</code>): the key into <code>da.attrs["affines"]</code>
-  that holds the per-pose affine stack. Change this if your affines are stored under a
-  different key.</li>
-</ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Example: sweeping along x using affines stored under a custom key.</span>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> always reads per-pose
+positions from <code>da</code>'s primary voxel-to-world geometry, which must therefore itself be
+pose-dependent (a <code>(npose, 4, 4)</code> affine stack — see
+[VoxelToWorldIndex.is_pose_dependent][confusius._utils.geometry.VoxelToWorldIndex.is_pose_dependent]).
+If you instead want to consolidate around a different, secondary affine linked in
+<code>da.attrs["affines"]</code> (e.g. <code>world_to_brain</code> alongside a <code>world_to_lab</code>-equivalent
+primary), rebase onto it first with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Example: sweeping along x, consolidating around a secondary affine.</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">da</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">),</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">sweep_dim</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">affines_key</span><span class="o">=</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span>
 </span></code></pre></div>
+<p>Adjust <strong><code>sweep_dim</code></strong> (default: <code>"k"</code>) if your sweep is along a different voxel
+dimension.</p>
 <div class="admonition warning">
 <p class="admonition-title">Regularity requirement</p>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> will raise a

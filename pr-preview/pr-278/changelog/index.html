@@ -4193,6 +4193,13 @@
   shape; <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../api/multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a> consume it
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> dropped its
+  <code>affines_key</code> parameter and now always reads per-pose positions from <code>da</code>'s
+  primary voxel-to-world geometry, which must therefore itself be pose-dependent.
+  To consolidate around a different, secondary affine linked in
+  <code>da.attrs["affines"]</code> instead, rebase onto it first with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Renamed <code>validate_fusi_dataarray</code> to <code>validate_fusi</code>, <code>validate_iq_dataarray</code>
   to <code>validate_iq</code>, <code>validate_bspline_dataarray</code> to <code>validate_bspline</code>, and
   <code>validate_atlas_dataset</code> to <code>validate_atlas</code>; renamed the <abbr title="In-phase and Quadrature">IQ</abbr> validator option
