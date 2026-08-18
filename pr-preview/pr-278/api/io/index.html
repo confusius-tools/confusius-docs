@@ -6034,8 +6034,8 @@ meaningful across poses. For multi-pose files, <code>da</code>'s voxel-to-world 
 itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one per
 <code>da.coords["pose"]</code> label — see
 [VoxelToWorldIndex][confusius._utils.geometry.VoxelToWorldIndex]); world
-selection therefore requires a scalar <code>pose</code>, e.g. <code>da.sel(pose=0, z=..., y=...,
-x=...)</code> or <code>da.isel(pose=0)</code> first.</p>
+selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
+<code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
 <p>If <code>bps_path</code> is provided, a <code>world_to_brain</code> affine is stored in
 <code>da.attrs["affines"]["world_to_brain"]</code> that maps ConfUSIus world coordinates
 (already lab space, as above) to Iconeus' brain coordinates. Apply as

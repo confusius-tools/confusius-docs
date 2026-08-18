@@ -4172,6 +4172,18 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>pose</code> is now its own plain, independently indexed coordinate rather than being
+  jointly owned by the <code>z</code>/<code>y</code>/<code>x</code> <code>VoxelToWorldIndex</code>. This fixes a real
+  alignment bug: after a scalar <code>.sel(pose=idx)</code>/<code>.isel(pose=idx)</code>, xarray's
+  internal indexing bookkeeping left a stale <code>pose</code> index association behind,
+  which made aligning the result against genuinely pose-free arrays (masks,
+  atlases, registration targets) raise a spurious <code>AlignmentError</code> in functions
+  like <code>extract_with_mask</code>. One consequence: a single combined
+  <code>.sel(pose=0, z=..., y=..., x=...)</code> call is no longer supported for
+  pose-dependent geometry — reduce <code>pose</code> to a scalar first, e.g.
+  <code>.isel(pose=0).sel(z=..., y=..., x=...)</code>. <code>.isel()</code> is unaffected; combined
+  <code>.isel(pose=0, k=..., j=..., i=...)</code> still works in one call
+  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Multi-pose data acquired sequentially now carries a pose-dependent, <code>(time,
   pose)</code>-shaped <code>time</code> coordinate holding each pose's own real acquisition
   timestamps directly, replacing the old 1D <code>time</code> + <code>pose_time</code> sidecar
