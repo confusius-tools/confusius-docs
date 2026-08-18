@@ -3338,7 +3338,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Pattern decoding for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+        <p>Pattern decoding for VoxelData-compatible DataArrays.</p>
 <p>This package provides decoders in the spirit of
 <a href="https://nilearn.github.io/dev/decoding/"><code>nilearn.decoding</code></a>:</p>
 <ul>
@@ -3359,7 +3359,7 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
           <b><code><span title="confusius.decoding.searchlight">searchlight</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Searchlight decoding for canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays.</p>
+            <p>Searchlight decoding for VoxelData-compatible DataArrays.</p>
           </div>
         </li>
     </ul>
@@ -3419,8 +3419,8 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
 score.</p>
 <p>This estimator wraps scikit-learn while keeping xarray metadata:</p>
 <ul>
-<li>Input data must be a canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray (a real
-  <code>VoxelToWorldIndex</code>, no <code>pose</code> or extra dimensions).</li>
+<li>Input data must be a VoxelData-compatible DataArray with dims
+  <code>(time, k, j, i)</code> (a real <code>VoxelToWorldIndex</code>, no <code>pose</code> or extra dimensions).</li>
 <li>The <code>time</code> dimension is the sample axis. It need not be temporally ordered. For
   trial-averaged data, rename the trial dimension with <code>.rename(trial="time")</code>.</li>
 <li><code>scores_</code> is returned in the spatial geometry of <code>process_mask</code>.</li>
@@ -3702,7 +3702,7 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
 <a href="#confusius.decoding.SearchLight.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, k, j, i) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data. The <code>time</code> dimension is the sample axis.</p>
+            <p>VoxelData-compatible DataArray. The <code>time</code> dimension is the sample axis.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3745,8 +3745,8 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>X</code> is h5py-backed, is not a canonical <code>(time, k, j, i)</code> <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray,
-or lacks a <code>VoxelToWorldIndex</code>; if <code>radius</code> is negative; if <code>mask</code> or
+            <p>If <code>X</code> is h5py-backed, is not a VoxelData-compatible DataArray with dims
+<code>(time, k, j, i)</code>, or lacks a <code>VoxelToWorldIndex</code>; if <code>radius</code> is negative; if <code>mask</code> or
 <code>process_mask</code> lacks a <code>VoxelToWorldIndex</code>; if <code>process_mask</code> is not a
 subset of <code>mask</code>; if <code>y</code> or <code>groups</code> do not align with <code>X</code>; or if the masked
 data contains non-finite values.</p>

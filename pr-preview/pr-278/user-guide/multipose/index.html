@@ -3581,17 +3581,17 @@ acquisition modes are supported by ConfUSIus:</p>
 <tbody>
 <tr>
 <td><code>2Dscan</code></td>
-<td><code>(time, z, y, x)</code></td>
+<td><code>(time, k, j, i)</code></td>
 <td>Single-pose <abbr title="Functional Ultrasound Imaging">fUSI</abbr> time-series</td>
 </tr>
 <tr>
 <td><code>3Dscan</code></td>
-<td><code>(pose, z, y, x)</code></td>
+<td><code>(pose, k, j, i)</code></td>
 <td>Multi-pose anatomical volume</td>
 </tr>
 <tr>
 <td><code>4Dscan</code></td>
-<td><code>(time, pose, z, y, x)</code></td>
+<td><code>(time, pose, k, j, i)</code></td>
 <td>Multi-pose <abbr title="Functional Ultrasound Imaging">fUSI</abbr> time-series (3D+t <abbr title="Functional Ultrasound Imaging">fUSI</abbr>)</td>
 </tr>
 </tbody>
@@ -3608,17 +3608,20 @@ elevation slices per pose—translated across multiple regularly spaced position
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_scan</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">anat</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">anat</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (pose: 15, z: 4, y: 72, x: 64)&gt; Size: 2MB</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (pose: 15, k: 4, j: 72, i: 64)&gt; Size: 2MB</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">dask.array&lt;transpose, shape=(15, 4, 72, 64), dtype=float64, chunksize=(15, 4, 72, 64), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">Coordinates:</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">  * pose     (pose) int64 120B 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">  * z        (z) float64 32B 0.0 2.1 4.2 6.3</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">  * y        (y) float64 576B 2.0 2.099 2.197 2.296 ... 8.702 8.801 8.899 8.998</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">  * x        (x) float64 512B -3.465 -3.355 -3.245 -3.135 ... 3.245 3.455 3.465</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">Attributes:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (15, 4, 4)</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">    scan_mode:          3Dscan</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">    ...</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">  * k        (k) int64 32B 0 1 2 3</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">  * j        (j) int64 576B 0 1 2 3 ... 68 69 70 71</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">  * i        (i) int64 512B 0 1 2 3 ... 60 61 62 63</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">    z        (pose, k, j, i) float64 ...</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">    y        (pose, k, j, i) float64 ...</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">    x        (pose, k, j, i) float64 ...</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">Attributes:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (15, 4, 4)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="go">    scan_mode:          3Dscan</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="go">    ...</span>
 </span></code></pre></div>
 <p>The probe was stepped across 15 positions, each contributing 4 elevation slices —
 a total of 60 slices once consolidated.</p>
@@ -3627,18 +3630,21 @@ a total of 60 slices once consolidated.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_scan</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fus</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fus</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 750, pose: 4, z: 4, y: 72, x: 64)&gt; Size: 442MB</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 750, pose: 4, k: 4, j: 72, i: 64)&gt; Size: 442MB</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">dask.array&lt;transpose, shape=(750, 4, 4, 72, 64), dtype=float64, chunksize=(227, 4, 4, 72, 64), chunktype=numpy.ndarray&gt;</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">Coordinates:</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="go">    time       (time, pose) float64 24kB 0.4 2.2 1.0 ... 1.799e+03 1.799e+03</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="go">  * pose       (pose) int64 32B 0 1 2 3</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">  * z          (z) float64 32B 0.0 2.1 4.2 6.3</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">  * y          (y) float64 576B 2.0 2.099 2.197 2.296 ... 8.801 8.899 8.998</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">  * x          (x) float64 512B -3.465 -3.355 -3.245 ... 3.245 3.355 3.465</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">Attributes:</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4, 4)</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    scan_mode:          4Dscan</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="go">    ...</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">  * k          (k) int64 32B 0 1 2 3</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">  * j          (j) int64 576B 0 1 2 3 ... 68 69 70 71</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">  * i          (i) int64 512B 0 1 2 3 ... 60 61 62 63</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">    z          (pose, k, j, i) float64 ...</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    y          (pose, k, j, i) float64 ...</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    x          (pose, k, j, i) float64 ...</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="go">Attributes:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4, 4)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="go">    scan_mode:          4Dscan</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="go">    ...</span>
 </span></code></pre></div>
 <p>The probe was stepped across 4 positions, each contributing 4 elevation slices —
 a total of 16 slices once consolidated.</p>
@@ -3647,15 +3653,17 @@ a total of 16 slices once consolidated.</p>
 </div>
 <h3 id="other-systems">Other Systems<a class="headerlink" href="#other-systems" title="Permanent link">&para;</a></h3>
 <p>For other <abbr title="Functional Ultrasound Imaging">fUSI</abbr> systems, multi-pose data must be assembled manually: load or construct
-one DataArray per pose, stack them along a new <code>pose</code> dimension, and populate
-<code>da.attrs["affines"]</code> with a <code>(npose, 4, 4)</code> array of per-pose affines.</p>
+one VoxelData-compatible DataArray per pose, stack them along a new <code>pose</code> dimension,
+and attach pose-dependent VoxelData geometry with a <code>(npose, 4, 4)</code> voxel-to-world
+affine stack.</p>
 <h2 id="world-coordinates-and-affines">World Coordinates and Affines<a class="headerlink" href="#world-coordinates-and-affines" title="Permanent link">&para;</a></h2>
-<p>Spatial coordinates in a multi-pose DataArray are <strong>pose-relative</strong>: the <code>z</code> coordinate
-(or whichever dimension is being swept) is defined in the probe frame and is the same for
-every pose. The per-pose affines stored in <code>da.attrs["affines"]</code> map these probe-relative
-coordinates to a common world space and record how each pose is positioned in that space.</p>
-<p>For Iconeus SCAN files, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> automatically stores a
-<code>world_to_lab</code> affine of shape <code>(npose, 4, 4)</code>—one matrix per pose.</p>
+<p>Native voxel dimensions in a multi-pose VoxelData array remain <code>k</code>, <code>j</code>, and <code>i</code>.
+Their derived world coordinates <code>z</code>, <code>y</code>, and <code>x</code> are pose-dependent: selecting a
+single <code>pose</code> resolves each voxel to a position in the common world space. This
+pose-dependent mapping lives in the <code>VoxelToWorldIndex</code>, not in separate spatial
+dimensions.</p>
+<p>For Iconeus SCAN files, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> automatically attaches
+pose-dependent VoxelData geometry with one voxel-to-world affine per pose.</p>
 <h2 id="pose-dependent-timing">Pose-Dependent Timing<a class="headerlink" href="#pose-dependent-timing" title="Permanent link">&para;</a></h2>
 <p>When poses are acquired sequentially, each pose is captured at a slightly different
 time. Unconsolidated multi-pose data therefore has a pose-dependent <code>time</code> coordinate,
@@ -3669,7 +3677,7 @@ poses were not acquired simultaneously.</p>
 <h2 id="pose-consolidation">Pose Consolidation<a class="headerlink" href="#pose-consolidation" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> merges the <code>pose</code> dimension
 and the sweep spatial dimension into a single axis with physically meaningful
-coordinates, producing a standard ConfUSIus DataArray.
+coordinates, producing a VoxelData-compatible DataArray.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> performs the following
 steps:</p>
 <ol>
@@ -3688,16 +3696,19 @@ steps:</p>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">anat</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">anat</span><span class="p">)</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (z: 60, y: 72, x: 64)&gt; Size: 2MB</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (k: 60, j: 72, i: 64)&gt; Size: 2MB</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="go">array([...])</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="go">Coordinates:</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go">  * z        (z) float64 480B -21.38 -21.24 -21.1 -20.96 ... -13.4 -13.26 -13.12</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="go">  * y        (y) float64 576B 2.0 2.099 2.197 2.296 ... 8.702 8.801 8.899 8.998</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="go">  * x        (x) float64 512B -3.465 -3.355 -3.245 -3.135 ... 3.245 3.355 3.465</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="go">Attributes:</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4)</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="go">    scan_mode:          3Dscan</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="go">    ...</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="go">  * k        (k) int64 480B 0 1 2 3 ... 56 57 58 59</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="go">  * j        (j) int64 576B 0 1 2 3 ... 68 69 70 71</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="go">  * i        (i) int64 512B 0 1 2 3 ... 60 61 62 63</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="go">    z        (k, j, i) float64 ...</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="go">    y        (k, j, i) float64 ...</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="go">    x        (k, j, i) float64 ...</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="go">Attributes:</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="go">    scan_mode:          3Dscan</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="go">    ...</span>
 </span></code></pre></div>
 <p>15 poses × 4 slices = 60 consolidated z positions, spanning −21.4 to −13.1 mm in
 lab coordinates.</p>
@@ -3707,22 +3718,25 @@ lab coordinates.</p>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">fus</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">fus</span><span class="p">)</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">volume</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 750, z: 16, y: 72, x: 64)&gt; Size: 442MB</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="go">&lt;xarray.DataArray &#39;scan_data&#39; (time: 750, k: 16, j: 72, i: 64)&gt; Size: 442MB</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">array([...])</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="go">Coordinates:</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="go">  * time       (time) float64 6kB 0.4 2.8 5.2 ... 1.793e+03 1.796e+03 1.798e+03</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="go">  * z          (z) float64 128B -21.38 -20.86 -20.33 ... -14.56 -14.03 -13.51</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">    slice_time (time, z) float64 96kB 0.4 2.2 1.0 ... 1.799e+03 1.799e+03</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">  * y          (y) float64 576B 2.0 2.099 2.197 2.296 ... 8.801 8.899 8.998</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">  * x          (x) float64 512B -3.465 -3.355 -3.245 ... 3.245 3.355 3.465</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">Attributes:</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4)</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="go">    scan_mode:          4Dscan</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="go">    ...</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="go">  * k          (k) int64 128B 0 1 2 3 ... 12 13 14 15</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">    slice_time (time, k) float64 96kB 0.4 2.2 1.0 ... 1.799e+03 1.799e+03</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">  * j          (j) int64 576B 0 1 2 3 ... 68 69 70 71</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">  * i          (i) int64 512B 0 1 2 3 ... 60 61 62 63</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">    z          (k, j, i) float64 ...</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="go">    y          (k, j, i) float64 ...</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="go">    x          (k, j, i) float64 ...</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="go">Attributes:</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="go">    affines:            {&#39;world_to_lab&#39;: ...}  # shape (4, 4)</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="go">    scan_mode:          4Dscan</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="go">    ...</span>
 </span></code></pre></div>
 <p>4 poses × 4 slices = 16 consolidated z positions. The pose-dependent <code>time</code>
 coordinate is reduced to a single whole-volume <code>time</code> and a <code>slice_time</code>
-coordinate with dims <code>(time, z)</code>: each slice retains the timestamp of the pose it
+coordinate with dims <code>(time, k)</code>: each slice retains the timestamp of the pose it
 came from.</p>
 </div>
 </div>
@@ -3738,10 +3752,10 @@ If you instead want to consolidate around a different, secondary affine linked i
 <code>da.attrs["affines"]</code> (e.g. <code>world_to_brain</code> alongside a <code>world_to_lab</code>-equivalent
 primary), rebase onto it first with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Example: sweeping along x, consolidating around a secondary affine.</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Example: sweeping along native voxel dimension i, consolidating around a secondary affine.</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">),</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">sweep_dim</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">sweep_dim</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Adjust <strong><code>sweep_dim</code></strong> (default: <code>"k"</code>) if your sweep is along a different voxel
@@ -3756,7 +3770,7 @@ indicates a misconfigured sweep.</p>
 </div>
 <h2 id="saving">Saving<a class="headerlink" href="#saving" title="Permanent link">&para;</a></h2>
 <h3 id="after-consolidation">After Consolidation<a class="headerlink" href="#after-consolidation" title="Permanent link">&para;</a></h3>
-<p>Once consolidated, a multi-pose DataArray is a standard ConfUSIus DataArray and can be
+<p>Once consolidated, a multi-pose VoxelData array is a VoxelData-compatible DataArray and can be
 saved to any format:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>

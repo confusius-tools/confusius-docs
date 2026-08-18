@@ -3711,14 +3711,14 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi">ensure_fusi</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Canonicalize and validate a DataArray against the ConfUSIus VoxelData model.</p>
+              <p>Canonicalize and validate a DataArray following the VoxelData model.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_iq&lt;/span&gt;" href="./#confusius.validation.ensure_iq">ensure_iq</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Return <code>iq</code> as a canonical validated <abbr title="In-phase and Quadrature">IQ</abbr> DataArray.</p>
+              <p>Return <code>iq</code> as a validated VoxelData-compatible DataArray.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3746,7 +3746,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="./#confusius.validation.validate_fusi">validate_fusi</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a DataArray follows the ConfUSIus VoxelData model.</p>
+              <p>Validate that a DataArray follows the VoxelData model.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3894,7 +3894,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Canonicalize and validate a DataArray against the ConfUSIus VoxelData model.</p>
+        <p>Canonicalize and validate a DataArray following the VoxelData model.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3927,7 +3927,7 @@
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Canonicalized DataArray that passed VoxelData validation.</p>
+            <p>Canonicalized VoxelData-compatible DataArray.</p>
           </div>
         </li>
     </ul>
@@ -3971,7 +3971,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Return <code>iq</code> as a canonical validated <abbr title="In-phase and Quadrature">IQ</abbr> DataArray.</p>
+        <p>Return <code>iq</code> as a validated VoxelData-compatible DataArray.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3981,7 +3981,7 @@
 <a href="#confusius.validation.ensure_iq(iq)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Input DataArray to canonicalize and validate as <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
+            <p>VoxelData-compatible DataArray to canonicalize and validate as <abbr title="In-phase and Quadrature">IQ</abbr> data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4004,7 +4004,7 @@ present in the DataArray attributes.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Canonical <abbr title="In-phase and Quadrature">IQ</abbr> DataArray with dimensions <code>(time, k, j, i)</code>.</p>
+            <p>VoxelData-compatible DataArray with dimensions <code>(time, k, j, i)</code>.</p>
           </div>
         </li>
     </ul>
@@ -4170,7 +4170,7 @@ region meshes are absent.</p>
             –
           <div class="doc-md-description">
             <p>If <code>da.attrs["transform_type"] != "bspline_transform"</code>, required attrs are
-missing, or <code>da</code> is not a canonical ConfUSIus voxel-grid DataArray.</p>
+missing, or <code>da</code> is not a VoxelData-compatible DataArray.</p>
           </div>
         </li>
     </ul>
@@ -4216,8 +4216,8 @@ missing, or <code>da</code> is not a canonical ConfUSIus voxel-grid DataArray.</
             –
           <div class="doc-md-description">
             <p>If <code>da.attrs["type"] != "displacement_field_transform"</code>, <code>da</code> does not have
-<code>"component"</code> as its first dimension, or <code>da</code> is not a canonical ConfUSIus
-voxel-grid DataArray.</p>
+<code>"component"</code> as its first dimension, or <code>da</code> is not a VoxelData-compatible
+DataArray.</p>
           </div>
         </li>
     </ul>
@@ -4253,7 +4253,7 @@ voxel-grid DataArray.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a DataArray follows the ConfUSIus VoxelData model.</p>
+        <p>Validate that a DataArray follows the VoxelData model.</p>
 <p>This is the general-purpose VoxelData checker: by default it enforces only the
 universal <code>k</code>/<code>j</code>/<code>i</code> + <code>VoxelToWorldIndex</code> structure required of any
 VoxelData-compatible DataArray, so it is the right tool for any VoxelData array,
@@ -4269,8 +4269,8 @@ enabled for actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recor
 <a href="#confusius.validation.validate_fusi(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray to validate. It must use native voxel dimensions <code>k</code>, <code>j</code>, <code>i</code> and
-world coordinates <code>z</code>, <code>y</code>, <code>x</code>.</p>
+            <p>DataArray to validate. It must be a VoxelData-compatible DataArray with native
+voxel dimensions <code>k</code>, <code>j</code>, <code>i</code> and derived world coordinates <code>z</code>, <code>y</code>, <code>x</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4425,8 +4425,9 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 <a href="#confusius.validation.validate_iq(iq)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Input DataArray to validate. Must have dimensions <code>(time, k, j, i)</code>, world
-<code>z/y/x</code> coordinates, and the required structure and attributes.</p>
+            <p>VoxelData-compatible DataArray to validate. Must have dimensions
+<code>(time, k, j, i)</code>, world <code>z</code>/<code>y</code>/<code>x</code> coordinates, and the required structure
+and attributes.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4550,8 +4551,8 @@ present in the DataArray attributes.</p>
         <p>Validate that a label map shares data's VoxelData grid.</p>
 <p>Both <code>labels</code> and <code>data</code> are canonicalized via
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
-after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
-<code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
+after restoring any scalar-reduced voxel dims) VoxelData-compatible DataArrays,
+carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4579,7 +4580,7 @@ after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
 <a href="#confusius.validation.validate_labels(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Data array to validate labels against.</p>
+            <p>VoxelData-compatible DataArray to validate labels against.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4620,7 +4621,7 @@ after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>labels</code> or <code>data</code> isn't VoxelData-compatible, or if <code>labels</code>'s
+            <p>If <code>labels</code> or <code>data</code> isn't a VoxelData-compatible DataArray, or if <code>labels</code>'s
 voxel grid doesn't match <code>data</code>'s.</p>
           </div>
         </li>
@@ -4653,8 +4654,8 @@ voxel grid doesn't match <code>data</code>'s.</p>
         <p>Validate that a mask shares data's VoxelData grid.</p>
 <p>Both <code>mask</code> and <code>data</code> are canonicalized via
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="./#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>, so each must be (or become,
-after restoring any scalar-reduced voxel dims) VoxelData-compatible, carrying a
-<code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
+after restoring any scalar-reduced voxel dims) VoxelData-compatible DataArrays,
+carrying a <code>VoxelToWorldIndex</code> on native voxel dims <code>k</code>/<code>j</code>/<code>i</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4674,7 +4675,7 @@ is produced by <a class="autorefs autorefs-internal" title="&lt;span class=&quot
 <a href="#confusius.validation.validate_mask(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Data array to validate mask against.</p>
+            <p>VoxelData-compatible DataArray to validate mask against.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4740,7 +4741,7 @@ False, <code>mask</code> is returned with its original dtype unchanged.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> or <code>data</code> isn't VoxelData-compatible, if <code>mask</code>'s voxel
+            <p>If <code>mask</code> or <code>data</code> isn't a VoxelData-compatible DataArray, if <code>mask</code>'s voxel
 grid doesn't match <code>data</code>'s, or if <code>require_exact_dims</code> is set and <code>mask</code>'s
 dimensions don't match <code>data</code>'s.</p>
           </div>

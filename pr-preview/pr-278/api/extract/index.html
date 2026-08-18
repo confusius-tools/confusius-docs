@@ -3409,7 +3409,7 @@
           <b><code><span title="confusius.extract.reconstruction">reconstruction</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Reconstruction of VoxelData from N-D signals using masks.</p>
+            <p>Reconstruction of VoxelData arrays from N-D signals using masks.</p>
           </div>
         </li>
     </ul>
@@ -3427,21 +3427,21 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="./#confusius.extract.extract_with_labels">extract_with_labels</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Extract region-aggregated signals from VoxelData using an integer label map.</p>
+              <p>Extract region-aggregated signals from a VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_mask&lt;/span&gt;" href="./#confusius.extract.extract_with_mask">extract_with_mask</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Extract signals from VoxelData using a binary mask.</p>
+              <p>Extract signals from a VoxelData array using a binary mask.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;unmask&lt;/span&gt;" href="./#confusius.extract.unmask">unmask</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Reconstruct VoxelData from N-D signals using a mask.</p>
+              <p>Reconstruct a VoxelData array from N-D signals using a mask.</p>
             </div>
           </li>
     </ul>
@@ -3480,7 +3480,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Extract region-aggregated signals from VoxelData using an integer label map.</p>
+        <p>Extract region-aggregated signals from a VoxelData array.</p>
 <p>For each unique non-zero label in <code>labels</code>, applies <code>reduction</code> across all voxels
 belonging to that region. The native voxel dimensions (<code>k</code>/<code>j</code>/<code>i</code>) are collapsed
 into a single <code>region</code> dimension.</p>
@@ -3493,10 +3493,9 @@ into a single <code>region</code> dimension.</p>
 <a href="#confusius.extract.extract_with_labels(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Input array. Must be VoxelData (native voxel dims <code>k</code>/<code>j</code>/<code>i</code> and a
-<code>VoxelToWorldIndex</code>), plus any number of non-spatial
-dimensions (e.g., <code>time</code>, <code>pose</code>). See
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>.</p>
+            <p>VoxelData-compatible DataArray with native voxel dims <code>k</code>/<code>j</code>/<code>i</code> and a
+<code>VoxelToWorldIndex</code>, plus any number of non-spatial dimensions (e.g.,
+<code>time</code>, <code>pose</code>). See <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3558,7 +3557,7 @@ non-spatial dimensions are preserved.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>labels</code> or <code>data</code> isn't VoxelData-compatible, if <code>labels</code>'s
+            <p>If <code>labels</code> or <code>data</code> isn't a VoxelData-compatible DataArray, if <code>labels</code>'s
 voxel grid doesn't match <code>data</code>'s, if <code>reduction</code> is not a valid option, or if
 <code>labels</code> contains no non-zero values.</p>
           </div>
@@ -3633,7 +3632,7 @@ restriction.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Extract signals from VoxelData using a binary mask.</p>
+        <p>Extract signals from a VoxelData array using a binary mask.</p>
 <p>This function flattens <code>mask</code>'s native voxel dimensions (<code>k</code>/<code>j</code>/<code>i</code>) into a
 single <code>space</code> dimension, while preserving all other dimensions of <code>data</code> (e.g.,
 <code>time</code>, <code>pose</code>).</p>
@@ -3646,10 +3645,9 @@ single <code>space</code> dimension, while preserving all other dimensions of <c
 <a href="#confusius.extract.extract_with_mask(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Input array. Must be VoxelData (native voxel dims <code>k</code>/<code>j</code>/<code>i</code> and a
-<code>VoxelToWorldIndex</code>), plus any number of non-spatial
-dimensions (e.g., <code>time</code>, <code>pose</code>). See
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>.</p>
+            <p>VoxelData-compatible DataArray with native voxel dims <code>k</code>/<code>j</code>/<code>i</code> and a
+<code>VoxelToWorldIndex</code>, plus any number of non-spatial dimensions (e.g.,
+<code>time</code>, <code>pose</code>). See <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3695,7 +3693,7 @@ masked voxels. For full mask shape reconstruction, use
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> or <code>data</code> isn't VoxelData-compatible, or if <code>mask</code>'s
+            <p>If <code>mask</code> or <code>data</code> isn't a VoxelData-compatible DataArray, or if <code>mask</code>'s
 voxel grid doesn't match <code>data</code>'s.</p>
           </div>
         </li>
@@ -3767,7 +3765,7 @@ voxel grid doesn't match <code>data</code>'s.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Reconstruct VoxelData from N-D signals using a mask.</p>
+        <p>Reconstruct a VoxelData array from N-D signals using a mask.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3854,9 +3852,9 @@ all dimensions. Ignored if <code>signals</code> is a DataArray.</p>
           –
           <div class="doc-md-description">
             <p>Reconstructed DataArray with shape <code>(..., *mask.dims)</code>, where spatial
-dimensions and coordinates come from the mask. For a VoxelData-compatible mask
-(native voxel dims <code>k</code>/<code>j</code>/<code>i</code> with a <code>VoxelToWorldIndex</code>), the derived world
-<code>z</code>/<code>y</code>/<code>x</code> coordinates are restored on the result as well.</p>
+dimensions and coordinates come from the mask. For a VoxelData-compatible
+DataArray mask (native voxel dims <code>k</code>/<code>j</code>/<code>i</code> with a <code>VoxelToWorldIndex</code>),
+the derived world <code>z</code>/<code>y</code>/<code>x</code> coordinates are restored on the result as well.</p>
           </div>
         </li>
     </ul>

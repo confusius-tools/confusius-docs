@@ -837,10 +837,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-fusi-dataarrays-from-raw-arrays" class="md-nav__link">
+  <a href="#creating-voxeldata-compatible-dataarrays-from-raw-arrays" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Creating fUSI DataArrays from Raw Arrays
+        Creating VoxelData-compatible DataArrays from Raw Arrays
       </span>
     </span>
   </a>
@@ -3366,10 +3366,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-fusi-dataarrays-from-raw-arrays" class="md-nav__link">
+  <a href="#creating-voxeldata-compatible-dataarrays-from-raw-arrays" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Creating fUSI DataArrays from Raw Arrays
+        Creating VoxelData-compatible DataArrays from Raw Arrays
       </span>
     </span>
   </a>
@@ -3804,13 +3804,13 @@ spatial coordinates as singleton dimensions before validating the data. For exam
 <code>slice_movie</code> is treated as <code>(time, k, j, i)</code> with <code>k=1</code> when passed to registration or
 resampling APIs. Dimension-generic operations such as smoothing preserve the indexed
 shape.</p>
-<h2 id="creating-fusi-dataarrays-from-raw-arrays">Creating <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays from Raw Arrays<a class="headerlink" href="#creating-fusi-dataarrays-from-raw-arrays" title="Permanent link">&para;</a></h2>
+<h2 id="creating-voxeldata-compatible-dataarrays-from-raw-arrays">Creating VoxelData-compatible DataArrays from Raw Arrays<a class="headerlink" href="#creating-voxeldata-compatible-dataarrays-from-raw-arrays" title="Permanent link">&para;</a></h2>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> when you already
-have a NumPy, Dask, or array-like object and want to create a ConfUSIus-compatible
+have a NumPy, Dask, or array-like object and want to create a VoxelData-compatible
 DataArray. This is useful when you have raw data from a custom acquisition system or a
-non-standard file format. The function will attach ConfUSIus-compatible dimensions,
-coordinates, and metadata. Dimensions can be supplied in any order; the result is
-canonicalized to native <code>(time, k, j, i)</code> order:</p>
+non-standard file format. The function will attach VoxelData dimensions, coordinates,
+and metadata. Dimensions can be supplied in any order; the result is canonicalized to
+native <code>(time, k, j, i)</code> order:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">recording</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>

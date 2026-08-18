@@ -3663,7 +3663,7 @@ Conventions</a> for details on the coordinate model.</p>
 </ul>
 <p>Additionally, ConfUSIus provides utilities to read and write
 <a href="https://nifti.nimh.nih.gov/"><strong>NIfTI</strong></a> files (the standard neuroimaging format for
-<abbr title="Brain Imaging Data Structure">BIDS</abbr>) as Xarray DataArrays, automatically reading and writing matching <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON
+<abbr title="Brain Imaging Data Structure">BIDS</abbr>) as VoxelData-compatible DataArrays, automatically reading and writing matching <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON
 sidecars when present.</p>
 <h3 id="recommended-formats-for-fusi">Recommended Formats for <abbr title="Functional Ultrasound Imaging">fUSI</abbr><a class="headerlink" href="#recommended-formats-for-fusi" title="Permanent link">&para;</a></h3>
 <p>ConfUSIus works with all Xarray-compatible formats, but two formats are particularly
@@ -3939,8 +3939,8 @@ will be computed automatically and stored in the resulting DataArray's attribute
 affine has shape <code>(npose, 4, 4)</code> and is indexed by pose, the same way <code>world_to_lab</code>
 is.</p>
 <h4 id="converting-scan-data-to-nifti">Converting SCAN Data to NIfTI<a class="headerlink" href="#converting-scan-data-to-nifti" title="Permanent link">&para;</a></h4>
-<p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> returns a standard Xarray DataArray with
-ConfUSIus-compatible dimensions and coordinates, you can save it directly to NIfTI using
+<p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> returns a VoxelData-compatible DataArray with
+VoxelData dimensions and coordinates, you can save it directly to NIfTI using
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> or the Xarray accessor.</p>
 <p>For <strong>2Dscan</strong> data, save it directly:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
@@ -3974,7 +3974,7 @@ saving, or save each pose separately if you want to retain the multi-pose struct
 </div>
 </div>
 <h3 id="loading-nifti-files">Loading NIfTI Files<a class="headerlink" href="#loading-nifti-files" title="Permanent link">&para;</a></h3>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> to load NIfTI files as lazy Xarray DataArrays:</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> to load NIfTI files as lazy VoxelData-compatible DataArrays:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load with automatic fUSI-BIDS sidecar metadata.</span>
@@ -4005,7 +4005,7 @@ dimensions, coordinates, and metadata:</p>
 </span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Power Doppler from my system&quot;</span><span class="p">},</span>
 </span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>See the <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/">Create a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a MAT
+<p>See the <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/">Create a VoxelData-compatible DataArray from a MAT
 file</a> example for a complete
 walkthrough, from a real lab-specific MAT file to motion correction and a task <abbr title="General Linear Model">GLM</abbr>.</p>
 <h2 id="converting-beamformed-iq-data">Converting Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data<a class="headerlink" href="#converting-beamformed-iq-data" title="Permanent link">&para;</a></h2>
@@ -4170,7 +4170,7 @@ twice.</p>
 </tr>
 <tr>
 <td>EchoFrame DAT</td>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_echoframe_dat&lt;/span&gt;" href="../../api/io/#confusius.io.load_echoframe_dat"><code>confusius.io.load_echoframe_dat</code></a></td>
 </tr>
 <tr>
@@ -4180,26 +4180,26 @@ twice.</p>
 </tr>
 <tr>
 <td>Iconeus SCAN</td>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a></td>
 </tr>
 <tr>
 <td>NIfTI</td>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a></td>
 </tr>
 <tr>
 <td>Zarr</td>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray or Dataset</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> / <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> (Dataset)</td>
 </tr>
 <tr>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray</td>
 <td>NIfTI</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>confusius.save</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a></td>
 </tr>
 <tr>
-<td>Xarray DataArray</td>
+<td>VoxelData-compatible DataArray</td>
 <td>Zarr</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>confusius.save</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a> / <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.to_zarr.html#xarray.DataArray.to_zarr"><code>.to_zarr</code></a></td>
 </tr>

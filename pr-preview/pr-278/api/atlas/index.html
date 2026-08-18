@@ -3512,8 +3512,9 @@ pipelines).</p>
 <a href="#confusius.atlas.AtlasAccessor(ds)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.Dataset">Dataset</span></code>)
           –
           <div class="doc-md-description">
-            <p>Atlas Dataset with <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> data variables on
-a common voxel-to-world <code>(k, j, i)</code> grid, and the atlas metadata in <code>attrs</code>.</p>
+            <p>Atlas Dataset with <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> data variables as
+VoxelData-compatible DataArrays on a common <code>k</code>/<code>j</code>/<code>i</code> grid, and the atlas
+metadata in <code>attrs</code>.</p>
           </div>
         </li>
     </ul>
@@ -3597,7 +3598,7 @@ a common voxel-to-world <code>(k, j, i)</code> grid, and the atlas metadata in <
               (<code><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>Region annotations DataArray.</p>
+            <p>Region annotations VoxelData-compatible DataArray.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3623,7 +3624,7 @@ a common voxel-to-world <code>(k, j, i)</code> grid, and the atlas metadata in <
               (<code><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>Hemisphere map DataArray (1 = left, 2 = right).</p>
+            <p>Hemisphere map VoxelData-compatible DataArray (1 = left, 2 = right).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3662,7 +3663,7 @@ a common voxel-to-world <code>(k, j, i)</code> grid, and the atlas metadata in <
               (<code><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>Reference template DataArray.</p>
+            <p>Reference template VoxelData-compatible DataArray.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3709,7 +3710,7 @@ a common voxel-to-world <code>(k, j, i)</code> grid, and the atlas metadata in <
 
     <div class="doc doc-contents ">
 
-        <p>Region annotations DataArray.</p>
+        <p>Region annotations VoxelData-compatible DataArray.</p>
 <p><code>attrs["rgb_lookup"]</code> carries a <code>{id: [r, g, b]}</code> dict used for colormap
 construction.</p>
 
@@ -3720,7 +3721,7 @@ construction.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>The region annotation DataArray with integer labels.</p>
+            <p>The region annotation VoxelData-compatible DataArray with integer labels.</p>
           </div>
         </li>
     </ul>
@@ -3783,7 +3784,7 @@ construction.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Hemisphere map DataArray (1 = left, 2 = right).</p>
+        <p>Hemisphere map VoxelData-compatible DataArray (1 = left, 2 = right).</p>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
@@ -3792,7 +3793,7 @@ construction.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>The hemisphere map data variable.</p>
+            <p>The hemisphere map VoxelData-compatible DataArray.</p>
           </div>
         </li>
     </ul>
@@ -3892,7 +3893,7 @@ construction.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Reference template DataArray.</p>
+        <p>Reference template VoxelData-compatible DataArray.</p>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
@@ -3901,7 +3902,7 @@ construction.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>The reference template DataArray.</p>
+            <p>The reference template VoxelData-compatible DataArray.</p>
           </div>
         </li>
     </ul>
@@ -4061,8 +4062,9 @@ sequence of the same length as <code>regions</code> for per-region control.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Integer DataArray with dims <code>["mask", *annotation.dims]</code>. The <code>mask</code>
-coordinate holds the region acronym for each layer, suffixed with <code>_L</code>/<code>_R</code>
+            <p>Integer VoxelData-compatible DataArray with dims
+<code>["mask", *annotation.dims]</code>. The <code>mask</code> coordinate holds the region acronym
+for each layer, suffixed with <code>_L</code>/<code>_R</code>
 when the corresponding <code>side</code> is <code>"left"</code>/<code>"right"</code> (left/right requests for
 the same region would otherwise share an acronym).</p>
           </div>
@@ -4402,7 +4404,8 @@ units when such metadata is defined.</p>
 <a href="#confusius.atlas.AtlasAccessor.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Target grid. Must be 2D or 3D and must not have a <code>time</code> dimension.</p>
+            <p>VoxelData-compatible DataArray defining the target grid. Must be 2D or 3D
+and must not have a <code>time</code> dimension.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4665,8 +4668,9 @@ sequence of the same length as <code>regions</code> for per-region control.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Integer DataArray with dims <code>["mask", *annotation.dims]</code>. The <code>mask</code> coordinate
-holds the region acronym for each layer, suffixed with <code>_L</code>/<code>_R</code> when the
+            <p>Integer VoxelData-compatible DataArray with dims <code>["mask", *annotation.dims]</code>.
+The <code>mask</code> coordinate holds the region acronym for each layer, suffixed with
+<code>_L</code>/<code>_R</code> when the
 corresponding <code>side</code> is <code>"left"</code>/<code>"right"</code> (left/right requests for the same
 region would otherwise share an acronym).</p>
           </div>

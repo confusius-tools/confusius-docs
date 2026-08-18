@@ -3413,7 +3413,7 @@ operations.</p>
           <b><code><span title="confusius.multipose.stack">stack</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Assembling independently loaded single-pose grids into one pose-dependent DataArray.</p>
+            <p>Assembling single-pose VoxelData arrays into one pose-dependent DataArray.</p>
           </div>
         </li>
     </ul>
@@ -3665,8 +3665,9 @@ may be freely chunked.</p>
 <a href="#confusius.multipose.correct_slice_timings(da)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray with a <code>slice_time</code> coordinate, or a pose-dependent
-<code>(time, pose)</code>-shaped <code>time</code> coordinate, with dims <code>(time, &lt;sweep_dim&gt;)</code>.</p>
+            <p>VoxelData-compatible DataArray with a <code>slice_time</code> coordinate, or a
+pose-dependent <code>(time, pose)</code>-shaped <code>time</code> coordinate, with dims
+<code>(time, &lt;sweep_dim&gt;)</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3712,7 +3713,7 @@ inserts NaNs out of bounds. Use a float for a constant fill value, or a tuple
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>New DataArray with the same dims as the input, resampled so every sweep
+            <p>New VoxelData-compatible DataArray with the same dims as the input, resampled so every sweep
 position appears simultaneous. For already-consolidated input, <code>time</code> is
 unchanged and <code>slice_time</code> is dropped (avoiding accidental
 double-correction). For pose-dependent input, <code>time</code> becomes a genuine 1D

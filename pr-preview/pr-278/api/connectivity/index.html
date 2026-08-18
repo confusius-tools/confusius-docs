@@ -4288,7 +4288,7 @@ match the values seen during <code>fit</code>.</p>
 
         <p>Seed-based functional connectivity maps from <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
 <p>Computes voxel-wise Pearson correlation maps between one or more seed region signals
-and every voxel in a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray.</p>
+and every voxel in a VoxelData-compatible DataArray.</p>
 <p>Two ways to supply the seed signal are supported:</p>
 <ul>
 <li><strong>Mask-based</strong> (<code>seed_masks</code>): integer label maps are passed and the seed signals
@@ -4318,11 +4318,11 @@ and every voxel in a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> Dat
             <p>Integer label maps defining the seed region(s). Two formats are accepted (same
 as <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>):</p>
 <ul>
-<li><strong>Flat label map</strong>: spatial dims only, e.g. <code>(z, y, x)</code>.
+<li><strong>Flat label map</strong>: spatial dims only, e.g. <code>(k, j, i)</code>.
   Background voxels are <code>0</code>; each unique non-zero integer is a
   separate seed region.</li>
 <li><strong>Stacked mask format</strong>: leading <code>mask</code> dim followed by spatial
-  dims, e.g. <code>(mask, z, y, x)</code>.  Each layer has values in <code>{0,
+  dims, e.g. <code>(mask, k, j, i)</code>.  Each layer has values in <code>{0,
   region_id}</code> and regions may overlap.</li>
 </ul>
 <p>A boolean mask can be used by converting it first: <code>mask.astype(int)</code>. Mutually
@@ -4561,8 +4561,8 @@ sensible defaults automatically.</p>
 <a href="#confusius.connectivity.SeedBasedMaps.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>A <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray to estimate seed-based maps from.  Must have a <code>time</code>
-dimension.  The spatial dimensions must be compatible with <code>seed_masks</code> when
+            <p>VoxelData-compatible DataArray to estimate seed-based maps from. Must have
+a <code>time</code> dimension. The spatial dimensions must be compatible with <code>seed_masks</code> when
 using mask-based seeding.</p>
 <div class="admonition warning">
 <p class="admonition-title">Chunking along time</p>

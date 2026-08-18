@@ -3724,7 +3724,7 @@
           <b><code><span title="confusius.xarray.create">create</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Constructor helpers for building ConfUSIus VoxelData.</p>
+            <p>Constructor helpers for building VoxelData arrays.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3845,14 +3845,14 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="./#confusius.xarray.create_fusi_dataarray">create_fusi_dataarray</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Build a VoxelData-compatible ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a raw array.</p>
+              <p>Build a VoxelData-compatible DataArray from a raw <abbr title="Functional Ultrasound Imaging">fUSI</abbr> array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="./#confusius.xarray.create_iq_dataarray">create_iq_dataarray</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Build a VoxelData-compatible ConfUSIus <abbr title="In-phase and Quadrature">IQ</abbr> DataArray from a raw complex array.</p>
+              <p>Build a VoxelData-compatible DataArray from a raw complex <abbr title="In-phase and Quadrature">IQ</abbr> array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5461,8 +5461,9 @@ returned object.</p>
 
 
         <p>Xarray accessor for signal extraction operations.</p>
-<p>Provides convenient methods for extracting signals from N-D <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data by flattening
-spatial dimensions, and reconstructing N-D volumes from processed signals.</p>
+<p>Provides convenient methods for extracting signals from VoxelData arrays by
+flattening spatial dimensions, and reconstructing VoxelData arrays from processed
+signals.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5472,7 +5473,8 @@ spatial dimensions, and reconstructing N-D volumes from processed signals.</p>
 <a href="#confusius.xarray.FUSIExtractAccessor(xarray_obj)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>The DataArray to wrap.</p>
+            <p>DataArray to wrap. Extraction methods expect a VoxelData-compatible DataArray;
+<code>unmask</code> expects an already-extracted signals array.</p>
           </div>
         </li>
     </ul>
@@ -5576,7 +5578,7 @@ spatial dimensions, and reconstructing N-D volumes from processed signals.</p>
 
         <p>Reconstruct N-D volume from masked signals.</p>
 <p>Reconstructs the full spatial volume from a DataArray of signals, which must
-have a <code>voxels</code> dimension. This is a convenience wrapper around
+have a <code>space</code> dimension. This is a convenience wrapper around
 <code>confusius.extract.unmask()</code>.</p>
 
 
@@ -5587,8 +5589,8 @@ have a <code>voxels</code> dimension. This is a convenience wrapper around
 <a href="#confusius.xarray.FUSIExtractAccessor.unmask(mask)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Boolean mask used for the original extraction. Provides spatial dimensions
-and coordinates for reconstruction.</p>
+            <p>Boolean VoxelData-compatible mask array used for the original extraction.
+Provides native voxel dimensions and VoxelData geometry for reconstruction.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5610,8 +5612,8 @@ and coordinates for reconstruction.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Reconstructed DataArray with shape <code>(..., k, j, i)</code> where spatial
-dimensions and coordinates come from the mask.</p>
+            <p>Reconstructed VoxelData-compatible DataArray with shape <code>(..., k, j, i)</code>
+where native voxel dimensions and VoxelData geometry come from the mask.</p>
           </div>
         </li>
     </ul>
@@ -6432,7 +6434,7 @@ ultrasound imaging data, with specialized support for napari visualization.</p>
 <a href="#confusius.xarray.FUSIPlotAccessor(xarray_obj)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>The DataArray to wrap.</p>
+            <p>The VoxelData-compatible DataArray to wrap.</p>
           </div>
         </li>
     </ul>
@@ -8535,7 +8537,7 @@ slices.</p>
 <a href="#confusius.xarray.FUSIRegistrationAccessor(xarray_obj)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>The DataArray to wrap.</p>
+            <p>The VoxelData-compatible DataArray to wrap.</p>
           </div>
         </li>
     </ul>
@@ -9705,7 +9707,7 @@ DataArray's voxel-to-world affine, or if <code>affine</code> is a string and <co
 
     <div class="doc doc-contents ">
 
-        <p>Build a VoxelData-compatible ConfUSIus <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a raw array.</p>
+        <p>Build a VoxelData-compatible DataArray from a raw <abbr title="Functional Ultrasound Imaging">fUSI</abbr> array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9906,7 +9908,7 @@ are kept.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray with native voxel dimensions and world
+            <p>VoxelData-compatible DataArray with native voxel dimensions and world
 coordinates.</p>
           </div>
         </li>
@@ -9973,7 +9975,7 @@ fail.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Build a VoxelData-compatible ConfUSIus <abbr title="In-phase and Quadrature">IQ</abbr> DataArray from a raw complex array.</p>
+        <p>Build a VoxelData-compatible DataArray from a raw complex <abbr title="In-phase and Quadrature">IQ</abbr> array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10177,7 +10179,7 @@ are kept.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible <abbr title="In-phase and Quadrature">IQ</abbr> DataArray with native voxel dimensions and world
+            <p>VoxelData-compatible DataArray with native voxel dimensions and world
 coordinates.</p>
           </div>
         </li>
