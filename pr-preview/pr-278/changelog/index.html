@@ -4122,15 +4122,13 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Renamed "physical" to "world" throughout the public API (<code>attrs["affines"]</code>
   keys such as <code>world_to_sform</code>, function/parameter names, docs) to describe the
-  coordinate <em>frame</em>, reserving "physical units" for the mm-vs-voxel-index unit
-  distinction (standard ITK/NIfTI usage). <code>orientation_matrix</code> was also renamed
-  to <code>direction_matrix</code>, and <code>affine_to</code> to
+  coordinate <em>space</em>, reserving "physical units" for the mm-vs-voxel-index unit
+  distinction (standard ITK/NIfTI usage). <code>affine_to</code> was renamed to
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_relative_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_relative_affine"><code>get_relative_affine</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li><code>cf.io.load</code>'s <code>.zarr</code> branch and the napari Zarr reader now reject stores that
-  weren't written by <code>cf.io.save</code> (no <code>attrs["voxel_to_world"]</code>), instead of
-  silently loading them as non-canonical data. Use <code>xarray.open_zarr</code> directly
-  for a foreign Zarr store
+<li><code>cf.io.load</code>'s <code>.zarr</code> branch and the napari Zarr reader now reject stores that don't
+  contain <code>attrs["voxel_to_world"]</code>, instead of silently loading them as non-canonical
+  data. Use <code>xarray.open_zarr</code> directly for a foreign Zarr store
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li><code>extract_with_mask</code>/<code>extract_with_labels</code> (and <code>validate_mask</code>/
   <code>validate_labels</code>) now require canonical VoxelData input for both <code>data</code> and
@@ -4139,18 +4137,6 @@
   grids that happened to share voxel-index ranges no longer silently pass as
   aligned. <code>validate_atlas</code> similarly no longer accepts a plain, non-indexed
   atlas shape
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li><code>pose</code> is now its own plain, independently indexed coordinate rather than being
-  jointly owned by the <code>z</code>/<code>y</code>/<code>x</code> <code>VoxelToWorldIndex</code>. This fixes a real
-  alignment bug: after a scalar <code>.sel(pose=idx)</code>/<code>.isel(pose=idx)</code>, xarray's
-  internal indexing bookkeeping left a stale <code>pose</code> index association behind,
-  which made aligning the result against genuinely pose-free arrays (masks,
-  atlases, registration targets) raise a spurious <code>AlignmentError</code> in functions
-  like <code>extract_with_mask</code>. One consequence: a single combined
-  <code>.sel(pose=0, z=..., y=..., x=...)</code> call is no longer supported for
-  pose-dependent geometry — reduce <code>pose</code> to a scalar first, e.g.
-  <code>.isel(pose=0).sel(z=..., y=..., x=...)</code>. <code>.isel()</code> is unaffected; combined
-  <code>.isel(pose=0, k=..., j=..., i=...)</code> still works in one call
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Multi-pose data acquired sequentially now carries a pose-dependent, <code>(time,
   pose)</code>-shaped <code>time</code> coordinate holding each pose's own real acquisition
@@ -4173,13 +4159,11 @@
   <code>validate_atlas_dataset</code> to <code>validate_atlas</code>; renamed the <abbr title="In-phase and Quadrature">IQ</abbr> validator option
   <code>require_attrs</code> to <code>require_velocity_attrs</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
-<li><abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArrays now require explicit 3D spatial geometry (superseded by the
-  <code>k</code>/<code>j</code>/<code>i</code> voxel-to-world model above, which replaced <code>z</code>/<code>y</code>/<code>x</code> as the
-  required dims). Spatial coordinates must carry <code>units</code> metadata, time
-  coordinates must carry <code>units</code> metadata when present, and singleton spatial
-  dimensions must carry <code>voxdim</code> metadata because spacing cannot be inferred
-  from a single coordinate point. Scalar-indexed slices are recovered as
-  singleton dimensions at relevant API boundaries; use
+<li>Spatial coordinates must carry <code>units</code> metadata, and so must <code>time</code> when present;
+  spacing along every spatial axis, including singleton dimensions, is always
+  derived from the voxel-to-world affine, never from separate coordinate metadata.
+  Scalar-indexed slices are recovered as singleton dimensions at relevant API
+  boundaries; use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to add singleton
   axes and coordinate metadata from raw 2D or 2D+t arrays
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
@@ -4196,13 +4180,10 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../api/multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a> all
   build on this
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>Added <code>.fusi.affine</code> accessor
-  (<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>apply</code></a>,
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels"><code>reindex_voxels</code></a>,
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels_like&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels_like"><code>reindex_voxels_like</code></a>) as the primary
-  way to move VoxelData between voxel, world, and named-affine spaces via plain
-  4x4 matrix composition
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels"><code>reindex_voxels</code></a>/
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels_like&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels_like"><code>reindex_voxels_like</code></a> to <code>.fusi.affine</code>,
+  rebasing voxel-space coordinates to dense positions via plain 4x4 matrix
+  composition (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>NIfTI and Zarr I/O round-trip oblique/rotated/sheared voxel-to-world geometry
   exactly; <code>load_nifti</code> composes the full primary qform/sform affine into
   <code>voxel_to_world</code> instead of decomposing it into axis-aligned scale/origin
@@ -4218,7 +4199,7 @@
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to build a
   canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a raw array plus higher-level metadata (<code>dt</code>, <code>dz</code>,
   <code>dy</code>, <code>dx</code>, and axis origins). It attaches regularly spaced physical coordinates,
-  <code>units</code>/<code>voxdim</code> metadata, and validates the result before returning it
+  <code>units</code> metadata, and validates the result before returning it
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a> to construct
   canonical complex <abbr title="In-phase and Quadrature">IQ</abbr> DataArrays with explicit <code>transmit_frequency</code> and
@@ -4232,12 +4213,8 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Fixed several correctness bugs surfaced while migrating to the voxel-to-world
-  model: displacement-field/atlas composition mixing voxel-index values into
-  world-mm math, <code>SearchLight</code>'s decoding radius being measured in voxel-index
-  units instead of physical units, first-level <abbr title="General Linear Model">GLM</abbr> registration
-  initialization, NIfTI files not always getting both a qform and sform on
-  save, and <code>get_affine_axis_vectors</code> misindexing a pose-stacked affine
+<li><code>save_nifti</code> now always writes both a qform and sform (previously sform was
+  silently dropped when no secondary affine had been explicitly recorded)
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li><code>plot_composite</code> no longer produces a blank/NaN composite when either input has
   been scaled with <code>.fusi.scale.db()</code>; the <code>-inf</code> values <code>db_scale</code> assigns to
