@@ -3798,6 +3798,34 @@ upward.</p>
             <p>Whether the x-axis increases to the right.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.VolumePlotter(resample_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_interpolation</code></b>
+<a href="#confusius.plotting.VolumePlotter(resample_interpolation)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation method used when resampling oblique (non-axis-aligned)
+voxel-to-world data onto an axis-aligned world grid for display. Applies to
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>add_volume</code></a>; mask data passed
+to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a> always
+resamples with <code>"nearest"</code> regardless of this setting, since blending
+distinct integer labels together is never meaningful.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.VolumePlotter(resample_fill_value)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_fill_value</code></b>
+<a href="#confusius.plotting.VolumePlotter(resample_fill_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Value assigned to voxels outside the source data's field of view after
+resampling oblique data. If not provided, defaults to the source data's own
+minimum value (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../registration/#confusius.registration.resample_volume"><code>resample_volume</code></a>).</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -5356,7 +5384,11 @@ NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref),
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;nrows&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(nrows)">nrows</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ncols&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(ncols)">ncols</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dpi&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(dpi)">dpi</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(resample_interpolation)">resample_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_fill_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(resample_fill_value)">resample_fill_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -5642,6 +5674,31 @@ automatically. If not provided, new axes are created inside <code>figure</code>.
           –
           <div class="doc-md-description">
             <p>Figure resolution in dots per inch. Ignored when <code>figure</code> is provided.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(resample_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_interpolation</code></b>
+<a href="#confusius.plotting.plot_composite(resample_interpolation)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation method used when resampling oblique (non-axis-aligned)
+voxel-to-world <code>data1</code>/<code>data2</code> onto an axis-aligned world grid for display.
+Distinct from <code>resample_kwargs</code>, which controls resampling <code>data2</code> onto
+<code>data1</code>'s grid for compositing.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_composite(resample_fill_value)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_fill_value</code></b>
+<a href="#confusius.plotting.plot_composite(resample_fill_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Value assigned to voxels outside <code>data1</code>/<code>data2</code>'s field of view after
+display resampling. If not provided, defaults to each array's own minimum
+value.</p>
           </div>
         </li>
     </ul>
@@ -6796,8 +6853,13 @@ number of panels.</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dim_order&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(dim_order)">dim_order</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;viewer&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(viewer)">viewer</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="napari.Viewer" href="https://napari.org/stable/api/napari.Viewer.html#napari.Viewer">Viewer</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;layer_type&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(layer_type)">layer_type</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="o">**</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;**layer_kwargs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(**layer_kwargs)">layer_kwargs</a></span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="napari.Viewer" href="https://napari.org/stable/api/napari.Viewer.html#napari.Viewer">Viewer</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="napari.layers.Image" href="https://napari.org/stable/api/napari.layers.Image.html#napari.layers.Image">Image</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="napari.layers.Labels" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(resample_interpolation)">resample_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_fill_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(resample_fill_value)">resample_fill_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="o">**</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;**layer_kwargs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_napari(**layer_kwargs)">layer_kwargs</a></span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="napari.Viewer" href="https://napari.org/stable/api/napari.Viewer.html#napari.Viewer">Viewer</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="napari.layers.Image" href="https://napari.org/stable/api/napari.layers.Image.html#napari.layers.Image">Image</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="napari.layers.Labels" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">]</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -6872,6 +6934,31 @@ is created.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_napari(resample_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_interpolation</code></b>
+<a href="#confusius.plotting.plot_napari(resample_interpolation)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation method used when resampling oblique (non-axis-aligned)
+voxel-to-world <code>data</code> onto an axis-aligned world grid for display. If not
+provided, defaults to <code>"nearest"</code> for <code>layer_type="labels"</code> (blending
+distinct integer labels together is never meaningful) and <code>"linear"</code>
+otherwise.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_napari(resample_fill_value)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_fill_value</code></b>
+<a href="#confusius.plotting.plot_napari(resample_fill_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Value assigned to voxels outside <code>data</code>'s field of view after resampling
+oblique data. If not provided, defaults to <code>data</code>'s own minimum value.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
 <h4 id="confusius.plotting.plot_napari(**layer_kwargs)" class="doc doc-heading doc-heading-parameter">              <b><code>**layer_kwargs</code></b>
 <a href="#confusius.plotting.plot_napari(**layer_kwargs)" class="headerlink" title="Permanent link">&para;</a></h4>          –
           <div class="doc-md-description">
@@ -6922,11 +7009,11 @@ computed as the median difference between consecutive coordinate values.</p>
 forwarded to napari as the <code>units</code> layer parameter, which populates the status bar
 with world coordinates and sets the scale bar unit if units are consistent across
 displayed axes.</p>
-<p>For unitary dimensions (e.g., a single-slice elevation axis in 2D+t data), the
-spacing cannot be inferred from coordinates. In that case, the function looks for a
-<code>voxdim</code> attribute on the coordinate variable
-(<code>data.coords[dim].attrs["voxdim"]</code>) and uses it as the spacing. If no such
-attribute is found, unit spacing is assumed and a warning is emitted.</p>
+<p>For unitary voxel dimensions (e.g., a single-slice elevation axis in 2D+t data),
+the spacing cannot be inferred from consecutive coordinate differences. In that
+case, <code>.fusi.spacing</code> derives it from the voxel-to-world affine column norm
+instead. For unitary non-voxel dimensions with no affine to fall back on, unit
+spacing is assumed and a warning is emitted.</p>
 <p>The first coordinate value of each displayed dimension is used as the <code>translate</code>
 parameter so that the image is positioned at its correct world origin. For
 dimensions without coordinates, a translate of <code>0.0</code> is used. This ensures that
@@ -7004,7 +7091,11 @@ the same viewer.</p>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;nrows&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_stat_map(nrows)">nrows</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ncols&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_stat_map(ncols)">ncols</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dpi&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_stat_map(dpi)">dpi</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_stat_map(resample_interpolation)">resample_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_fill_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_stat_map(resample_fill_value)">resample_fill_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -7388,6 +7479,30 @@ axes are created inside <code>figure</code>.</p>
             <p>Figure resolution in dots per inch. Ignored when <code>figure</code> is provided.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_stat_map(resample_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_interpolation</code></b>
+<a href="#confusius.plotting.plot_stat_map(resample_interpolation)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation method used when resampling oblique (non-axis-aligned)
+voxel-to-world <code>stat_map</code>/<code>bg_volume</code> onto an axis-aligned world grid for
+display. Applied to both, since they share one <code>VolumePlotter</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_stat_map(resample_fill_value)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_fill_value</code></b>
+<a href="#confusius.plotting.plot_stat_map(resample_fill_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Value assigned to voxels outside <code>stat_map</code>/<code>bg_volume</code>'s field of view
+after display resampling. If not provided, defaults to each array's own
+minimum value.</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -7502,7 +7617,11 @@ asymmetric range.</p>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;nrows&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_volume(nrows)">nrows</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;ncols&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_volume(ncols)">ncols</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;dpi&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_volume(dpi)">dpi</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_interpolation&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_volume(resample_interpolation)">resample_interpolation</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline&quot;</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_fill_value&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_volume(resample_fill_value)">resample_fill_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -7839,6 +7958,28 @@ axes are created inside <code>figure</code>.</p>
             <p>Mapping from integer label to display name. When provided (or when
 <code>data.attrs["roi_labels"]</code> is populated), hovering the cursor over a
 voxel shows <code>&lt;data_name&gt;=&lt;id&gt; (&lt;roi_name&gt;)</code> in the matplotlib status bar.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_volume(resample_interpolation)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_interpolation</code></b>
+<a href="#confusius.plotting.plot_volume(resample_interpolation)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="linear">linear</span>, <span title="nearest">nearest</span>, <span title="bspline">bspline</span>)</code>, default:
+                  <code>&#34;linear&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Interpolation method used when resampling oblique (non-axis-aligned)
+voxel-to-world <code>data</code> onto an axis-aligned world grid for display.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.plot_volume(resample_fill_value)" class="doc doc-heading doc-heading-parameter">              <b><code>resample_fill_value</code></b>
+<a href="#confusius.plotting.plot_volume(resample_fill_value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Value assigned to voxels outside <code>data</code>'s field of view after resampling
+oblique data. If not provided, defaults to <code>data</code>'s own minimum value.</p>
           </div>
         </li>
     </ul>
