@@ -2475,14 +2475,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -4586,8 +4586,8 @@ coordinates.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If either input is not VoxelData-compatible with a time-free, pose-free,
-3D voxel-to-world grid (see <code>confusius.validation.ensure_fusi</code>).</p>
+            <p>If either input is not a VoxelData array with a time-free, pose-free,
+3D voxel-to-world grid (see <code>confusius.validation.ensure_voxeldata</code>).</p>
           </div>
         </li>
     </ul>
@@ -4763,7 +4763,7 @@ voxels.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>reference</code> contains a <code>time</code> dimension, fails <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation, or if
+            <p>If <code>reference</code> contains a <code>time</code> dimension, fails VoxelData validation, or if
 <code>affines</code> is empty or contains an array that is not a <code>(4, 4)</code> homogeneous 3D
 affine.</p>
           </div>
@@ -4832,7 +4832,7 @@ arise from subject motion. Neuroimage 59, 2142-2154&#160;<a class="footnote-back
 <a href="#confusius.registration.create_motion_dataframe(reference)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Spatial-only VoxelData-compatible DataArray defining the world grid for
+            <p>Spatial-only VoxelData array defining the world grid for
 framewise displacement computation.</p>
           </div>
         </li>
@@ -4889,7 +4889,7 @@ the input DataArray stores its spatial dimensions in a different order such as
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>reference</code> contains a <code>time</code> dimension, fails <abbr title="Functional Ultrasound Imaging">fUSI</abbr> validation, or if
+            <p>If <code>reference</code> contains a <code>time</code> dimension, fails VoxelData validation, or if
 <code>affines</code> is empty or contains an array that is not a <code>(4, 4)</code> homogeneous 3D
 affine.</p>
           </div>
@@ -5896,7 +5896,7 @@ not match <code>moving</code>.</p>
 <a href="#confusius.registration.register_volumewise(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray with a <code>time</code> dimension to register.</p>
+            <p>VoxelData array with a <code>time</code> dimension to register.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6249,7 +6249,7 @@ position-anchored output grid (<code>shape</code>, <code>spacing</code>, <code>o
 <a href="#confusius.registration.resample_like(moving)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray to resample. May be spatial-only or have a
+            <p>VoxelData array to resample. May be spatial-only or have a
 <code>time</code> dimension (single-slice recordings use a singleton <code>k</code> axis). If a time
 dimension is present, the same transform is applied to all time points.</p>
           </div>
@@ -6259,7 +6259,7 @@ dimension is present, the same transform is applied to all time points.</p>
 <a href="#confusius.registration.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray defining the output grid. Must be spatial-only
+            <p>VoxelData array defining the output grid. Must be spatial-only
 with dimensions <code>k</code>, <code>j</code>, <code>i</code> (no time dimension). When spatial coordinate
 <code>units</code> metadata is present on both <code>moving</code> and <code>reference</code>, they must match.</p>
           </div>
@@ -6415,7 +6415,7 @@ position-anchored grid from an existing DataArray.</p>
 <a href="#confusius.registration.resample_volume(moving)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray to resample. May be spatial-only or have a
+            <p>VoxelData array to resample. May be spatial-only or have a
 <code>time</code> dimension (single-slice recordings use a singleton <code>k</code> axis). If a time
 dimension is present, the same transform is applied to all time points.</p>
           </div>
@@ -6524,7 +6524,7 @@ avoid over-subscribing the CPU.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray resampled onto the requested grid, with
+            <p>VoxelData array resampled onto the requested grid, with
 <code>moving</code>'s attributes. If the input had a time dimension, the output will also
 have a time dimension.</p>
           </div>

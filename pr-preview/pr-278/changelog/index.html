@@ -2221,14 +2221,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -4116,7 +4116,7 @@
   resampling onto an axis-aligned grid (previously lossy or impossible). Every
   loader (<code>load_scan</code>, <code>load_nifti</code>, <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>, EchoFrame), registration function,
   plotting path, napari layer, and I/O round trip (Zarr, NIfTI) was migrated to
-  this model; <code>confusius.validation.validate_fusi</code>/<code>ensure_fusi</code> enforce it
+  this model; <code>confusius.validation.validate_voxeldata</code>/<code>ensure_voxeldata</code> enforce it
   unconditionally, with no fallback to a plain, non-indexed shape. See the
   "VoxelData" section of <code>AGENTS.md</code>/the API docs for the full contract
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
@@ -4154,23 +4154,28 @@
   <code>da.attrs["affines"]</code> instead, rebase onto it first with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>Renamed <code>validate_fusi_dataarray</code> to <code>validate_fusi</code>, <code>validate_iq_dataarray</code>
-  to <code>validate_iq</code>, <code>validate_bspline_dataarray</code> to <code>validate_bspline</code>, and
-  <code>validate_atlas_dataset</code> to <code>validate_atlas</code>; renamed the <abbr title="In-phase and Quadrature">IQ</abbr> validator option
-  <code>require_attrs</code> to <code>require_velocity_attrs</code>
+<li>Renamed <code>create_fusi_dataarray</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>, <code>validate_fusi</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_voxeldata"><code>validate_voxeldata</code></a>, <code>ensure_fusi</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a>, and
+  <code>canonicalize_fusi</code> to <code>canonicalize_voxeldata</code>. Removed the separate
+  <code>create_iq_dataarray</code>, <code>validate_iq</code>, and <code>ensure_iq</code> APIs; <abbr title="In-phase and Quadrature">IQ</abbr> data is now built
+  with <code>create_voxeldata</code>, with <code>transmit_frequency</code> and
+  <code>beamforming_sound_velocity</code> passed via <code>attrs</code> and validated using
+  <code>require_velocity_attrs=True</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>Spatial coordinates must carry <code>units</code> metadata, and so must <code>time</code> when present;
   spacing along every spatial axis, including singleton dimensions, is always
   derived from the voxel-to-world affine, never from separate coordinate metadata.
   Scalar-indexed slices are recovered as singleton dimensions at relevant API
   boundaries; use
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to add singleton
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to add singleton
   axes and coordinate metadata from raw 2D or 2D+t arrays
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>VoxelToWorldIndex</code>/<code>create_fusi_dataarray</code>/<code>attach_voxel_to_world_index</code> now
+<li><code>VoxelToWorldIndex</code>/<code>create_voxeldata</code>/<code>attach_voxel_to_world_index</code> now
   support pose-dependent voxel-to-world geometry: a <code>(npose, 4, 4)</code> affine
   stack, one per pose, instead of one affine shared by every pose. New
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.stack_poses"><code>stack_poses</code></a> assembles independently
@@ -4194,16 +4199,12 @@
   oblique data; <code>slice_mode="pose"</code> facets a multi-pose array over its poses
   with world-coordinate axis labels
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_iq&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_iq"><code>ensure_iq</code></a> to canonicalize and validate <abbr title="In-phase and Quadrature">IQ</abbr>
-  inputs with one call (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to build a
-  canonical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> DataArray from a raw array plus higher-level metadata (<code>dt</code>, <code>dz</code>,
-  <code>dy</code>, <code>dx</code>, and axis origins). It attaches regularly spaced physical coordinates,
-  <code>units</code> metadata, and validates the result before returning it
-  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a> to construct
-  canonical complex <abbr title="In-phase and Quadrature">IQ</abbr> DataArrays with explicit <code>transmit_frequency</code> and
-  <code>beamforming_sound_velocity</code> arguments
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> to canonicalize
+  and validate VoxelData inputs with one call, and added
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to build VoxelData from a
+  raw array plus higher-level metadata (<code>dt</code>, spacing, axis origins, attrs). It
+  attaches regularly spaced world coordinates, <code>units</code> metadata, and validates the
+  result before returning it
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li><code>plot_volume</code>/<code>plot_composite</code>/<code>plot_stat_map</code>/<code>VolumePlotter</code>/<code>.fusi.plot.napari</code>
   now accept <code>resample_interpolation</code>/<code>resample_fill_value</code> to control how
@@ -4706,8 +4707,8 @@
   full per-frame diagnostics list under <code>attrs["registration_diagnostics"]</code> only when
   called with <code>keep_diagnostics=True</code> to avoid retaining the full optimizer metric
   trace by default (<a href="https://github.com/confusius-tools/confusius/pull/139">#139</a>).</li>
-<li>Renamed <code>validate_iq</code> to
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_iq&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_iq"><code>validate_iq_dataarray</code></a>
+<li>Renamed <code>validate_voxeldata</code> to
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_voxeldata"><code>validate_fusi_dataarray</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/153">#153</a>).</li>
 </ul>
 <h3 id="enhancements_6"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements_6" title="Permanent link">&para;</a></h3>
@@ -4731,7 +4732,7 @@
 <li>Added <code>show_progress</code> to volumewise registration so joblib progress output can be
   disabled in scripted or quiet workflows
   (<a href="https://github.com/confusius-tools/confusius/pull/126">#126</a>).</li>
-<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_fusi"><code>validate_fusi_dataarray</code></a>
+<li>Added a reusable <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.validate_voxeldata"><code>validate_fusi_dataarray</code></a>
   validator and refactored <abbr title="In-phase and Quadrature">IQ</abbr>/registration validation to use it. Core dimension
   coordinates are now validated as 1D, numeric, finite, and strictly increasing, while
   extra/non-dimension coordinates remain allowed

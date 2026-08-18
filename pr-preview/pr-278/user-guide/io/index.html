@@ -2454,14 +2454,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3573,19 +3573,19 @@ formats for your workflow, and convert beamformed <abbr title="In-phase and Quad
 representing multi-dimensional <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data. Xarray provides several advantages over raw
 NumPy arrays:</p>
 <ul>
-<li><strong>Named dimensions</strong>: Access data using meaningful names (e.g., <code>i</code>, <code>j</code>, <code>k</code>, <code>time</code>)
-  instead of remembering axis indices.</li>
+<li><strong>Named dimensions</strong>: Access data using meaningful names (e.g., <code>i</code>, <code>j</code>, <code>k</code>, <code>pose</code>,
+  <code>time</code>) instead of remembering axis indices.</li>
 <li><strong>Coordinates</strong>: Associate time and world coordinates with the native dimensions
   (e.g., <code>x</code>, <code>y</code>, and <code>z</code> in millimeters).</li>
 <li><strong>Metadata storage</strong>: Keep acquisition parameters, units, and other metadata alongside
   your data.</li>
 <li><strong>Unified API</strong>: Use the same operations regardless of the underlying storage format.</li>
 </ul>
-<p>Every loader in this guide returns <strong>VoxelData</strong> arrays: a DataArray with trailing
+<p>Every loader in this guide returns <strong>VoxelData arrays</strong>: DataArrays with trailing
 <code>k</code>/<code>j</code>/<code>i</code> voxel dimensions backed by a <code>VoxelToWorldIndex</code>, which derives world
-coordinates <code>z</code>/<code>y</code>/<code>x</code> (in millimeters) from a single voxel-to-world affine. World
-coordinates are never stored directly—they're always this index's output. See <a href="../spatial-conventions/">Spatial
-Conventions</a> for details on the coordinate model.</p>
+coordinates <code>z</code>/<code>y</code>/<code>x</code> (in millimeters) from voxel-to-world affine transformations.
+World coordinates are never stored directly—they're always this index's output. See
+<a href="../spatial-conventions/">Spatial Conventions</a> for details on the coordinate model.</p>
 <h3 id="xarray-compatible-formats">Xarray-Compatible Formats<a class="headerlink" href="#xarray-compatible-formats" title="Permanent link">&para;</a></h3>
 <p>Xarray can read and write data from multiple storage formats, including:</p>
 <ul>
@@ -3597,7 +3597,7 @@ Conventions</a> for details on the coordinate model.</p>
 </ul>
 <p>Additionally, ConfUSIus provides utilities to read and write
 <a href="https://nifti.nimh.nih.gov/"><strong>NIfTI</strong></a> files (the standard neuroimaging format for
-<abbr title="Brain Imaging Data Structure">BIDS</abbr>) as VoxelData-compatible DataArrays, automatically reading and writing matching <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON
+<abbr title="Brain Imaging Data Structure">BIDS</abbr>) as VoxelData arrays, automatically reading and writing matching <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON
 sidecars when present.</p>
 <h3 id="recommended-formats-for-fusi">Recommended Formats for <abbr title="Functional Ultrasound Imaging">fUSI</abbr><a class="headerlink" href="#recommended-formats-for-fusi" title="Permanent link">&para;</a></h3>
 <p>ConfUSIus works with all Xarray-compatible formats, but two formats are particularly
@@ -3661,6 +3661,11 @@ storage in Zarr for efficient processing.</p>
 </div>
 </div>
 <h2 id="loading-data">Loading Data<a class="headerlink" href="#loading-data" title="Permanent link">&para;</a></h2>
+<p>The universal <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> function allows loading VoxelData
+arrays from multiple formats, including NIfTI, Zarr, and Iconeus SCAN files. It
+automatically detects the file format and dispatches to the appropriate loader
+(<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a>, [<code>load_zarr</code>][confusius.io.load_zarr],
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a>, etc.).</p>
 <p>All ConfUSIus loaders return <strong>lazy</strong> DataArrays backed by Dask—data stays on disk until
 an operation requires it.</p>
 <div class="admonition tip">
@@ -3674,7 +3679,10 @@ memory (leaving enough headroom for intermediate results), load it eagerly with
 </span></code></pre></div>
 </div>
 <h3 id="loading-zarr-files">Loading Zarr Files<a class="headerlink" href="#loading-zarr-files" title="Permanent link">&para;</a></h3>
-<p>Once your data is in Zarr format, load it with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a>:</p>
+<p>Xarray treats Zarr stores as multi-variable datasets. ConfUSIus'
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> returns the first variable as a DataArray by default. If the
+Zarr store contains multiple variables, you can specify which one to load with the
+<code>variable</code> argument.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load beamformed IQ data (returns the first variable as a DataArray by default).</span>
@@ -3718,8 +3726,6 @@ directly:</p>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_iq.zarr&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
-<p>Notice that the data remains on disk (shown by <code>dask.array&lt;...&gt;</code>) until you explicitly
-compute operations on it.</p>
 <h3 id="loading-echoframe-dat-files">Loading EchoFrame DAT Files<a class="headerlink" href="#loading-echoframe-dat-files" title="Permanent link">&para;</a></h3>
 <p>For one-time processing, load EchoFrame DAT files directly with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_echoframe_dat&lt;/span&gt;" href="../../api/io/#confusius.io.load_echoframe_dat"><code>load_echoframe_dat</code></a>. This returns a lazy DataArray
@@ -3733,9 +3739,9 @@ without duplicating the raw DAT data as Zarr.</p>
 <p><a href="#converting-beamformed-iq-data">Convert to Zarr</a> instead when you expect to process the
 same recording repeatedly.</p>
 <h3 id="loading-iconeus-scan-files">Loading Iconeus SCAN Files<a class="headerlink" href="#loading-iconeus-scan-files" title="Permanent link">&para;</a></h3>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> to load Iconeus <code>.scan</code> files as lazy Xarray
-DataArrays. Two on-disk formats are detected automatically: the HDF5-based SCAN v1
-format and the newer binary SCAN v2 format.</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> to load Iconeus <code>.scan</code> files as lazy Xarray DataArrays.
+Two on-disk formats are detected automatically: the HDF5-based SCAN v1 format and the
+newer binary SCAN v2 format.</p>
 <h4 id="scan-v1-hdf5-format">SCAN v1 (HDF5 format)<a class="headerlink" href="#scan-v1-hdf5-format" title="Permanent link">&para;</a></h4>
 <p>For SCAN v1, three acquisition modes are supported, each yielding a DataArray with
 different dimensions:</p>
@@ -3779,8 +3785,31 @@ seconds.</p>
 <div class="tabbed-block">
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.source.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">(&#39;pose&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">&lt;xarray.DataArray &#39;Angio_M6_424_1212&#39; (pose: 10, k: 4, j: 92, i: 118)&gt; Size: 3MB</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="go">dask.array&lt;transpose, shape=(10, 4, 92, 118), dtype=float64, chunksize=(10, 4, 92, 118), chunktype=numpy.ndarray&gt;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="go">Coordinates:</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="go">  * pose     (pose) int64 80B 0 1 2 3 4 5 6 7 8 9</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="go">  * k        (k) int64 32B 0 1 2 3</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="go">  * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="go">  * i        (i) int64 944B 0 1 2 3 4 5 6 7 ... 110 111 112 113 114 115 116 117</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="go">  * z        (pose, k, j, i) float64 3MB 4.538 4.429 4.319 ... -8.445 -8.555</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="go">  * y        (pose, k, j, i) float64 3MB 21.2 21.2 21.2 ... 30.17 30.17 30.17</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="go">  * x        (pose, k, j, i) float64 3MB -1.868 -1.871 -1.874 ... 5.962 5.959</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="go">Indexes:</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="go">  │ y</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="go">  └ x</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="go">Attributes:</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="go">    affines:               {}</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="go">    device_serial_number:  ASAO0821</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="go">    software_version:      IcoScan v.1.9.0</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="go">    iconeus_scan_mode:     3Dscan</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="go">    iconeus_subject:       Mouse01</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="go">    iconeus_session:       Session01</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="go">    iconeus_scan:          sub-01_acq-anat_pwd</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="go">    iconeus_project:       Project01</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="go">    iconeus_date:          2025-12-12 12:18:19</span>
 </span></code></pre></div>
 <p>The <code>pose</code> dimension indexes each probe position in the multi-pose acquisition.
 Each pose has its own <code>world_to_lab</code> affine (shape <code>(npose, 4, 4)</code>) stored in
@@ -3790,7 +3819,31 @@ Each pose has its own <code>world_to_lab</code> affine (shape <code>(npose, 4, 4
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">(&#39;time&#39;, &#39;pose&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">&lt;xarray.DataArray &#39;sub-01_task-awake_pwd&#39; (time: 500, pose: 4, k: 4, j: 92, i: 103)&gt; Size: 606MB</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">dask.array&lt;transpose, shape=(500, 4, 4, 92, 103), dtype=float64, chunksize=(110, 4, 4, 92, 103), chunktype=numpy.ndarray&gt;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="go">Coordinates:</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="go">    time     (time, pose) float64 16kB 0.4 2.2 1.0 ... 1.199e+03 1.199e+03</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="go">  * pose     (pose) int64 32B 0 1 2 3</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="go">  * k        (k) int64 32B 0 1 2 3</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="go">  * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="go">  * i        (i) int64 824B 0 1 2 3 4 5 6 7 8 ... 94 95 96 97 98 99 100 101 102</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="go">  * z        (pose, k, j, i) float64 1MB -0.19 -0.3 -0.41 ... -11.3 -11.41</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="go">  * y        (pose, k, j, i) float64 1MB 20.3 20.3 20.3 ... 29.27 29.27 29.27</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="go">  * x        (pose, k, j, i) float64 1MB -3.851 -3.851 -3.851 ... 4.024 4.024</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="go">Indexes:</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="go">  │ y</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="go">  └ x</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="go">Attributes:</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="go">    affines:               {}</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="go">    device_serial_number:  ASAO0207</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="go">    software_version:      IcoScan version 1.0.0</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="go">    iconeus_scan_mode:     4Dscan</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="go">    iconeus_subject:       mouse2_Anesthetized</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="go">    iconeus_session:       20211022</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="go">    iconeus_scan:          sub-01_task-awake_pwd</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="go">    iconeus_project:       FC</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="go">    iconeus_date:          2021-10-22 14:14:12</span>
 </span></code></pre></div>
 <p>The <code>time</code> coordinate is pose-dependent, shaped <code>(time, pose)</code>, holding each
 pose's own exact acquisition timestamp directly.</p>
@@ -3818,8 +3871,8 @@ SCAN data).</p>
 <p>Provenance metadata from the file is stored in <code>da.attrs</code>: <code>scan_mode</code>, <code>subject</code>,
 <code>session</code>, <code>scan</code>, <code>project</code>, <code>date</code>, <code>neuroscan_version</code>, and <code>machine_sn</code>.</p>
 <h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
-<p><code>load_scan</code> also opens the newer binary SCAN v2 format, detected automatically (no extra
-arguments needed).</p>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> also opens the newer binary SCAN v2 format, detected automatically (no
+extra arguments needed).</p>
 <div class="admonition warning">
 <p class="admonition-title">Experimental</p>
 <p>SCAN v2 metadata were reverse-engineered from a few example files. The data, timing,
@@ -3873,9 +3926,8 @@ will be computed automatically and stored in the resulting DataArray's attribute
 affine has shape <code>(npose, 4, 4)</code> and is indexed by pose, the same way <code>world_to_lab</code>
 is.</p>
 <h4 id="converting-scan-data-to-nifti">Converting SCAN Data to NIfTI<a class="headerlink" href="#converting-scan-data-to-nifti" title="Permanent link">&para;</a></h4>
-<p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> returns a VoxelData-compatible DataArray with
-VoxelData dimensions and coordinates, you can save it directly to NIfTI using
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> or the Xarray accessor.</p>
+<p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> returns a VoxelData array, you can save it directly to
+NIfTI using <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>save</code></a> or the Xarray accessor.</p>
 <p>For <strong>2Dscan</strong> data, save it directly:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
@@ -3908,7 +3960,7 @@ saving, or save each pose separately if you want to retain the multi-pose struct
 </div>
 </div>
 <h3 id="loading-nifti-files">Loading NIfTI Files<a class="headerlink" href="#loading-nifti-files" title="Permanent link">&para;</a></h3>
-<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> to load NIfTI files as lazy VoxelData-compatible DataArrays:</p>
+<p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> to load NIfTI files as lazy VoxelData arrays:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load with automatic fUSI-BIDS sidecar metadata.</span>
@@ -3924,14 +3976,14 @@ header when both are available.</p>
 <h3 id="loading-other-formats">Loading Other Formats<a class="headerlink" href="#loading-other-formats" title="Permanent link">&para;</a></h3>
 <p>For unsupported formats, such as lab-specific MAT-files containing power Doppler or
 velocity data, load the array with the appropriate Python tool and use
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> to attach
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to attach
 dimensions, coordinates, and metadata:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># Replace this with scipy.io.loadmat, h5py, mat73, or your lab&#39;s loader.</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">raw_power</span> <span class="o">=</span> <span class="n">load_my_mat_file</span><span class="p">(</span><span class="s2">&quot;path/to/power_doppler.mat&quot;</span><span class="p">)</span>  <span class="c1"># source array, (i, j, time)</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">power</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">power</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">raw_power</span><span class="p">,</span>
 </span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">),</span>  <span class="c1"># missing k is added as a singleton voxel dimension</span>
 </span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.5</span><span class="p">,</span>  <span class="c1"># 2.5 Hz frame rate</span>
@@ -3939,7 +3991,7 @@ dimensions, coordinates, and metadata:</p>
 </span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Power Doppler from my system&quot;</span><span class="p">},</span>
 </span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>See the <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/">Create a VoxelData-compatible DataArray from a MAT
+<p>See the <a href="../../examples/_built/io/create_voxeldata_from_mat/">Create a VoxelData array from a MAT
 file</a> example for a complete
 walkthrough, from a real lab-specific MAT file to motion correction and a task <abbr title="General Linear Model">GLM</abbr>.</p>
 <h2 id="converting-beamformed-iq-data">Converting Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data<a class="headerlink" href="#converting-beamformed-iq-data" title="Permanent link">&para;</a></h2>
@@ -4018,13 +4070,13 @@ Zarr is useful for long-term storage or repeated processing of the same recordin
 <h3 id="other-systems">Other Systems<a class="headerlink" href="#other-systems" title="Permanent link">&para;</a></h3>
 <p>For beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data from a system other than <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> or EchoFrame, load the complex
 array with the tool appropriate for your file format, then wrap it as an <abbr title="In-phase and Quadrature">IQ</abbr> DataArray
-with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a>:</p>
+with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_iq</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_voxeldata</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
 </span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">raw_iq</span> <span class="o">=</span> <span class="n">load_my_iq_file</span><span class="p">(</span><span class="s2">&quot;path/to/iq.mat&quot;</span><span class="p">)</span>  <span class="c1"># complex array, (time, k, j, i)</span>
 </span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_iq_dataarray</span><span class="p">(</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">raw_iq</span><span class="p">,</span>
 </span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
 </span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
@@ -4033,7 +4085,7 @@ with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-o
 </span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="n">transmit_frequency</span><span class="o">=</span><span class="mf">15.625e6</span><span class="p">,</span>
 </span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>    <span class="n">beamforming_sound_velocity</span><span class="o">=</span><span class="mf">1540.0</span><span class="p">,</span>
 </span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="p">)</span>
-</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="n">validate_iq</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_velocity_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="n">validate_voxeldata</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_velocity_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <p>See <a href="../beamformed-iq/#expected-data-structure">Processing Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data</a> for the
 required dimensions, metadata fields, and processing assumptions.</p>
@@ -4074,18 +4126,17 @@ consistent with the data being saved.</p>
 choose which ones are written into the NIfTI header:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">cf</span><span class="o">.</span><span class="n">save_nifti</span><span class="p">(</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="n">data_array</span><span class="p">,</span>
 </span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>    <span class="s2">&quot;output.nii.gz&quot;</span><span class="p">,</span>
 </span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>    <span class="n">qform</span><span class="o">=</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">,</span>
 </span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="n">sform</span><span class="o">=</span><span class="s2">&quot;world_to_template&quot;</span><span class="p">,</span>
 </span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>When <code>qform</code> and/or <code>sform</code> are omitted, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a>
-falls back to <code>"world_to_qform"</code> and <code>"world_to_sform"</code> if those keys exist in
-<code>attrs["affines"]</code>. Any affine actually written into the NIfTI <code>qform</code> or <code>sform</code>
-header is omitted from the <code>ConfUSIusAffines</code> JSON sidecar field so it is not stored
-twice.</p>
+<p>When <code>qform</code> and/or <code>sform</code> are omitted, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>save</code></a> falls back to
+<code>"world_to_qform"</code> and <code>"world_to_sform"</code> if those keys exist in <code>attrs["affines"]</code>. Any
+affine actually written into the NIfTI <code>qform</code> or <code>sform</code> header is omitted from the
+<code>ConfUSIusAffines</code> JSON sidecar field so it is not stored twice.</p>
 <h2 id="format-conversion-reference">Format Conversion Reference<a class="headerlink" href="#format-conversion-reference" title="Permanent link">&para;</a></h2>
 <p>Quick reference for converting between formats:</p>
 <table>
@@ -4104,7 +4155,7 @@ twice.</p>
 </tr>
 <tr>
 <td>EchoFrame DAT</td>
-<td>VoxelData-compatible DataArray</td>
+<td>VoxelData array</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_echoframe_dat&lt;/span&gt;" href="../../api/io/#confusius.io.load_echoframe_dat"><code>confusius.io.load_echoframe_dat</code></a></td>
 </tr>
 <tr>
@@ -4114,26 +4165,26 @@ twice.</p>
 </tr>
 <tr>
 <td>Iconeus SCAN</td>
-<td>VoxelData-compatible DataArray</td>
+<td>VoxelData array</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a></td>
 </tr>
 <tr>
 <td>NIfTI</td>
-<td>VoxelData-compatible DataArray</td>
+<td>VoxelData array</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a></td>
 </tr>
 <tr>
 <td>Zarr</td>
-<td>VoxelData-compatible DataArray or Dataset</td>
+<td>VoxelData array or Dataset</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> / <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> (Dataset)</td>
 </tr>
 <tr>
-<td>VoxelData-compatible DataArray</td>
+<td>VoxelData array</td>
 <td>NIfTI</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>confusius.save</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a></td>
 </tr>
 <tr>
-<td>VoxelData-compatible DataArray</td>
+<td>VoxelData array</td>
 <td>Zarr</td>
 <td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>confusius.save</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.save"><code>.fusi.save</code></a> / <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.to_zarr.html#xarray.DataArray.to_zarr"><code>.to_zarr</code></a></td>
 </tr>

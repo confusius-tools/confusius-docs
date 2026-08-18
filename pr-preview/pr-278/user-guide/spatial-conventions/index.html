@@ -2354,14 +2354,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3509,15 +3509,15 @@ has:</p>
 </tr>
 </tbody>
 </table>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a> and
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_iq_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_iq_dataarray"><code>create_iq_dataarray</code></a> build a
-VoxelData-compatible DataArray satisfying all of this from raw data, and
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_fusi&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_fusi"><code>validate_fusi</code></a> checks an existing DataArray
-against it. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_fusi"><code>ensure_fusi</code></a> additionally fixes small
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> build a
+VoxelData array satisfying all of this from raw data, and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_voxeldata"><code>validate_voxeldata</code></a> checks an existing DataArray
+against it. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> additionally fixes small
 deviations with sensible defaults first—for example filling in missing <code>time</code>
 metadata, or restoring a voxel dimension collapsed to a scalar coordinate by a prior
-<code>.isel()</code>—before validating. ConfUSIus functions that expect a VoxelData-compatible
-DataArray call <code>ensure_fusi</code> on their input.</p>
+<code>.isel()</code>—before validating. ConfUSIus functions that expect a VoxelData
+array call <code>ensure_voxeldata</code> on their input.</p>
 <p>See <a href="../xarray/">Working with Xarray</a> for the accessor API this backs
 (<code>.fusi.affine.voxel_to_world</code>, <code>.fusi.spacing</code>, <code>.fusi.direction</code>, ...).</p>
 <h2 id="coordinate-systems">Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Permanent link">&para;</a></h2>
@@ -3543,7 +3543,7 @@ Xarray.</p>
 <p>The world space is derived from voxel space by the DataArray's <code>VoxelToWorldIndex</code> and
 exposed as the coordinates <code>x</code>, <code>y</code>, <code>z</code>. The unit of the coordinates is stored in the
 <code>units</code> attribute of each coordinate array; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
-recordings (e.g. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>'s
+recordings (e.g. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>'s
 default).</p>
 <div class="admonition warning">
 <p class="admonition-title">Units are not enforced</p>
@@ -3593,7 +3593,7 @@ and coordinates fall back to a diagonal affine built from the NIfTI <code>pixdim
 Pass <code>coordinate_affine="sform"</code>/<code>"qform"</code> to force one explicitly.</p>
 </div>
 <p>Hand-constructed DataArrays get whatever voxel-to-world affine the user provides via
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>.</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>.</p>
 <h3 id="reference-spaces">Reference Spaces<a class="headerlink" href="#reference-spaces" title="Permanent link">&para;</a></h3>
 <p>ConfUSIus stores affine transformations relating the DataArray's current world space to
 any number of other named spaces in <code>attrs["affines"]</code>, a dictionary keyed by affine

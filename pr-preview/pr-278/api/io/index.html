@@ -2464,14 +2464,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3757,14 +3757,14 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="./#confusius.io.load_nifti">load_nifti</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load a NIfTI file as a lazy VoxelData-compatible DataArray.</p>
+              <p>Load a NIfTI file as a lazy VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="./#confusius.io.load_scan">load_scan</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load an Iconeus SCAN file as a lazy VoxelData-compatible DataArray.</p>
+              <p>Load an Iconeus SCAN file as a lazy VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3785,7 +3785,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="./#confusius.io.save_nifti">save_nifti</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Save a VoxelData-compatible DataArray to NIfTI format.</p>
+              <p>Save a VoxelData array to NIfTI format.</p>
             </div>
           </li>
     </ul>
@@ -4750,7 +4750,7 @@ array.</p>
             <p>World position of voxel index 0 in <code>(k, j, i)</code> order, in millimeters in the
 probe-relative coordinate system (origin at the center of the probe face). If
 not provided, defaults to the same probe-centered/surface-referenced
-convention as <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>:
+convention as <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>:
 elevation and lateral centered on the probe, depth referenced to the probe
 surface.</p>
           </div>
@@ -5224,8 +5224,7 @@ Can be opened directly with <code>xarray.open_zarr()</code>.</p>
 ds = xr.open_zarr(&quot;output.zarr&quot;)
 iq = ds[&quot;iq&quot;]
 </code></pre></div>
-<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a VoxelData-compatible
-DataArray --
+<p><code>iq</code> above carries plain <code>k</code>/<code>j</code>/<code>i</code> voxel dims, not a VoxelData array --
 <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> doesn't know how to rebuild a
 <code>VoxelToWorldIndex</code> from <code>attrs["voxel_to_world"]</code>. Load with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="./#confusius.io.load"><code>confusius.io.load</code></a> instead to get the world coordinates back:</p>
@@ -5278,14 +5277,14 @@ reduction functions return DataArrays with attributes.</p>
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a> (identified by <code>attrs["voxel_to_world"]</code>); for an
   arbitrary/foreign Zarr store, use <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.open_zarr.html#xarray.open_zarr"><code>xarray.open_zarr</code></a> directly
   and build a VoxelData array yourself (e.g. via
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_fusi_dataarray&lt;/span&gt;" href="../xarray/#confusius.xarray.create_fusi_dataarray"><code>create_fusi_dataarray</code></a>).</li>
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>).</li>
 </ul>
 <p>If <code>attrs["rgb_lookup"]</code> is present but <code>attrs["cmap"]</code>/<code>attrs["norm"]</code> are missing
 (as happens after a save/load round-trip, since matplotlib colormap/norm objects are
 not JSON-serializable and are dropped on save), <code>cmap</code>/<code>norm</code> are rebuilt via
 [<code>build_atlas_cmap_and_norm</code>][confusius._utils.atlas.build_atlas_cmap_and_norm] so
 atlas-derived masks and annotations keep their canonical colors after reload.</p>
-<p>A Zarr-saved VoxelData-compatible DataArray stores <code>attrs["voxel_to_world"]</code>
+<p>A Zarr-saved VoxelData array stores <code>attrs["voxel_to_world"]</code>
 instead of dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays (see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a>); this rebuilds the world coordinates and
 <code>VoxelToWorldIndex</code> from that affine.</p>
@@ -5331,7 +5330,7 @@ first variable in the dataset is returned.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Loaded VoxelData-compatible DataArray.</p>
+            <p>Loaded VoxelData array.</p>
           </div>
         </li>
     </ul>
@@ -5517,7 +5516,7 @@ coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
     <div class="doc doc-contents ">
 
         <p>Load an EchoFrame DAT file as a lazy, ConfUSIus-ordered DataArray.</p>
-<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as a VoxelData-compatible DataArray with voxel
+<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data is loaded as a VoxelData array with voxel
 dimensions <code>(time, k, j, i)</code> and a voxel-to-world index deriving world coordinates
 <code>z</code>, <code>y</code>, <code>x</code>. Coordinates and acquisition metadata (e.g. <code>transmit_frequency</code>,
 <code>beamforming_sound_velocity</code>) are attached from the EchoFrame sequence parameter
@@ -5587,7 +5586,7 @@ filename EchoFrame's storage writer uses by convention.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Lazy VoxelData-compatible DataArray with dimensions <code>(time, k, j, i)</code>, where
+            <p>Lazy VoxelData array with dimensions <code>(time, k, j, i)</code>, where
 <code>k</code> is a singleton
 elevation dimension. Data is wrapped in a Dask array, chunked so that each
 chunk corresponds to one acquisition block's volumes; individual blocks
@@ -5700,7 +5699,7 @@ is <code>data.attrs["n_volumes_per_block"]</code>.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Load a NIfTI file as a lazy VoxelData-compatible DataArray.</p>
+        <p>Load a NIfTI file as a lazy VoxelData array.</p>
 <p>Loads NIfTI files using nibabel's proxy arrays for memory-efficient access, wrapping
 the data in Dask arrays for chunked, parallel processing. The data is transposed to
 ConfUSIus conventions with voxel-space dimensions <code>(time, k, j, i)</code> and derived
@@ -5769,7 +5768,7 @@ automatically when present.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Lazy VoxelData-compatible DataArray with voxel-space dimensions in ConfUSIus
+            <p>Lazy VoxelData array with voxel-space dimensions in ConfUSIus
 order (<code>k</code>, <code>j</code>, <code>i</code> plus optional <code>time</code>) and world coordinates <code>z</code>, <code>y</code>,
 <code>x</code>. Data is wrapped
 in a Dask array for out-of-core computation.</p>
@@ -5842,7 +5841,7 @@ reproduce the original NIfTI header codes.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Load an Iconeus SCAN file as a lazy VoxelData-compatible DataArray.</p>
+        <p>Load an Iconeus SCAN file as a lazy VoxelData array.</p>
 <p>SCAN files (<code>.scan</code>) come in two on-disk formats, both handled here:</p>
 <ul>
 <li><strong>v1</strong>: an HDF5 container produced by IcoScan/NeuroScan, holding power Doppler
@@ -5907,7 +5906,7 @@ passing <code>bps_path</code> raises.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Lazy VoxelData-compatible DataArray with dimensions and coordinates:</p>
+            <p>Lazy VoxelData array with dimensions and coordinates:</p>
 <ul>
 <li>v1 <code>2Dscan</code> → <code>(time, k, j, i)</code>.</li>
 <li>v1 <code>3Dscan</code> → <code>(pose, k, j, i)</code>.</li>
@@ -6019,7 +6018,7 @@ selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 <a href="#confusius.io.save(data_array)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray to save.</p>
+            <p>VoxelData array to save.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6180,7 +6179,7 @@ atlas Dataset (see
 
     <div class="doc doc-contents ">
 
-        <p>Save a VoxelData-compatible DataArray to NIfTI format.</p>
+        <p>Save a VoxelData array to NIfTI format.</p>
 <p>Saves the DataArray to a NIfTI file and always writes a <abbr title="Brain Imaging Data Structure">BIDS</abbr>-style JSON sidecar
 alongside it. The data is transposed to NIfTI convention <code>(x, y, z, time)</code> before
 saving.</p>
@@ -6193,7 +6192,7 @@ saving.</p>
 <a href="#confusius.io.save_nifti(data_array)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray to save.</p>
+            <p>VoxelData array to save.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6287,7 +6286,7 @@ NIfTI only supports a single spatial unit in the <code>xyzt_units</code> header 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">xarray</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">xarray</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>

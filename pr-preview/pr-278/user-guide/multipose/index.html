@@ -2410,14 +2410,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3587,7 +3587,7 @@ a total of 16 slices once consolidated.</p>
 </div>
 <h3 id="other-systems">Other Systems<a class="headerlink" href="#other-systems" title="Permanent link">&para;</a></h3>
 <p>For other <abbr title="Functional Ultrasound Imaging">fUSI</abbr> systems, multi-pose data must be assembled manually: load or construct
-one VoxelData-compatible DataArray per pose, stack them along a new <code>pose</code> dimension,
+one VoxelData array per pose, stack them along a new <code>pose</code> dimension,
 and attach pose-dependent VoxelData geometry with a <code>(npose, 4, 4)</code> voxel-to-world
 affine stack.</p>
 <h2 id="world-coordinates-and-affines">World Coordinates and Affines<a class="headerlink" href="#world-coordinates-and-affines" title="Permanent link">&para;</a></h2>
@@ -3611,7 +3611,7 @@ poses were not acquired simultaneously.</p>
 <h2 id="pose-consolidation">Pose Consolidation<a class="headerlink" href="#pose-consolidation" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> merges the <code>pose</code> dimension
 and the sweep spatial dimension into a single axis with physically meaningful
-coordinates, producing a VoxelData-compatible DataArray.
+coordinates, producing a VoxelData array.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> performs the following
 steps:</p>
 <ol>
@@ -3704,7 +3704,7 @@ indicates a misconfigured sweep.</p>
 </div>
 <h2 id="saving">Saving<a class="headerlink" href="#saving" title="Permanent link">&para;</a></h2>
 <h3 id="after-consolidation">After Consolidation<a class="headerlink" href="#after-consolidation" title="Permanent link">&para;</a></h3>
-<p>Once consolidated, a multi-pose VoxelData array is a VoxelData-compatible DataArray and can be
+<p>Once consolidated, a multi-pose array is still a VoxelData array and can be
 saved to any format:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>

@@ -2299,14 +2299,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3272,7 +3272,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Pattern decoding for VoxelData-compatible DataArrays.</p>
+        <p>Pattern decoding for VoxelData arrays.</p>
 <p>This package provides decoders in the spirit of
 <a href="https://nilearn.github.io/dev/decoding/"><code>nilearn.decoding</code></a>:</p>
 <ul>
@@ -3293,7 +3293,7 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
           <b><code><span title="confusius.decoding.searchlight">searchlight</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Searchlight decoding for VoxelData-compatible DataArrays.</p>
+            <p>Searchlight decoding for VoxelData arrays.</p>
           </div>
         </li>
     </ul>
@@ -3353,7 +3353,7 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
 score.</p>
 <p>This estimator wraps scikit-learn while keeping xarray metadata:</p>
 <ul>
-<li>Input data must be a VoxelData-compatible DataArray with dims
+<li>Input data must be a VoxelData array with dims
   <code>(time, k, j, i)</code> (a real <code>VoxelToWorldIndex</code>, no <code>pose</code> or extra dimensions).</li>
 <li>The <code>time</code> dimension is the sample axis. It need not be temporally ordered. For
   trial-averaged data, rename the trial dimension with <code>.rename(trial="time")</code>.</li>
@@ -3525,10 +3525,10 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decoding</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchLight</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_fusi_dataarray</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_voxeldata</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">... </span>    <span class="n">dt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -3636,7 +3636,7 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
 <a href="#confusius.decoding.SearchLight.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, k, j, i) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray. The <code>time</code> dimension is the sample axis.</p>
+            <p>VoxelData array. The <code>time</code> dimension is the sample axis.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3679,7 +3679,7 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>X</code> is h5py-backed, is not a VoxelData-compatible DataArray with dims
+            <p>If <code>X</code> is h5py-backed, is not a VoxelData array with dims
 <code>(time, k, j, i)</code>, or lacks a <code>VoxelToWorldIndex</code>; if <code>radius</code> is negative; if <code>mask</code> or
 <code>process_mask</code> lacks a <code>VoxelToWorldIndex</code>; if <code>process_mask</code> is not a
 subset of <code>mask</code>; if <code>y</code> or <code>groups</code> do not align with <code>X</code>; or if the masked

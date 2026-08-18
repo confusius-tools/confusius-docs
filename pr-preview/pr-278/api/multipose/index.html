@@ -2321,14 +2321,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/_built/io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../examples/_built/io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3599,7 +3599,7 @@ may be freely chunked.</p>
 <a href="#confusius.multipose.correct_slice_timings(da)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArray with a <code>slice_time</code> coordinate, or a
+            <p>VoxelData array with a <code>slice_time</code> coordinate, or a
 pose-dependent <code>(time, pose)</code>-shaped <code>time</code> coordinate, with dims
 <code>(time, &lt;sweep_dim&gt;)</code>.</p>
           </div>
@@ -3647,7 +3647,7 @@ inserts NaNs out of bounds. Use a float for a constant fill value, or a tuple
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>New VoxelData-compatible DataArray with the same dims as the input, resampled so every sweep
+            <p>New VoxelData array with the same dims as the input, resampled so every sweep
 position appears simultaneous. For already-consolidated input, <code>time</code> is
 unchanged and <code>slice_time</code> is dropped (avoiding accidental
 double-correction). For pose-dependent input, <code>time</code> becomes a genuine 1D
@@ -3727,9 +3727,9 @@ labels and affine stacks in order exactly as
 <a href="#confusius.multipose.stack_poses(poses)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="sequence">sequence</span>[<span title="confusius.xarray.DataArray">DataArray</span>]</code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData-compatible DataArrays to stack, one per pose, in pose order. Each
+            <p>VoxelData arrays to stack, one per pose, in pose order. Each
 must have no existing <code>pose</code> dimension (see
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_fusi&lt;/span&gt;" href="../validation/#confusius.validation.ensure_fusi">ensure_fusi</a>'s <code>allow_pose</code> parameter).
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../validation/#confusius.validation.ensure_voxeldata">ensure_voxeldata</a>'s <code>allow_pose</code> parameter).
 Voxel dimensions, shape, voxel-space (<code>k</code>/<code>j</code>/<code>i</code>) coordinate values, and any
 non-core dimensions must otherwise agree across poses, exactly as required to
 merge non-concatenated variables in any <code>xr.concat</code> call.</p>

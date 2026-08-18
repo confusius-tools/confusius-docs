@@ -2225,14 +2225,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../io/create_fusi_dataarray_from_mat/" class="md-nav__link">
+      <a href="../../io/create_voxeldata_from_mat/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-  Create a fUSI DataArray from a MAT file
+  Create a VoxelData array from a MAT file
 
     
   </span>
@@ -3612,7 +3612,7 @@ explains each step; otherwise, continue to the next cell.</p>
 </span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>        <span class="p">)</span>
 </span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>        <span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pwd_path</span><span class="p">)</span>
 </span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>
-</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    <span class="c1"># 1. Relabel the k/j axes (no data copy needed): `create_fusi_dataarray` accepts</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    <span class="c1"># 1. Relabel the k/j axes (no data copy needed): `create_voxeldata` accepts</span>
 </span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>    <span class="c1"># `dims` in any order -- it builds world coordinates from whichever dim is</span>
 </span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>    <span class="c1"># *named* k/j/i, independent of its world axis position, and transposes to</span>
 </span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>    <span class="c1"># canonical order internally. So swapping the k/j *labels* on the still-raw</span>
@@ -3631,7 +3631,7 @@ explains each step; otherwise, continue to the next cell.</p>
 </span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>    <span class="n">permute_kj</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">permute_kj</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 </span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>    <span class="n">swapped_voxel_to_world</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">voxel_to_world</span> <span class="o">@</span> <span class="n">permute_kj</span>
 </span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>
-</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>    <span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_fusi_dataarray</span><span class="p">(</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>    <span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>        <span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
 </span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>        <span class="n">dims</span><span class="o">=</span><span class="n">relabeled_dims</span><span class="p">,</span>
 </span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>        <span class="n">time</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
@@ -4523,7 +4523,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7f1061df5430&gt;, beta=6.7),
+</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7f6b0c39cb40&gt;, beta=6.7),
                 smoothing_fwhm=0.3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
@@ -4537,7 +4537,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></i></td>
             <td class="param">hrf_model</td>
-            <td class="value">functools.par...30&gt;, beta=6.7)</td>
+            <td class="value">functools.par...40&gt;, beta=6.7)</td>
         </tr>
 
 
@@ -4678,7 +4678,7 @@ a.param-doc-link::before {
        <tr class="default">
            <td class="param"><a class="param-doc-link" style="text-decoration:none;">results_</a></td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;confusius.gl...x7f10602de490&gt;, &lt;confusius.gl...x7f1060262780&gt;, &lt;confusius.gl...x7f1059b4fe30&gt;, &lt;confusius.gl...x7f1059fda360&gt;, ...]</td>
+           <td>[&lt;confusius.gl...x7f6b047abb10&gt;, &lt;confusius.gl...x7f6b0463ab10&gt;, &lt;confusius.gl...x7f6b0cf64b90&gt;, &lt;confusius.gl...x7f6b046a79b0&gt;, ...]</td>
 
 
        </tr>
@@ -4988,7 +4988,7 @@ anatomical context.</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_31_0_light.png#only-light" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="light"><img src="../first_level_output_light/cell_31_0_light.png#only-light" alt="Example output from cell 31, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_31_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_31_0_dark.png#only-dark" alt="Example output from cell 31, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 205.0 s</p>
+<p><strong>Total running time:</strong> 174.3 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/spike/coordinate-transform-index?urlpath=lab/tree/docs/examples/05_glm/01_first_level.py">Launch in Binder</a> <a class="md-button" href="../first_level.py">Download .py</a> <a class="md-button" href="../first_level.ipynb">Download .ipynb</a></p>
 
 
