@@ -3369,11 +3369,15 @@
 <li>the <strong>voxel space</strong>, linked to the underlying array storage and indexed by the integer
   dimension coordinates <code>i</code>/<code>j</code>/<code>k</code> (in dimension order <code>(k, j, i)</code>—see <a href="#dimension-ordering-time-pose-k-j-i">Dimension
   Ordering</a> below),</li>
-<li>the <strong>world space</strong>, derived from voxel space through a single affine and exposed as
-  the coordinates <code>x</code>/<code>y</code>/<code>z</code> on every DataArray,</li>
+<li>the <strong>world space</strong>, derived from voxel space through the DataArray's voxel-to-world
+  geometry and exposed as the coordinates <code>x</code>/<code>y</code>/<code>z</code>,</li>
 <li>and any number of <strong>reference spaces</strong> (atlas, scanner, etc.) linked to the world
   space through affine transforms stored in <code>attrs["affines"]</code>.</li>
 </ul>
+<p>For most recordings, one voxel-to-world affine defines one world grid for the whole
+DataArray. Multi-pose acquisitions are the main exception: they carry one affine per
+<code>pose</code>, so <code>x</code>/<code>y</code>/<code>z</code> become pose-dependent coordinates and a scalar <code>pose</code> selection is
+required before selecting by world coordinate.</p>
 <p>Understanding these spaces and the axis-ordering convention used throughout ConfUSIus
 makes it much easier to reason about visualization, registration, and downstream
 statistical analysis.</p>
@@ -3444,7 +3448,9 @@ flowchart LR
 conventions like <code>(i, j, k, time)</code>. Thankfully, Xarray makes dimension ordering
 largely transparent in practice: you can always refer to dimensions by name and in
 any order (e.g. <code>data.mean("time")</code>, <code>data.sel(x=4.54, y=-2.48, z=0.0)</code>) rather than
-by axis index, so you won't have to remember the order of the dimensions.</p>
+by axis index, so you won't have to remember the order of the dimensions. For
+multi-pose arrays, select a scalar <code>pose</code> first before slicing in world space, e.g.
+<code>data.isel(pose=0).sel(x=4.54, y=-2.48, z=0.0)</code>.</p>
 </div>
 <p>This ordering is motivated by several considerations.</p>
 <ul>
@@ -3478,7 +3484,8 @@ has:</p>
   optionally preceded by <code>pose</code> (integer coordinates), <code>time</code> (floating coordinates),
   and any number of extra non-spatial dims (<abbr title="Principal Component Analysis">PCA</abbr>/<abbr title="Independent Component Analysis">ICA</abbr> components, stacked masks, etc.);</li>
 <li>a single <strong><code>VoxelToWorldIndex</code></strong> attached to <code>k</code>/<code>j</code>/<code>i</code>, which derives the world
-  coordinates <code>z</code>/<code>y</code>/<code>x</code> from one voxel-to-world affine;</li>
+  coordinates <code>z</code>/<code>y</code>/<code>x</code> from either one voxel-to-world affine shared by the whole
+  DataArray or a stacked affine with one entry per <code>pose</code>;</li>
 <li>required metadata: <code>units</code> on each world coordinate, plus—whenever <code>time</code> is
   present—<code>units</code>, <code>volume_acquisition_reference</code>, and <code>volume_acquisition_duration</code>
   on <code>time</code>:</li>
@@ -3509,9 +3516,12 @@ has:</p>
 </tr>
 </tbody>
 </table>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> and
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> build a
-VoxelData array satisfying all of this from raw data, and
+<p>A pose-dependent array may also carry a 2D <code>time</code> coordinate with shape <code>(time, pose)</code>,
+recording each pose's own acquisition timestamps directly. Like pose-dependent world
+coordinates, this requires selecting a scalar <code>pose</code> before label-based selection on
+<code>time</code>.</p>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> builds a VoxelData array
+satisfying all of this from raw data, and
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_voxeldata"><code>validate_voxeldata</code></a> checks an existing DataArray
 against it. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> additionally fixes small
 deviations with sensible defaults first—for example filling in missing <code>time</code>
@@ -3541,10 +3551,12 @@ positions</a> in Working with
 Xarray.</p>
 <h3 id="world-space">World Space<a class="headerlink" href="#world-space" title="Permanent link">&para;</a></h3>
 <p>The world space is derived from voxel space by the DataArray's <code>VoxelToWorldIndex</code> and
-exposed as the coordinates <code>x</code>, <code>y</code>, <code>z</code>. The unit of the coordinates is stored in the
-<code>units</code> attribute of each coordinate array; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
-recordings (e.g. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>'s
-default).</p>
+exposed as the coordinates <code>x</code>, <code>y</code>, <code>z</code>. For ordinary single-pose data these
+coordinates have spatial shape <code>(k, j, i)</code>. For multi-pose data they are
+pose-dependent with shape <code>(pose, k, j, i)</code>, so selecting in world space requires a
+scalar <code>pose</code> first. The unit of the coordinates is stored in the <code>units</code> attribute of
+each coordinate array; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings (e.g.
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>'s default).</p>
 <div class="admonition warning">
 <p class="admonition-title">Units are not enforced</p>
 <p>ConfUSIus does not check or convert between units across its APIs—<code>units</code> is
@@ -3605,8 +3617,10 @@ reaching it currently takes an affine.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> can turn any one of
 them into the world space itself (see <a href="#switching-world-spaces">Switching World
 Spaces</a>). Each reference space is stored in <code>attrs["affines"]</code>
-as a <code>(4, 4)</code> homogeneous affine matrix in <code>(z, y, x)</code> convention that maps a
-world-space point to the corresponding point in the reference space.</p>
+as a homogeneous affine matrix in <code>(z, y, x)</code> convention that maps a world-space point
+to the corresponding point in the reference space. Most are plain <code>(4, 4)</code> matrices;
+for multi-pose data they may also be stacked <code>(pose, 4, 4)</code> affines with one entry per
+pose.</p>
 <p>Several loaders populate <code>da.attrs["affines"]</code> automatically:</p>
 <ul>
 <li><strong>NIfTI</strong>: The world space is whichever affine (<code>sform</code> or <code>qform</code>) was selected—it
@@ -3637,7 +3651,9 @@ DataArray's current voxel → world affine at save time.</p>
 <p>To switch a DataArray's world space to one of its reference spaces, apply the affine
 that relates them: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>
 takes a <code>(4, 4)</code> affine (or a key into <code>attrs["affines"]</code>) and re-expresses the
-DataArray's world coordinates in that space, which becomes the new world space.</p>
+DataArray's world coordinates in that space, which becomes the new world space. For
+multi-pose data, applying a single affine broadcasts it over every pose, while a
+stacked affine is applied pose-by-pose.</p>
 <p>Take the <code>sform</code>/<code>qform</code> example from <a href="#reference-spaces">Reference Spaces</a>. A NIfTI
 file with <code>sform_code &gt; 0</code> anchors its world space to the <code>sform</code> space, and the
 relationship to the <code>qform</code> space (a 90° rotation in the <code>(z, y)</code> plane, here) is
