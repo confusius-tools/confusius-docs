@@ -5806,10 +5806,9 @@ operate on world positions, not grid indices.</p>
   <code>pixdim</code> only (origin 0, step = voxel size), and no <code>"affines"</code> entry is
   stored in <code>da.attrs</code>.</li>
 </ul>
-<p>Choosing <code>coordinate_affine="sform"</code> or <code>"qform"</code> overrides the automatic
-preference only when that header affine is valid. If the requested affine is not
-present, loading falls back to the same <code>pixdim</code>-only path as a file with no valid
-header affine.</p>
+<p>Choosing <code>coordinate_affine="sform"</code> or <code>"qform"</code> <em>forces</em> that header affine:
+unlike <code>"auto"</code>, there is no fallback to the other form or to <code>pixdim</code> when the
+requested affine is not valid -- <code>load_nifti</code> raises <code>ValueError</code> instead.</p>
 <p>The raw integer form codes are stored as <code>da.attrs["qform_code"]</code> and
 <code>da.attrs["sform_code"]</code> (only when &gt; 0) so that a save/load roundtrip can
 reproduce the original NIfTI header codes.</p>
