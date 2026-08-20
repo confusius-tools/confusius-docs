@@ -3353,8 +3353,8 @@ the BSD-3-Clause License. See <code>NOTICE</code> for details.</p>
 score.</p>
 <p>This estimator wraps scikit-learn while keeping xarray metadata:</p>
 <ul>
-<li>Input data must be a VoxelData array with dims
-  <code>(time, k, j, i)</code> (a real <code>VoxelToWorldIndex</code>, no <code>pose</code> or extra dimensions).</li>
+<li>Input data must be a VoxelData array with dims <code>(time, k, j, i)</code>—no <code>pose</code> or
+  extra dimensions.</li>
 <li>The <code>time</code> dimension is the sample axis. It need not be temporally ordered. For
   trial-averaged data, rename the trial dimension with <code>.rename(trial="time")</code>.</li>
 <li><code>scores_</code> is returned in the spatial geometry of <code>process_mask</code>.</li>
@@ -3379,9 +3379,9 @@ score.</p>
           –
           <div class="doc-md-description">
             <p>Boolean spatial mask selecting the voxels that may act as <em>features</em>. If not
-provided, every voxel of the input data is used as a feature voxel. Must carry
-a <code>VoxelToWorldIndex</code> matching <code>X</code>'s grid, because <code>radius</code> is measured in
-world coordinates.</p>
+provided, every voxel of the input data is used as a feature voxel. Must be a
+VoxelData array on <code>X</code>'s grid, because <code>radius</code> is measured in world
+coordinates.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3404,10 +3404,10 @@ coordinates rather than voxel indices, so anisotropic voxels behave correctly.</
           –
           <div class="doc-md-description">
             <p>Boolean mask selecting the voxels that act as neighborhood <em>centers</em>. Must be
-a subset of <code>mask</code>, and carry a <code>VoxelToWorldIndex</code> matching <code>X</code>'s grid. If not
-provided, a score is computed at every <code>mask</code> voxel. Use it to restrict the
-searchlight to a region of interest while still drawing features from the
-surrounding tissue.</p>
+a subset of <code>mask</code>, and a VoxelData array on <code>X</code>'s grid. If not provided, a
+score is computed at every <code>mask</code> voxel. Use it to restrict the searchlight to
+a region of interest while still drawing features from the surrounding
+tissue.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3679,11 +3679,11 @@ functional brain mapping". PNAS, 103(10), 3863-3868.&#160;<a class="footnote-bac
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>X</code> is h5py-backed, is not a VoxelData array with dims
-<code>(time, k, j, i)</code>, or lacks a <code>VoxelToWorldIndex</code>; if <code>radius</code> is negative; if <code>mask</code> or
-<code>process_mask</code> lacks a <code>VoxelToWorldIndex</code>; if <code>process_mask</code> is not a
-subset of <code>mask</code>; if <code>y</code> or <code>groups</code> do not align with <code>X</code>; or if the masked
-data contains non-finite values.</p>
+            <p>If <code>X</code> is h5py-backed or is not a VoxelData array with exactly dims
+<code>(time, k, j, i)</code>; if <code>radius</code> is negative; if <code>mask</code> or <code>process_mask</code> is
+not a VoxelData array; if <code>process_mask</code> is not a subset of <code>mask</code>; if <code>y</code>
+or <code>groups</code> do not align with <code>X</code>; or if the masked data contains
+non-finite values.</p>
           </div>
         </li>
     </ul>

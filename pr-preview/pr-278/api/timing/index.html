@@ -3819,10 +3819,7 @@ duration per input timing.</p>
 <code>time</code> coordinate. Data built without going through
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../xarray/#confusius.xarray.create_voxeldata">create_voxeldata</a> or an I/O loader
 (e.g. a <code>time</code> coordinate assembled by hand) may still be missing them; this fills
-in <code>"start"</code> and <code>"s"</code>, respectively. <code>volume_acquisition_duration</code> is inferred, in
-priority order, from <code>data.attrs["compound_sampling_frequency"]</code> (the scanner's own
-reported per-volume acquisition rate, set by I/O loaders such as <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> and
-EchoFrame — more authoritative than derived timestamp spacing) and otherwise from
+in <code>"start"</code> and <code>"s"</code>, respectively. <code>volume_acquisition_duration</code> is inferred from
 the representative <code>time</code> step.</p>
 
 
@@ -3848,8 +3845,8 @@ the representative <code>time</code> step.</p>
             <p><code>data</code> unchanged when it has no <code>time</code> dimension or its time coordinate already
 carries all three attrs. Otherwise a copy with <code>volume_acquisition_reference</code>
 defaulted to <code>"start"</code>, <code>units</code> defaulted to <code>"s"</code>, and
-<code>volume_acquisition_duration</code> defaulted per the priority order above, when it
-can be inferred.</p>
+<code>volume_acquisition_duration</code> defaulted from the representative <code>time</code> step,
+when it can be inferred.</p>
           </div>
         </li>
     </ul>
