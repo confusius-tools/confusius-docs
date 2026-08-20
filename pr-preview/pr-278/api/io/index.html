@@ -5453,20 +5453,18 @@ store a <code>BrainToLab</code> affine that maps Iconeus brain coordinates <code
 z_brain, 1)</code> to Iconeus lab coordinates <code>(x_lab, y_lab, z_lab, 1)</code> in meters.
 The Iconeus lab frame is a fixed scanner frame; <code>probeToLab</code> carries any rotation
 of the probe within it.</p>
-<p>To compose this affine with the rest of the ConfUSIus pipeline we re-express
-the lab side as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in
-millimeters, matching the convention used by <code>world_to_lab</code> (see
-<code>_build_world_to_lab</code>). The brain side is left in its original axis order
-(the brain coordinate units are not declared by the BPS format and are
-therefore not converted).</p>
+<p>To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab
+side as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in millimeters. The
+brain side is left in its original axis order (the brain coordinate units are not
+declared by the BPS format and are therefore not converted).</p>
 <p>The change of basis from ConfUSIus-ordered millimeter lab coordinates to
 Iconeus-ordered meter lab coordinates is</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius_lab_to_iconeus_lab = mm_to_m @ WORLD_TO_PROBE_PERMUTATION
 </span></code></pre></div>
-<p><code>WORLD_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code>
-to probe / Iconeus-lab order <code>(x, y, z)</code>, and <code>mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)</code>
+<p><code>WORLD_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code> to
+probe / Iconeus-lab order <code>(x, y, z)</code>, and <code>mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)</code>
 rescales the translation column. The returned affine is then</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brain_to_confusius_lab = inv(confusius_lab_to_iconeus_lab) @ BrainToLab
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brain_to_lab = inv(confusius_lab_to_iconeus_lab) @ BrainToLab
 </span></code></pre></div>
 
 
@@ -5853,7 +5851,7 @@ reproduce the original NIfTI header codes.</p>
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
   payload). The returned DataArray wraps a NumPy memmap via a Dask array. Support is
-  <strong>experimental</strong> (see Notes), including its <code>world_to_lab</code> affine and, when a
+  <strong>experimental</strong> (see Notes), including its <code>probe_to_lab</code> affine and, when a
   <code>bps_path</code> is given, <code>world_to_brain</code>.</li>
 </ul>
 <p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
@@ -5877,9 +5875,7 @@ reproduce the original NIfTI header codes.</p>
           –
           <div class="doc-md-description">
             <p>Path to the corresponding BPS file (<code>.bps</code>). If provided, a <code>world_to_brain</code>
-affine is added to <code>da.attrs["affines"]</code>. For v2 files this requires the
-(experimental) <code>world_to_lab</code> affine to have been built; if it could not be,
-passing <code>bps_path</code> raises.</p>
+affine is added to <code>da.attrs["affines"]</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5932,9 +5928,9 @@ holding each pose's own acquisition timestamps directly.</p>
             –
           <div class="doc-md-description">
             <p>If <code>path</code> does not exist or is not a file, if the file is neither an
-HDF5-based SCAN (v1) nor a binary SCAN v2 file, if <code>bps_path</code> is passed for a
-v2 file whose <code>world_to_lab</code> affine could not be built, or if a v1
-<code>acquisitionMode</code> is not one of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>.</p>
+HDF5-based SCAN (v1) nor a binary SCAN v2 file, if a v2 file's experimental
+<code>probe_to_lab</code> affine cannot be built, or if a v1 <code>acquisitionMode</code> is not one
+of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>.</p>
           </div>
         </li>
     </ul>
@@ -5946,11 +5942,11 @@ v2 file whose <code>world_to_lab</code> affine could not be built, or if a v1
 number of example files. Data, temporal geometry, and voxel spacing are recovered.
 The depth (<code>y</code>) origin is read from the header when the depth range can be located;
 the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not encoded, so those axes are
-centered on zero (correct spacing, arbitrary origin). A <code>world_to_lab</code> affine is
+centered on zero (correct spacing, arbitrary origin). A <code>probe_to_lab</code> affine is
 built from a header block interpreted as a 6DOF probe pose (translation + rotation),
 the v2 equivalent of SCAN v1's <code>probeToLab</code>; this interpretation is experimental
-(validated on a single near-identity pose, assumed axis order and Euler convention)
-and is omitted if the block cannot be validated.
+(validated on a single near-identity pose, assumed axis order and Euler convention),
+and loading fails if the pose block is implausible.
 Multi-pose / multi-block v2 layouts are inferred by analogy with v1 and have not
 been validated against real files. Provenance strings are mapped to v1-style
 <code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware

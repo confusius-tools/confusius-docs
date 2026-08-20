@@ -3560,13 +3560,6 @@
           </div>
         </li>
         <li class="doc-section-item field-body">
-          <b><code><span title="confusius.validation.fusi">fusi</span></code></b>
-          –
-          <div class="doc-md-description">
-            <p>Validation helpers for the ConfUSIus VoxelData model and <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
           <b><code><span title="confusius.validation.mask">mask</span></code></b>
           –
           <div class="doc-md-description">
@@ -3594,6 +3587,13 @@
             <p>Unit validation utilities.</p>
           </div>
         </li>
+        <li class="doc-section-item field-body">
+          <b><code><span title="confusius.validation.voxeldata">voxeldata</span></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Validation helpers for the ConfUSIus VoxelData model and <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</p>
+          </div>
+        </li>
     </ul>
 
 
@@ -3609,7 +3609,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="./#confusius.validation.canonicalize_voxeldata">canonicalize_voxeldata</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Return <code>data</code> with scalar voxel-space spatial coordinates restored as dims.</p>
+              <p>Restore a scalar-indexed VoxelData dimension and its geometry.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3630,7 +3630,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Canonicalize and validate a DataArray following the VoxelData model.</p>
+              <p>Return a canonical, validated VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3693,7 +3693,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="./#confusius.validation.validate_voxeldata">validate_voxeldata</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Validate that a DataArray follows the VoxelData model.</p>
+              <p>Validate a DataArray against the VoxelData model without modifying it.</p>
             </div>
           </li>
     </ul>
@@ -3726,7 +3726,16 @@
 
     <div class="doc doc-contents ">
 
-        <p>Return <code>data</code> with scalar voxel-space spatial coordinates restored as dims.</p>
+        <p>Restore a scalar-indexed VoxelData dimension and its geometry.</p>
+<p>Scalar indexing such as <code>data.isel(j=0)</code> removes <code>j</code> from the array dimensions
+but retains it as a scalar coordinate. This function restores every missing
+native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a length-one dimension in canonical
+spatial order. When scalar indexing fixed a dimension in a <code>VoxelToWorldIndex</code>,
+its geometry is rebuilt from the untouched affine. Missing world-coordinate
+<code>units</code> default to <code>"mm"</code>; missing time acquisition metadata also default where
+possible. This function does not otherwise validate the VoxelData model; use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> to canonicalize and
+validate.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3748,7 +3757,7 @@
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>DataArray with missing scalar-indexed voxel dimensions restored.</p>
+            <p>Canonicalized DataArray with all native voxel dimensions present.</p>
           </div>
         </li>
     </ul>
@@ -3767,7 +3776,20 @@
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If a missing voxel dimension has no scalar coordinate to restore.</p>
+            <p>If a native voxel dimension is absent and has no scalar coordinate from which
+to restore it, or its same-named coordinate is not scalar.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Warns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If missing world-coordinate <code>units</code> or time acquisition metadata is defaulted.</p>
           </div>
         </li>
     </ul>
@@ -4014,7 +4036,13 @@ dimensions don't match <code>data</code>'s.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Canonicalize and validate a DataArray following the VoxelData model.</p>
+        <p>Return a canonical, validated VoxelData array.</p>
+<p>This is the normal entry point for spatial inputs: it first restores
+scalar-indexed native voxel dimensions and geometry with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="./#confusius.validation.canonicalize_voxeldata">canonicalize_voxeldata</a>, then
+checks the resulting DataArray against the VoxelData model. Use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="./#confusius.validation.validate_voxeldata">validate_voxeldata</a> when the input
+must already be canonical.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4047,7 +4075,7 @@ dimensions don't match <code>data</code>'s.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Canonicalized VoxelData array.</p>
+            <p>Canonicalized VoxelData array that satisfies the requested validation checks.</p>
           </div>
         </li>
     </ul>
@@ -4780,7 +4808,7 @@ coordinate is not uniformly sampled.</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;allow_extra_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(allow_extra_dims)">allow_extra_dims</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_regular_spacing&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_regular_spacing)">require_regular_spacing</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;regular_spacing_tolerance&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(regular_spacing_tolerance)">regular_spacing_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;regular_spacing_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(regular_spacing_dims)">regular_spacing_dims</a></span><span class="p">:</span> <span class="n"><span title="confusius.validation.fusi.RegularSpacingDims">RegularSpacingDims</span></span> <span class="o">=</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;regular_spacing_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(regular_spacing_dims)">regular_spacing_dims</a></span><span class="p">:</span> <span class="n"><span title="confusius.validation.voxeldata.RegularSpacingDims">RegularSpacingDims</span></span> <span class="o">=</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_canonical_dim_order&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_canonical_dim_order)">require_canonical_dim_order</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_velocity_attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_velocity_attrs)">require_velocity_attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_dtype&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_dtype)">require_dtype</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -4789,13 +4817,14 @@ coordinate is not uniformly sampled.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Validate that a DataArray follows the VoxelData model.</p>
-<p>This is the general-purpose VoxelData checker: by default it enforces only the
-universal <code>k</code>/<code>j</code>/<code>i</code> + <code>VoxelToWorldIndex</code> structure required of any
-VoxelData array, so it is the right tool for any VoxelData array,
-not only <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings. The optional flags below layer on genuine
-<abbr title="Functional Ultrasound Imaging">fUSI</abbr>-recording-specific requirements (e.g. acquisition timing) and should only be
-enabled for actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings.</p>
+        <p>Validate a DataArray against the VoxelData model without modifying it.</p>
+<p>By default, this requires non-empty native voxel dimensions (<code>k</code>, <code>j</code>, <code>i</code>),
+their coordinates, and a matching <code>VoxelToWorldIndex</code>. It also validates every
+dimension coordinate and requires <code>units</code> on world coordinates. When <code>time</code> is
+present, its acquisition metadata and <code>units</code> are required. The optional flags
+add requirements needed by a particular consumer. Use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> when scalar indexing
+may have removed a voxel dimension and the input should be canonicalized first.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4805,8 +4834,7 @@ enabled for actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recor
 <a href="#confusius.validation.validate_voxeldata(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray to validate. It must be a VoxelData array with native
-voxel dimensions <code>k</code>, <code>j</code>, <code>i</code> and derived world coordinates <code>z</code>, <code>y</code>, <code>x</code>.</p>
+            <p>DataArray to validate.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4816,8 +4844,7 @@ voxel dimensions <code>k</code>, <code>j</code>, <code>i</code> and derived worl
 )
           –
           <div class="doc-md-description">
-            <p>Whether to require a <code>time</code> dimension with more than one timepoint, as in an
-actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
+            <p>Whether to require <code>time</code> with more than one coordinate value.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4827,7 +4854,8 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to require the time dimension to occupy one Dask chunk.</p>
+            <p>Whether to require <code>time</code> with more than one coordinate value in a single Dask
+chunk.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4837,7 +4865,8 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to require uniformly sampled time coordinates.</p>
+            <p>Whether to require <code>time</code> with more than one uniformly spaced coordinate
+value.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4867,7 +4896,7 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether dimensions outside the ConfUSIus core set are allowed.</p>
+            <p>Whether to allow dimensions outside <code>time</code>, <code>pose</code>, <code>k</code>, <code>j</code>, and <code>i</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4877,7 +4906,7 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether selected numeric dimension coordinates must have regular spacing.</p>
+            <p>Whether to require regular spacing for selected numeric dimension coordinates.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4897,7 +4926,8 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dimensions that must satisfy regular-spacing checks.</p>
+            <p>Dimensions to check for regular spacing. <code>"space"</code> checks <code>k</code>, <code>j</code>, and <code>i</code>;
+<code>"core"</code> checks present core dimensions; <code>"all"</code> checks every dimension.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4907,7 +4937,8 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether core dimensions must appear in canonical order.</p>
+            <p>Whether present core dimensions must occur in <code>time</code>, <code>pose</code>, <code>k</code>, <code>j</code>, <code>i</code>
+order. Extra dimensions may occur anywhere.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4917,8 +4948,8 @@ actual <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to require and validate velocity-estimation attributes on the
-DataArray.</p>
+            <p>Whether to require positive, finite <code>transmit_frequency</code> and
+<code>beamforming_sound_velocity</code> DataArray attributes.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4928,8 +4959,7 @@ DataArray.</p>
 )
           –
           <div class="doc-md-description">
-            <p>NumPy dtype kind required for the DataArray values, passed to
-<code>numpy.issubdtype</code>.</p>
+            <p>Required data dtype or dtype class, passed to <code>numpy.issubdtype</code>.</p>
           </div>
         </li>
     </ul>
@@ -4941,14 +4971,16 @@ DataArray.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>data</code> is not an <code>xarray.DataArray</code>.</p>
+            <p>If <code>data</code> is not an <code>xarray.DataArray</code> or its dtype does not satisfy
+<code>require_dtype</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If dimension, coordinate, timing, or metadata validation fails.</p>
+            <p>If VoxelData geometry, dimensions, coordinates, timing, spacing, or metadata
+validation fails.</p>
           </div>
         </li>
     </ul>
