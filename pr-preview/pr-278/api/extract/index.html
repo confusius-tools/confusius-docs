@@ -3726,10 +3726,11 @@ dimensions. The last dimension must correspond to masked voxels.</p>
 <a href="#confusius.extract.unmask(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Mask used for the original extraction. Provides spatial dimensions and
-coordinates for reconstruction. Must be either boolean dtype, or integer dtype
-with exactly one non-zero value (0 = background, one region id = foreground).
-Spatial dimensions and coordinates must match the original data.</p>
+            <p>VoxelData mask used for the original extraction. Provides spatial dimensions,
+coordinates, and <code>VoxelToWorldIndex</code> for reconstruction. Must be either
+boolean dtype, or integer dtype with exactly one non-zero value (0 =
+background, one region id = foreground). Spatial dimensions and coordinates
+must match the original data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3785,10 +3786,9 @@ all dimensions. Ignored if <code>signals</code> is a DataArray.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Reconstructed DataArray with shape <code>(..., *mask.dims)</code>, where spatial
-dimensions and coordinates come from the mask. For a VoxelData
-array mask (native voxel dims <code>k</code>/<code>j</code>/<code>i</code> with a <code>VoxelToWorldIndex</code>),
-the derived world <code>z</code>/<code>y</code>/<code>x</code> coordinates are restored on the result as well.</p>
+            <p>Reconstructed VoxelData array with shape <code>(..., *mask.dims)</code>, where spatial
+dimensions, coordinates, and the derived world <code>z</code>/<code>y</code>/<code>x</code> coordinates come
+from the mask.</p>
           </div>
         </li>
     </ul>
@@ -3800,8 +3800,16 @@ the derived world <code>z</code>/<code>y</code>/<code>x</code> coordinates are r
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>signals</code> shape doesn't match <code>mask</code>, or if <code>new_dims</code>/<code>new_dims_coords</code>
-are inconsistent with <code>signals</code> shape.</p>
+            <p>If <code>mask</code> isn't a valid VoxelData array, if <code>signals</code> shape doesn't match
+<code>mask</code>, or if <code>new_dims</code>/<code>new_dims_coords</code> are inconsistent with <code>signals</code>
+shape.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>mask</code> is not boolean dtype (or a single-label integer dtype).</p>
           </div>
         </li>
     </ul>

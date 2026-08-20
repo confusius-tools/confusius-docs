@@ -4130,13 +4130,31 @@
   contain <code>attrs["voxel_to_world"]</code>, instead of silently loading them as non-canonical
   data. Use <code>xarray.open_zarr</code> directly for a foreign Zarr store
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li><code>extract_with_mask</code>/<code>extract_with_labels</code> (and <code>validate_mask</code>/
-  <code>validate_labels</code>) now require canonical VoxelData input for both <code>data</code> and
-  <code>mask</code>/<code>labels</code>, and check alignment via the full voxel-to-world affine (not
-  just matching <code>k</code>/<code>j</code>/<code>i</code> integer ranges) — two arrays on different physical
-  grids that happened to share voxel-index ranges no longer silently pass as
-  aligned. <code>validate_atlas</code> similarly no longer accepts a plain, non-indexed
-  atlas shape
+<li><code>extract_with_mask</code>/<code>extract_with_labels</code> now require canonical VoxelData input
+  for both <code>data</code> and <code>mask</code>/<code>labels</code>, and check alignment via the full
+  voxel-to-world affine (not just matching <code>k</code>/<code>j</code>/<code>i</code> integer ranges) — two
+  arrays on different physical grids that happened to share voxel-index ranges no
+  longer silently pass as aligned. <code>validate_atlas</code> similarly no longer accepts a
+  plain, non-indexed atlas shape
+  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li>Split <code>validate_mask</code>/<code>validate_labels</code> into a pure check (<code>mask</code>/<code>data</code> must
+  already be canonical VoxelData; returns <code>None</code>) and new
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_mask&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_mask"><code>ensure_mask</code></a>/
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_labels&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_labels"><code>ensure_labels</code></a> (canonicalize via
+  <code>ensure_voxeldata</code>, then validate; returns the canonicalized/coerced array) —
+  mirroring <code>validate_voxeldata</code>/<code>ensure_voxeldata</code>. Callers that relied on
+  <code>validate_mask</code>/<code>validate_labels</code>'s return value should switch to
+  <code>ensure_mask</code>/<code>ensure_labels</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.PCA"><code>PCA</code></a>/<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FastICA&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.FastICA"><code>FastICA</code></a>/
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="../api/decomposition/#confusius.decomposition.NMF"><code>NMF</code></a> are now VoxelData-only; the previously
+  documented dual-input support for an already-reduced <code>(time, region)</code> signals
+  table (e.g. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>
+  output) is removed, along with the resulting <code>feature_names_in_</code> attribute.
+  Decomposing a signals table is regular tabular <abbr title="Principal Component Analysis">PCA</abbr>/<abbr title="Independent Component Analysis">ICA</abbr>/<abbr title="Non-negative Matrix Factorization">NMF</abbr> with no spatial
+  structure to track, so use scikit-learn directly for that instead.
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;unmask&lt;/span&gt;" href="../api/extract/#confusius.extract.unmask"><code>unmask</code></a> correspondingly now always requires a
+  VoxelData mask and always returns a VoxelData array
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Multi-pose data acquired sequentially now carries a pose-dependent, <code>(time,
   pose)</code>-shaped <code>time</code> coordinate holding each pose's own real acquisition

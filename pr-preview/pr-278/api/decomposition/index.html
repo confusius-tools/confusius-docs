@@ -3329,21 +3329,21 @@
           <b><code><span title="confusius.decomposition.fastica">fastica</span></code></b>
           –
           <div class="doc-md-description">
-            <p>FastICA decomposition for VoxelData arrays or signals.</p>
+            <p>FastICA decomposition for VoxelData arrays.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="confusius.decomposition.nmf">nmf</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Non-negative matrix factorization for VoxelData arrays or signals.</p>
+            <p>Non-negative matrix factorization for VoxelData arrays.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><span title="confusius.decomposition.pca">pca</span></code></b>
           –
           <div class="doc-md-description">
-            <p>Principal component decomposition for VoxelData arrays or signals.</p>
+            <p>Principal component decomposition for VoxelData arrays.</p>
           </div>
         </li>
     </ul>
@@ -3359,21 +3359,21 @@
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FastICA&lt;/span&gt;" href="./#confusius.decomposition.FastICA">FastICA</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData arrays or signals.</p>
+            <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData arrays.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;NMF&lt;/span&gt;" href="./#confusius.decomposition.NMF">NMF</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData arrays or signals.</p>
+            <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData arrays.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;PCA&lt;/span&gt;" href="./#confusius.decomposition.PCA">PCA</a></code></b>
           –
           <div class="doc-md-description">
-            <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData arrays or signals.</p>
+            <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData arrays.</p>
           </div>
         </li>
     </ul>
@@ -3411,7 +3411,7 @@
 
 
 
-        <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData arrays or signals.</p>
+        <p>Fast independent component analysis (<abbr title="Independent Component Analysis">ICA</abbr>) for VoxelData arrays.</p>
 <p>The FastICA algorithm is based on Hyvarinen <em>et al.</em> (2000).</p>
 <p>This estimator wraps
 <a class="autorefs autorefs-external" href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.FastICA.html#sklearn.decomposition.FastICA"><code>sklearn.decomposition.FastICA</code></a> while keeping
@@ -3587,11 +3587,9 @@ an int for reproducible results across multiple function calls.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for VoxelData array input, or features, for an
-already-extracted signals input (e.g.
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
-match the non-<code>time</code> dimensions of the input data in the same order.</p>
+            <p>Boolean VoxelData mask selecting which voxels to include during fitting and
+projection. Must match the non-<code>time</code> dimensions of the input data in the
+same order.</p>
           </div>
         </li>
     </ul>
@@ -3657,15 +3655,6 @@ components. Otherwise, the number of iterations taken to converge.</p>
             <p>Number of features seen during fit.</p>
           </div>
         </li>
-        <li class="doc-section-item field-body">
-          <b><code><span title="confusius.decomposition.FastICA.feature_names_in_">feature_names_in_</span></code></b>
-              (<code>(n_features_in_,) numpy.ndarray</code>)
-          –
-          <div class="doc-md-description">
-            <p>Feature names seen during <code>fit</code>. Defined only when flattened feature labels are
-all strings.</p>
-          </div>
-        </li>
     </ul>
 
 
@@ -3683,7 +3672,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>Spatial <abbr title="Independent Component Analysis">ICA</abbr> (default, matches FSL MELODIC), on a VoxelData array:</p>
+    <p>Spatial <abbr title="Independent Component Analysis">ICA</abbr> (default, matches FSL MELODIC):</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastICA</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_voxeldata</span>
@@ -3704,19 +3693,6 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 </span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="go">(&#39;time&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
-    <p>Fitting on already-extracted <abbr title="Region of Interest">ROI</abbr> signals, e.g. from
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>:</p>
-    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">],</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;ROI_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ica_roi</span> <span class="o">=</span> <span class="n">FastICA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals_ic</span> <span class="o">=</span> <span class="n">ica_roi</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">roi_signals</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals_ic</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">(&#39;time&#39;, &#39;component&#39;)</span>
-</span></code></pre></div>
 
 
 
@@ -3735,7 +3711,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.FastICA.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit FastICA on a VoxelData array or signals array.</p>
+              <p>Fit FastICA on a VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3818,7 +3794,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 
     <div class="doc doc-contents ">
 
-        <p>Fit FastICA on a VoxelData array or signals array.</p>
+        <p>Fit FastICA on a VoxelData array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3828,8 +3804,7 @@ and applications". Neural Networks, 13(4-5), 411-430.&#160;<a class="footnote-ba
 <a href="#confusius.decomposition.FastICA.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a VoxelData array, or an already-extracted
-signals array (see class docstring).</p>
+            <p>VoxelData array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3906,7 +3881,7 @@ dimensions.</p>
 <a href="#confusius.decomposition.FastICA.fit_transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array.</p>
+            <p>VoxelData array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4241,8 +4216,8 @@ possible to update each component of a nested object.</p>
 <a href="#confusius.decomposition.FastICA.transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array with
-the same spatial dimensions and sizes as the data used during fit.</p>
+            <p>VoxelData array with the same spatial dimensions and sizes as the data used
+during fit.</p>
           </div>
         </li>
     </ul>
@@ -4289,7 +4264,7 @@ the same spatial dimensions and sizes as the data used during fit.</p>
 
 
 
-        <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData arrays or signals.</p>
+        <p>Non-negative matrix factorization (<abbr title="Non-negative Matrix Factorization">NMF</abbr>) for VoxelData arrays.</p>
 <p>Find two non-negative matrices, i.e. matrices with all non-negative elements,
 (<code>W</code>, <code>H</code>) whose product approximates the non-negative matrix <code>X</code>. This
 factorization can be used for example for dimensionality reduction, source
@@ -4504,11 +4479,9 @@ no regularization on <code>H</code>. If <code>"same"</code>, it takes the same v
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for VoxelData array input, or features, for an
-already-extracted signals input (e.g.
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
-match the non-<code>time</code> dimensions of the input data in the same order.</p>
+            <p>Boolean VoxelData mask selecting which voxels to include during fitting and
+projection. Must match the non-<code>time</code> dimensions of the input data in the
+same order.</p>
           </div>
         </li>
     </ul>
@@ -4563,15 +4536,6 @@ training data <code>X</code> and the reconstructed data <code>WH</code> from the
             <p>Number of features seen during fit.</p>
           </div>
         </li>
-        <li class="doc-section-item field-body">
-          <b><code><span title="confusius.decomposition.NMF.feature_names_in_">feature_names_in_</span></code></b>
-              (<code>(n_features_in_,) numpy.ndarray</code>)
-          –
-          <div class="doc-md-description">
-            <p>Names of features seen during fit. Defined only when flattened feature
-labels are all strings.</p>
-          </div>
-        </li>
     </ul>
 
 
@@ -4607,7 +4571,6 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>On a VoxelData array:</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_voxeldata</span>
@@ -4632,19 +4595,6 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
 </span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="go">(&#39;time&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
-    <p>Fitting on already-extracted, non-negative <abbr title="Region of Interest">ROI</abbr> signals, e.g. from
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>:</p>
-    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">],</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;ROI_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">nmf_roi</span> <span class="o">=</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s2">&quot;nndsvda&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals_nmf</span> <span class="o">=</span> <span class="n">nmf_roi</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">roi_signals</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals_nmf</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">(&#39;time&#39;, &#39;component&#39;)</span>
-</span></code></pre></div>
 
 
 
@@ -4663,7 +4613,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.NMF.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on a VoxelData array or signals array.</p>
+              <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on a VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4746,7 +4696,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 
     <div class="doc doc-contents ">
 
-        <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on a VoxelData array or signals array.</p>
+        <p>Fit <abbr title="Non-negative Matrix Factorization">NMF</abbr> on a VoxelData array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4756,8 +4706,7 @@ factorization with the beta-divergence". Neural Computation, 23(9).&#160;<a clas
 <a href="#confusius.decomposition.NMF.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a VoxelData array, or an already-extracted
-signals array (see class docstring). Must be non-negative.</p>
+            <p>VoxelData array. Must be non-negative.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4828,7 +4777,7 @@ dimensions, contains negative values, or <code>mode</code> is not <code>"tempora
 <a href="#confusius.decomposition.NMF.fit_transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array.</p>
+            <p>VoxelData array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5163,8 +5112,8 @@ possible to update each component of a nested object.</p>
 <a href="#confusius.decomposition.NMF.transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array with
-the same spatial dimensions and sizes as the data used during fit.</p>
+            <p>VoxelData array with the same spatial dimensions and sizes as the data used
+during fit.</p>
           </div>
         </li>
     </ul>
@@ -5211,7 +5160,7 @@ the same spatial dimensions and sizes as the data used during fit.</p>
 
 
 
-        <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData arrays or signals.</p>
+        <p>Principal component analysis (<abbr title="Principal Component Analysis">PCA</abbr>) for VoxelData arrays.</p>
 <p>Linear dimensionality reduction using singular value decomposition (<abbr title="Singular Value Decomposition">SVD</abbr>) of the data
 to project it to a lower dimensional space. The input data is centered but not
 scaled for each feature before applying the <abbr title="Singular Value Decomposition">SVD</abbr>.</p>
@@ -5386,11 +5335,9 @@ reproducible results across multiple function calls.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask selecting which elements to include during fitting and
-projection: voxels, for VoxelData array input, or features, for an
-already-extracted signals input (e.g.
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a> output). Must
-match the non-<code>time</code> dimensions of the input data in the same order.</p>
+            <p>Boolean VoxelData mask selecting which voxels to include during fitting and
+projection. Must match the non-<code>time</code> dimensions of the input data in the
+same order.</p>
           </div>
         </li>
     </ul>
@@ -5488,15 +5435,6 @@ of the covariance matrix of <code>X</code>.</p>
             <p>Number of features seen during fit.</p>
           </div>
         </li>
-        <li class="doc-section-item field-body">
-          <b><code><span title="confusius.decomposition.PCA.feature_names_in_">feature_names_in_</span></code></b>
-              (<code>(n_features_in_,) numpy.ndarray</code>)
-          –
-          <div class="doc-md-description">
-            <p>Feature names seen during fit. Defined only when flattened feature labels are
-all strings.</p>
-          </div>
-        </li>
     </ul>
 
 
@@ -5515,7 +5453,6 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <p>Fitting on a VoxelData array:</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_voxeldata</span>
@@ -5536,19 +5473,6 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 </span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reconstructed</span><span class="o">.</span><span class="n">dims</span>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="go">(&#39;time&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span></code></pre></div>
-    <p>Fitting on already-extracted <abbr title="Region of Interest">ROI</abbr> signals, e.g. from
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>:</p>
-    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_signals</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">],</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;ROI_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]},</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pca_roi</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_components</span> <span class="o">=</span> <span class="n">pca_roi</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">roi_signals</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_components</span><span class="o">.</span><span class="n">dims</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">(&#39;time&#39;, &#39;component&#39;)</span>
-</span></code></pre></div>
 
 
 
@@ -5567,7 +5491,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="./#confusius.decomposition.PCA.fit">fit</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on a VoxelData array or signals array.</p>
+              <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on a VoxelData array.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5650,7 +5574,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 
     <div class="doc doc-contents ">
 
-        <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on a VoxelData array or signals array.</p>
+        <p>Fit <abbr title="Principal Component Analysis">PCA</abbr> on a VoxelData array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5660,8 +5584,7 @@ decompositions". SIAM Review, 53(2), 217-288.&#160;<a class="footnote-backref" h
 <a href="#confusius.decomposition.PCA.fit(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input data: a VoxelData array, or an already-extracted
-signals array (see class docstring).</p>
+            <p>VoxelData array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5738,7 +5661,7 @@ dimensions.</p>
 <a href="#confusius.decomposition.PCA.fit_transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array.</p>
+            <p>VoxelData array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6073,8 +5996,8 @@ possible to update each component of a nested object.</p>
 <a href="#confusius.decomposition.PCA.transform(X)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Input VoxelData array or already-extracted signals array with
-the same spatial dimensions and sizes as the data used during fit.</p>
+            <p>VoxelData array with the same spatial dimensions and sizes as the data used
+during fit.</p>
           </div>
         </li>
     </ul>
