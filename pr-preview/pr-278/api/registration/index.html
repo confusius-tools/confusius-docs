@@ -6237,7 +6237,7 @@ SCAN data).</p>
         <p>Resample a volume onto the grid of a reference DataArray.</p>
 <p>Convenience wrapper around
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="./#confusius.registration.resample_volume"><code>resample_volume</code></a> that extracts the
-position-anchored output grid (<code>shape</code>, <code>spacing</code>, <code>origin</code>, <code>direction</code>) from
+position-anchored output grid (<code>sizes</code>, <code>spacing</code>, <code>origin</code>, <code>direction</code>) from
 <code>reference</code>'s coordinates via the <code>fusi</code> accessor, so the grid is correct even if
 <code>reference</code> has been cropped or strided from a larger DataArray.</p>
 
@@ -6400,14 +6400,13 @@ dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
 <p>Low-level resampling primitive. For the common case of resampling onto the grid of
 another DataArray, use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="./#confusius.registration.resample_like"><code>resample_like</code></a>
 instead.</p>
-<p>The output grid is specified as a position-anchored <code>shape</code>/<code>spacing</code>/<code>origin</code>/
-<code>direction</code> (matching what a SimpleITK image expects), not as a single affine.
-A DataArray's <code>voxel_to_world</code> affine is defined in terms of its voxel
-<em>coordinate values</em>, which stay unchanged across cropping or striding (see
-[VoxelToWorldIndex][confusius._utils.geometry.VoxelToWorldIndex]) — it does not
-generally describe where the array's <em>position</em> <code>(0, ..., 0)</code> sits, or the
-world distance between consecutive <em>positions</em>, once the array has been
-cropped or strided. Use <code>reference.fusi.spacing</code>/<code>reference.fusi.origin</code> (as
+<p>The output grid is specified as position-anchored <code>sizes</code>/<code>spacing</code>/<code>origin</code>/
+<code>direction</code> metadata (matching what a SimpleITK image expects), not as a single
+affine. A DataArray's <code>voxel_to_world</code> affine is defined in terms of its voxel
+coordinate values, which stay unchanged across cropping or striding; it does not
+generally describe where the array's position <code>(0, ..., 0)</code> sits, or the world
+distance between consecutive positions, once the array has been cropped or
+strided. Use <code>reference.fusi.spacing</code>/<code>reference.fusi.origin</code> (as
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="./#confusius.registration.resample_like"><code>resample_like</code></a> does) to derive a
 position-anchored grid from an existing DataArray.</p>
 
@@ -6544,8 +6543,9 @@ have a time dimension.</p>
             –
           <div class="doc-md-description">
             <p>If <code>transform</code> is a numpy array whose shape does not match the spatial
-dimensionality, or if <code>output_sizes</code>, <code>output_spacing</code>, or <code>output_origin</code>
-is missing a required key.</p>
+dimensionality, if <code>output_direction</code> has the wrong shape, or if
+<code>output_sizes</code>, <code>output_spacing</code>, or <code>output_origin</code> is missing a required
+key.</p>
           </div>
         </li>
     </ul>
