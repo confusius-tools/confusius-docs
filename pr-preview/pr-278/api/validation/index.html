@@ -3729,8 +3729,10 @@
         <p>Restore a scalar-indexed VoxelData dimension and its geometry.</p>
 <p>Scalar indexing such as <code>data.isel(j=0)</code> removes <code>j</code> from the array dimensions
 but retains it as a scalar coordinate. This function restores every missing
-native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a length-one dimension in canonical
-spatial order. When scalar indexing fixed a dimension in a <code>VoxelToWorldIndex</code>,
+native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a length-one dimension, then orders all
+dimensions as <code>(...extra_dims, time, pose, k, j, i)</code>. It preserves coordinate
+values and their order. When scalar indexing fixed a dimension in a
+<code>VoxelToWorldIndex</code>,
 its geometry is rebuilt from the untouched affine. Missing world-coordinate
 <code>units</code> default to <code>"mm"</code>; missing time acquisition metadata also default where
 possible. This function does not otherwise validate the VoxelData model; use
@@ -4037,12 +4039,13 @@ dimensions don't match <code>data</code>'s.</p>
     <div class="doc doc-contents ">
 
         <p>Return a canonical, validated VoxelData array.</p>
-<p>This is the normal entry point for spatial inputs: it first restores
-scalar-indexed native voxel dimensions and geometry with
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="./#confusius.validation.canonicalize_voxeldata">canonicalize_voxeldata</a>, then
-checks the resulting DataArray against the VoxelData model. Use
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="./#confusius.validation.validate_voxeldata">validate_voxeldata</a> when the input
-must already be canonical.</p>
+<p>This is the normal entry point for spatial inputs: it restores scalar-indexed
+native voxel dimensions and geometry, and orders dimensions as
+<code>(...extra_dims, time, pose, k, j, i)</code> with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="./#confusius.validation.canonicalize_voxeldata">canonicalize_voxeldata</a>, then checks
+the resulting DataArray against the VoxelData model. Use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="./#confusius.validation.validate_voxeldata">validate_voxeldata</a> when the input must
+already follow that model.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4809,20 +4812,20 @@ coordinate is not uniformly sampled.</p>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_regular_spacing&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_regular_spacing)">require_regular_spacing</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;regular_spacing_tolerance&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(regular_spacing_tolerance)">regular_spacing_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;regular_spacing_dims&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(regular_spacing_dims)">regular_spacing_dims</a></span><span class="p">:</span> <span class="n"><span title="confusius.validation.voxeldata.RegularSpacingDims">RegularSpacingDims</span></span> <span class="o">=</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_canonical_dim_order&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_canonical_dim_order)">require_canonical_dim_order</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_velocity_attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_velocity_attrs)">require_velocity_attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_dtype&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_dtype)">require_dtype</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_velocity_attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_velocity_attrs)">require_velocity_attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;require_dtype&lt;/code&gt;&lt;/b&gt;" href="./#confusius.validation.validate_voxeldata(require_dtype)">require_dtype</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>Validate a DataArray against the VoxelData model without modifying it.</p>
-<p>By default, this requires non-empty native voxel dimensions (<code>k</code>, <code>j</code>, <code>i</code>),
-their coordinates, and a matching <code>VoxelToWorldIndex</code>. It also validates every
-dimension coordinate and requires <code>units</code> on world coordinates. When <code>time</code> is
-present, its acquisition metadata and <code>units</code> are required. The optional flags
-add requirements needed by a particular consumer. Use
+<p>This requires non-empty native voxel dimensions (<code>k</code>, <code>j</code>, <code>i</code>), their
+coordinates, a matching <code>VoxelToWorldIndex</code>, and dimensions ordered as
+<code>(...extra_dims, time, pose, k, j, i)</code>. It also validates every dimension
+coordinate and requires <code>units</code> on world coordinates. When <code>time</code> is present, its
+acquisition metadata and <code>units</code> are required. The optional flags add requirements
+needed by a particular consumer. Use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> when scalar indexing
 may have removed a voxel dimension and the input should be canonicalized first.</p>
 
@@ -4928,17 +4931,6 @@ value.</p>
           <div class="doc-md-description">
             <p>Dimensions to check for regular spacing. <code>"space"</code> checks <code>k</code>, <code>j</code>, and <code>i</code>;
 <code>"core"</code> checks present core dimensions; <code>"all"</code> checks every dimension.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.validation.validate_voxeldata(require_canonical_dim_order)" class="doc doc-heading doc-heading-parameter">              <b><code>require_canonical_dim_order</code></b>
-<a href="#confusius.validation.validate_voxeldata(require_canonical_dim_order)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
-                  <code>False</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Whether present core dimensions must occur in <code>time</code>, <code>pose</code>, <code>k</code>, <code>j</code>, <code>i</code>
-order. Extra dimensions may occur anywhere.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
