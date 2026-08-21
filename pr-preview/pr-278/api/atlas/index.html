@@ -4194,6 +4194,10 @@ nonlinear resample, vertices warped outside the reference grid are dropped.</p>
     <div class="doc doc-contents ">
 
         <p>Resample the atlas onto an explicit output grid.</p>
+<p>The atlas reference volume is resampled with <code>interpolation</code>; <code>annotation</code> and
+<code>hemispheres</code> are always resampled with nearest-neighbor interpolation to
+preserve integer labels. The returned Dataset stores the composed pull transform
+from its new world space back to the atlas base space in <code>attrs["world_to_base"]</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4268,7 +4272,8 @@ coordinates.</p>
               <code><span title="confusius.xarray.Dataset">Dataset</span></code>
           –
           <div class="doc-md-description">
-            <p>Resampled atlas Dataset on the requested grid.</p>
+            <p>Resampled atlas Dataset on the requested grid. Meshes returned by
+<code>get_mesh</code> are transformed through the composed <code>world_to_base</code> attribute.</p>
           </div>
         </li>
     </ul>
@@ -4309,7 +4314,8 @@ coordinates.</p>
 <a href="#confusius.atlas.AtlasAccessor.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array defining the target grid.</p>
+            <p>VoxelData array defining the target grid. Must be spatial-only, without
+<code>time</code>, <code>pose</code>, or extra non-spatial dimensions.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4351,7 +4357,21 @@ coordinates.</p>
           –
           <div class="doc-md-description">
             <p>Resampled atlas Dataset with exactly <code>reference</code>'s voxel labels and
-voxel-to-world affine.</p>
+voxel-to-world affine. Meshes returned by <code>get_mesh</code> are transformed
+through the composed <code>world_to_base</code> attribute.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>reference</code> has a <code>time</code>, <code>pose</code>, or extra non-spatial dimension, or is
+not a VoxelData array.</p>
           </div>
         </li>
     </ul>
