@@ -4143,12 +4143,18 @@ applying axis-aligned affines to spatial coordinates.</p>
     <div class="doc doc-contents ">
 
         <p>World-space direction matrix for the present spatial geometry.</p>
+<p>Columns are unit world-space direction vectors for each voxel-space axis
+(<code>k</code>/<code>j</code>/<code>i</code>, in that order); rows correspond to world axes (<code>z</code>/<code>y</code>/<code>x</code>, in
+that order). Direction is expressed in dense array-position terms: a voxel
+coordinate that runs descending (e.g. after <code>.isel(dim=slice(None, None,
+-1))</code>) flips the sign of its column, since array position always counts up
+from 0 regardless of the coordinate's own direction.</p>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><a class="autorefs autorefs-external" title="numpy.ndarray" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray">ndarray</a></code>
+              <code>(3, 3) numpy.ndarray</code>
           –
           <div class="doc-md-description">
             <p>Identity for axis-aligned data. For oblique data, the columns are the

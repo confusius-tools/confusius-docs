@@ -3936,7 +3936,10 @@ designed to be used for easy exploration and quick analyses, while the module-le
 functions are available for more complex workflows where you might prefer explicit
 function calls for readability.</p>
 <h3 id="global-helpers">Global Helpers<a class="headerlink" href="#global-helpers" title="Permanent link">&para;</a></h3>
-<p>Currently, three global helpers are available:</p>
+<p>Currently, three global helpers are available. Together they decompose the
+DataArray's voxel-to-world affine into origin, spacing, and direction—see <a href="../voxeldata/#world-space">The
+voxel-to-world affine</a> in The VoxelData Model for how the
+three combine:</p>
 <ul>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;spacing&lt;/span&gt;
 
@@ -3987,8 +3990,11 @@ function calls for readability.</p>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="go">       [0., 0., 1.]])</span>
 </span></code></pre></div>
 <p>This is the identity for axis-aligned data (the common case). For oblique data, the
-  columns are the unit world-space directions of the voxel axes. For multi-pose data,
-  select a scalar pose first.</p>
+  matrix has shape <code>(3, 3)</code>: columns are unit world-space directions for each voxel axis
+  (<code>k</code>/<code>j</code>/<code>i</code>), rows correspond to world axes (<code>z</code>/<code>y</code>/<code>x</code>). A voxel coordinate that runs
+  descending (e.g. after slicing with a negative step) flips the sign of its column,
+  since the matrix tracks array position rather than the coordinate's own direction. For
+  multi-pose data, select a scalar pose first.</p>
 <h3 id="iq-processing"><abbr title="In-phase and Quadrature">IQ</abbr> Processing<a class="headerlink" href="#iq-processing" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIIQAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIIQAccessor"><code>.fusi.iq</code></a> accessor lets you access the
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_power_doppler&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_power_doppler"><code>process_iq_to_power_doppler</code></a> and
@@ -4046,8 +4052,12 @@ first or consolidate poses before registering.</p>
 set the first three <code>optimizer_weights</code> values to <code>0</code> to freeze rotation.</p>
 <h3 id="affine-transforms">Affine Transforms<a class="headerlink" href="#affine-transforms" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIAffineAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor"><code>.fusi.affine</code></a> accessor inspects and applies
-the voxel-to-world and world-to-reference affines described in <a href="../voxeldata/#coordinate-systems">The VoxelData
-Model</a>.</p>
+the voxel-to-world and world-to-reference affines described in <a href="../voxeldata/#spatial-conventions">The VoxelData
+Model</a>. The voxel-to-world affine returned by
+<code>voxel_to_world</code> below is the same one <a href="#global-helpers">Global Helpers</a> decomposes
+into <code>origin</code>/<code>spacing</code>/<code>direction</code>—use whichever form suits the task: the <code>(4, 4)</code>
+matrix for composing with other affines, the decomposed form for sanity-checking or
+constructing SimpleITK/ITK images.</p>
 <h4 id="reading-and-applying-affines">Reading and applying affines<a class="headerlink" href="#reading-and-applying-affines" title="Permanent link">&para;</a></h4>
 <p>Read the DataArray's
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;voxel_to_world&lt;/span&gt;
