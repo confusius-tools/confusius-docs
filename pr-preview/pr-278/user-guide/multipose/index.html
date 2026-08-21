@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/user-guide/multipose/">
       
       
-        <link rel="prev" href="../spatial-conventions/">
+        <link rel="prev" href="../xarray/">
       
       
         <link rel="next" href="../beamformed-iq/">
@@ -739,16 +739,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../xarray/" class="md-nav__link">
+      <a href="../voxeldata/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Working with Xarray
+  The VoxelData Model
 
     
   </span>
@@ -768,16 +768,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../spatial-conventions/" class="md-nav__link">
+      <a href="../xarray/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Spatial Conventions
+  Working with Xarray
 
     
   </span>
@@ -3521,7 +3521,7 @@ the <code>time</code> coordinate mean, because both are per-pose rather than per
 <li><strong>Geometry is per-pose.</strong> Each pose has its own voxel-to-world affine, so the world
   coordinates <code>z</code>/<code>y</code>/<code>x</code> are pose-dependent with shape <code>(pose, k, j, i)</code>. Resolving a
   voxel to a single world position requires selecting a scalar <code>pose</code> first, e.g.
-  <code>data.isel(pose=0).sel(z=1.2)</code>. See <a href="../spatial-conventions/#the-voxeldata-model">Spatial Conventions</a>
+  <code>data.isel(pose=0).sel(z=1.2)</code>. See <a href="../voxeldata/#the-voxeldata-model">The VoxelData Model</a>
   for the full explanation of pose-dependent voxel-to-world geometry.</li>
 <li>
 <p><strong>Timing can be per-pose.</strong> When poses are acquired sequentially rather than

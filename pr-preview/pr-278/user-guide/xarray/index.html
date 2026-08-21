@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://confusius.tools/user-guide/xarray/">
       
       
-        <link rel="prev" href="../io/">
+        <link rel="prev" href="../voxeldata/">
       
       
-        <link rel="next" href="../spatial-conventions/">
+        <link rel="next" href="../multipose/">
       
       
         
@@ -736,6 +736,35 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../voxeldata/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  The VoxelData Model
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1015,35 +1044,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../spatial-conventions/" class="md-nav__link">
-        
-  
-  
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
-  
-  <span class="md-ellipsis">
-    
-  
-  Spatial Conventions
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -3655,7 +3655,10 @@ ConfUSIus-specific object.</p>
 coordinates, and attributes. You get a DataArray whenever you load a single <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 recording, for example a power Doppler NIfTI file from the <autoref identifier="confusius.datasets.fetch_nunez_elizalde_2022">Nunez-Elizalde 2022
 dataset</autoref> via
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a>:</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a>. Such a DataArray follows <strong>VoxelData</strong>,
+ConfUSIus's canonical model for any spatially referenced voxel array—see <a href="../voxeldata/#the-voxeldata-model">The
+VoxelData Model</a> for the full
+definition:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz&quot;</span><span class="p">)</span>
@@ -3704,7 +3707,8 @@ ConfUSIus therefore uses <code>(..., time, k, j, i)</code>, which maps NIfTI dat
 onto the memory layout used throughout the Python scientific ecosystem, often
 without copying or rearranging the data. In practice, this ordering is usually
 transparent because Xarray operations refer to dimensions by name rather than by
-position. See <a href="../spatial-conventions/">Spatial Conventions</a> for the full
+position. See <a href="../voxeldata/#dimension-ordering-time-pose-k-j-i">The VoxelData
+Model</a> for the full
 explanation.</p>
 </div>
 </li>
@@ -4042,8 +4046,8 @@ first or consolidate poses before registering.</p>
 set the first three <code>optimizer_weights</code> values to <code>0</code> to freeze rotation.</p>
 <h3 id="affine-transforms">Affine Transforms<a class="headerlink" href="#affine-transforms" title="Permanent link">&para;</a></h3>
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIAffineAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor"><code>.fusi.affine</code></a> accessor inspects and applies
-the voxel-to-world and world-to-reference affines described in <a href="../spatial-conventions/">Spatial
-Conventions</a>.</p>
+the voxel-to-world and world-to-reference affines described in <a href="../voxeldata/#coordinate-systems">The VoxelData
+Model</a>.</p>
 <h4 id="reading-and-applying-affines">Reading and applying affines<a class="headerlink" href="#reading-and-applying-affines" title="Permanent link">&para;</a></h4>
 <p>Read the DataArray's
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;voxel_to_world&lt;/span&gt;

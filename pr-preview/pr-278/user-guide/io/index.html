@@ -18,7 +18,7 @@
         <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../xarray/">
+        <link rel="next" href="../voxeldata/">
       
       
         
@@ -971,16 +971,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../xarray/" class="md-nav__link">
+      <a href="../voxeldata/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Working with Xarray
+  The VoxelData Model
 
     
   </span>
@@ -1000,16 +1000,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../spatial-conventions/" class="md-nav__link">
+      <a href="../xarray/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Spatial Conventions
+  Working with Xarray
 
     
   </span>
@@ -3585,7 +3585,7 @@ NumPy arrays:</p>
 <code>k</code>/<code>j</code>/<code>i</code> voxel dimensions backed by a <code>VoxelToWorldIndex</code>, which derives world
 coordinates <code>z</code>/<code>y</code>/<code>x</code> (in millimeters) from voxel-to-world affine transformations.
 World coordinates are never stored directly—they're always this index's output. See
-<a href="../spatial-conventions/">Spatial Conventions</a> for details on the coordinate model.</p>
+<a href="../voxeldata/">The VoxelData Model</a> for details on the coordinate model.</p>
 <h3 id="xarray-compatible-formats">Xarray-Compatible Formats<a class="headerlink" href="#xarray-compatible-formats" title="Permanent link">&para;</a></h3>
 <p>Xarray can read and write data from multiple storage formats, including:</p>
 <ul>
@@ -3787,7 +3787,7 @@ acquisitions with external events. </p>
 <p>Additionally, each pose has its own voxel-to-world affine transformation, meaning the
 <code>z</code>/<code>y</code>/<code>x</code> world coordinates are <strong>pose-dependent</strong>. The <code>pose</code> coordinate indexes the
 pose dimension, and the <code>z</code>/<code>y</code>/<code>x</code> coordinates are derived from the corresponding
-pose's affine. See <a href="../spatial-conventions/">Spatial Conventions</a> for details on how
+pose's affine. See <a href="../voxeldata/">The VoxelData Model</a> for details on how
 world coordinates are derived from voxel indices and affines.</p>
 <div class="admonition warning">
 <p class="admonition-title">SCAN files and parallel processing</p>
@@ -4104,9 +4104,9 @@ required dimensions, metadata fields, and processing assumptions.</p>
 </div>
 </div>
 <p>When saving to NIfTI, a
-<a href="https://bids-specification.readthedocs.io/en/stable/"><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr></a> JSON sidecar file will
-be automatically created in <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> style. Spatial coordinates and units are encoded
-in the NIfTI header itself; the sidecar stores converted metadata fields, custom
+<a href="https://bids-specification.readthedocs.io/en/stable/"><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr></a> JSON sidecar file
+will be automatically created in <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> style. Spatial coordinates and units are
+encoded in the NIfTI header itself; the sidecar stores converted metadata fields, custom
 attributes, and timing metadata such as <code>RepetitionTime</code>, <code>DelayAfterTrigger</code>, or
 <code>VolumeTiming</code>. When possible, <code>RepetitionTime</code> is inferred directly from the <code>time</code>
 coordinate so the sidecar stays consistent with the data being saved. Multi-pose data

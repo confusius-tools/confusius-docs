@@ -736,16 +736,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/xarray/" class="md-nav__link">
+      <a href="../../user-guide/voxeldata/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Working with Xarray
+  The VoxelData Model
 
     
   </span>
@@ -765,16 +765,16 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/spatial-conventions/" class="md-nav__link">
+      <a href="../../user-guide/xarray/" class="md-nav__link">
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-move-3d" viewBox="0 0 24 24"><path d="M5 3v16h16M5 19l6-6"/><path d="m2 6 3-3 3 3M18 16l3 3-3 3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-brackets" viewBox="0 0 24 24"><path d="M16 3h3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-3M8 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3"/></svg>
   
   <span class="md-ellipsis">
     
   
-  Spatial Conventions
+  Working with Xarray
 
     
   </span>
@@ -1842,6 +1842,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;convert_time_units
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confusius.timing.ensure_slice_time_acquisition_attrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;ensure_slice_time_acquisition_attrs
       </span>
     </span>
   </a>
@@ -3257,6 +3268,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#confusius.timing.ensure_slice_time_acquisition_attrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;ensure_slice_time_acquisition_attrs
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.timing.ensure_time_acquisition_attrs" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3475,6 +3497,13 @@
             –
             <div class="doc-md-description">
               <p>Convert time values between units.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_slice_time_acquisition_attrs&lt;/span&gt;" href="./#confusius.timing.ensure_slice_time_acquisition_attrs">ensure_slice_time_acquisition_attrs</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Fill in default metadata attrs on <code>data</code>'s <code>slice_time</code> coordinate.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3791,6 +3820,79 @@ duration per input timing.</p>
           –
           <div class="doc-md-description">
             <p>Time values converted to <code>to_unit</code>.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="confusius.timing.ensure_slice_time_acquisition_attrs" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">ensure_slice_time_acquisition_attrs</span>
+
+
+<a href="#confusius.timing.ensure_slice_time_acquisition_attrs" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">ensure_slice_time_acquisition_attrs</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt;" href="./#confusius.timing.ensure_slice_time_acquisition_attrs(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Fill in default metadata attrs on <code>data</code>'s <code>slice_time</code> coordinate.</p>
+<p>Every VoxelData array with a <code>slice_time</code> coordinate carries
+<code>volume_acquisition_reference</code>, <code>volume_acquisition_duration</code>, and <code>units</code> on it.
+Data built without going through
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../multipose/#confusius.multipose.consolidate_poses">consolidate_poses</a> (e.g. a <code>slice_time</code>
+coordinate assembled by hand) may still be missing them; this fills in <code>"start"</code>
+and <code>"s"</code>, respectively. <code>volume_acquisition_duration</code> is inferred from the median
+consecutive difference along <code>slice_time</code>'s sweep dimension (its last dimension).
+Simultaneous slices (e.g. a stacked-linear-probe pose) are expected and not
+treated as an error.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.timing.ensure_slice_time_acquisition_attrs(data)" class="doc doc-heading doc-heading-parameter">              <b><code>data</code></b>
+<a href="#confusius.timing.ensure_slice_time_acquisition_attrs(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>VoxelData array to fill in.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="confusius.xarray.DataArray">DataArray</span></code>
+          –
+          <div class="doc-md-description">
+            <p><code>data</code> unchanged when it has no <code>slice_time</code> coordinate or that coordinate
+already carries all three attrs. Otherwise a copy with
+<code>volume_acquisition_reference</code> defaulted to <code>"start"</code>, <code>units</code> defaulted to
+<code>"s"</code>, and <code>volume_acquisition_duration</code> defaulted from the median sweep-axis
+step, when it can be inferred.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Warns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If any attr was missing and defaulted, naming which ones and what they were
+defaulted to.</p>
           </div>
         </li>
     </ul>
