@@ -4314,8 +4314,9 @@ coordinates.</p>
 <a href="#confusius.atlas.AtlasAccessor.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array defining the target grid. Must be spatial-only, without
-<code>time</code>, <code>pose</code>, or extra non-spatial dimensions.</p>
+            <p>VoxelData array defining the target grid. Only its <code>k</code>/<code>j</code>/<code>i</code> grid
+(<code>sizes</code>/<code>spacing</code>/<code>origin</code>/<code>direction</code>) is used, so a <code>time</code> dimension, if
+present, is ignored. Must not have a <code>pose</code> or extra non-spatial dimension.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4370,8 +4371,8 @@ through the composed <code>world_to_base</code> attribute.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>reference</code> has a <code>time</code>, <code>pose</code>, or extra non-spatial dimension, or is
-not a VoxelData array.</p>
+            <p>If <code>reference</code> has a <code>pose</code> or extra non-spatial dimension, or is not a
+VoxelData array.</p>
           </div>
         </li>
     </ul>

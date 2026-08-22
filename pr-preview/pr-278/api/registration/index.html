@@ -6259,9 +6259,10 @@ dimension is present, the same transform is applied to all time points.</p>
 <a href="#confusius.registration.resample_like(reference)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array defining the output grid. Must be spatial-only
-with dimensions <code>k</code>, <code>j</code>, <code>i</code> (no time dimension). When spatial coordinate
-<code>units</code> metadata is present on both <code>moving</code> and <code>reference</code>, they must match.</p>
+            <p>VoxelData array defining the output grid. Only its <code>k</code>/<code>j</code>/<code>i</code> grid
+(<code>sizes</code>/<code>spacing</code>/<code>origin</code>/<code>direction</code>) is used, so a <code>time</code> dimension, if
+present, is ignored. When spatial coordinate <code>units</code> metadata is present on
+both <code>moving</code> and <code>reference</code>, they must match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6340,10 +6341,10 @@ avoid over-subscribing the CPU.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Resampled volume on the grid of <code>reference</code>, with <code>reference</code>'s coordinates and
-dimensions, <code>moving</code>'s non-spatial attributes, and world-space affines
-inherited from <code>reference</code>. If <code>moving</code> had a time dimension, the output will
-also have a time dimension.</p>
+            <p>Resampled volume on the grid of <code>reference</code>, with <code>reference</code>'s <code>k</code>/<code>j</code>/<code>i</code>
+voxel labels and affine, <code>moving</code>'s non-spatial attributes, and world-space
+affines inherited from <code>reference</code>. If <code>moving</code> had a time dimension, the
+output will also have a time dimension (<code>moving</code>'s, not <code>reference</code>'s).</p>
           </div>
         </li>
     </ul>
@@ -6355,8 +6356,7 @@ also have a time dimension.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>reference</code> contains a <code>time</code> dimension or does not contain the spatial
-dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
+            <p>If <code>reference</code> does not contain the spatial dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
           </div>
         </li>
     </ul>
