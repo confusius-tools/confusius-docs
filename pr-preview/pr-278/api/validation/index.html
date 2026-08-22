@@ -3679,7 +3679,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_matching_spatial_units&lt;/span&gt;" href="./#confusius.validation.validate_matching_spatial_units">validate_matching_spatial_units</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Raise <code>ValueError</code> if spatial coordinate units disagree across DataArrays.</p>
+              <p>Raise <code>ValueError</code> if world-space units disagree across DataArrays.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3733,8 +3733,10 @@ native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a len
 dimensions as <code>(...extra_dims, time, pose, k, j, i)</code>. It preserves coordinate
 values and their order. When scalar indexing fixed a dimension in a
 <code>VoxelToWorldIndex</code>,
-its geometry is rebuilt from the untouched affine. Missing world-coordinate
-<code>units</code> default to <code>"mm"</code>; missing time acquisition metadata also default where
+its geometry is rebuilt from the untouched affine, including its <code>units</code>
+(<code>VoxelToWorldIndex</code> always carries one, defaulting to <code>"mm"</code> since
+[attach_voxel_to_world_index][confusius._utils.geometry.attach_voxel_to_world_index]
+itself defaults it). Missing time acquisition metadata also defaults where
 possible. This function does not otherwise validate the VoxelData model; use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> to canonicalize and
 validate.</p>
@@ -3791,8 +3793,7 @@ to restore it, or its same-named coordinate is not scalar.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If missing world-coordinate <code>units</code>, <code>time</code> acquisition metadata, or
-<code>slice_time</code> acquisition metadata is defaulted.</p>
+            <p>If missing <code>time</code> or <code>slice_time</code> acquisition metadata is defaulted.</p>
           </div>
         </li>
     </ul>
@@ -4621,7 +4622,7 @@ are checked.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Raise <code>ValueError</code> if spatial coordinate units disagree across DataArrays.</p>
+        <p>Raise <code>ValueError</code> if world-space units disagree across DataArrays.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4631,9 +4632,7 @@ are checked.</p>
 <a href="#confusius.validation.validate_matching_spatial_units(arrays)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>sequence of tuple[str, xarray.DataArray]</code>)
           –
           <div class="doc-md-description">
-            <p>Named DataArrays to compare. Spatial coordinates present in more than one array
-must carry matching <code>coord.attrs["units"]</code> values when that metadata is
-defined.</p>
+            <p>Named DataArrays to compare. Each must carry voxel-to-world geometry.</p>
           </div>
         </li>
     </ul>
@@ -4645,7 +4644,8 @@ defined.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If any shared spatial coordinate has conflicting <code>units</code> metadata.</p>
+            <p>If any input lacks voxel-to-world geometry, or if any two inputs disagree
+on their <code>.fusi.affine.units</code>.</p>
           </div>
         </li>
     </ul>
@@ -4822,10 +4822,11 @@ coordinate is not uniformly sampled.</p>
 
         <p>Validate a DataArray against the VoxelData model without modifying it.</p>
 <p>This requires non-empty native voxel dimensions (<code>k</code>, <code>j</code>, <code>i</code>), their
-coordinates, a matching <code>VoxelToWorldIndex</code>, and dimensions ordered as
-<code>(...extra_dims, time, pose, k, j, i)</code>. It also validates every dimension
-coordinate and requires <code>units</code> on world coordinates. When <code>time</code> is present, its
-acquisition metadata and <code>units</code> are required. The optional flags add requirements
+coordinates, and a matching <code>VoxelToWorldIndex</code> (which carries the world-space
+<code>units</code> shared by <code>z</code>/<code>y</code>/<code>x</code>, exposed via <code>.fusi.affine.units</code>), and dimensions
+ordered as <code>(...extra_dims, time, pose, k, j, i)</code>. It also validates every
+dimension coordinate. When <code>time</code> is present, its acquisition metadata and
+<code>units</code> are required. The optional flags add requirements
 needed by a particular consumer. Use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> when scalar indexing
 may have removed a voxel dimension and the input should be canonicalized first.</p>

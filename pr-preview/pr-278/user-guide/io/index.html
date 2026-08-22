@@ -3581,11 +3581,10 @@ NumPy arrays:</p>
   your data.</li>
 <li><strong>Unified API</strong>: Use the same operations regardless of the underlying storage format.</li>
 </ul>
-<p>Every loader in this guide returns <strong>VoxelData arrays</strong>: DataArrays with trailing
-<code>k</code>/<code>j</code>/<code>i</code> voxel dimensions backed by a <code>VoxelToWorldIndex</code>, which derives world
-coordinates <code>z</code>/<code>y</code>/<code>x</code> (in millimeters) from voxel-to-world affine transformations.
-World coordinates are never stored directly—they're always this index's output. See
-<a href="../voxeldata/">The VoxelData Model</a> for details on the coordinate model.</p>
+<p>Every loader in this guide returns <strong>VoxelData arrays</strong>: DataArrays with <code>(k, j, i)</code>
+voxel dimensions backed by a <code>VoxelToWorldIndex</code>, which derives world coordinates <code>(z,
+y, x)</code> from voxel-to-world affine transformations. See <a href="../voxeldata/">The VoxelData
+Model</a> for details on the coordinate model.</p>
 <h3 id="xarray-compatible-formats">Xarray-Compatible Formats<a class="headerlink" href="#xarray-compatible-formats" title="Permanent link">&para;</a></h3>
 <p>Xarray can read and write data from multiple storage formats, including:</p>
 <ul>
@@ -4016,8 +4015,8 @@ processing difficult.</p>
 <ul>
 <li><code>iq</code>: Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data with native dimensions <code>(time, k, j, i)</code>.</li>
 <li><code>time</code>, <code>k</code>, <code>j</code>, <code>i</code>: Native time and voxel-space dimension coordinates.</li>
-<li><code>voxel_to_world</code> and <code>world_coord_attrs</code>: Attributes on <code>iq</code> used to restore the
-  <code>VoxelToWorldIndex</code> and derive <code>z</code>/<code>y</code>/<code>x</code> world coordinates.</li>
+<li><code>voxel_to_world</code> and <code>voxel_to_world_units</code>: Attributes on <code>iq</code> used to restore
+  the <code>VoxelToWorldIndex</code> and derive <code>z</code>/<code>y</code>/<code>x</code> world coordinates.</li>
 <li>Metadata attributes (e.g., <code>transmit_frequency</code>, <code>plane_wave_angles</code>)
   as provided via keyword arguments.</li>
 </ul>
@@ -4043,8 +4042,8 @@ Zarr is useful for long-term storage or repeated processing of the same recordin
 <ul>
 <li><code>iq</code>: Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> data with native dimensions <code>(time, k, j, i)</code>.</li>
 <li><code>time</code>, <code>k</code>, <code>j</code>, <code>i</code>: Native time and voxel-space dimension coordinates.</li>
-<li><code>voxel_to_world</code> and <code>world_coord_attrs</code>: Attributes on <code>iq</code> used to restore the
-  <code>VoxelToWorldIndex</code> and derive <code>z</code>/<code>y</code>/<code>x</code> world coordinates.</li>
+<li><code>voxel_to_world</code> and <code>voxel_to_world_units</code>: Attributes on <code>iq</code> used to restore
+  the <code>VoxelToWorldIndex</code> and derive <code>z</code>/<code>y</code>/<code>x</code> world coordinates.</li>
 <li>Metadata attributes (e.g., <code>transmit_frequency</code>, <code>plane_wave_angles</code>)
   as extracted from the metadata file.</li>
 </ul>

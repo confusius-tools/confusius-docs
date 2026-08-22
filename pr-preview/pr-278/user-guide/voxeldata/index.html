@@ -3557,8 +3557,8 @@ space.</p>
    <a href="https://docs.xarray.dev/en/stable/user-guide/indexing.html"><strong><code>VoxelToWorldIndex</code></strong></a>
    attached to the world coordinates <code>(z, y, x)</code>, which it derives either from <code>(pose,
    k, j, i)</code> through one voxel-to-world affine transformation per pose.</li>
-<li>Metadata <code>units</code> on each world coordinate and <code>units</code>,
-   <code>volume_acquisition_reference</code>, and <code>volume_acquisition_duration</code> on <code>time</code>.</li>
+<li>Attributes <code>units</code>, <code>volume_acquisition_reference</code>, and <code>volume_acquisition_duration</code>
+   on <code>time</code>.</li>
 </ol>
 <h3 id="dimension-ordering-time-pose-k-j-i">Dimension Ordering: <code>(..., time, pose, k, j, i)</code><a class="headerlink" href="#dimension-ordering-time-pose-k-j-i" title="Permanent link">&para;</a></h3>
 <p>VoxelData arrays have the following dimensions, in the order shown:</p>
@@ -3657,28 +3657,48 @@ attributes from requirement 3 above have the following meanings:</p>
 <thead>
 <tr>
 <th>Attribute</th>
-<th>Lives on</th>
 <th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>units</code></td>
-<td><code>x</code>/<code>y</code>/<code>z</code>/<code>time</code></td>
-<td>Physical unit of the coordinate values (<code>"mm"</code> and <code>"s"</code> are typical).</td>
+<td>Physical unit of the <code>time</code> coordinate values (<code>"s"</code> is typical).</td>
 </tr>
 <tr>
 <td><code>volume_acquisition_reference</code></td>
-<td><code>time</code></td>
 <td>Which point of the acquisition window each <code>time</code> value marks: <code>"start"</code>, <code>"center"</code>, or <code>"end"</code>.</td>
 </tr>
 <tr>
 <td><code>volume_acquisition_duration</code></td>
-<td><code>time</code></td>
 <td>Duration to acquire the whole <code>(k, j, i)</code> grid, in the same units as <code>time</code>.</td>
 </tr>
 </tbody>
 </table>
+<p>Additionally, the <code>VoxelToWorldIndex</code> attached to <code>(z, y, x)</code> carries its own <code>units</code>
+attribute, which is the physical unit of the world coordinates (millimeters is typical).
+It is accessed through the
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;units&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.units"><code>.fusi.affine.units</code></a> property and set with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_units&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.set_units"><code>.fusi.affine.set_units(...)</code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Don't set attributes on world coordinates directly</p>
+<p>World coordinates <code>(z, y, x)</code> are always derived fresh from the
+<code>VoxelToWorldIndex</code>; any operation that touches the index (<code>.isel</code>,
+<code>.assign_coords</code>, etc.) regenerates them, including their <code>.attrs</code>, from the index's
+own state. Mutating <code>data.coords["z"].attrs[...]</code> directly is unsupported: the
+mutation is silently discarded the next time the coordinate is rebuilt. The index
+does write <code>units</code> onto each world coordinate's <code>.attrs</code> too, purely so external
+packages that read it from there still see it — but some xarray operations that
+combine several arrays (e.g. <code>xr.where</code>, which only keeps attrs from its <code>x</code>
+argument) can drop that copy from the result without touching the index's own
+<code>units</code>. Always trust <code>.fusi.affine.units</code>, never <code>.coords["z"].attrs["units"]</code>,
+when correctness matters.</p>
+</div>
 <h3 id="creating-and-validating-voxeldata-arrays">Creating and Validating VoxelData Arrays<a class="headerlink" href="#creating-and-validating-voxeldata-arrays" title="Permanent link">&para;</a></h3>
 <p>To build a VoxelData array from raw arrays (NumPy, CuPy, etc.), use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>. If you then modified a
@@ -3808,10 +3828,10 @@ Xarray.</p>
 transformations, for multi-pose data) contained in the <code>VoxelToWorldIndex</code> and exposed
 as coordinates <code>(x, y, z)</code>. For ordinary single-pose data these coordinates are arrays
 with shape <code>(k, j, i)</code>. For multi-pose data they are pose-dependent with shape <code>(pose,
-k, j, i)</code>, so selecting in world space requires a scalar <code>pose</code> first. The unit of the
-coordinates is stored in the <code>units</code> attribute of each coordinate array; millimeters are
-the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings
-(<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>'s default).</p>
+k, j, i)</code>, so selecting in world space requires a scalar <code>pose</code> first. The unit shared
+by <code>x</code>/<code>y</code>/<code>z</code> is exposed as <code>data.fusi.affine.units</code> and set with
+<code>data.fusi.affine.set_units(...)</code>; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
+recordings.</p>
 <div class="admonition warning">
 <p class="admonition-title">Units are not enforced</p>
 <p>ConfUSIus does not check or convert between units across its APIs—<code>units</code> is

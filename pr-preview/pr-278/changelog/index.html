@@ -4182,14 +4182,6 @@
   <code>beamforming_sound_velocity</code> passed via <code>attrs</code> and validated using
   <code>require_velocity_attrs=True</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
-<li>Spatial coordinates must carry <code>units</code> metadata, and so must <code>time</code> when present;
-  spacing along every spatial axis, including singleton dimensions, is always
-  derived from the voxel-to-world affine, never from separate coordinate metadata.
-  Scalar-indexed slices are recovered as singleton dimensions at relevant API
-  boundaries; use
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to add singleton
-  axes and coordinate metadata from raw 2D or 2D+t arrays
-  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
 <li>Removed <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>'s
   <code>sweep_dim</code> parameter. The swept voxel dimension is now always auto-detected
   from the per-pose voxel-to-world geometry (the pose-translation direction
@@ -4197,6 +4189,22 @@
   isn't cleanly aligned with a single voxel dimension can never form the
   regular grid consolidation requires, so no override was needed
   (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
+<li>World-space <code>units</code> moved off the <code>z</code>/<code>y</code>/<code>x</code> coordinates' <code>.attrs</code> onto
+  [<code>VoxelToWorldIndex</code>][confusius._utils.geometry.VoxelToWorldIndex] as a single
+  shared property, exposed via
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;units&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.units"><code>data.fusi.affine.units</code></a> and set with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_units&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.set_units"><code>data.fusi.affine.set_units</code></a>.
+  Setting <code>data.coords["z"].attrs["units"]</code> directly no longer has any effect — world
+  coordinates are always regenerated fresh from the index. <code>create_voxeldata</code>'s
+  <code>world_coord_attrs</code> parameter was replaced by a plain <code>units: str = "mm"</code>; Zarr's
+  <code>attrs["world_coord_attrs"]</code> round-trip key was renamed to
+  <code>attrs["voxel_to_world_units"]</code> (a single string)
+  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>

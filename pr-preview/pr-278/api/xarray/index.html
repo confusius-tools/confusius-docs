@@ -4683,6 +4683,13 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_units&lt;/span&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_units">set_units</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Replace the world-space unit, rebuilding the VoxelToWorldIndex.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_voxel_to_world&lt;/span&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world">set_voxel_to_world</a></code></b>
             –
             <div class="doc-md-description">
@@ -4703,6 +4710,19 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
 
 <p><span class="doc-section-title">Attributes:</span></p>
     <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;units&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.xarray.FUSIAffineAccessor.units">units</a></code></b>
+              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>World-space unit shared by every world coordinate (e.g. <code>"mm"</code>).</p>
+          </div>
+        </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;voxel_to_world&lt;/span&gt;
 
@@ -4728,6 +4748,43 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
 
 
 
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="confusius.xarray.FUSIAffineAccessor.units" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">units</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#confusius.xarray.FUSIAffineAccessor.units" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">units</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>World-space unit shared by every world coordinate (e.g. <code>"mm"</code>).</p>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Physical unit shared by <code>z</code>/<code>y</code>/<code>x</code>, since they're derived jointly from
+one affine.</p>
+          </div>
+        </li>
+    </ul>
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-attribute">
 
@@ -4877,7 +4934,7 @@ the DataArray's voxel-to-world affine, or if <code>affine</code> is a string and
 
 
 <a href="#confusius.xarray.FUSIAffineAccessor.reindex_voxels" class="headerlink" title="Permanent link">&para;</a></h4>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">reindex_voxels</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">reindex_voxels</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;inplace&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels(inplace)">inplace</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -4886,6 +4943,21 @@ the DataArray's voxel-to-world affine, or if <code>affine</code> is a string and
 <p>See
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="./#confusius.xarray.reindex_voxels">reindex_voxels</a>
 for details.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.xarray.FUSIAffineAccessor.reindex_voxels(inplace)" class="doc doc-heading doc-heading-parameter">              <b><code>inplace</code></b>
+<a href="#confusius.xarray.FUSIAffineAccessor.reindex_voxels(inplace)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to modify the wrapped DataArray in-place.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <p><span class="doc-section-title">Returns:</span></p>
@@ -4943,8 +5015,11 @@ undefined for any voxel dimension.</p>
 
 <a href="#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like" class="headerlink" title="Permanent link">&para;</a></h4>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">reindex_voxels_like</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;reference&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(reference)">reference</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-06</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;reference&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(reference)">reference</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">1e-06</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;inplace&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(inplace)">inplace</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -4974,6 +5049,16 @@ for details.</p>
           <div class="doc-md-description">
             <p>Absolute tolerance, in <code>reference</code>'s physical units, for the
 world-coordinate alignment check between <code>self</code> and <code>reference</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(inplace)" class="doc doc-heading doc-heading-parameter">              <b><code>inplace</code></b>
+<a href="#confusius.xarray.FUSIAffineAccessor.reindex_voxels_like(inplace)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to modify the wrapped DataArray in-place.</p>
           </div>
         </li>
     </ul>
@@ -5013,14 +5098,74 @@ match within <code>atol</code>.</p>
 <div class="doc doc-object doc-function">
 
 
+<h4 id="confusius.xarray.FUSIAffineAccessor.set_units" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set_units</span>
+
+
+<a href="#confusius.xarray.FUSIAffineAccessor.set_units" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">set_units</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;units&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_units(units)">units</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;inplace&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_units(inplace)">inplace</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Replace the world-space unit, rebuilding the VoxelToWorldIndex.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.xarray.FUSIAffineAccessor.set_units(units)" class="doc doc-heading doc-heading-parameter">              <b><code>units</code></b>
+<a href="#confusius.xarray.FUSIAffineAccessor.set_units(units)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>New physical unit shared by every world coordinate.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.xarray.FUSIAffineAccessor.set_units(inplace)" class="doc doc-heading doc-heading-parameter">              <b><code>inplace</code></b>
+<a href="#confusius.xarray.FUSIAffineAccessor.set_units(inplace)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to modify the wrapped DataArray in-place.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="confusius.xarray.DataArray">DataArray</span></code>
+          –
+          <div class="doc-md-description">
+            <p>DataArray with rebuilt VoxelToWorldIndex-backed coordinates.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h4 id="confusius.xarray.FUSIAffineAccessor.set_voxel_to_world" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">set_voxel_to_world</span>
 
 
 <a href="#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world" class="headerlink" title="Permanent link">&para;</a></h4>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">set_voxel_to_world</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;voxel_to_world&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(voxel_to_world)">voxel_to_world</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.ArrayLike" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike">ArrayLike</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;inplace&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(inplace)">inplace</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;voxel_to_world&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(voxel_to_world)">voxel_to_world</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.ArrayLike" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike">ArrayLike</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;units&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(units)">units</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;inplace&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(inplace)">inplace</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -5036,6 +5181,19 @@ match within <code>atol</code>.</p>
           –
           <div class="doc-md-description">
             <p>Homogeneous affine mapping native voxel coordinates to world coordinates.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(units)" class="doc doc-heading doc-heading-parameter">              <b><code>units</code></b>
+<a href="#confusius.xarray.FUSIAffineAccessor.set_voxel_to_world(units)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>New physical unit shared by every world coordinate. If not provided,
+the existing unit is kept, or <code>"mm"</code> if there is none yet (e.g. when
+attaching geometry for the first time onto a plain, not-yet-indexed
+DataArray).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -9727,11 +9885,10 @@ DataArray's voxel-to-world affine, or if <code>affine</code> is a string and <co
 </span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;origin&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(origin)">origin</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;direction&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(direction)">direction</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.ArrayLike" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike">ArrayLike</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;voxel_to_world&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(voxel_to_world)">voxel_to_world</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.ArrayLike" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike">ArrayLike</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;name&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(name)">name</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(attrs)">attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;world_coord_attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(world_coord_attrs)">world_coord_attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Mapping" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping">Mapping</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Mapping" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping">Mapping</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]]</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;units&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(units)">units</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;name&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(name)">name</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;attrs&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.create_voxeldata(attrs)">attrs</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -9933,6 +10090,16 @@ this way, there is no parallel per-pose <code>spacing</code>/<code>origin</code>
           </div>
         </li>
         <li class="doc-section-item field-body">
+<h4 id="confusius.xarray.create_voxeldata(units)" class="doc doc-heading doc-heading-parameter">              <b><code>units</code></b>
+<a href="#confusius.xarray.create_voxeldata(units)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#34;mm&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Physical unit shared by every derived world coordinate.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
 <h4 id="confusius.xarray.create_voxeldata(name)" class="doc doc-heading doc-heading-parameter">              <b><code>name</code></b>
 <a href="#confusius.xarray.create_voxeldata(name)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
                   <code>None</code>
@@ -9950,18 +10117,6 @@ this way, there is no parallel per-pose <code>spacing</code>/<code>origin</code>
           –
           <div class="doc-md-description">
             <p>DataArray attributes.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-<h4 id="confusius.xarray.create_voxeldata(world_coord_attrs)" class="doc doc-heading doc-heading-parameter">              <b><code>world_coord_attrs</code></b>
-<a href="#confusius.xarray.create_voxeldata(world_coord_attrs)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="mapping">mapping</span>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <span title="mapping">mapping</span>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>]]</code>, default:
-                  <code>None</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Attributes to merge onto the derived world coordinates, keyed by world
-coordinate name (<code>z</code>/<code>y</code>/<code>x</code>). Overrides the auto-computed <code>units</code> entry for
-any key present in the given mapping; other auto-computed entries are kept.</p>
           </div>
         </li>
     </ul>
