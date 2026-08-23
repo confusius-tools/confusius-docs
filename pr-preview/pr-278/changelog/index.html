@@ -4226,11 +4226,15 @@
   exactly; <code>load_nifti</code> composes the full primary qform/sform affine into
   <code>voxel_to_world</code> instead of decomposing it into axis-aligned scale/origin
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li><code>plot_volume</code> (and napari layers) can now slice along either native voxel
-  planes (<code>k</code>/<code>j</code>/<code>i</code>) or world planes (<code>z</code>/<code>y</code>/<code>x</code>), resampling onto an
-  axis-aligned display grid only when slicing by world plane and only for
-  oblique data; <code>slice_mode="pose"</code> facets a multi-pose array over its poses
-  with world-coordinate axis labels
+<li><code>plot_volume</code> (and napari layers) always displays in world space, like
+  nilearn: an axis-aligned world plane (<code>z</code>/<code>y</code>/<code>x</code>), a non-spatial dim (e.g.
+  <code>slice_mode="pose"</code> facets a multi-pose array over its poses), or, for
+  oblique data, a projection onto the world axes at full native resolution
+  with no interpolation. <code>resample_in_plane=True</code> (<code>add_volume</code>,
+  <code>add_contours</code>, <code>plot_volume</code>, <code>plot_composite</code>, <code>plot_stat_map</code>) opts into
+  a real in-plane resample instead, trading resolution for entirely
+  rectangular output cells; <code>transpose=True</code> swaps which display dim is drawn
+  on rows versus columns
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> to canonicalize
   and validate VoxelData inputs with one call, and added
