@@ -5220,21 +5220,32 @@ label map is purely spatial.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>Stacked integer DataArray with dims <code>["mask", *spatial_dims]</code>, where the
-<code>mask</code> coordinate holds each unique non-zero label integer. Each layer
-<code>mask=k</code> has values <code>k</code> where the user painted label <code>k</code> and <code>0</code> elsewhere.
-This format is directly compatible with
+            <p>Stacked integer VoxelData array where the <code>mask</code> coordinate holds each unique
+non-zero label integer. Each layer has values <code>m</code> where the user painted label
+<code>m</code> and <code>0</code> elsewhere. This format is directly compatible with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>,
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="./#confusius.plotting.plot_contours"><code>plot_contours</code></a>, and
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_contours"><code>VolumePlotter.add_contours</code></a>,
-and can be sliced by label (e.g. <code>label_map.sel(mask=2)</code>) for per-label
-display. The <code>attrs</code> dict carries:</p>
+and can be sliced by label (e.g. <code>label_map.sel(mask=2)</code>) for per-label display.
+The <code>attrs</code> dict carries:</p>
 <ul>
-<li><code>"long_name"</code> — human-readable name.</li>
-<li><code>"labels_layer_name"</code> — name of the source napari layer.</li>
-<li><code>"rgb_lookup"</code> — <code>dict[int, list[int]]</code> mapping each non-zero
-  label to its <code>[r, g, b]</code> color (0–255) as painted in napari.</li>
+<li><code>"long_name"</code>: "Drawn label map"</li>
+<li><code>"labels_layer_name"</code>: name of the source napari layer.</li>
+<li><code>"rgb_lookup"</code>: <code>dict[int, list[int]]</code> mapping each non-zero label to its
+  <code>[r, g, b]</code> color (0–255) as painted in napari.</li>
 </ul>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>labels_layer</code> does not contain any non-zero labels.</p>
           </div>
         </li>
     </ul>
