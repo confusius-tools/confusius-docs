@@ -6373,9 +6373,10 @@ position-anchored output grid (<code>sizes</code>, <code>spacing</code>, <code>o
 <a href="#confusius.registration.resample_like(moving)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array to resample. May be spatial-only or have a
-<code>time</code> dimension (single-slice recordings use a singleton <code>k</code> axis). If a time
-dimension is present, the same transform is applied to all time points.</p>
+            <p>VoxelData array to resample. May be spatial-only, or have any number of
+extra non-spatial dimensions (<code>time</code> and/or others; <code>pose</code> is not supported)
+(single-slice recordings use a singleton <code>k</code> axis). The same transform is
+applied to every slice along the extra dimensions.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6384,9 +6385,9 @@ dimension is present, the same transform is applied to all time points.</p>
           –
           <div class="doc-md-description">
             <p>VoxelData array defining the output grid. Only its <code>k</code>/<code>j</code>/<code>i</code> grid
-(<code>sizes</code>/<code>spacing</code>/<code>origin</code>/<code>direction</code>) is used, so a <code>time</code> dimension, if
-present, is ignored. When spatial coordinate <code>units</code> metadata is present on
-both <code>moving</code> and <code>reference</code>, they must match.</p>
+(<code>sizes</code>/<code>spacing</code>/<code>origin</code>/<code>direction</code>) is used, so <code>time</code> or other extra
+dimensions, if present, are ignored. When spatial coordinate <code>units</code> metadata
+is present on both <code>moving</code> and <code>reference</code>, they must match.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6467,8 +6468,9 @@ avoid over-subscribing the CPU.</p>
           <div class="doc-md-description">
             <p>Resampled volume on the grid of <code>reference</code>, with <code>reference</code>'s <code>k</code>/<code>j</code>/<code>i</code>
 voxel labels and affine, <code>moving</code>'s non-spatial attributes, and world-space
-affines inherited from <code>reference</code>. If <code>moving</code> had a time dimension, the
-output will also have a time dimension (<code>moving</code>'s, not <code>reference</code>'s).</p>
+affines inherited from <code>reference</code>. Any extra non-spatial dimensions on
+<code>moving</code> (including <code>time</code>) are carried over unchanged (<code>moving</code>'s, not
+<code>reference</code>'s).</p>
           </div>
         </li>
     </ul>
@@ -6542,9 +6544,10 @@ position-anchored grid from an existing DataArray.</p>
 <a href="#confusius.registration.resample_volume(moving)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array to resample. May be spatial-only or have a <code>time</code> dimension
-(single-slice recordings use a singleton <code>k</code> axis). If a time dimension is
-present, the same transform is applied to all time points.</p>
+            <p>VoxelData array to resample. May be spatial-only, or have any number of
+extra non-spatial dimensions (<code>time</code> and/or others; <code>pose</code> is not supported)
+(single-slice recordings use a singleton <code>k</code> axis). The same transform is
+applied to every slice along the extra dimensions.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6652,9 +6655,8 @@ avoid over-subscribing the CPU.</p>
               <code><span title="confusius.xarray.DataArray">DataArray</span></code>
           –
           <div class="doc-md-description">
-            <p>VoxelData array resampled onto the requested grid, with
-<code>moving</code>'s attributes. If the input had a time dimension, the output will also
-have a time dimension.</p>
+            <p>VoxelData array resampled onto the requested grid, with <code>moving</code>'s attributes
+and any extra non-spatial dimensions.</p>
           </div>
         </li>
     </ul>
