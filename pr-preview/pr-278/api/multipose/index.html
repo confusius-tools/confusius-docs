@@ -3606,9 +3606,11 @@ voxel-to-world geometry. Typically produced by
           –
           <div class="doc-md-description">
             <p>VoxelData array with <code>pose</code> merged into the swept voxel dimension, sorted by
-world position. The consolidated coordinate holds the projection of each
-voxel's world position onto the sweep axis, expressed in the same units as
-the input coordinate. For inputs whose <code>time</code> coordinate is itself
+world position. Every voxel keeps its world position: the output
+voxel-to-world affine carries over the input's non-swept columns (including
+any rotation), uses one regular step along the detected sweep axis for the
+swept column, and is anchored at the first sorted voxel. For inputs whose
+<code>time</code> coordinate is itself
 pose-dependent (<code>(time, pose)</code>-shaped -- see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses">stack_poses</a>), a consolidated <code>slice_time</code>
 with dims <code>("time", &lt;sweep_dim&gt;)</code> is included: each slice inherits the
