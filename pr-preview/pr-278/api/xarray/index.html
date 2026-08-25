@@ -10251,10 +10251,9 @@ used.</p>
           –
           <div class="doc-md-description">
             <p>4x4 homogeneous affine in world <code>z/y/x</code> row and voxel <code>k/j/i</code> column order,
-or an <code>(npose, 4, 4)</code> stack of one such affine per pose. A stack requires a
-<code>pose</code> dimension in <code>dims</code> with a matching length, and is mutually exclusive
-with <code>spacing</code>/<code>origin</code>/<code>direction</code> — per-pose geometry can only be supplied
-this way, there is no parallel per-pose <code>spacing</code>/<code>origin</code>/<code>direction</code> API.</p>
+or an <code>(npose, 4, 4)</code> stack of one such affine per pose when a <code>pose</code> dimension
+is present in <code>dims</code>. Mutually exclusive with <code>spacing</code>, <code>origin</code>, and
+<code>direction</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -10311,8 +10310,9 @@ coordinates.</p>
           <div class="doc-md-description">
             <p>If <code>dims</code> uses world <code>z</code>/<code>y</code>/<code>x</code> names instead of native voxel names, if a
 pose-stacked <code>voxel_to_world</code> is given without a matching <code>pose</code> dimension,
-or if dimensions, coordinates, geometry, timing, or VoxelData validation otherwise
-fail.</p>
+if <code>dims</code> has a <code>pose</code> dimension and <code>voxel_to_world</code> is not a matching
+per-pose stack, or if dimensions, coordinates, geometry, timing, or
+VoxelData validation otherwise fail.</p>
           </div>
         </li>
     </ul>
