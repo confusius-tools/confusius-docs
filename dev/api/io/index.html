@@ -5919,15 +5919,19 @@ px, 1.0])</code> to get <code>[wz, wy, wx, 1]</code>, where <code>pz</code>, <co
 operate on world positions, not grid indices.</p>
 <p>With <code>coordinate_affine="auto"</code>, affine selection follows NIfTI conventions:</p>
 <ul>
-<li>If <code>sform_code &gt; 0</code>: sform is used as the primary affine; a
+<li>If <code>sform_code &gt; 0</code>: sform is used as the primary affine; an identity
   <code>"world_to_sform"</code> entry is written. When <code>qform_code &gt; 0</code> as well, a
   <code>"world_to_qform"</code> entry is also stored as secondary.</li>
-<li>Else, if only <code>qform_code &gt; 0</code>: qform is used as the primary affine; only
-  <code>"world_to_qform"</code> is written.</li>
-<li>If both codes are zero: a warning is emitted, coordinates are built from
-  <code>pixdim</code> only (origin 0, step = voxel size), and no <code>"affines"</code> entry is
-  stored in <code>da.attrs</code>.</li>
+<li>Else, if only <code>qform_code &gt; 0</code>: qform is used as the primary affine; only an
+  identity <code>"world_to_qform"</code> entry is written.</li>
 </ul>
+<p>The primary form's identity entry is what keeps that form recoverable after
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>apply</code></a> re-anchors the world
+frame elsewhere: it is re-expressed along with the other entries, so
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="./#confusius.io.save_nifti"><code>save_nifti</code></a> can still write the original header form.
+- If both codes are zero: a warning is emitted, coordinates are built from
+  <code>pixdim</code> only (origin 0, step = voxel size), and no <code>"affines"</code> entry is
+  stored in <code>da.attrs</code>.</p>
 <p>Choosing <code>coordinate_affine="sform"</code> or <code>"qform"</code> <em>forces</em> that header affine:
 unlike <code>"auto"</code>, there is no fallback to the other form or to <code>pixdim</code> when the
 requested affine is not valid -- <code>load_nifti</code> raises <code>ValueError</code> instead.</p>
