@@ -3850,7 +3850,9 @@ volumes on the same axes by matching coordinates.</p>
 )
           –
           <div class="doc-md-description">
-            <p>The dimension along which slices are taken (e.g., <code>"z"</code>).</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
+slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
+modes.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3974,7 +3976,8 @@ minimum value (see
               (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>)
           –
           <div class="doc-md-description">
-            <p>The dimension along which slices are taken.</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension being
+sliced.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5664,8 +5667,9 @@ from <code>data1</code> are used.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dimension along which to slice (e.g. <code>"x"</code>, <code>"y"</code>, <code>"z"</code>). After slicing, each
-panel must be 2D.</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
+slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
+modes. After slicing, each panel must be 2D.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6023,8 +6027,9 @@ when present, otherwise from the <code>tab10</code>/<code>tab20</code> colormap.
 )
           –
           <div class="doc-md-description">
-            <p>Dimension along which to slice (e.g. <code>"x"</code>, <code>"y"</code>, <code>"z"</code>). After
-slicing, each panel must be 2D.</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
+slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
+modes. After slicing, each panel must be 2D.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7331,8 +7336,9 @@ provided) along <code>slice_mode</code> are used.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dimension along which to slice (e.g., <code>"x"</code>, <code>"y"</code>, <code>"z"</code>, <code>"time"</code>). After
-slicing, each panel must be 2D.</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
+slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
+modes. After slicing, each panel must be 2D.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7826,9 +7832,9 @@ dimension is used; otherwise the default is <code>"z"</code>.</p>
 <a href="#confusius.plotting.plot_volume(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="confusius.xarray.DataArray">DataArray</span></code>)
           –
           <div class="doc-md-description">
-            <p>Input data array. Unitary dimensions are squeezed before processing. After
-squeezing, data must be 3D. Complex-valued data is converted to magnitude
-before display.</p>
+            <p>Input data array. Unitary non-world dimensions are squeezed before
+processing; singleton world display axes are preserved. After that, data
+must be 3D. Complex-valued data is converted to magnitude before display.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7851,10 +7857,11 @@ all coordinate values along <code>slice_mode</code> are used.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dimension along which to slice (e.g., <code>"x"</code>, <code>"y"</code>, <code>"z"</code>,
-<code>"time"</code>). If not provided, planar data is sliced along its singleton
-world dimension and full 3D data is sliced along <code>"z"</code>. After slicing,
-each panel must be 2D.</p>
+            <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
+slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
+modes. If not provided, planar data is sliced along its singleton world
+dimension and full 3D data is sliced along <code>"z"</code>. After slicing, each panel
+must be 2D.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
