@@ -4054,9 +4054,9 @@ large-scale and local deformation at once.</p>
 <td><code>correlation</code> is a good default for power Doppler data; <code>mattes_mi</code> is more robust when intensity distributions differ.</td>
 </tr>
 <tr>
-<td><strong>Scale</strong></td>
-<td>Applies optional intensity scaling before registration.</td>
-<td>Useful for power Doppler data where large vessels are typically overbright compared to finer structures.</td>
+<td><strong>Fixed / Moving intensity scaling</strong></td>
+<td>Applies optional intensity scaling (<code>decibel</code>, <code>square root</code>, or <code>none</code>) to the fixed and moving layers, only for the optimizer; result layers keep their original intensities.</td>
+<td>Useful for power Doppler data where large vessels are typically overbright compared to finer structures. Set them differently when the two layers are already on different scales (e.g. a dB atlas and linear power Doppler).</td>
 </tr>
 <tr>
 <td><strong>Initialization</strong></td>
@@ -4177,8 +4177,8 @@ run completes.</p>
 <td><code>correlation</code> is usually a good default for within-recording motion correction.</td>
 </tr>
 <tr>
-<td><strong>Scale</strong></td>
-<td>Applies optional preprocessing before registration.</td>
+<td><strong>Intensity scaling</strong></td>
+<td>Applies optional intensity scaling (<code>decibel</code>, <code>square root</code>, or <code>none</code>) to the reference and every frame, only for the optimizer.</td>
 <td>Useful when an intensity transform makes anatomy more stable across time for the optimizer.</td>
 </tr>
 <tr>

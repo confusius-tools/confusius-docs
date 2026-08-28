@@ -4357,8 +4357,12 @@ the overlay with the background, and <code>bg_kwargs</code> to style the backgro
 <a class="autorefs autorefs-external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Normalize.html#matplotlib.colors.Normalize"><code>matplotlib.colors.Normalize</code></a> instance as <code>norm</code> (for
 example <code>TwoSlopeNorm</code>, <code>BoundaryNorm</code>, or <code>LogNorm</code>) when you need a custom mapping.
 When <code>norm</code> is provided, it overrides <code>vmin</code>, <code>vmax</code>, and <code>auto_range</code> entirely.</p>
-<p>If you need lower-level control beyond <code>plot_stat_map</code>, call
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> directly instead.</p>
+<p>To overlay a statistical map onto an existing plot (for example one built with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a>), call
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_stat_map&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_stat_map"><code>VolumePlotter.add_stat_map</code></a> on the
+returned plotter; it applies the same automatic colormap and range logic as
+<code>plot_stat_map</code>. For full manual control over the colormap and range, use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_volume"><code>VolumePlotter.add_volume</code></a> instead.</p>
 <p><a class="glightbox" data-gallery="light" data-title="Seed-based connectivity maps" data-type="image" href="../../examples/_built/connectivity/atlas_seed_map_thumb_light.png#only-light"><img alt="Seed-based connectivity maps" src="../../examples/_built/connectivity/atlas_seed_map_thumb_light.png#only-light" /></a>
 <a class="glightbox" data-gallery="dark" data-title="Seed-based connectivity maps" data-type="image" href="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark"><img alt="Seed-based connectivity maps" src="../../examples/_built/connectivity/atlas_seed_map_thumb_dark.png#only-dark" /></a></p>
 <p>This figure is generated in the <a href="../../examples/_built/connectivity/atlas_seed_map/">atlas-based seed connectivity maps
