@@ -4649,9 +4649,9 @@ require an exact match. If not provided, uses all coordinates from
 )
           –
           <div class="doc-md-description">
-            <p>If True, match slice coordinates to the stored coordinate mapping (for
-overlays). If False, plot sequentially on all axes (requires exact axis
-count match).</p>
+            <p>Whether to match slice coordinates to the stored coordinate mapping (for
+overlays) instead of plotting sequentially on all axes (which requires
+an exact axis count match).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4687,8 +4687,9 @@ entirely; <code>cmap</code> still follows the usual rules above.</p>
           –
           <div class="doc-md-description">
             <p>Lower bound of the colormap. If not provided, defaults to the minimum
-value of <code>stat_map</code>. Ignored when <code>norm</code> is provided, or when
-<code>auto_range</code> resolves to a range anchored at zero (see below).</p>
+value of <code>stat_map</code>, computed over the full array rather than just the
+displayed slices. Ignored when <code>norm</code> is provided, or when
+<code>auto_range=True</code> and <code>stat_map</code> has only non-negative values.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4699,7 +4700,8 @@ value of <code>stat_map</code>. Ignored when <code>norm</code> is provided, or w
           –
           <div class="doc-md-description">
             <p>Upper bound of the colormap. If not provided, defaults to the maximum
-value of <code>stat_map</code>. Ignored when <code>norm</code> is provided, or when
+value of <code>stat_map</code>, computed over the full array rather than just the
+displayed slices. Ignored when <code>norm</code> is provided, or when
 <code>auto_range=True</code> and <code>stat_map</code> has only non-positive values.</p>
           </div>
         </li>
@@ -5020,9 +5022,9 @@ require an exact match. If not provided, uses all coordinates from data.</p>
 )
           –
           <div class="doc-md-description">
-            <p>If True, match slice coordinates to the stored coordinate mapping (for
-overlays). If False, plot sequentially on all axes (requires exact axis
-count match).</p>
+            <p>Whether to match slice coordinates to the stored coordinate mapping (for
+overlays) instead of plotting sequentially on all axes (which requires
+an exact axis count match).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7662,9 +7664,9 @@ the same viewer.</p>
         <p>Plot a statistical map, optionally over a background volume.</p>
 <p>Performs the recurring pattern of <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="./#confusius.plotting.plot_volume"><code>plot_volume</code></a> to
 show a background anatomical volume +
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>VolumePlotter.add_volume</code></a> to overlay
-a statistical map, with the colormap and range picked automatically based on
-whether the statistic is diverging (has both positive and negative values) or
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_stat_map&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_stat_map"><code>VolumePlotter.add_stat_map</code></a> to
+overlay a statistical map, with the colormap and range picked automatically based
+on whether the statistic is diverging (has both positive and negative values) or
 one-signed.</p>
 
 
@@ -7779,8 +7781,8 @@ still follows the usual rules above.</p>
           <div class="doc-md-description">
             <p>Lower bound of the colormap. If not provided, defaults to the minimum value
 of <code>stat_map</code>, computed over the full array rather than just the displayed
-slices. Ignored when <code>norm</code> is provided, or when <code>auto_range</code> resolves to a
-range anchored at zero (see below).</p>
+slices. Ignored when <code>norm</code> is provided, or when <code>auto_range=True</code> and
+<code>stat_map</code> has only non-negative values.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -8109,10 +8111,12 @@ minimum value.</p>
 <details class="note" open>
   <summary>Notes</summary>
   <p>When <code>bg_volume</code> is provided, this is equivalent to calling
-<code>plot_volume(bg_volume, ...)</code> followed by <code>plotter.add_volume(stat_map,
-alpha=alpha, cmap=resolved_cmap, vmin=resolved_vmin, vmax=resolved_vmax, ...)</code>.
-Use those functions directly for finer control, e.g. a custom, non-zero-anchored
-asymmetric range.</p>
+<code>plot_volume(bg_volume, show_colorbar=False, ...)</code> followed by
+<code>plotter.add_stat_map(stat_map, ...)</code>. Use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_stat_map&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_stat_map"><code>VolumePlotter.add_stat_map</code></a>
+directly to overlay a statistical map onto an existing plot, or
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>VolumePlotter.add_volume</code></a> for full
+manual control over the colormap and range.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
