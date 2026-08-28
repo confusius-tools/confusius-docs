@@ -5399,7 +5399,7 @@ NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref),
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;per_slice&quot;</span><span class="p">,</span> <span class="s2">&quot;shared&quot;</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;per_volume&quot;</span><span class="p">,</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_coords&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(slice_coords)">slice_coords</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="collections.abc.Hashable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable">Hashable</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_mode&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(slice_mode)">slice_mode</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;slice_mode&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(slice_mode)">slice_mode</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;transpose&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(transpose)">transpose</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;alpha&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(alpha)">alpha</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="numpy.typing.NDArray" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray">NDArray</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="numpy.floating" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating">floating</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;show_titles&lt;/code&gt;&lt;/b&gt;" href="./#confusius.plotting.plot_composite(show_titles)">show_titles</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -5429,7 +5429,9 @@ NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref),
 <p>Each slice is rendered as an RGB image where <code>data1</code> drives the red channel
 and <code>data2</code> drives the green and blue channels (cyan), making overlap
 visible as desaturated grey. This is the same visual encoding used by the
-live registration progress preview.</p>
+live registration progress preview.
+If <code>slice_mode</code> is not provided and <code>data1</code> is planar, the singleton world
+dimension is used; otherwise the default is <code>"z"</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5539,13 +5541,15 @@ from <code>data1</code> are used.</p>
         <li class="doc-section-item field-body">
 <h4 id="confusius.plotting.plot_composite(slice_mode)" class="doc doc-heading doc-heading-parameter">              <b><code>slice_mode</code></b>
 <a href="#confusius.plotting.plot_composite(slice_mode)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
-                  <code>&#34;z&#34;</code>
+                  <code>None</code>
 )
           –
           <div class="doc-md-description">
             <p>World dimension (<code>"z"</code>, <code>"y"</code>, <code>"x"</code>) or extra non-voxel dimension to
 slice. Native voxel dimensions (<code>"k"</code>, <code>"j"</code>, <code>"i"</code>) are not valid slice
-modes. After slicing, each panel must be 2D.</p>
+modes. If not provided, planar <code>data1</code> is sliced along its singleton world
+dimension and full 3D data is sliced along <code>"z"</code>. After slicing, each
+panel must be 2D.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
