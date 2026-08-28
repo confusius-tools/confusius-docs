@@ -4337,6 +4337,14 @@
   random sampling), with optional deterministic seeding via <code>metric_sampling_seed</code>,
   to speed up large affine or B-spline registrations
   (<a href="https://github.com/confusius-tools/confusius/issues/396">#396</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> gained
+  <code>fixed_intensity_scaling</code>/<code>moving_intensity_scaling</code> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> gained
+  <code>intensity_scaling</code> (all <code>"none"</code> by default) to rescale the images passed to
+  the registration optimizer without affecting the returned/resampled data:
+  <code>"db"</code>, <code>"sqrt"</code> (an alias for <code>0.5</code>), or any positive float exponent for power
+  scaling. <strong>[Napari plugin]</strong> The Registration panel exposes the same selectors
+  (<a href="https://github.com/confusius-tools/confusius/pull/405">#405</a>).</li>
 <li><code>VoxelToWorldIndex</code>/<code>create_voxeldata</code>/<code>attach_voxel_to_world_index</code> now
   support pose-dependent voxel-to-world geometry: a <code>(npose, 4, 4)</code> affine
   stack, one per pose, instead of one affine shared by every pose. New
@@ -4386,11 +4394,18 @@
   been scaled with <code>.fusi.scale.db()</code>; the <code>-inf</code> values <code>db_scale</code> assigns to
   zero-valued voxels are now excluded from the normalization bounds
   (<a href="https://github.com/confusius-tools/confusius/pull/370">#370</a>).</li>
+<li><code>.fusi.scale.db()</code> and <code>.fusi.scale.log()</code> no longer emit a <code>RuntimeWarning</code> for
+  zero/negative values when applied to Dask-backed data
+  (<a href="https://github.com/confusius-tools/confusius/issues/379">#379</a>).</li>
 <li><code>FirstLevelModel.fit</code> no longer errors on multi-pose data. Its implicit
   all-True mask (used when no <code>mask</code> is passed) now covers <code>pose</code> when the
   input has it, instead of collapsing to a single pose; the explicit-<code>mask</code>
   path no longer rejects a <code>pose</code>-carrying mask either
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li><code>plot_napari</code> and the napari plugin no longer crash on a non-spatial dimension
+  with string coordinates (e.g. a recording-id stack dim); such a dimension now
+  falls back to scale 1/origin 0 like any other missing world geometry
+  (<a href="https://github.com/confusius-tools/confusius/pull/409">#409</a>).</li>
 </ul>
 <h2 id="061">0.6.1<a class="headerlink" href="#061" title="Permanent link">&para;</a></h2>
 <p>Released 2026-08-07.</p>
