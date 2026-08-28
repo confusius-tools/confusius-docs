@@ -3464,7 +3464,7 @@ this example.</p>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">xr</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">display_expand_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;xarray.core.options.set_options at 0x7fd95c6cecf0&gt;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;xarray.core.options.set_options at 0x7f6c871b41a0&gt;
 </span></code></pre></div>
 </div>
 <h2 id="set-up-an-anatomical-background-a-stat-map-and-an-atlas">Set up an anatomical background, a stat map, and an atlas<a class="headerlink" href="#set-up-an-anatomical-background-a-stat-map-and-an-atlas" title="Permanent link">&para;</a></h2>
@@ -3546,7 +3546,7 @@ the resampled region label map.</p>
 </pre></div>
 
 <div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>/tmp/ipykernel_10663/753740321.py:11: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>/tmp/ipykernel_7055/753740321.py:11: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 </span></code></pre></div>
 </div>
@@ -3562,7 +3562,9 @@ the resampled region label map.</p>
 chaining <code>add_volume</code> on it overlays the stat map onto the same axes, matched by
 <code>slice_mode</code> coordinate. The stat map's own colormap fully covers the background
 wherever it has a value; <code>threshold</code> masks out weak correlations so the anatomical
-background shows through there instead.</p>
+background shows through there instead. <code>add_stat_map</code> does the same with the
+automatic colormap and range of <code>plot_stat_map</code>; <code>add_volume</code> is used here to pick
+an explicit colormap and range.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span><span class="n">bg_volume</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">_</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">add_volume</span><span class="p">(</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">stat_map</span><span class="p">,</span>
@@ -3616,7 +3618,7 @@ reference (red) against the recording it was resampled onto (cyan).</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../overlays_and_contours_output_light/cell_14_0_light.png#only-light" data-type="image" data-title="Example output from cell 14, image 0" data-gallery="light"><img src="../overlays_and_contours_output_light/cell_14_0_light.png#only-light" alt="Example output from cell 14, image 0"></a><a class="glightbox" href="../overlays_and_contours_output_dark/cell_14_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 14, image 0" data-gallery="dark"><img src="../overlays_and_contours_output_dark/cell_14_0_dark.png#only-dark" alt="Example output from cell 14, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 15.0 s</p>
+<p><strong>Total running time:</strong> 19.1 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/fix/resample-time-memory?urlpath=lab/tree/docs/examples/02_plotting/02_overlays_and_contours.py">Launch in Binder</a> <a class="md-button" href="../overlays_and_contours.py">Download .py</a> <a class="md-button" href="../overlays_and_contours.ipynb">Download .ipynb</a></p>
 
 
