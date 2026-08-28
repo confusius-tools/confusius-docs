@@ -9656,7 +9656,7 @@ in functional ultrasound imaging analysis.</p>
 
 
 <a href="#confusius.xarray.FUSIScaleAccessor.db" class="headerlink" title="Permanent link">&para;</a></h4>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">db</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIScaleAccessor.db(factor)">factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">db</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.FUSIScaleAccessor.db(factor)">factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -9669,12 +9669,14 @@ in functional ultrasound imaging analysis.</p>
         <li class="doc-section-item field-body">
 <h5 id="confusius.xarray.FUSIScaleAccessor.db(factor)" class="doc doc-heading doc-heading-parameter">              <b><code>factor</code></b>
 <a href="#confusius.xarray.FUSIScaleAccessor.db(factor)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
-                  <code>10</code>
+                  <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Scaling factor for decibel conversion. Use 10 for power quantities
-(default), 20 for amplitude quantities.</p>
+            <p>Scaling factor for decibel conversion. Use 10 for power quantities, 20 for
+amplitude quantities. If not provided, defaults to 20 for complex-valued
+(typically beamformed IQ signals) data and 10 otherwise (typically power
+Doppler signals).</p>
           </div>
         </li>
     </ul>
@@ -10240,7 +10242,9 @@ VoxelData validation otherwise fail.</p>
 
 
 <a href="#confusius.xarray.db_scale" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">db_scale</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.db_scale(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.db_scale(factor)">factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">db_scale</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.db_scale(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;factor&lt;/code&gt;&lt;/b&gt;" href="./#confusius.xarray.db_scale(factor)">factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -10261,12 +10265,14 @@ VoxelData validation otherwise fail.</p>
         <li class="doc-section-item field-body">
 <h4 id="confusius.xarray.db_scale(factor)" class="doc doc-heading doc-heading-parameter">              <b><code>factor</code></b>
 <a href="#confusius.xarray.db_scale(factor)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></code>, default:
-                  <code>10</code>
+                  <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Scaling factor for decibel conversion. Use 10 for power quantities (default),
-20 for amplitude quantities.</p>
+            <p>Scaling factor for decibel conversion. Use 10 for power quantities, 20 for
+amplitude quantities. If not provided, defaults to 20 for complex-valued
+(typically beamformed IQ signals) data and 10 otherwise (typically power Doppler
+signals).</p>
           </div>
         </li>
     </ul>
