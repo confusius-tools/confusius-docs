@@ -3652,7 +3652,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="./#confusius.validation.ensure_time_aligned">ensure_time_aligned</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Return <code>value</code> as a DataArray aligned with <code>signals</code> along <code>time</code>.</p>
+              <p>Return <code>value</code> as a <code>(time, ...)</code> DataArray aligned with <code>signals</code>.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4073,13 +4073,20 @@ dimensions don't match <code>data</code>'s.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Return <code>value</code> as a DataArray aligned with <code>signals</code> along <code>time</code>.</p>
-<p>A DataArray <code>value</code> is validated against <code>signals</code>: it must have a <code>time</code>
-dimension, and when both carry <code>time</code> coordinates these must match. A DataFrame
-<code>value</code> must have a <code>time</code> column, which is validated the same way; its other
-columns become a <code>confound</code> dimension named after them. A NumPy <code>value</code> is assumed
-to be ordered like <code>signals</code> along its first axis and is wrapped in a DataArray
-carrying the <code>time</code> coordinates of <code>signals</code>.</p>
+        <p>Return <code>value</code> as a <code>(time, ...)</code> DataArray aligned with <code>signals</code>.</p>
+<p><code>value</code> is validated against <code>signals</code> and returned as a 1D <code>(time,)</code> or 2D
+<code>(time, n)</code> DataArray with <code>time</code> as its first dimension:</p>
+<ul>
+<li>A DataArray must have a <code>time</code> dimension.</li>
+<li>A DataFrame must have a <code>time</code> column and at least one other, numeric column;
+  the other columns become a <code>confound</code> dimension named after them.</li>
+<li>A NumPy array is wrapped with dims <code>(time, confound)</code>.</li>
+</ul>
+<p><code>value</code> must have as many timepoints as <code>signals</code>. When both carry <code>time</code>
+coordinates these must match within the default coordinate-comparison tolerance
+(<code>rtol=1e-5</code>, <code>atol=1e-8</code>). When only <code>signals</code> does, <code>value</code> is assumed to be
+ordered like <code>signals</code> along <code>time</code> and takes its <code>time</code> coordinates, with a
+warning since alignment cannot be verified.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4097,8 +4104,7 @@ carrying the <code>time</code> coordinates of <code>signals</code>.</p>
 <a href="#confusius.validation.ensure_time_aligned(value)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(time, ...) xarray.DataArray, numpy.ndarray, or pandas.DataFrame</code>)
           –
           <div class="doc-md-description">
-            <p>Array to align. A NumPy array must be 1D <code>(time,)</code> or 2D <code>(time, n)</code>; its
-second axis is named <code>confound</code>.</p>
+            <p>Array to align.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4125,10 +4131,10 @@ second axis is named <code>confound</code>.</p>
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code>(time, ...) xarray.DataArray</code>
+              <code>(time,) or (time, n) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p><code>value</code> itself when it is a DataArray, otherwise a DataArray wrapping it.</p>
+            <p><code>value</code> with <code>time</code> as its first dimension.</p>
           </div>
         </li>
     </ul>
@@ -4147,10 +4153,10 @@ second axis is named <code>confound</code>.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If a DataArray <code>value</code> has no <code>time</code> dimension, if a DataFrame <code>value</code> has no
-<code>time</code> column or no other column, if <code>time</code> coordinates do not match those of
-<code>signals</code>, or if a NumPy <code>value</code> is not 1D or 2D or its first axis does not
-match the number of timepoints in <code>signals</code>.</p>
+            <p>If <code>value</code> has no <code>time</code> dimension or column, is not 1D or 2D, or does not
+have as many timepoints as <code>signals</code>; if a DataFrame <code>value</code> has duplicate or
+non-numeric columns or no column besides <code>time</code>; or if <code>time</code> coordinates do
+not match those of <code>signals</code>.</p>
           </div>
         </li>
     </ul>
@@ -4162,7 +4168,8 @@ match the number of timepoints in <code>signals</code>.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>value</code> is a NumPy array, since alignment with <code>signals</code> cannot be verified.</p>
+            <p>If <code>value</code> has no <code>time</code> coordinates while <code>signals</code> does, since alignment
+cannot be verified.</p>
           </div>
         </li>
     </ul>

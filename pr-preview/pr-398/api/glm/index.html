@@ -4635,7 +4635,8 @@ are in the same world time units as the <code>time</code> coordinate of <code>ru
             <p>Confound regressors per run, <code>(time, n_confounds)</code>. A DataFrame must have
 a <code>time</code> column and a DataArray a <code>time</code> dimension; their times are
 validated against <code>run_data</code>. A NumPy array is assumed ordered like
-<code>run_data</code> along <code>time</code>.</p>
+<code>run_data</code> along <code>time</code>. A single table is applied to every run, so its
+times must match every run; pass a list to give each run its own table.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6474,7 +6475,9 @@ will contain boxcar regressors sampled at the acquisition times.</p>
           <div class="doc-md-description">
             <p>Confound regressors. A DataFrame must have a <code>time</code> column and a DataArray a
 <code>time</code> dimension; their times must match <code>volume_times</code>. A NumPy array is
-assumed ordered like <code>volume_times</code>.</p>
+assumed ordered like <code>volume_times</code>; unlike the signal-processing functions,
+no warning is issued, since <code>volume_times</code> is itself a plain array with
+nothing to verify against.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6484,9 +6487,9 @@ assumed ordered like <code>volume_times</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Names for confound regressors. Ignored when <code>confounds</code> carries names
-(DataFrame columns or string DataArray coordinates). If not provided,
-<code>confound_&lt;i&gt;</code> names are used.</p>
+            <p>Names for confound regressors. Cannot be combined with <code>confounds</code> that
+already carry names (DataFrame columns or non-numeric DataArray coordinates).
+If not provided, <code>confound_&lt;i&gt;</code> names are used.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

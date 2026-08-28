@@ -3627,12 +3627,13 @@ extracted signals <code>(time, space)</code> or VoxelData array <code>(time, k, 
 <a href="#confusius.signal.censor_samples(sample_mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(time,) xarray.DataArray or numpy.ndarray</code>)
           –
           <div class="doc-md-description">
-            <p>Boolean sample mask indicating which timepoints to keep (<code>True</code>) vs. remove
-(<code>False</code>). A DataArray must have a <code>time</code> dimension matching <code>signals</code>; if
-both have <code>time</code> coordinates, they must match within the default
-coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>). A NumPy array is
-assumed aligned with <code>signals</code> and takes its <code>time</code> coordinates, with a warning
-since alignment cannot be verified.</p>
+            <p>Boolean sample mask indicating which timepoints to keep (<code>True</code>) vs.
+remove (<code>False</code>). A DataArray must have a <code>time</code> dimension whose coordinates
+match those of <code>signals</code> within the default coordinate-comparison tolerance
+(<code>rtol=1e-5</code>, <code>atol=1e-8</code>); a NumPy array, or a DataArray without <code>time</code>
+coordinates, is assumed ordered like <code>signals</code> and takes its <code>time</code>
+coordinates, with a warning since alignment cannot be verified (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>).</p>
           </div>
         </li>
     </ul>
@@ -3665,7 +3666,7 @@ are subsetted to kept samples.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>sample_mask</code> is neither an xarray.DataArray nor a NumPy array.</p>
+            <p>If <code>sample_mask</code> is neither a DataArray nor a NumPy array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3699,7 +3700,7 @@ coordinates.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>sample_mask</code> is a NumPy array, since alignment cannot be verified.</p>
+            <p>If <code>sample_mask</code> has no <code>time</code> coordinates, since alignment cannot be verified.</p>
           </div>
         </li>
     </ul>
@@ -3889,12 +3890,15 @@ Cosine filtering supports high-pass filtering only.</p>
           <div class="doc-md-description">
             <p>Confound regressors to remove. Can have shape <code>(time,)</code> for a single
 confound. When provided, confounds are detrended and filtered along with
-signals before regression. For a DataArray, the time dimension and
-coordinates must match the signals. A DataFrame must have a <code>time</code> column
-matching the <code>time</code> coordinates of the signals; its other columns are the
-confounds. A NumPy array is assumed aligned with <code>signals</code> along its first
-axis and takes its <code>time</code> coordinates, with a warning since alignment cannot
-be verified. If not provided, no confound regression is applied.</p>
+signals before regression. A DataArray must have a <code>time</code> dimension; a
+DataFrame must have a <code>time</code> column, its other numeric columns being the
+confounds; a NumPy array must have time along its first axis. <code>time</code>
+coordinates must match those of <code>signals</code> within the default
+coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>); an input without
+<code>time</code> coordinates is assumed ordered like <code>signals</code> and takes its <code>time</code>
+coordinates, with a warning since alignment cannot be verified (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). If not
+provided, no confound regression is applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3930,11 +3934,14 @@ values are left unchanged.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean sample mask indicating which timepoints to keep (<code>True</code>) vs. remove
-(<code>False</code>). A DataArray must have a <code>time</code> dimension matching <code>signals</code>; if
-both have <code>time</code> coordinates, they must match. A NumPy array is assumed
-aligned with <code>signals</code> and takes its <code>time</code> coordinates, with a warning since
-alignment cannot be verified. If not provided, no scrubbing is applied.</p>
+            <p>Boolean sample mask indicating which timepoints to keep (<code>True</code>) vs.
+remove (<code>False</code>). A DataArray must have a <code>time</code> dimension whose coordinates
+match those of <code>signals</code> within the default coordinate-comparison tolerance
+(<code>rtol=1e-5</code>, <code>atol=1e-8</code>); a NumPy array, or a DataArray without <code>time</code>
+coordinates, is assumed ordered like <code>signals</code> and takes its <code>time</code>
+coordinates, with a warning since alignment cannot be verified (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). If not
+provided, no scrubbing is applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3990,8 +3997,8 @@ applied. Cannot contain <code>method</code>, which must be passed via
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>confounds</code> or <code>sample_mask</code> is a NumPy array, since alignment with
-<code>signals</code> cannot be verified.</p>
+            <p>If <code>confounds</code> or <code>sample_mask</code> has no <code>time</code> coordinates, since alignment
+with <code>signals</code> cannot be verified.</p>
           </div>
         </li>
     </ul>
@@ -4729,11 +4736,12 @@ Can be any shape, e.g., extracted signals <code>(time, space)</code> or VoxelDat
           –
           <div class="doc-md-description">
             <p>Boolean sample mask indicating which timepoints to keep (<code>True</code>) vs.
-interpolate (<code>False</code>). A DataArray must have a <code>time</code> dimension matching
-<code>signals</code>; if both have <code>time</code> coordinates, they must match within the default
-coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>). A NumPy array is
-assumed aligned with <code>signals</code> and takes its <code>time</code> coordinates, with a warning
-since alignment cannot be verified.</p>
+interpolate (<code>False</code>). A DataArray must have a <code>time</code> dimension whose coordinates
+match those of <code>signals</code> within the default coordinate-comparison tolerance
+(<code>rtol=1e-5</code>, <code>atol=1e-8</code>); a NumPy array, or a DataArray without <code>time</code>
+coordinates, is assumed ordered like <code>signals</code> and takes its <code>time</code>
+coordinates, with a warning since alignment cannot be verified (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4788,7 +4796,7 @@ coordinates as input.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>sample_mask</code> is neither an xarray.DataArray nor a NumPy array.</p>
+            <p>If <code>sample_mask</code> is neither a DataArray nor a NumPy array.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4822,7 +4830,7 @@ coordinates.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>sample_mask</code> is a NumPy array, since alignment cannot be verified.</p>
+            <p>If <code>sample_mask</code> has no <code>time</code> coordinates, since alignment cannot be verified.</p>
           </div>
         </li>
     </ul>
@@ -4923,12 +4931,14 @@ extracted signals <code>(time, space)</code> or VoxelData array <code>(time, k, 
           –
           <div class="doc-md-description">
             <p>Confound regressors to remove. Can have shape <code>(time,)</code> for a single
-confound. For a DataArray, the time dimension and coordinates must match the
-signals within the default coordinate-comparison tolerance (<code>rtol=1e-5</code>,
-<code>atol=1e-8</code>). A DataFrame must have a <code>time</code> column matching the <code>time</code>
-coordinates of the signals; its other columns are the confounds. A NumPy array
-is assumed aligned with <code>signals</code> along its first axis and takes its <code>time</code>
-coordinates, with a warning since alignment cannot be verified.</p>
+confound. A DataArray must have a <code>time</code> dimension; a
+DataFrame must have a <code>time</code> column, its other numeric columns being the
+confounds; a NumPy array must have time along its first axis. <code>time</code>
+coordinates must match those of <code>signals</code> within the default
+coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>); an input without
+<code>time</code> coordinates is assumed ordered like <code>signals</code> and takes its <code>time</code>
+coordinates, with a warning since alignment cannot be verified (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4985,7 +4995,7 @@ mismatched time dimension or invalid shape.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>confounds</code> is a NumPy array, since alignment cannot be verified.</p>
+            <p>If <code>confounds</code> has no <code>time</code> coordinates, since alignment cannot be verified.</p>
           </div>
         </li>
     </ul>

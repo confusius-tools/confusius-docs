@@ -4186,21 +4186,21 @@
   with <code>create_voxeldata</code>, with <code>transmit_frequency</code> and
   <code>beamforming_sound_velocity</code> passed via <code>attrs</code> and validated using
   <code>require_velocity_attrs=True</code>.</li>
-<li>
-<p>Removed <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>'s
+<li>Removed <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>'s
   <code>sweep_dim</code> parameter. The swept voxel dimension is now always auto-detected
   from the per-pose voxel-to-world geometry (the pose-translation direction
   matched against each voxel dimension's world-space direction); a sweep that
   isn't cleanly aligned with a single voxel dimension can never form the
-  regular grid consolidation requires, so no override was needed.</p>
-</li>
-<li>
-<p>DataFrame <code>confounds</code> passed to
+  regular grid consolidation requires, so no override was needed.</li>
+</ul>
+<p><strong>Other:</strong></p>
+<ul>
+<li>DataFrame <code>confounds</code> passed to
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel.fit"><code>FirstLevelModel.fit</code></a> or
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a>
-  must now have a <code>time</code> column matching the run's <code>time</code> coordinates
-  (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</p>
-</li>
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a> must
+  now have a <code>time</code> column matching the run's <code>time</code> coordinates. <code>confound_names</code> can
+  no longer be combined with <code>confounds</code> that already carry names
+  (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <p><strong>VoxelData model:</strong></p>
@@ -4236,6 +4236,19 @@
   the overlay-only counterpart of
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a>
   (<a href="https://github.com/confusius-tools/confusius/pull/392">#392</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;regress_confounds&lt;/span&gt;" href="../api/signal/#confusius.signal.regress_confounds"><code>regress_confounds</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;censor_samples&lt;/span&gt;" href="../api/signal/#confusius.signal.censor_samples"><code>censor_samples</code></a>, and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;interpolate_samples&lt;/span&gt;" href="../api/signal/#confusius.signal.interpolate_samples"><code>interpolate_samples</code></a> now accept NumPy
+  <code>confounds</code> and <code>sample_mask</code> (time along the first axis); they take the signals'
+  <code>time</code> coordinates and warn since alignment cannot be verified, as do DataArrays
+  without <code>time</code> coordinates. <code>confounds</code> can also be a DataFrame with a <code>time</code>
+  column, validated like DataArray <code>time</code> coordinates; its other columns must be
+  numeric and unique. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel.fit"><code>FirstLevelModel.fit</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../api/glm/#confusius.glm.make_first_level_design_matrix"><code>make_first_level_design_matrix</code></a>
+  now accept <code>confounds</code> as a <code>(time, n_confounds)</code> DataArray, validated against the
+  run's <code>time</code> coordinates
+  (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> now supports random
   metric sampling via <code>metric_sampling_percentage</code> (<code>None</code> by default, disabling
   random sampling), with optional deterministic seeding via <code>metric_sampling_seed</code>,
