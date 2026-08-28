@@ -4394,6 +4394,9 @@
   been scaled with <code>.fusi.scale.db()</code>; the <code>-inf</code> values <code>db_scale</code> assigns to
   zero-valued voxels are now excluded from the normalization bounds
   (<a href="https://github.com/confusius-tools/confusius/pull/370">#370</a>).</li>
+<li><code>.fusi.scale.db()</code> and <code>.fusi.scale.log()</code> no longer emit a <code>RuntimeWarning</code> for
+  zero/negative values when applied to Dask-backed data
+  (<a href="https://github.com/confusius-tools/confusius/issues/379">#379</a>).</li>
 <li><code>FirstLevelModel.fit</code> no longer errors on multi-pose data. Its implicit
   all-True mask (used when no <code>mask</code> is passed) now covers <code>pose</code> when the
   input has it, instead of collapsing to a single pose; the explicit-<code>mask</code>
