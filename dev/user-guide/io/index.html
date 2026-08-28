@@ -4038,11 +4038,13 @@ acquisitions.</p>
 </div>
 <h3 id="loading-nifti-files">Loading NIfTI Files<a class="headerlink" href="#loading-nifti-files" title="Permanent link">&para;</a></h3>
 <p>When loading NIfTI files, ConfUSIus automatically loads a
-<a href="https://bids-specification.readthedocs.io/en/stable/">fUSI-BIDS</a> JSON sidecar file with
-the same basename (e.g., <code>sub-01_task-awake_pwd.json</code>) if present. Metadata fields are
-interpreted using the fUSI-BIDS naming conventions and converted back to the usual
-ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes
-precedence over the NIfTI header when both are available.</p>
+<a href="https://bids-specification.readthedocs.io/en/stable/">fUSI-BIDS</a> metadata. For files 
+inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the 
+folder containing <code>dataset_description.json</code>) down to the recording folder, with more 
+specific sidecars overriding shared values. Metadata fields are interpreted using the 
+fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names 
+on the loaded DataArray. Timing metadata in the sidecar takes precedence over the 
+NIfTI header when both are available.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load with automatic fUSI-BIDS sidecar metadata.</span>

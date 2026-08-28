@@ -4332,6 +4332,10 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.VolumePlotter.add_stat_map"><code>VolumePlotter.add_stat_map</code></a>,
+  the overlay-only counterpart of
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/392">#392</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> now supports random
   metric sampling via <code>metric_sampling_percentage</code> (<code>None</code> by default, disabling
   random sampling), with optional deterministic seeding via <code>metric_sampling_seed</code>,
@@ -4382,6 +4386,10 @@
   oblique (non-axis-aligned) voxel-to-world data is resampled onto an
   axis-aligned display grid
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> now follows the BIDS inheritance principle
+  for matching JSON sidecars, so shared metadata stored at the dataset root or parent
+  folders is preserved when loading recordings
+  (<a href="https://github.com/confusius-tools/confusius/pull/359">#359</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4402,6 +4410,10 @@
   input has it, instead of collapsing to a single pose; the explicit-<code>mask</code>
   path no longer rejects a <code>pose</code>-carrying mask either
   (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
+<li><code>plot_napari</code> and the napari plugin no longer crash on a non-spatial dimension
+  with string coordinates (e.g. a recording-id stack dim); such a dimension now
+  falls back to scale 1/origin 0 like any other missing world geometry
+  (<a href="https://github.com/confusius-tools/confusius/pull/409">#409</a>).</li>
 </ul>
 <h2 id="061">0.6.1<a class="headerlink" href="#061" title="Permanent link">&para;</a></h2>
 <p>Released 2026-08-07.</p>
