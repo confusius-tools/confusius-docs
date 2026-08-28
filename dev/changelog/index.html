@@ -4244,43 +4244,6 @@
   <code>data.fusi.scale.db</code> now default <code>factor</code> to <code>20</code> for complex-valued
   (amplitude) data and <code>10</code> otherwise, instead of always defaulting to <code>10</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/414">#414</a>).</li>
-<li><code>VoxelToWorldIndex</code>/<code>create_voxeldata</code>/<code>attach_voxel_to_world_index</code> now
-  support pose-dependent voxel-to-world geometry: a <code>(npose, 4, 4)</code> affine
-  stack, one per pose, instead of one affine shared by every pose. New
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.stack_poses"><code>stack_poses</code></a> assembles independently
-  loaded single-pose grids (e.g. one NIfTI file per probe position) into a
-  single pose-dependent DataArray. <code>load_scan</code>'s <code>3Dscan</code>/<code>4Dscan</code> modes,
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>, and
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../api/multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a> all
-  build on this
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels"><code>reindex_voxels</code></a>/
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;reindex_voxels_like&lt;/span&gt;" href="../api/xarray/#confusius.xarray.reindex_voxels_like"><code>reindex_voxels_like</code></a> to <code>.fusi.affine</code>,
-  rebasing voxel-space coordinates to dense positions via plain 4x4 matrix
-  composition (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>NIfTI and Zarr I/O round-trip oblique/rotated/sheared voxel-to-world geometry
-  exactly; <code>load_nifti</code> composes the full primary qform/sform affine into
-  <code>voxel_to_world</code> instead of decomposing it into axis-aligned scale/origin
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li><code>plot_volume</code> (and napari layers) always displays in world space, like
-  nilearn: an axis-aligned world plane (<code>z</code>/<code>y</code>/<code>x</code>), or a non-spatial dim
-  (e.g. <code>slice_mode="pose"</code> facets a multi-pose array over its poses).
-  Oblique voxel-to-world data is always resampled onto the world-axis-aligned
-  frame for display, each volume keeping its own native per-axis resolution;
-  <code>transpose=True</code> swaps which display dim is drawn on rows versus columns
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> to canonicalize
-  and validate VoxelData inputs with one call, and added
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> to build VoxelData from a
-  raw array plus higher-level metadata (<code>dt</code>, spacing, axis origins, attrs). It
-  attaches regularly spaced world coordinates, <code>units</code> metadata, and validates the
-  result before returning it
-  (<a href="https://github.com/confusius-tools/confusius/pull/322">#322</a>).</li>
-<li><code>plot_volume</code>/<code>plot_composite</code>/<code>plot_stat_map</code>/<code>VolumePlotter</code>/<code>.fusi.plot.napari</code>
-  now accept <code>resample_interpolation</code>/<code>resample_fill_value</code> to control how
-  oblique (non-axis-aligned) voxel-to-world data is resampled onto an
-  axis-aligned display grid
-  (<a href="https://github.com/confusius-tools/confusius/pull/278">#278</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> now follows the BIDS inheritance principle
   for matching JSON sidecars, so shared metadata stored at the dataset root or parent
   folders is preserved when loading recordings
