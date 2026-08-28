@@ -6037,13 +6037,13 @@ affine is added to <code>da.attrs["affines"]</code>.</p>
 <ul>
 <li>v1 <code>2Dscan</code> → <code>(time, k, j, i)</code>.</li>
 <li>v1 <code>3Dscan</code> → <code>(pose, k, j, i)</code>.</li>
-<li>v1 <code>4Dscan</code> → <code>(time, pose, k, j, i)</code>.</li>
+<li>v1 <code>4Dscan</code>/<code>4DscanCustom</code> → <code>(time, pose, k, j, i)</code>.</li>
 <li>v2 single-pose → <code>(time, k, j, i)</code>.</li>
 <li>v2 multi-pose is currently unsupported (see Raises).</li>
 </ul>
 <p>World coordinates <code>z</code>, <code>y</code>, <code>x</code> are in millimeters. The <code>time</code> coordinate is in
-seconds. For v1 <code>4Dscan</code>, <code>time</code> is pose-dependent (<code>(time, pose)</code>-shaped),
-holding each pose's own acquisition timestamps directly.</p>
+seconds. For v1 <code>4Dscan</code>/<code>4DscanCustom</code>, <code>time</code> is pose-dependent
+(<code>(time, pose)</code>-shaped), holding each pose's own acquisition timestamps directly.</p>
           </div>
         </li>
     </ul>
@@ -6058,8 +6058,9 @@ holding each pose's own acquisition timestamps directly.</p>
             <p>If <code>path</code> does not exist or is not a file, if the file is neither an
 HDF5-based SCAN (v1) nor a binary SCAN v2 file, if a v2 file's experimental
 <code>probe_to_lab</code> affine cannot be built, if a v1 <code>acquisitionMode</code> is not one
-of <code>"2Dscan"</code>, <code>"3Dscan"</code>, or <code>"4Dscan"</code>, or if a v2 file has multiple poses
-(currently unsupported -- how v2 encodes per-pose geometry isn't known yet).</p>
+of <code>"2Dscan"</code>, <code>"3Dscan"</code>, <code>"4Dscan"</code>, or <code>"4DscanCustom"</code>, or if a v2 file has
+multiple poses (currently unsupported -- how v2 encodes per-pose geometry isn't
+known yet).</p>
           </div>
         </li>
     </ul>
