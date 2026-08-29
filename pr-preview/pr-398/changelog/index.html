@@ -4299,6 +4299,13 @@
   signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates; the confounds are
   filtered at the sampling rate shared by all poses
   (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> no longer
+  crashes on signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates; <code>pose</code> is
+  pooled into <code>space</code> like every other spatial dimension, and the returned confounds
+  carry a consolidated whole-array <code>time</code> coordinate built with the same
+  reference/duration accounting as
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</li>
 <li><code>plot_volume</code>/<code>plot_composite</code> now default planar VoxelData arrays to their
   singleton world dimension and preserve singleton display axes for explicit
   spatial slicing. <code>plot_napari</code>/<code>fusi.plot.napari</code> now default singleton spatial
