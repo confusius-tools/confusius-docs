@@ -3897,8 +3897,11 @@ coordinates must match those of <code>signals</code> within the default
 coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>); an input without
 <code>time</code> coordinates is assumed ordered like <code>signals</code> and takes its <code>time</code>
 coordinates, with a warning since alignment cannot be verified (see
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). If not
-provided, no confound regression is applied.</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). When
+<code>signals</code> carry pose-dependent <code>(time, pose)</code> <code>time</code> coordinates, confounds
+stay without <code>time</code> coordinates and are Butterworth-filtered at the sampling
+rate shared by all poses. If not provided, no confound regression is
+applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3999,6 +4002,14 @@ applied. Cannot contain <code>method</code>, which must be passed via
           <div class="doc-md-description">
             <p>If <code>confounds</code> or <code>sample_mask</code> has no <code>time</code> coordinates, since alignment
 with <code>signals</code> cannot be verified.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>confounds</code> is given and <code>signals</code> has a <code>pose</code> dimension, since the same
+confounds are regressed from every pose.</p>
           </div>
         </li>
     </ul>
@@ -4996,6 +5007,14 @@ mismatched time dimension or invalid shape.</p>
             –
           <div class="doc-md-description">
             <p>If <code>confounds</code> has no <code>time</code> coordinates, since alignment cannot be verified.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>signals</code> has a <code>pose</code> dimension, since the same confounds are regressed
+from every pose.</p>
           </div>
         </li>
     </ul>
