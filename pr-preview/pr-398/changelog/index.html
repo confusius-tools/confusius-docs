@@ -4295,9 +4295,13 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a> can now Butterworth-filter NumPy <code>confounds</code> for
-  signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates; the confounds are
-  filtered at the sampling rate shared by all poses
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;clean&lt;/span&gt;" href="../api/signal/#confusius.signal.clean"><code>clean</code></a>, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;regress_confounds&lt;/span&gt;" href="../api/signal/#confusius.signal.regress_confounds"><code>regress_confounds</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;censor_samples&lt;/span&gt;" href="../api/signal/#confusius.signal.censor_samples"><code>censor_samples</code></a>, and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;interpolate_samples&lt;/span&gt;" href="../api/signal/#confusius.signal.interpolate_samples"><code>interpolate_samples</code></a> now handle signals with
+  pose-dependent <code>(time, pose)</code> <code>time</code> coordinates: <code>confounds</code> and <code>sample_mask</code> are
+  aligned with the whole-volume time (as
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> computes
+  it), NumPy inputs take that time, and signals are interpolated pose by pose
   (<a href="https://github.com/confusius-tools/confusius/pull/398">#398</a>).</li>
 <li><code>plot_volume</code>/<code>plot_composite</code> now default planar VoxelData arrays to their
   singleton world dimension and preserve singleton display axes for explicit

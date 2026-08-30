@@ -4076,19 +4076,22 @@ dimensions don't match <code>data</code>'s.</p>
 
         <p>Return <code>value</code> as a <code>(time, ...)</code> DataArray aligned with <code>signals</code>.</p>
 <p><code>value</code> is validated against <code>signals</code> and returned as a <code>(time,)</code> DataArray
-(<code>ndim=1</code>) or a <code>(time, confound)</code> DataArray (<code>ndim=2</code>, a 1D <code>value</code> becoming one
+(<code>ndim=1</code>) or a <code>(time, name)</code> DataArray (<code>ndim=2</code>, a 1D <code>value</code> becoming one
 column) with <code>time</code> as its first dimension:</p>
 <ul>
 <li>A DataArray must have a <code>time</code> dimension.</li>
-<li>A DataFrame must have a <code>time</code> column and at least one other, numeric column;
-  the other columns become a <code>confound</code> dimension named after them.</li>
-<li>A NumPy array is wrapped with dims <code>(time, confound)</code>.</li>
+<li>A DataFrame must have a <code>time</code> column and at least one other, numeric column; the
+  other columns become a <code>name</code> dimension named after them.</li>
+<li>A NumPy array is wrapped with dims <code>(time, name)</code>.</li>
 </ul>
 <p><code>value</code> must have as many timepoints as <code>signals</code>. When both carry <code>time</code>
 coordinates these must match within the default coordinate-comparison tolerance
 (<code>rtol=1e-5</code>, <code>atol=1e-8</code>). When only <code>signals</code> does, <code>value</code> is assumed to be
-ordered like <code>signals</code> along <code>time</code> and takes its <code>time</code> coordinates (unless
-these are pose-dependent), with a warning since alignment cannot be verified.</p>
+ordered like <code>signals</code> along <code>time</code> and takes its <code>time</code> coordinates, with a warning
+since alignment cannot be verified.</p>
+<p><code>signals</code> with a pose-dependent <code>(time, pose)</code> <code>time</code> coordinate are represented
+by their consolidated time (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>).</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4114,7 +4117,8 @@ these are pose-dependent), with a warning since alignment cannot be verified.</p
 <a href="#confusius.validation.ensure_time_aligned(name)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>)
           –
           <div class="doc-md-description">
-            <p>Name of <code>value</code> used in error and warning messages.</p>
+            <p>Name of <code>value</code> used in error and warning messages. If <code>value</code> is a DataFrame,
+its columns become the <code>name</code> dimension.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4184,6 +4188,15 @@ not match those of <code>signals</code>.</p>
           <div class="doc-md-description">
             <p>If <code>value</code> has no <code>time</code> coordinates while <code>signals</code> does, since alignment
 cannot be verified.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If the per-pose timing metadata of pose-dependent <code>signals</code> are insufficient
+to infer their whole-volume time, in which case the first pose's timestamps
+are used.</p>
           </div>
         </li>
     </ul>

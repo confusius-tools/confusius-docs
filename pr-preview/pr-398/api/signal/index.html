@@ -3897,11 +3897,8 @@ coordinates must match those of <code>signals</code> within the default
 coordinate-comparison tolerance (<code>rtol=1e-5</code>, <code>atol=1e-8</code>); an input without
 <code>time</code> coordinates is assumed ordered like <code>signals</code> and takes its <code>time</code>
 coordinates, with a warning since alignment cannot be verified (see
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). When
-<code>signals</code> carry pose-dependent <code>(time, pose)</code> <code>time</code> coordinates, confounds
-stay without <code>time</code> coordinates and are Butterworth-filtered at the sampling
-rate shared by all poses. If not provided, no confound regression is
-applied.</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>). If not
+provided, no confound regression is applied.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4014,6 +4011,15 @@ confounds are regressed from every pose.</p>
         </li>
     </ul>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates are cleaned pose by
+pose along <code>time</code>. <code>confounds</code> and <code>sample_mask</code> are per-volume quantities and
+align with the whole-volume time (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>), so the same
+confounds and mask apply to every pose.</p>
+</details>
 
 <details class="references" open>
   <summary>References</summary>
@@ -4854,6 +4860,8 @@ coordinates.</p>
   (<code>sample_mask=False</code>) are replaced with interpolated values.</li>
 <li>Uses <code>xarray.DataArray.interp</code> which handles coordinates and Dask arrays
   automatically.</li>
+<li>Signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates are interpolated
+  pose by pose, each on its own timestamps, but using the same <code>sample_mask</code>.</li>
 </ul>
 </details>
 
