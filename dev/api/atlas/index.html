@@ -4066,7 +4066,7 @@ any element of <code>sides</code> is not <code>"left"</code>, <code>"right"</cod
     <div class="doc doc-contents ">
 
         <p>Return vertex coordinates and face indices for a region's mesh.</p>
-<p>Reads the region's OBJ mesh, transforms its vertices from micron space to the
+<p>Reads the region's mesh, transforms its vertices from micron space to the
 DataArrays' current world space (millimetres), then optionally drops
 out-of-grid vertices and clips to one hemisphere. The mesh comes from the
 structure's <code>mesh_filename</code>: for a freshly fetched atlas this points into the
@@ -4645,7 +4645,7 @@ match <code>regions</code>, or if any element of <code>sides</code> is not <code
     <div class="doc doc-contents ">
 
         <p>Return vertex coordinates and face indices for a region's mesh.</p>
-<p>Reads the region's OBJ mesh, transforms its vertices from micron space to the atlas's
+<p>Reads the region's mesh, transforms its vertices from micron space to the atlas's
 world space (millimetres), then optionally drops out-of-grid vertices and clips to
 one hemisphere. The mesh comes from the structure's <code>mesh_filename</code>: for a freshly
 fetched atlas this points into the BrainGlobe cache; for an atlas loaded with
@@ -4740,8 +4740,14 @@ resample, vertices warped outside the reference grid are dropped.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>ds</code> is not a well-formed atlas, if the region has no mesh file, or if the mesh
-file cannot be located.</p>
+            <p>If <code>ds</code> is not a well-formed atlas, or if the region has no mesh file.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError">RuntimeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If the region's mesh cannot be downloaded or read.</p>
           </div>
         </li>
     </ul>

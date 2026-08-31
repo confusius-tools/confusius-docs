@@ -5376,7 +5376,8 @@ written by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc
 <code>attrs["structures"]</code>. The <code>cmap</code>/<code>norm</code> colormap objects dropped on save are rebuilt
 into <code>annotation.attrs</code> from <code>rgb_lookup</code>, and each ROI's <code>mesh_filename</code> is re-pointed
 at the meshes bundled under the store's <code>meshes/</code> subdirectory, so <code>get_mesh</code> works on
-the loaded atlas without the BrainGlobe cache.</p>
+the loaded atlas without the BrainGlobe cache. See the warning on
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_atlas&lt;/span&gt;" href="./#confusius.io.save_atlas"><code>save_atlas</code></a> for meshes that were not bundled.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6085,15 +6086,20 @@ selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 
         <p>Save an atlas Dataset to a Zarr store, bundling its region meshes.</p>
 <p>The in-memory <code>attrs["structures"]</code>
-<a class="autorefs autorefs-external" href="https://brainglobe.info/documentation/brainglobe-atlasapi/api/brainglobe_atlasapi.structure_class.StructuresDict.html#brainglobe_atlasapi.structure_class.StructuresDict"><code>StructuresDict</code></a> is serialized to
-a flat JSON list for storage. The region OBJ meshes are copied into a <code>meshes/</code>
-subdirectory of the store (as plain sibling files) and each ROI's <code>mesh_filename</code> is
-stored as a basename, so a loaded atlas can render meshes without the BrainGlobe cache.
-The non-serializable <code>cmap</code>/<code>norm</code> matplotlib objects in <code>annotation.attrs</code> are stripped
-before writing (the caller's in-memory Dataset is left untouched);
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_atlas&lt;/span&gt;" href="./#confusius.io.load_atlas"><code>load_atlas</code></a> rebuilds the <code>StructuresDict</code>, the <code>cmap</code>/<code>norm</code>
-from <code>rgb_lookup</code>, and re-points the mesh paths on load. Voxel-to-world geometry is stored
-as <code>attrs["voxel_to_world"]</code> rather than dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays.</p>
+<a class="autorefs autorefs-external" href="https://brainglobe.info/documentation/brainglobe-atlasapi/api/brainglobe_atlasapi.structure_class.StructuresDict.html#brainglobe_atlasapi.structure_class.StructuresDict"><code>StructuresDict</code></a> is serialized
+to a flat JSON list for storage. Meshes already downloaded into the BrainGlobe cache
+are copied into a <code>meshes/</code> subdirectory of the store (as plain sibling files) and
+their <code>mesh_filename</code> is stored as a basename, so a loaded atlas can render them
+without the BrainGlobe cache. The non-serializable <code>cmap</code>/<code>norm</code> matplotlib objects in
+<code>annotation.attrs</code> are stripped before writing (the caller's in-memory Dataset is left
+untouched); <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_atlas&lt;/span&gt;" href="./#confusius.io.load_atlas"><code>load_atlas</code></a> rebuilds the <code>StructuresDict</code>, the
+<code>cmap</code>/<code>norm</code> from <code>rgb_lookup</code>, and re-points the bundled mesh paths on load.</p>
+<div class="admonition warning">
+<p class="admonition-title">Undownloaded meshes are not bundled</p>
+<p>A region whose mesh was never accessed before <code>save_atlas</code> keeps its partial
+BrainGlobe-cache path instead of being bundled. <code>get_mesh</code> on the loaded atlas
+can still trigger BrainGlobe's lazy download from that path.</p>
+</div>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6111,8 +6117,9 @@ as <code>attrs["voxel_to_world"]</code> rather than dense <code>z</code>/<code>y
 <a href="#confusius.io.save_atlas(path)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="pathlib.Path" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a></code>)
           –
           <div class="doc-md-description">
-            <p>Output Zarr store path; must end with the <code>.zarr</code> suffix. Must be a filesystem path
-(the meshes are written as sibling files); zarr store objects are not supported.</p>
+            <p>Output Zarr store path; must end with the <code>.zarr</code> suffix. Must be a filesystem
+path (the meshes are written as sibling files); zarr store objects are not
+supported.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
