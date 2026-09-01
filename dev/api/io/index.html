@@ -5353,6 +5353,15 @@ written by <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc
     </ul>
 
 
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Gzip-compressed NIfTI files (<code>.nii.gz</code>) do not support true random access. Repeated
+lazy partial reads, such as per-frame loops, may decompress the file again for each
+independent Dask computation. If the file fits in memory, use <code>.compute()</code> for eager
+processing, or <code>.persist()</code> before many downstream Dask operations. For larger
+repeated random-access workloads, prefer Zarr or uncompressed <code>.nii</code>.</p>
+</details>
+
     </div>
 
 </div>
@@ -5786,6 +5795,12 @@ in a Dask array for out-of-core computation.</p>
   <p>In memory, the coordinate-defining geometry uses native voxel dimensions <code>k</code>, <code>j</code>,
 <code>i</code> and derived world coordinates <code>z</code>, <code>y</code>, <code>x</code>. <code>coordinate_affine</code> controls which
 NIfTI header affine defines that voxel-to-world mapping.</p>
+<p>Gzip-compressed <code>.nii.gz</code> files do not support true random access. Repeated lazy
+partial reads, such as per-frame loops, may decompress the file again for each
+independent Dask computation. If the file fits in memory, use <code>.compute()</code> for
+ordinary eager processing, or <code>.persist()</code> before many downstream Dask operations
+that should stay chunked and parallel. For larger repeated random-access workloads,
+prefer Zarr or uncompressed <code>.nii</code>.</p>
 <p>World-to-world affines are stored in <code>da.attrs["affines"]</code>, a dict keyed by
 affine name. Each value is a 4×4 affine in ConfUSIus <code>(z, y, x)</code> convention that
 maps <strong>world coordinates</strong> (as stored in <code>da.coords</code>) to world-space
