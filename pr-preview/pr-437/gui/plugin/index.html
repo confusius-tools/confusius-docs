@@ -4147,8 +4147,8 @@ run completes.</p>
 <ol>
 <li>Switch <strong>Mode</strong> to <strong>Within-scan</strong>.</li>
 <li>Select the time-series <strong>Moving layer</strong>.</li>
-<li>Choose the moving layer's <strong>Reference time</strong> index used as the registration target,
-   or tick <strong>Fixed layer</strong> and select a spatial-only layer on the same grid instead
+<li>Pick the registration target: either <strong>Reference time</strong>, a time index of the moving
+   layer, or <strong>Fixed layer</strong>, another layer on the same grid without a time dimension
    (for example the mean of a few low-motion frames).</li>
 <li>Pick a transform model (<code>translation</code>, <code>rigid</code>, or <code>affine</code>).</li>
 <li>Click <strong>Run registration</strong>.</li>
@@ -4165,12 +4165,12 @@ run completes.</p>
 <tbody>
 <tr>
 <td><strong>Reference time</strong></td>
-<td>Chooses the moving layer's time index used as the motion-correction target. Inactive while <strong>Fixed layer</strong> is ticked.</td>
+<td>Registers every frame to the moving layer's frame at this time index.</td>
 <td>Pick a representative, sharp frame with little motion.</td>
 </tr>
 <tr>
 <td><strong>Fixed layer</strong></td>
-<td>Registers every frame to the selected spatial-only layer on the same grid instead of a time index. Its selector is inactive until the box is ticked.</td>
+<td>Registers every frame to another layer on the same grid instead. The layer must have no time dimension.</td>
 <td>Use a more stable target than any single frame, for example the mean of a few low-motion frames.</td>
 </tr>
 <tr>
@@ -4185,7 +4185,7 @@ run completes.</p>
 </tr>
 <tr>
 <td><strong>Fixed / Moving intensity scaling</strong></td>
-<td>Applies optional intensity scaling (<code>decibel</code>, <code>square root</code>, or <code>none</code>) to the fixed layer and to every frame, only for the optimizer. The fixed scaling is only active with <strong>Fixed layer</strong> ticked; the reference frame uses the moving scaling.</td>
+<td>Applies optional intensity scaling (<code>decibel</code>, <code>square root</code>, or <code>none</code>) to the fixed layer and to every frame, only for the optimizer. The fixed scaling is only active with <strong>Fixed layer</strong> selected; the reference frame uses the moving scaling.</td>
 <td>Useful when an intensity transform makes anatomy more stable across time for the optimizer, or when the fixed layer is on a different intensity scale than the recording.</td>
 </tr>
 <tr>
