@@ -4316,10 +4316,11 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_mesh&lt;/span&gt;" href="../api/atlas/#confusius.atlas.AtlasAccessor.get_mesh"><code>get_mesh</code></a> /
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_mesh&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_mesh"><code>get_atlas_mesh</code></a> take <code>regions</code>/<code>sides</code> instead of
-  <code>region</code>/<code>side</code> and return a <code>{acronym: (vertices, faces)}</code> dict with one entry per
-  requested region, under <code>_L</code>/<code>_R</code>-suffixed keys for single-hemisphere requests
+<li><code>get_mesh</code>/<code>get_atlas_mesh</code> are now
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.AtlasAccessor.get_meshes"><code>get_meshes</code></a> /
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_meshes"><code>get_atlas_meshes</code></a>, taking <code>regions</code>/<code>sides</code> and
+  returning a <code>{acronym: (vertices, faces)}</code> dict with one entry per requested region,
+  under <code>_L</code>/<code>_R</code>-suffixed keys for single-hemisphere requests
   (<a href="https://github.com/confusius-tools/confusius/pull/448">#448</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
@@ -4333,7 +4334,7 @@
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_mesh&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_mesh"><code>get_atlas_mesh</code></a> with <code>clip=True</code> no longer
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_meshes"><code>get_atlas_meshes</code></a> with <code>clip=True</code> no longer
   materializes the full world-coordinate grid of an oblique atlas
   (<a href="https://github.com/confusius-tools/confusius/pull/446">#446</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> no
@@ -4615,7 +4616,7 @@
 <li>The <code>Atlas</code> class has been replaced by an <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> with a
   registered <code>.atlas</code> accessor. Fetch an atlas by name with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> and call operations
-  through <code>ds.atlas.*</code> (<code>ds.atlas.get_masks</code>, <code>ds.atlas.get_mesh</code>, <code>ds.atlas.search</code>,
+  through <code>ds.atlas.*</code> (<code>ds.atlas.get_masks</code>, <code>ds.atlas.get_meshes</code>, <code>ds.atlas.search</code>,
   <code>ds.atlas.ancestors</code>, <code>ds.atlas.resample_like</code>); <code>resample_like</code> now returns a Dataset.
   Name-based loading moved to <code>confusius.datasets</code>; atlas construction from a loaded
   BrainGlobe atlas is now internal to the datasets module
