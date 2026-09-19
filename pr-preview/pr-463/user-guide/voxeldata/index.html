@@ -4010,7 +4010,7 @@ carried on the <code>world_to_qform</code> affine attribute:</p>
 affine, and the derived <code>z</code>/<code>y</code> coordinates change accordingly. The <code>qform</code> space
 becomes the new world space, so <code>"world_to_qform"</code> is now the identity. The <code>sform</code>
 entry, identity before, now holds the inverse rotation, so the <code>sform</code> space stays
-recoverable. Applying an affine never removes entries from <code>.attrs["affines"]</code>.</p>
+recoverable.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">)</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">array([-0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5,</span>
