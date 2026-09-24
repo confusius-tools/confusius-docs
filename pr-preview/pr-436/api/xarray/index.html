@@ -5610,7 +5610,7 @@ signals.</p>
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;with_mask&lt;/span&gt;" href="./#confusius.xarray.FUSIExtractAccessor.with_mask">with_mask</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Extract signals using a boolean or single-label integer mask.</p>
+              <p>Extract signals using a boolean or binary numeric mask.</p>
             </div>
           </li>
     </ul>
@@ -5835,7 +5835,7 @@ coordinates don't match, or if <code>reduction</code> is not a valid option.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Extract signals using a boolean or single-label integer mask.</p>
+        <p>Extract signals using a boolean or binary numeric mask.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5846,9 +5846,9 @@ coordinates don't match, or if <code>reduction</code> is not a valid option.</p>
           –
           <div class="doc-md-description">
             <p>Mask defining which voxels to extract. Its dimensions define the spatial
-dimensions that will be flattened. Must have boolean dtype, or integer dtype
-with exactly one non-zero value (0 = background, one region id =
-foreground). The latter format is produced by
+dimensions that will be flattened. Must have boolean dtype, or binary
+numeric dtype (0 = background, at most one non-zero value = foreground).
+The latter format is produced by
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>. Coordinates must match
 data.</p>
           </div>
@@ -7959,8 +7959,10 @@ entirely; <code>cmap</code> still follows the usual rules above.</p>
           <div class="doc-md-description">
             <p>Lower bound of the colormap. If not provided, defaults to the minimum
 value of this DataArray, computed over the full array rather than just
-the displayed slices. Ignored when <code>norm</code> is provided, or when
-<code>auto_range</code> resolves to a range anchored at zero (see below).</p>
+the displayed slices. Ignored when <code>norm</code> is provided, when
+<code>auto_range=True</code> and this DataArray has only non-negative values, or
+when <code>auto_range=True</code>, this DataArray spans both signs and <code>vmax</code> is
+given on its own (see <code>auto_range</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7972,8 +7974,10 @@ the displayed slices. Ignored when <code>norm</code> is provided, or when
           <div class="doc-md-description">
             <p>Upper bound of the colormap. If not provided, defaults to the maximum
 value of this DataArray, computed over the full array rather than just
-the displayed slices. Ignored when <code>norm</code> is provided, or when
-<code>auto_range=True</code> and this DataArray has only non-positive values.</p>
+the displayed slices. Ignored when <code>norm</code> is provided, when
+<code>auto_range=True</code> and this DataArray has only non-positive values, or
+when <code>auto_range=True</code>, this DataArray spans both signs and <code>vmin</code> is
+given on its own (see <code>auto_range</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7987,10 +7991,12 @@ the displayed slices. Ignored when <code>norm</code> is provided, or when
 based on the sign of this DataArray:</p>
 <ul>
 <li>Both positive and negative values: diverging, symmetric <code>[-m, m]</code>
-  range where <code>m = max(|vmin|, |vmax|)</code> (using the resolved bounds
-  above), with <code>cmap</code> defaulting to <code>"coolwarm"</code> — the right choice
-  for diverging statistics where the sign is meaningful (e.g.
-  t-statistics, correlation coefficients, <abbr title="Principal Component Analysis">PCA</abbr>/<abbr title="Independent Component Analysis">ICA</abbr> component maps).</li>
+  range where <code>m = max(|vmin|, |vmax|)</code> over the bounds actually
+  provided, falling back to the largest magnitude in this DataArray
+  when neither is given, with <code>cmap</code> defaulting to <code>"coolwarm"</code> — the
+  right choice for diverging statistics where the sign is meaningful
+  (e.g. t-statistics, correlation coefficients, <abbr title="Principal Component Analysis">PCA</abbr>/<abbr title="Independent Component Analysis">ICA</abbr> component
+  maps).</li>
 <li>Only non-negative values: sequential <code>[0, vmax]</code> range, with <code>cmap</code>
   defaulting to <code>"viridis"</code> — the right choice for non-diverging
   statistics where only magnitude matters (e.g. R², F-statistics).</li>
