@@ -3535,6 +3535,9 @@ the <code>time</code> coordinate mean, because both are per-pose rather than per
 <p>This matters for slice timing correction (see <a href="#slice-timing-correction">Slice Timing
 Correction</a> below), which accounts for the fact that
 different poses were not acquired simultaneously.</p>
+<p>Per-volume quantities such as confounds and sample masks are timed by the whole
+volume, not by one pose: their 1D <code>time</code> coordinate is the whole-volume time, as
+a consolidated array would have.</p>
 </li>
 </ul>
 <p>These two rules—pose-dependent world coordinates, pose-dependent timing—drive
