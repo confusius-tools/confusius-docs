@@ -3037,6 +3037,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#napari-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Napari plugin
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3077,7 +3088,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -3779,6 +3790,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#napari-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Napari plugin
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3819,7 +3841,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4400,7 +4422,13 @@
   integer-dtype data (e.g. atlas region labels) and <code>"linear"</code> otherwise, so
   resampling an integer mask no longer silently blends label values unless
   <code>interpolation</code> is explicitly overridden
-  (<a href="https://github.com/confusius-tools/confusius/issues/375">#375</a>).</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a>'s
+  <code>intensity_scaling</code> is renamed to <code>moving_intensity_scaling</code>, and a new
+  <code>fixed_intensity_scaling</code> scales a user-provided <code>fixed</code> volume separately (only
+  allowed together with <code>fixed</code>; it defaults to <code>moving_intensity_scaling</code>). Both are
+  now also exposed on <code>data.fusi.register.volumewise</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/437">#437</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4408,7 +4436,11 @@
   (0 and at most one non-zero value, e.g. <code>{0, 1}</code> or <code>{0.0, 5.0}</code>) is now accepted
   and coerced to boolean, covering masks written by tools without a boolean dtype
   (e.g. FSL/NiBabel NIfTI masks stored as float)
-  (<a href="https://github.com/confusius-tools/confusius/issues/382">#382</a>).</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/418">#418</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> and
+  <code>data.fusi.register.volumewise</code> accept a <code>fixed</code> VoxelData volume (for example the
+  mean of a few low-motion frames) to register every frame to, as an alternative to
+  <code>reference_time</code> (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4440,6 +4472,12 @@
   <code>[-|bound|, |bound|]</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/445">#445</a>).</li>
 </ul>
+<h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The registration panel's within-scan mode can register every frame to a fixed
+  layer, with its own intensity scaling, as an alternative to a reference time index
+  (<a href="https://github.com/confusius-tools/confusius/issues/376">#376</a>).</li>
+</ul>
 <h2 id="071">0.7.1<a class="headerlink" href="#071" title="Permanent link">&para;</a></h2>
 <p>Released 2026-09-16.</p>
 <h3 id="performance_1"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance_1" title="Permanent link">&para;</a></h3>
@@ -4455,7 +4493,7 @@
   gzip-compressed NIfTI files
   (<a href="https://github.com/confusius-tools/confusius/pull/441">#441</a>).</li>
 </ul>
-<h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_1"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Scrolling the sidebar with the mouse wheel no longer gets hijacked by whichever
   combo box or spin box the cursor happens to be over
