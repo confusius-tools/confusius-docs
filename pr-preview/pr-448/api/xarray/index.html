@@ -4810,7 +4810,8 @@ apply axis-aligned affines to a scan's spatial coordinates.</p>
     <div class="doc doc-contents ">
 
         <p>World-space bounding box of the wrapped VoxelData array.</p>
-<p>Bounds are of voxel centers, without any half-voxel expansion or margin. See
+<p>Encloses the full extent of every voxel (half a voxel beyond the outermost
+voxel centers), see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_bounding_box&lt;/span&gt;" href="./#confusius.xarray.get_bounding_box">get_bounding_box</a> for details.</p>
 
 
@@ -4836,7 +4837,8 @@ pose.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>self</code> is not a valid VoxelData array.</p>
+            <p>If <code>self</code> is not a valid VoxelData array, or if a voxel dim has irregular
+coordinates.</p>
           </div>
         </li>
     </ul>
@@ -4850,7 +4852,7 @@ pose.</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span> <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">bound</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">1.5</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">2.0</span>
 </span></code></pre></div>
 
     </div>
@@ -10488,12 +10490,20 @@ computation.</p>
     <div class="doc doc-contents ">
 
         <p>Return the world-space bounding box of a VoxelData array.</p>
-<p>Bounds are of voxel centers (the voxel coordinate values mapped through the
-voxel-to-world affine), without any half-voxel expansion or margin. The result
-is exact for any affine, including oblique ones, without materializing the
-lazily derived world coordinates: each world coordinate is an affine function
-of the voxel coordinates, so its extremes over the grid are attained at the
-corners of the voxel-coordinate box.</p>
+<p>The box encloses the full extent of every voxel, not just the voxel centers: the
+voxel-coordinate range of each <code>k</code>/<code>j</code>/<code>i</code> dim is extended by half a voxel at
+both ends before mapping through the voxel-to-world affine. The voxel size is
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;spacing&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.xarray.FUSIAccessor.spacing"><code>fusi.spacing</code></a> (so a singleton dim spans
+one voxel, and irregular voxel coordinates are rejected). The result is exact for
+any affine, including oblique ones, without
+materializing the lazily derived world coordinates: each world coordinate is an
+affine function of the voxel coordinates, so its extremes over the grid are
+attained at the corners of the (extended) voxel-coordinate box.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10540,7 +10550,8 @@ pose.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>data</code> is not a valid VoxelData array.</p>
+            <p>If <code>data</code> is not a valid VoxelData array, or if a voxel dim has irregular
+coordinates (no defined voxel extent).</p>
           </div>
         </li>
     </ul>

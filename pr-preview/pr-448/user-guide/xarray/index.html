@@ -4090,8 +4090,9 @@ or a string key naming a reference frame already stored in <code>attrs["affines"
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.bounding_box"><code>bounding_box</code></a> gives the extent of
-the data in world space, computed from the affine alone (exact for oblique geometry,
-and one bounding box per pose when the geometry is pose-dependent):</p>
+the data in world space, enclosing the full extent of every voxel (half a voxel beyond
+the outermost voxel centers). It is computed from the affine alone (exact for oblique
+geometry, and one bounding box per pose when the geometry is pose-dependent):</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">bbox</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">bounding_box</span>  <span class="c1"># Dims (bound, component), e.g. (&quot;max&quot;, &quot;x&quot;).</span>
 </span></code></pre></div>
 <p>To replace a DataArray's voxel-to-world geometry outright (e.g. after computing a new
