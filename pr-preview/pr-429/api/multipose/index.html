@@ -3415,8 +3415,10 @@ operations.</p>
 
 <a href="#confusius.multipose.consolidate_poses" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">consolidate_poses</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;da&lt;/code&gt;&lt;/b&gt;" href="./#confusius.multipose.consolidate_poses(da)">da</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.multipose.consolidate_poses(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.01</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;da&lt;/code&gt;&lt;/b&gt;" href="./#confusius.multipose.consolidate_poses(da)">da</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;rtol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.multipose.consolidate_poses(rtol)">rtol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;atol&lt;/code&gt;&lt;/b&gt;" href="./#confusius.multipose.consolidate_poses(atol)">atol</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="xarray.DataArray" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3476,7 +3478,22 @@ voxel-to-world geometry. Typically produced by
 )
           –
           <div class="doc-md-description">
-            <p>Relative tolerance for the regularity check (fraction of mean spacing).</p>
+            <p>Relative tolerance for the regularity check (fraction of mean spacing).
+Combined with <code>atol</code> as <code>abs(spacing - mean_spacing) &lt;= atol + rtol *
+abs(mean_spacing)</code> (<code>numpy.isclose</code> convention), so <code>rtol</code> alone dominates at
+large step sizes.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.multipose.consolidate_poses(atol)" class="doc doc-heading doc-heading-parameter">              <b><code>atol</code></b>
+<a href="#confusius.multipose.consolidate_poses(atol)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Absolute tolerance for the regularity check, in <code>da</code>'s world units, combined
+with <code>rtol</code> as described above. If not provided, defaults to 5 um converted to
+<code>da</code>'s units.</p>
           </div>
         </li>
     </ul>
@@ -3513,9 +3530,11 @@ timestamp of the pose it came from.</p>
 pose-dependent, if the rotation block of the affine is not constant across
 poses (non-translation sweep), if the swept voxel dimension cannot be
 detected (fewer than two poses, identical pose positions, or a degenerate
-voxel axis), or if the consolidated positions are not regularly spaced
-within <code>rtol</code> -- which also rejects a sweep that steps along more than one
-voxel axis at once, since no single voxel dimension can span it.</p>
+voxel axis), if the consolidated positions are not regularly spaced within
+<code>atol</code>/<code>rtol</code> -- which also rejects a sweep that steps along more than one
+voxel axis at once, since no single voxel dimension can span it -- or if
+<code>atol</code> is not provided and <code>da</code>'s world units aren't one of <code>"mm"</code>, <code>"cm"</code>,
+<code>"m"</code>, <code>"um"</code>/<code>"µm"</code>, <code>"nm"</code>.</p>
           </div>
         </li>
     </ul>
