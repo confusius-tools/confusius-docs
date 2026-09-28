@@ -4480,6 +4480,21 @@
 <li>The registration panel's within-scan mode can register every frame to a fixed
   layer, with its own intensity scaling, as an alternative to a reference time index
   (<a href="https://github.com/confusius-tools/confusius/issues/376">#376</a>).</li>
+<li>The signal plotter's mouse source now updates when Shift is pressed while the
+  cursor is already resting on a voxel, not only while moving; a live signal
+  (mouse voxel, a point, or a label region) can now be pinned so it persists
+  across source-mode switches instead of being dropped, reusable wherever stored
+  signals are — imported and pinned signals now share one concept
+  (<code>StoredSignal</code>) throughout the signal store, plotter, and manager
+  (<a href="https://github.com/confusius-tools/confusius/pull/429">#429</a>).</li>
+<li>Mouse-driven signal plotting no longer lags or jitters on large recordings —
+  updates are now throttled to the display refresh rate instead of running
+  unbounded on every raw mouse-move event
+  (<a href="https://github.com/confusius-tools/confusius/pull/429">#429</a>).</li>
+<li>A DVARS trace computed in the Quality Control panel is now plotted in the
+  Signals panel as a stored signal, opening that plot if needed, instead of in a
+  separate QC plot tab
+  (<a href="https://github.com/confusius-tools/confusius/pull/429">#429</a>).</li>
 </ul>
 <h2 id="071">0.7.1<a class="headerlink" href="#071" title="Permanent link">&para;</a></h2>
 <p>Released 2026-09-16.</p>
