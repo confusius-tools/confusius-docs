@@ -4008,10 +4008,9 @@ carried on the <code>world_to_qform</code> affine attribute:</p>
 </span></code></pre></div>
 <p>Applying <code>world_to_qform</code> absorbs the rotation into the DataArray's voxel-to-world
 affine, and the derived <code>z</code>/<code>y</code> coordinates change accordingly. The <code>qform</code> space
-becomes the new world space, and <code>"world_to_qform"</code> is dropped from the result:
-applying a stored affine by its own key re-anchors the world space to exactly that
-space, so the entry would carry no information any more. The <code>sform</code> entry, identity
-before, now holds the inverse rotation, so the <code>sform</code> space stays recoverable.</p>
+becomes the new world space, so <code>"world_to_qform"</code> is now the identity. The <code>sform</code>
+entry, identity before, now holds the inverse rotation, so the <code>sform</code> space stays
+recoverable.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;world_to_qform&quot;</span><span class="p">)</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da_q</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">array([-0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5, -3.5, -0.5, -1.5, -2.5,</span>
@@ -4022,7 +4021,10 @@ before, now holds the inverse rotation, so the <code>sform</code> space stays re
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="go">{&#39;world_to_sform&#39;: array([[ 0.,  1.,  0.,  0.],</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="go">       [-1.,  0.,  0.,  0.],</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">       [ 0.,  0.,  1.,  0.],</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">       [ 0.,  0.,  0.,  1.]])}</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="go">       [ 0.,  0.,  0.,  1.]]), &#39;world_to_qform&#39;: array([[1., 0., 0., 0.],</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">       [0., 1., 0., 0.],</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">       [0., 0., 1., 0.],</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="go">       [0., 0., 0., 1.]])}</span>
 </span></code></pre></div>
 <p>See <a href="../xarray/#affine-transforms">Affine Transforms</a> in Working with Xarray for
 the rest of the <code>.fusi.affine</code> API (<code>voxel_to_world</code>, <code>set_voxel_to_world</code>, <code>to</code>).</p>
