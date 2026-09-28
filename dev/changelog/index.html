@@ -4441,6 +4441,16 @@
   <code>data.fusi.register.volumewise</code> accept a <code>fixed</code> VoxelData volume (for example the
   mean of a few low-motion frames) to register every frame to, as an alternative to
   <code>reference_time</code> (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</li>
+<li>New <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_bounding_box&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_bounding_box"><code>get_bounding_box</code></a>, also available as
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;bounding_box&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.bounding_box"><code>data.fusi.affine.bounding_box</code></a>,
+  returning a VoxelData array's world-space bounding box enclosing the full extent of
+  its voxels, one per pose for pose-dependent geometry
+  (<a href="https://github.com/confusius-tools/confusius/pull/446">#446</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4500,6 +4510,9 @@
 <p>Released 2026-09-16.</p>
 <h3 id="performance_1"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance_1" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_mesh&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_mesh"><code>get_atlas_mesh</code></a> with <code>clip=True</code> no longer
+  materializes the full world-coordinate grid of an oblique atlas
+  (<a href="https://github.com/confusius-tools/confusius/pull/446">#446</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_compcor_confounds&lt;/span&gt;" href="../api/signal/#confusius.signal.compute_compcor_confounds"><code>compute_compcor_confounds</code></a> no
   longer computes a full SVD, extracting components several times faster on
   large recordings or broad noise masks
