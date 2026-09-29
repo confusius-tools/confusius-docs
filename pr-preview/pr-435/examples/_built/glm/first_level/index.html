@@ -3766,6 +3766,11 @@ atlas grid. We resample the averaged image (for display) and every individual ru
 </span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="p">)</span>
 </span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">resampled_fusi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resampled_fusi</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="gallery-output">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>/home/runner/work/confusius/confusius/src/confusius/datasets/_brainglobe.py:235: UserWarning: BrainGlobe provides no mesh for region id(s) [&#39;545&#39;] of atlas &#39;allen_mouse_100um&#39;; requesting their mesh will fail.
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  _fetch_all_meshes(atlas)
+</span></code></pre></div>
+</div>
 <h2 id="choose-a-hemodynamic-response-function">Choose a hemodynamic response function<a class="headerlink" href="#choose-a-hemodynamic-response-function" title="Permanent link">&para;</a></h2>
 <p>A stimulus does not produce an instantaneous change in the power Doppler signal: the
 vascular response is usually delayed through the neurovascular coupling. The <abbr title="General Linear Model">GLM</abbr>
@@ -3775,17 +3780,17 @@ them originally proposed for fMRI analysis. Here we use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;claron2021_hrf&lt;/span&gt;" href="../../../../api/glm/#confusius.glm.claron2021_hrf"><code>claron2021_hrf</code></a>, an inverse-gamma <abbr title="Hemodynamic Response Function">HRF</abbr> proposed for
 functional ultrasound, rather than a canonical BOLD <abbr title="Hemodynamic Response Function">HRF</abbr>. We tune its <code>beta</code> scale
 parameter to <code>6.7</code> to obtain a faster peak response (around 2–3 seconds).</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">modified_claron2021</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">claron2021_hrf</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">6.7</span><span class="p">)</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># Sample the kernel on a fine grid to visualize its shape.</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">hrf_kernel</span> <span class="o">=</span> <span class="n">modified_claron2021</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">hrf_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">hrf_kernel</span><span class="p">))</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrf_time</span><span class="p">,</span> <span class="n">hrf_kernel</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#d93a54&quot;</span><span class="p">)</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time since stimulus onset (s)&quot;</span><span class="p">)</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Response (a.u.)&quot;</span><span class="p">)</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Claron et al. 2021 fUSI HRF (beta=6.7)&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">modified_claron2021</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">claron2021_hrf</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">6.7</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Sample the kernel on a fine grid to visualize its shape.</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">hrf_kernel</span> <span class="o">=</span> <span class="n">modified_claron2021</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">hrf_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">hrf_kernel</span><span class="p">))</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrf_time</span><span class="p">,</span> <span class="n">hrf_kernel</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#d93a54&quot;</span><span class="p">)</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time since stimulus onset (s)&quot;</span><span class="p">)</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Response (a.u.)&quot;</span><span class="p">)</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Claron et al. 2021 fUSI HRF (beta=6.7)&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_15_0_light.png#only-light" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="light"><img src="../first_level_output_light/cell_15_0_light.png#only-light" alt="Example output from cell 15, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_15_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 15, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_15_0_dark.png#only-dark" alt="Example output from cell 15, image 0"></a></p>
 <h2 id="model-physiological-noise-with-compcor">Model physiological noise with CompCor<a class="headerlink" href="#model-physiological-noise-with-compcor" title="Permanent link">&para;</a></h2>
@@ -3795,14 +3800,14 @@ leading principal components from a noise region—here the atlas <code>"fiber t
 ideally carries little task signal and global vascular fluctuations—and
 we add them to the design as nuisance regressors (anatomical CompCor). We take three
 components per run.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">confounds</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="n">fusi</span><span class="p">,</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">noise_mask</span><span class="o">=</span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="p">)</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">for</span> <span class="n">fusi</span> <span class="ow">in</span> <span class="n">resampled_fusi_list</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">]</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">confounds</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">compute_compcor_confounds</span><span class="p">(</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>        <span class="n">fusi</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="n">noise_mask</span><span class="o">=</span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">get_masks</span><span class="p">(</span><span class="s2">&quot;fiber tracts&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>        <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="p">)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="k">for</span> <span class="n">fusi</span> <span class="ow">in</span> <span class="n">resampled_fusi_list</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p">]</span>
 </span></code></pre></div>
 <h2 id="fit-the-first-level-glm">Fit the first-level <abbr title="General Linear Model">GLM</abbr><a class="headerlink" href="#fit-the-first-level-glm" title="Permanent link">&para;</a></h2>
 <p>We hand the model specification to
@@ -3815,14 +3820,15 @@ matrix for each run internally, and fits it to the data voxel by voxel. We apply
 Gaussian spatial smoothing (0.3 mm FWHM per axis) to boost <abbr title="Signal-to-Noise Ratio">SNR</abbr> and fit every voxel,
 leaving the anatomical masking to the thresholding step below. Passing the list of runs
 together combines them with a fixed-effects model.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">smoothing_fwhm</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">hrf_model</span><span class="o">=</span><span class="n">modified_claron2021</span><span class="p">,</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">drift_model</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">noise_model</span><span class="o">=</span><span class="s2">&quot;ar1&quot;</span><span class="p">,</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">)</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">resampled_fusi_list</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">confounds</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">glm</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">glm</span><span class="o">.</span><span class="n">FirstLevelModel</span><span class="p">(</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">smoothing_fwhm</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">hrf_model</span><span class="o">=</span><span class="n">modified_claron2021</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">drift_model</span><span class="o">=</span><span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">low_cutoff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">noise_model</span><span class="o">=</span><span class="s2">&quot;ar1&quot;</span><span class="p">,</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="n">glm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">resampled_fusi_list</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span> <span class="n">confounds</span><span class="o">=</span><span class="n">confounds</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="gallery-rich-output"><style>.sk-global {
   /* Definition of color scheme common for light and dark mode */
@@ -4522,8 +4528,8 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7fb121a614e0&gt;, beta=6.7),
-                smoothing_fwhm=0.3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7fc5abefb8a0&gt;, beta=6.7),
+                show_progress=True, smoothing_fwhm=0.3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -4536,7 +4542,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></i></td>
             <td class="param">hrf_model</td>
-            <td class="value">functools.par...e0&gt;, beta=6.7)</td>
+            <td class="value">functools.par...a0&gt;, beta=6.7)</td>
         </tr>
 
 
@@ -4547,6 +4553,16 @@ a.param-doc-link::before {
             ></i></td>
             <td class="param">smoothing_fwhm</td>
             <td class="value">0.3</td>
+        </tr>
+
+
+        <tr class="user-set">
+            <td><i class="copy-paste-icon"
+                 onclick="copyToClipboard('show_progress',
+                          this.parentElement.nextElementSibling)"
+            ></i></td>
+            <td class="param">show_progress</td>
+            <td class="value">True</td>
         </tr>
 
 
@@ -4677,7 +4693,7 @@ a.param-doc-link::before {
        <tr class="default">
            <td class="param"><a class="param-doc-link" style="text-decoration:none;">results_</a></td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;confusius.gl...x7fb121b28190&gt;, &lt;confusius.gl...x7fb120729cd0&gt;, &lt;confusius.gl...x7fb1207cd370&gt;, &lt;confusius.gl...x7fb1206be8b0&gt;, ...]</td>
+           <td>[&lt;confusius.gl...x7fc53c28a990&gt;, &lt;confusius.gl...x7fc53c22f950&gt;, &lt;confusius.gl...x7fc53c326e70&gt;, &lt;confusius.gl...x7fc53c2eaad0&gt;, ...]</td>
 
 
        </tr>
@@ -4868,14 +4884,14 @@ matrix back out lets us see exactly what the model fit.</p>
 row a volume (time runs top to bottom). The leftmost <code>active</code> column shows the
 <abbr title="Hemodynamic Response Function">HRF</abbr>-convolved stimulation blocks; the CompCor and drift columns follow, and the constant
 column models the baseline.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">design_matrix</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">design_matrices_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_design_matrix</span><span class="p">(</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">design_matrix</span><span class="p">,</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Design matrix (first run)&quot;</span><span class="p">,</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">index_yaxis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">design_matrix</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">design_matrices_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_design_matrix</span><span class="p">(</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">design_matrix</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Design matrix (first run)&quot;</span><span class="p">,</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">index_yaxis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_22_0_light.png#only-light" data-type="image" data-title="Example output from cell 22, image 0" data-gallery="light"><img src="../first_level_output_light/cell_22_0_light.png#only-light" alt="Example output from cell 22, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_22_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 22, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_22_0_dark.png#only-dark" alt="Example output from cell 22, image 0"></a></p>
 <h2 id="compute-and-display-the-activation-map">Compute and display the activation map<a class="headerlink" href="#compute-and-display-the-activation-map" title="Permanent link">&para;</a></h2>
@@ -4886,42 +4902,37 @@ design-matrix columns. Before computing it, we can look at the contrast itself w
 weights over the design regressors and makes explicit that the <code>"active"</code> contrast
 simply selects the stimulation regressor while ignoring the CompCor, drift, and constant
 nuisance columns.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_contrast_matrix</span><span class="p">(</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="n">design_matrix</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">_</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_contrast_matrix</span><span class="p">(</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="n">design_matrix</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_24_0_light.png#only-light" data-type="image" data-title="Example output from cell 24, image 0" data-gallery="light"><img src="../first_level_output_light/cell_24_0_light.png#only-light" alt="Example output from cell 24, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_24_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 24, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_24_0_dark.png#only-dark" alt="Example output from cell 24, image 0"></a></p>
 <p>The <code>"active"</code> contrast then tests, at every voxel, whether that stimulation regressor
 has a non-zero effect, and returns a z-score map. We display it over a range of atlas
 slices with the region boundaries drawn on top for anatomical context.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">z_score</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">compute_contrast</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">z_1d</span> <span class="o">=</span> <span class="n">resampled_average_in_atlas</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">slice_coords</span> <span class="o">=</span> <span class="n">z_1d</span><span class="p">[(</span><span class="n">z_1d</span> <span class="o">&gt;</span> <span class="mf">5.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">z_1d</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)][::</span><span class="mi">4</span><span class="p">]</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;berlin&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_stat_map</span><span class="p">(</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">z_score</span><span class="p">,</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
-</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>    <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="p">)</span>
-</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="n">_</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span>
-</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span>
-</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>    <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
-</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">z_score</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">compute_contrast</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">z_1d</span> <span class="o">=</span> <span class="n">resampled_average_in_atlas</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">slice_coords</span> <span class="o">=</span> <span class="n">z_1d</span><span class="p">[(</span><span class="n">z_1d</span> <span class="o">&gt;</span> <span class="mf">5.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">z_1d</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)][::</span><span class="mi">4</span><span class="p">]</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;berlin&quot;</span> <span class="k">if</span> <span class="n">is_dark_theme</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_stat_map</span><span class="p">(</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">z_score</span><span class="p">,</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">nrows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="n">bg_color</span><span class="o">=</span><span class="n">bg_color</span><span class="p">,</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="p">)</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="n">_</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">annotation</span><span class="p">,</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    <span class="n">slice_coords</span><span class="o">=</span><span class="n">slice_coords</span><span class="p">,</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="p">)</span>
 </span></code></pre></div>
-<div class="gallery-output">
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>/home/runner/work/confusius/confusius/src/confusius/glm/_models.py:34: RuntimeWarning: divide by zero encountered in divide
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  return np.where(x == 0, 0, 1.0 / x)
-</span></code></pre></div>
-</div>
-<p><a class="glightbox" href="../first_level_output_light/cell_26_1_light.png#only-light" data-type="image" data-title="Example output from cell 26, image 1" data-gallery="light"><img src="../first_level_output_light/cell_26_1_light.png#only-light" alt="Example output from cell 26, image 1"></a><a class="glightbox" href="../first_level_output_dark/cell_26_1_dark.png#only-dark" data-type="image" data-title="Example output from cell 26, image 1" data-gallery="dark"><img src="../first_level_output_dark/cell_26_1_dark.png#only-dark" alt="Example output from cell 26, image 1"></a></p>
+<p><a class="glightbox" href="../first_level_output_light/cell_26_0_light.png#only-light" data-type="image" data-title="Example output from cell 26, image 0" data-gallery="light"><img src="../first_level_output_light/cell_26_0_light.png#only-light" alt="Example output from cell 26, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_26_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 26, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_26_0_dark.png#only-dark" alt="Example output from cell 26, image 0"></a></p>
 <h2 id="threshold-for-statistical-significance">Threshold for statistical significance<a class="headerlink" href="#threshold-for-statistical-significance" title="Permanent link">&para;</a></h2>
 <p>The raw z-map shows the effect at every voxel; we might want to keep only those that are
 statistically significant while controlling for the many thousands of simultaneous
@@ -4987,7 +4998,7 @@ anatomical context.</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_31_0_light.png#only-light" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="light"><img src="../first_level_output_light/cell_31_0_light.png#only-light" alt="Example output from cell 31, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_31_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_31_0_dark.png#only-dark" alt="Example output from cell 31, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 204.7 s</p>
+<p><strong>Total running time:</strong> 118.4 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/feat/preprocessing-panel?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py">Launch in Binder</a> <a class="md-button" href="../first_level.py">Download .py</a> <a class="md-button" href="../first_level.ipynb">Download .ipynb</a></p>
 
 
