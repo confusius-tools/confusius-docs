@@ -5384,7 +5384,7 @@ repeated random-access workloads, prefer Zarr or uncompressed <code>.nii</code>.
 <a class="autorefs autorefs-external" href="https://brainglobe.info/documentation/brainglobe-atlasapi/api/brainglobe_atlasapi.structure_class.StructuresDict.html#brainglobe_atlasapi.structure_class.StructuresDict"><code>StructuresDict</code></a> in
 <code>attrs["structures"]</code>. The <code>cmap</code>/<code>norm</code> colormap objects dropped on save are rebuilt
 into <code>annotation.attrs</code> from <code>rgb_lookup</code>, and each <abbr title="Region of Interest">ROI</abbr>'s <code>mesh_filename</code> is re-pointed
-at the meshes bundled under the store's <code>meshes/</code> subdirectory, so <code>get_mesh</code> works on
+at the meshes bundled under the store's <code>meshes/</code> subdirectory, so <code>get_meshes</code> works on
 the loaded atlas without the BrainGlobe cache. See the warning on
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_atlas&lt;/span&gt;" href="./#confusius.io.save_atlas"><code>save_atlas</code></a> for meshes that were not bundled.</p>
 
@@ -6112,7 +6112,7 @@ untouched); <a class="autorefs autorefs-internal" title="&lt;span class=&quot;do
 <div class="admonition warning">
 <p class="admonition-title">Undownloaded meshes are not bundled</p>
 <p>A region whose mesh was never accessed before <code>save_atlas</code> keeps its partial
-BrainGlobe-cache path instead of being bundled. <code>get_mesh</code> on the loaded atlas
+BrainGlobe-cache path instead of being bundled. <code>get_meshes</code> on the loaded atlas
 can still trigger BrainGlobe's lazy download from that path.</p>
 </div>
 
