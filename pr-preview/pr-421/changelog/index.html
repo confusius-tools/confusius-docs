@@ -4452,6 +4452,9 @@
   <code>data.fusi.register.volumewise</code> accept a <code>fixed</code> VoxelData volume (for example the
   mean of a few low-motion frames) to register every frame to, as an alternative to
   <code>reference_time</code> (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel"><code>FirstLevelModel</code></a> accepts <code>show_progress=True</code> to
+  display a progress bar over the runs being fitted
+  (<a href="https://github.com/confusius-tools/confusius/pull/442">#442</a>).</li>
 <li>New <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_bounding_box&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_bounding_box"><code>get_bounding_box</code></a>, also available as
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;bounding_box&lt;/span&gt;
 
@@ -4473,6 +4476,9 @@
   <code>numpy.ndarray</code> at fetch time, since <code>BrainGlobeAtlas</code>'s v3 API forces this
   even when only metadata or a small region is needed
   (<a href="https://github.com/confusius-tools/confusius/pull/415">#415</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fit&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel.fit"><code>FirstLevelModel.fit</code></a> is roughly twice as fast,
+  with the larger gain on the default <code>noise_model="ar1"</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/442">#442</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_meshes"><code>get_atlas_meshes</code></a> with <code>clip=True</code> no longer
   materializes the full world-coordinate grid of an oblique atlas
   (<a href="https://github.com/confusius-tools/confusius/pull/446">#446</a>).</li>
@@ -4498,9 +4504,16 @@
   on its own under <code>auto_range=True</code>: a lone bound sets the symmetric range to
   <code>[-|bound|, |bound|]</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/445">#445</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_contrast&lt;/span&gt;" href="../api/glm/#confusius.glm.FirstLevelModel.compute_contrast"><code>FirstLevelModel.compute_contrast</code></a>
+  no longer emits a divide-by-zero <code>RuntimeWarning</code> on recordings containing voxels with
+  no variance over time, such as those outside the recorded field of view
+  (<a href="https://github.com/confusius-tools/confusius/pull/442">#442</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> keeps the applied key in
   <code>.attrs["affines"]</code> as the identity when the affine is given by key
   (<a href="https://github.com/confusius-tools/confusius/pull/463">#463</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_echoframe_dat_to_zarr&lt;/span&gt;" href="../api/io/#confusius.io.convert_echoframe_dat_to_zarr"><code>convert_echoframe_dat_to_zarr</code></a> now
+  preserves time coordinate attributes when passing <code>block_times</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/473">#473</a>).</li>
 </ul>
 <h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
 <ul>
