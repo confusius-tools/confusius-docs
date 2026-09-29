@@ -3590,9 +3590,11 @@ plus any number of non-spatial dimensions (e.g., <code>time</code>, <code>pose</
           –
           <div class="doc-md-description">
             <p>Mask defining which voxels to extract, sharing <code>data</code>'s voxel grid. Must have
-boolean dtype, or integer dtype with exactly one non-zero value (0 =
-background, one region id = foreground). The latter format is produced by
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>.</p>
+boolean dtype, or binary numeric dtype (0 = background, at most one non-zero
+value = foreground). The latter format is produced by
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_masks&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_masks"><code>get_masks</code></a>, and also covers masks
+written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks with
+values in <code>{0, 1}</code> or <code>{0.0, 1.0}</code>).</p>
           </div>
         </li>
     </ul>
@@ -3635,7 +3637,7 @@ voxel grid doesn't match <code>data</code>'s.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> is not boolean dtype (or a single-label integer dtype).</p>
+            <p>If <code>mask</code> is not boolean dtype (or a binary numeric dtype).</p>
           </div>
         </li>
     </ul>
@@ -3728,9 +3730,9 @@ dimensions. The last dimension must correspond to masked voxels.</p>
           <div class="doc-md-description">
             <p>VoxelData mask used for the original extraction. Provides spatial dimensions,
 coordinates, and <code>VoxelToWorldIndex</code> for reconstruction. Must be either
-boolean dtype, or integer dtype with exactly one non-zero value (0 =
-background, one region id = foreground). Spatial dimensions and coordinates
-must match the original data.</p>
+boolean dtype, or binary numeric dtype (0 = background, at most one non-zero
+value = foreground). Spatial dimensions and coordinates must match the
+original data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3809,7 +3811,7 @@ shape.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>mask</code> is not boolean dtype (or a single-label integer dtype).</p>
+            <p>If <code>mask</code> is not boolean dtype (or a binary numeric dtype).</p>
           </div>
         </li>
     </ul>
