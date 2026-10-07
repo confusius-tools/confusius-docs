@@ -5871,7 +5871,7 @@ reproduce the original NIfTI header codes.</p>
   DataArray wraps an open <code>h5py</code> handle via a Dask array; keep it in scope (or call
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
-  payload). The returned DataArray wraps a NumPy memmap via a Dask array and, when
+  payload). The returned DataArray wraps a lazy file proxy via a Dask array and, when
   a <code>bps_path</code> is given, adds <code>world_to_brain</code>.</li>
 </ul>
 <p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
