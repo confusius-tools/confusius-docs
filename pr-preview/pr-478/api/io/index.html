@@ -5534,7 +5534,8 @@ dimensions <code>(time, k, j, i)</code> and a voxel-to-world index deriving worl
 <code>beamforming_sound_velocity</code>) are attached from the EchoFrame sequence parameter
 file. The <code>time</code> coordinate is computed from frame indices and the compound
 sampling frequency; callers with acquisition timestamps for each block should
-override it (e.g. via <code>data.assign_coords(time=...)</code>).</p>
+override it (e.g. via <code>data.assign_coords(time=...)</code>). Each chunk reopens a
+read-only memory map on its worker; in-place processing requires a copy.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5871,8 +5872,8 @@ reproduce the original NIfTI header codes.</p>
   DataArray wraps an open <code>h5py</code> handle via a Dask array; keep it in scope (or call
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
-  payload). The returned DataArray wraps a lazy file proxy via a Dask array and, when
-  a <code>bps_path</code> is given, adds <code>world_to_brain</code>.</li>
+  payload). Each Dask chunk opens its own read-only memory map and, when a
+  <code>bps_path</code> is given, the returned DataArray includes <code>world_to_brain</code>.</li>
 </ul>
 <p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
 
@@ -5905,7 +5906,7 @@ affine is added to <code>da.attrs["affines"]</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dask chunk specification passed to <code>dask.array.from_array</code>. Accepted forms:</p>
+            <p>Dask chunk specification. Accepted forms:</p>
 <ul>
 <li>A blocksize like <code>1000</code>.</li>
 <li>A blockshape like <code>(1000, 1000)</code>.</li>
@@ -5963,7 +5964,8 @@ of <code>"2Dscan"</code>, <code>"3Dscan"</code>, <code>"4Dscan"</code>, or <code
 6DOF probe pose per <code>pose</code>, acquisition/provenance metadata, then a Fortran-ordered
 <code>(size_x, size_y, size_z, time, pose, dim6)</code> payload. The loader exposes this as
 VoxelData order <code>(..., time, pose, k, j, i)</code> and keeps dim6 as an extra leading
-dimension when present.</p>
+dimension when present. Mapped chunks are read-only; in-place chunk-processing
+functions must copy them first.</p>
 <p>Acquisition settings that correspond to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> fields are also surfaced as
 attributes, in native header units: <code>probe_model</code>, <code>probe_center_frequency</code> (MHz),
 <code>probe_pitch</code> (mm), <code>imaging_depth</code> (mm start/end), <code>transmit_frequency</code> (MHz),
