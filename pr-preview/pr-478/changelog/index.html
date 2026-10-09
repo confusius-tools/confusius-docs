@@ -4416,6 +4416,15 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata now follows draft v0.0.14: renamed frequency/voltage fields,
+  including internal attributes <code>probe_central_frequency</code> → <code>probe_center_frequency</code>
+  and <code>probe_voltage</code> → <code>transmit_voltage</code>, updated probe/virtual-source validation,
+  and removal of redundant integration-stride attributes for Power Doppler,
+  B-mode, and axial velocity. JSON processing windows use milliseconds, including
+  ConfUSIus-prefixed B-mode and axial-velocity durations; internal attributes use
+  the time coordinate's units. JSON acquisition timing remains in seconds.
+  No legacy JSON aliases or automatic legacy-unit detection are provided
+  (<a href="https://github.com/confusius-tools/confusius/pull/486">#486</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_volume"><code>resample_volume</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_like"><code>resample_like</code></a>'s <code>interpolation</code>
   parameter defaults to <code>"auto"</code> instead of <code>"linear"</code>: <code>"nearest"</code> is picked for
@@ -4465,9 +4474,11 @@
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
-<li>SCAN v2 and EchoFrame DAT loaders reopen read-only memory maps per Dask chunk
-  on the executing worker, avoiding EchoFrame block copies and keeping payloads
-  lazy without caching whole-file mappings
+<li>EchoFrame DAT loading is faster and uses less resident memory by reopening
+  read-only memory maps per Dask chunk instead of copying each acquisition block,
+  addressing slow DAT-based <abbr title="In-phase and Quadrature">IQ</abbr> processing
+  (<a href="https://github.com/confusius-tools/confusius/issues/479">#479</a>). SCAN v2 uses the
+  same worker-side reader, keeping payloads lazy without caching whole-file mappings
   (<a href="https://github.com/confusius-tools/confusius/pull/478">#478</a>).</li>
 <li><code>fetch_brainglobe_atlas</code>'s <code>reference</code>/<code>annotation</code> are now backed by lazy
   <code>dask.array.Array</code> data instead of being eagerly materialized to
