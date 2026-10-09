@@ -5713,7 +5713,8 @@ resampling. Applied to both the final registered output (when <code>resample=Tru
 and the progress composite overlay (when <code>show_progress=True</code> and
 <code>plot_composite=True</code>). If not provided, defaults to the minimum value of
 <code>moving</code>, which renders out-of-FOV regions as background regardless of intensity
-scale (important for dB data where 0 is maximum intensity).</p>
+scale (important for dB data where 0 is maximum intensity). Must be representable
+in <code>moving</code>'s dtype: to fill an integer volume with NaN, cast it to float first.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6678,7 +6679,8 @@ otherwise.</p>
             <p>Value assigned to voxels that fall outside the moving image's field of view
 after resampling. If not provided, defaults to <code>float(moving.min())</code>, which
 renders out-of-FOV voxels as background regardless of intensity scale (important
-for dB data where 0 is maximum intensity).</p>
+for dB data where 0 is maximum intensity). Must be representable in <code>moving</code>'s
+dtype: to fill an integer volume with NaN, cast it to float first.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
