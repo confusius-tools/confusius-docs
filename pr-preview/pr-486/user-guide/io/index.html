@@ -3928,6 +3928,11 @@ specific sidecars overriding shared values. Metadata fields are interpreted usin
 <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> naming conventions and converted back to the usual ConfUSIus attribute names 
 on the loaded DataArray. Timing metadata in the sidecar takes precedence over the 
 NIfTI header when both are available.</p>
+<p>Acquisition timing (<abbr title="Brain Imaging Data Structure">BIDS</abbr> seconds) and processing-window durations/strides (<abbr title="Brain Imaging Data Structure">BIDS</abbr>
+milliseconds) are converted to the loaded time coordinate's units. The custom
+<code>ConfUSIusBmodeIntegrationDuration</code> and <code>ConfUSIusAxialVelocityIntegrationDuration</code>
+JSON fields also use milliseconds. Without a time coordinate or declared time units,
+processing metadata defaults to seconds internally.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load with automatic fUSI-BIDS sidecar metadata.</span>
@@ -4120,6 +4125,10 @@ attributes, and timing metadata such as <code>RepetitionTime</code>, <code>Delay
 coordinate so the sidecar stays consistent with the data being saved. Multi-pose data
 cannot be written directly to a single NIfTI file; save it to Zarr, consolidate poses
 first, or save one pose per file instead.</p>
+<p>Time and slice-time coordinates and their acquisition-duration attributes are saved in
+seconds. Processing-window durations and strides are saved in milliseconds, including
+ConfUSIus-prefixed B-mode and axial-velocity durations. Internally these processing
+attributes use the time coordinate's units, as do <abbr title="In-phase and Quadrature">IQ</abbr>-processing outputs.</p>
 <p>If <code>data_array.attrs["affines"]</code> contains named world-to-reference affines, you can
 choose which ones are written into the NIfTI header:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
