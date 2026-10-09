@@ -4416,22 +4416,19 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>
-<p><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata now follows draft v0.0.14: renamed frequency/voltage fields,
+<li><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata now follows draft v0.0.14: renamed frequency/voltage fields,
   updated probe/virtual-source validation, and removal of the redundant Power
   Doppler integration stride. JSON processing windows use milliseconds; internal
   attributes and acquisition timing remain in seconds. No legacy JSON aliases or
-  automatic legacy-unit detection are provided.</p>
-</li>
-<li>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_volume"><code>resample_volume</code></a> and
+  automatic legacy-unit detection are provided
+  (<a href="https://github.com/confusius-tools/confusius/pull/486">#486</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_volume"><code>resample_volume</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_like"><code>resample_like</code></a>'s <code>interpolation</code>
   parameter defaults to <code>"auto"</code> instead of <code>"linear"</code>: <code>"nearest"</code> is picked for
   integer-dtype data (e.g. atlas region labels) and <code>"linear"</code> otherwise, so
   resampling an integer mask no longer silently blends label values unless
   <code>interpolation</code> is explicitly overridden
-  (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</p>
-</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/436">#436</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a>'s
   <code>intensity_scaling</code> is renamed to <code>moving_intensity_scaling</code>, and a new
   <code>fixed_intensity_scaling</code> scales a user-provided <code>fixed</code> volume separately (only
