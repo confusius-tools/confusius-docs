@@ -4032,6 +4032,18 @@ extension proposal (BEP) v0.0.14.</p>
               <p>Validate timing field constraints per <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> spec.</p>
             </div>
           </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_volume_timing&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-classmethod&quot;&gt;&lt;code&gt;classmethod&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.bids.FUSIBIDSMetadata.validate_volume_timing">validate_volume_timing</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Validate that volume onset times are finite and strictly increasing.</p>
+            </div>
+          </li>
     </ul>
 
 
@@ -4842,6 +4854,67 @@ the initial attempt to build the schema, and automatic rebuilding fails.</p>
           –
           <div class="doc-md-description">
             <p>Self, if validation passes.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="confusius.bids.FUSIBIDSMetadata.validate_volume_timing" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">validate_volume_timing</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#confusius.bids.FUSIBIDSMetadata.validate_volume_timing" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">validate_volume_timing</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;values&lt;/code&gt;&lt;/b&gt;" href="./#confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)">values</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Validate that volume onset times are finite and strictly increasing.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)" class="doc doc-heading doc-heading-parameter">              <b><code>values</code></b>
+<a href="#confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Volume onset times in seconds, or None.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Validated onset times, unchanged.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If onset times are empty, negative, non-finite, or not increasing.</p>
           </div>
         </li>
     </ul>
