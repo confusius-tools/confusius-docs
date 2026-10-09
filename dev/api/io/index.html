@@ -5828,6 +5828,10 @@ frame elsewhere: it is re-expressed along with the other entries, so
 <p>Choosing <code>coordinate_affine="sform"</code> or <code>"qform"</code> <em>forces</em> that header affine:
 unlike <code>"auto"</code>, there is no fallback to the other form or to <code>pixdim</code> when the
 requested affine is not valid -- <code>load_nifti</code> raises <code>ValueError</code> instead.</p>
+<p>Processing-window durations and strides in JSON (including ConfUSIus-prefixed
+B-mode and axial-velocity durations) are converted from milliseconds to the loaded
+time coordinate's units. Without a time coordinate or declared time units, seconds
+are assumed.</p>
 <p>The raw integer form codes are stored as <code>da.attrs["qform_code"]</code> and
 <code>da.attrs["sform_code"]</code> (only when &gt; 0) so that a save/load roundtrip can
 reproduce the original NIfTI header codes.</p>
@@ -6309,8 +6313,9 @@ back to <code>voxel_to_world</code> directly (like qform), unless disabled via
   <p>Time coordinates are automatically converted to seconds for BIDS compliance. If the
 time coordinate has a "units" attribute, values are converted from "ms" or "us" to
 "s". If no units are specified, seconds are assumed. Known time-valued processing
-metadata stored in <code>data_array.attrs</code> is converted to seconds using the same unit
-convention.</p>
+metadata stored in <code>data_array.attrs</code> uses the time coordinate's units internally
+and is converted to milliseconds in JSON, including ConfUSIus-prefixed B-mode and
+axial-velocity integration durations. Missing time units default to seconds.</p>
 <p>A warning is issued if spatial dimensions <code>(x, y, z)</code> have inconsistent units, as
 NIfTI only supports a single spatial unit in the <code>xyzt_units</code> header field.</p>
 </details>
