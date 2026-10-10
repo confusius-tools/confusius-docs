@@ -4477,8 +4477,8 @@
   allowed together with <code>fixed</code>; it defaults to <code>moving_intensity_scaling</code>). Both are
   now also exposed on <code>data.fusi.register.volumewise</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/437">#437</a>).</li>
-<li>[<code>get_mesh</code>][confusius.atlas.AtlasAccessor.get_mesh] /
-  [<code>get_atlas_mesh</code>][confusius.atlas.get_atlas_mesh] take <code>regions</code>/<code>sides</code> instead of
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.AtlasAccessor.get_meshes"><code>get_meshes</code></a> /
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_atlas_meshes&lt;/span&gt;" href="../api/atlas/#confusius.atlas.get_atlas_meshes"><code>get_atlas_meshes</code></a> take <code>regions</code>/<code>sides</code> instead of
   <code>region</code>/<code>side</code> and return a <code>{acronym: (vertices, faces)}</code> dict with one entry per
   requested region, under <code>_L</code>/<code>_R</code>-suffixed keys for single-hemisphere requests
   (<a href="https://github.com/confusius-tools/confusius/pull/448">#448</a>).</li>
@@ -4638,17 +4638,15 @@
   <code>(...extra, time, pose, k, j, i)</code>.</strong> World coordinates <code>z</code>/<code>y</code>/<code>x</code> are no longer
   stored dimensions: they're derived lazily, per voxel, from a single
   voxel-to-world affine owned by a custom xarray index
-  ([<code>VoxelToWorldIndex</code>][confusius._utils.geometry.VoxelToWorldIndex]) attached
-  to native voxel dims <code>k</code>/<code>j</code>/<code>i</code>. This lets ConfUSIus represent oblique,
-  rotated, or sheared acquisitions and registration outputs exactly, without
-  resampling onto an axis-aligned grid. Every loader (<code>load_scan</code>, <code>load_nifti</code>, <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>,
-  EchoFrame), registration function, plotting path, napari layer, and I/O round trip
-  (Zarr, NIfTI) was migrated to this model;
+  (<code>VoxelToWorldIndex</code>) attached to native voxel dims <code>k</code>/<code>j</code>/<code>i</code>. This lets ConfUSIus
+  represent oblique, rotated, or sheared acquisitions and registration outputs exactly,
+  without resampling onto an axis-aligned grid. Every loader (<code>load_scan</code>, <code>load_nifti</code>,
+  <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>, EchoFrame), registration function, plotting path, napari layer, and I/O round
+  trip (Zarr, NIfTI) was migrated to this model;
   <code>confusius.validation.validate_voxeldata</code>/<code>ensure_voxeldata</code> enforce it
   unconditionally.</li>
 <li>World-space <code>units</code> moved off the <code>z</code>/<code>y</code>/<code>x</code> coordinates' <code>.attrs</code> onto
-  [<code>VoxelToWorldIndex</code>][confusius._utils.geometry.VoxelToWorldIndex] as a single shared
-  property, exposed via
+  <code>VoxelToWorldIndex</code> as a single shared property, exposed via
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;units&lt;/span&gt;
 
 
@@ -4656,8 +4654,8 @@
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.units"><code>data.fusi.affine.units</code></a> and set with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_units&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.set_units"><code>data.fusi.affine.set_units</code></a>. Setting
-  <code>data.coords["z"].attrs["units"]</code> directly no longer has any effect: world
-  coordinates are always regenerated fresh from the index.</li>
+  <code>data.coords["z"].attrs["units"]</code> directly no longer has any effect: world coordinates
+  are always regenerated fresh from the index.</li>
 <li>Multi-pose data now carries pose-dependent voxel-to-world geometry. Sequentially
   acquired multi-pose data correspondingly carries a pose-dependent, <code>(time,
   pose)</code>-shaped <code>time</code> coordinate holding each pose's own real acquisition timestamps
