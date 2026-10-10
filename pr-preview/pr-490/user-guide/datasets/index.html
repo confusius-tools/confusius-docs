@@ -1324,6 +1324,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#downloading-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Downloading Files
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#selecting-a-new-release" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3341,6 +3352,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#downloading-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Downloading Files
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#selecting-a-new-release" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -4042,18 +4064,27 @@ package for querying files, or simply use <a class="autorefs autorefs-external" 
 </span></code></pre></div>
 <p>See the <a href="../io/">I/O guide</a> for loading NIfTI, Zarr, and Iconeus SCAN files into
 VoxelData arrays.</p>
+<h3 id="downloading-files">Downloading Files<a class="headerlink" href="#downloading-files" title="Permanent link">&para;</a></h3>
+<p>Collection fetchers use anonymous Boto3 S3 transfers beneath Pooch's SHA-256
+verification and temporary-file handling. A shared ten-worker transfer pool reuses
+HTTP connections and downloads files concurrently. Files of at least 8 MiB use
+parallel byte-range downloads. Neither AWS credentials nor the AWS CLI are needed.</p>
 <h3 id="selecting-a-new-release">Selecting a New Release<a class="headerlink" href="#selecting-a-new-release" title="Permanent link">&para;</a></h3>
 <p>Collection fetchers resolve the published version from <code>last_versions.conf</code> and
 read that release's <code>manifest.json</code>, which records each file's size and SHA-256 hash.
 A local <code>s3_index.json</code> remembers the selected release. Subsequent calls reuse that
-release without querying the catalog; matching cached files work offline, while
-missing or modified files are downloaded and verified.</p>
+release without querying the catalog. Existing files are trusted without rereading
+or hashing their contents, so cached fetches work offline and avoid scanning the
+whole collection. Missing files are downloaded and SHA-256 verified. To repair a
+corrupted or manually modified file, delete it and fetch again.</p>
 <p>Pass <code>refresh=True</code> to select the latest published release:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Select the latest release without overwriting a previously cached version.</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span><span class="n">subjects</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CR020&quot;</span><span class="p">],</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Versions are immutable and use separate cache directories. Refreshing an unchanged
-release does not download matching files again. The same release-selection behavior
+release does not reread or download files whose recorded SHA-256 matches the remote
+manifest. If an upstream hash changes or the cached hash is unknown, the file is
+revalidated and downloaded when necessary. The same release-selection behavior
 applies to template fetchers.</p>
 <h2 id="available-templates">Available Templates<a class="headerlink" href="#available-templates" title="Permanent link">&para;</a></h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Huang 2025</label><label for="__tabbed_2_2">Pepe Mariani 2026</label></div>
