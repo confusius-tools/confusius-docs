@@ -3527,7 +3527,7 @@ coordinate handling.</p>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;repetition_time&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;task_name&quot;</span><span class="p">:</span> <span class="s2">&quot;rest&quot;</span><span class="p">,</span> <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="mf">15e6</span><span class="p">}</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">bids_attrs</span> <span class="o">=</span> <span class="n">bids</span><span class="o">.</span><span class="n">to_bids</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">bids_attrs</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">{&quot;RepetitionTime&quot;: 1.5, &quot;TaskName&quot;: &quot;rest&quot;, &quot;UltrasoundTransmitFrequency&quot;: 15000000.0}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">{&quot;RepetitionTime&quot;: 1.5, &quot;TaskName&quot;: &quot;rest&quot;, &quot;TransmitFrequency&quot;: 15000000.0}</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt;</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert BIDS metadata back to ConfUSIus format</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">attrs_back</span> <span class="o">=</span> <span class="n">bids</span><span class="o">.</span><span class="n">from_bids</span><span class="p">(</span><span class="n">bids_attrs</span><span class="p">)</span>
@@ -3757,10 +3757,8 @@ coordinate handling.</p>
 
 <a href="#confusius.bids.EXPLICIT_BIDS_FIELD_MAPPINGS" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">EXPLICIT_BIDS_FIELD_MAPPINGS</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Final" href="https://docs.python.org/3/library/typing.html#typing.Final">Final</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#dict">dict</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="s2">&quot;UltrasoundTransmitFrequency&quot;</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="s2">&quot;pulse_repetition_frequency&quot;</span><span class="p">:</span> <span class="s2">&quot;UltrasoundPulseRepetitionFrequency&quot;</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s2">&quot;volume_acquisition_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;FrameAcquisitionDuration&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;volume_acquisition_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;FrameAcquisitionDuration&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3825,7 +3823,7 @@ coordinate handling.</p>
 
         <p>FUSI-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata model for sidecar JSON validation.</p>
 <p>This model represents the <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> sidecar metadata as defined in the <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr>
-extension proposal (BEP) v0.0.12.</p>
+extension proposal (BEP) v0.0.14.</p>
 
 
 <details class="note" open>
@@ -4030,6 +4028,18 @@ extension proposal (BEP) v0.0.12.</p>
             –
             <div class="doc-md-description">
               <p>Validate timing field constraints per <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> spec.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_volume_timing&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-classmethod&quot;&gt;&lt;code&gt;classmethod&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="./#confusius.bids.FUSIBIDSMetadata.validate_volume_timing">validate_volume_timing</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Validate that volume onset times are finite and strictly increasing.</p>
             </div>
           </li>
     </ul>
@@ -4851,6 +4861,67 @@ the initial attempt to build the schema, and automatic rebuilding fails.</p>
 
 </div>
 
+<div class="doc doc-object doc-function">
+
+
+<h4 id="confusius.bids.FUSIBIDSMetadata.validate_volume_timing" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">validate_volume_timing</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#confusius.bids.FUSIBIDSMetadata.validate_volume_timing" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">validate_volume_timing</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;values&lt;/code&gt;&lt;/b&gt;" href="./#confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)">values</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Validate that volume onset times are finite and strictly increasing.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)" class="doc doc-heading doc-heading-parameter">              <b><code>values</code></b>
+<a href="#confusius.bids.FUSIBIDSMetadata.validate_volume_timing(values)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Volume onset times in seconds, or None.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></code>
+          –
+          <div class="doc-md-description">
+            <p>Validated onset times, unchanged.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If onset times are empty, negative, non-finite, or not increasing.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
 
 
   </div>
@@ -5070,7 +5141,7 @@ always aligned with natural slice index order.</p>
         <p>Convert <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata to ConfUSIus format.</p>
 <p>Known <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> fields are converted to snake_case. ConfUSIus-prefixed attributes
 are converted back to internal names. Unknown fields are preserved as-is to ensure
-round-trip safety.</p>
+round-trip safety. Values and units are unchanged.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5330,7 +5401,8 @@ empty table writes a header-only file.</p>
 
         <p>Convert ConfUSIus attributes to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format.</p>
 <p>Only converts known <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> fields. Internal ConfUSIus attributes are prefixed
-with "ConfUSIus". Unknown fields are preserved as-is.</p>
+with "ConfUSIus". Values and units are unchanged; unknown fields are preserved
+as-is.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
