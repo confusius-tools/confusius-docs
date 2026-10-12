@@ -1059,10 +1059,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#refreshing-the-dataset-index" class="md-nav__link">
+  <a href="#selecting-a-new-release" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Refreshing the Dataset Index
+        Selecting a New Release
       </span>
     </span>
   </a>
@@ -2301,6 +2301,8 @@
       
         
       
+        
+      
     
     
     
@@ -2416,6 +2418,33 @@
     
   
   Load multi-pose recordings
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/dataset_collection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  The ConfUSIus Dataset Collection
 
     
   </span>
@@ -3263,10 +3292,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#refreshing-the-dataset-index" class="md-nav__link">
+  <a href="#selecting-a-new-release" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Refreshing the Dataset Index
+        Selecting a New Release
       </span>
     </span>
   </a>
@@ -3437,8 +3466,13 @@ root directory, or a more specific object (e.g., a DataArray for templates or an
 <p class="admonition-title">Try before you buy</p>
 <p>Fetchers generally accept filters (subjects, sessions, tasks, derivatives, etc.) so
 you can download a small subset first and decide later whether you want the full
-dataset. Cached files are never re-downloaded.</p>
+dataset. Cached files with matching SHA-256 hashes are reused.</p>
 </div>
+<p>The ConfUSIus dataset collection is hosted on Amazon S3, with hosting sponsored
+by <strong>AWS Open Data</strong>. Downloads are anonymous HTTPS requests: no AWS account,
+credentials, or CLI is required. The <a href="https://github.com/confusius-tools/confusius-datasets">collection repository</a>
+documents provenance, conversion recipes, and per-dataset licenses. Hosting does not
+change attribution or licensing requirements.</p>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>The fastest way to get started is to fetch a single subject from the Nunez-Elizalde
 2022 dataset<sup id="fnref:nunez2022"><a class="footnote-ref" href="#fn:nunez2022">1</a></sup> and load one of its NIfTI files:</p>
@@ -3509,8 +3543,10 @@ dataset. Cached files are never re-downloaded.</p>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">get_datasets_dir</span><span class="p">()</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">PosixPath(&#39;/home/alice/.cache/confusius&#39;)</span>
 </span></code></pre></div>
-<p>Each fetcher creates its own <abbr title="Brain Imaging Data Structure">BIDS</abbr>-root subdirectory under this path (e.g.
-<code>nunez-elizalde-2022-bids/</code>), so multiple datasets can coexist safely.</p>
+<p>Each collection fetcher caches releases under <code>&lt;recipe&gt;/&lt;version&gt;/</code> (e.g.
+<code>nunez-elizalde-2022-bids/1.0.0/</code>). Its returned path is the versioned <abbr title="Brain Imaging Data Structure">BIDS</abbr> root,
+so paths constructed relative to that return value continue to work. Earlier
+releases are preserved when downloading a newer version.</p>
 <h2 id="listing-available-datasets">Listing Available Datasets<a class="headerlink" href="#listing-available-datasets" title="Permanent link">&para;</a></h2>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;list_datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.list_datasets"><code>list_datasets</code></a> to print a table of available
 fetchers and their full download sizes:</p>
@@ -3526,7 +3562,7 @@ fetchers and their full download sizes:</p>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="go">│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✗    │</span>
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="go">│ fetch_pepe_mariani_2026          │ 37.56 GB │    ✗    │</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="go">│ fetch_landemard_2026             │ 42.04 GB │    ✗    │</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="go">│ fetch_khallaf_2026               │ 19.49 GB │    ✗    │</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="go">│ fetch_khallaf_2026               │ 24.02 GB │    ✗    │</span>
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="go">│ fetch_template_huang_2025        │ 16.34 MB │    ✗    │</span>
 </span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="go">│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✗    │</span>
 </span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="go">└──────────────────────────────────┴──────────┴─────────┘</span>
@@ -3542,7 +3578,7 @@ fraction of this (see the examples below).</p>
 <div class="tabbed-block">
 <p>Simultaneous neural activity and cerebral blood volume recordings in awake mice,
 from Nunez-Elizalde et al. (2022)<sup id="fnref2:nunez2022"><a class="footnote-ref" href="#fn:nunez2022">1</a></sup>, converted to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format and
-hosted on <a href="https://osf.io/43skw/">OSF (43skw)</a>. Total size: <strong>~7 GB</strong>.</p>
+hosted in the S3 collection. Total size: <strong>~7 GB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_nunez_elizalde_2022&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_nunez_elizalde_2022"><code>fetch_nunez_elizalde_2022</code></a> to
 download the dataset. Four filters narrow the download:</p>
 <table>
@@ -3591,7 +3627,7 @@ since they are useful as anatomical references.</p>
 <div class="tabbed-block">
 <p>Functional ultrasound imaging data from a rat model of neuroinflammation, from
 Pereira et al. (2025)<sup id="fnref:pereira2025"><a class="footnote-ref" href="#fn:pereira2025">4</a></sup>, re-exported to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format and hosted on
-<a href="https://osf.io/pqa65/">OSF (pqa65)</a>. Total size: <strong>~30 GB</strong>.</p>
+the S3 collection. Total size: <strong>~30 GB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_pereira_2025&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_pereira_2025"><code>fetch_pereira_2025</code></a> to download the
 dataset. Three filters narrow the download:</p>
 <table>
@@ -3632,7 +3668,7 @@ dataset. Three filters narrow the download:</p>
 <div class="tabbed-block">
 <p>Functional ultrasound imaging data from freely-moving rats investigating vascular
 coding of speed in the spatial navigation system, from Cybis Pereira et al.
-(2026)<sup id="fnref:cybis2026"><a class="footnote-ref" href="#fn:cybis2026">2</a></sup>, hosted on <a href="https://osf.io/2v6f7/">OSF (2v6f7)</a>.
+(2026)<sup id="fnref:cybis2026"><a class="footnote-ref" href="#fn:cybis2026">2</a></sup>, hosted in the S3 collection.
 Total size: <strong>~13 GB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_cybis_pereira_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_cybis_pereira_2026"><code>fetch_cybis_pereira_2026</code></a> to
 download the dataset. Four filters narrow the download:</p>
@@ -3725,7 +3761,7 @@ across all subjects is often the right first step:</p>
 <div class="tabbed-block">
 <p>Transcranial mouse resting-state <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recordings and derivatives, from Pepe,
 Mariani et al. (2026)<sup id="fnref:pepe_mariani2026"><a class="footnote-ref" href="#fn:pepe_mariani2026">7</a></sup>, re-exported to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format and
-hosted on <a href="https://osf.io/7yhdc/">OSF (7yhdc)</a>. Total size: <strong>~38 GB</strong>.</p>
+hosted in the S3 collection. Total size: <strong>~38 GB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_pepe_mariani_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_pepe_mariani_2026"><code>fetch_pepe_mariani_2026</code></a> to
 download the dataset. Five filters narrow the download:</p>
 <table>
@@ -3760,7 +3796,7 @@ download the dataset. Five filters narrow the download:</p>
 <tr>
 <td><code>datatypes</code></td>
 <td>datatype directory</td>
-<td><code>"fusi"</code>, <code>"angio"</code></td>
+<td><code>"fusi"</code>, <code>"susi"</code></td>
 </tr>
 </tbody>
 </table>
@@ -3776,7 +3812,7 @@ download the dataset. Five filters narrow the download:</p>
 <p>Functional ultrasound imaging recordings from awake, head-fixed,
 freely-running mice, from Landemard et al. (2026)<sup id="fnref:landemard2026"><a class="footnote-ref" href="#fn:landemard2026">3</a></sup>,
 re-exported to <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> format and hosted on
-<a href="https://osf.io/7cf9g/overview">OSF (7cf9g)</a>.
+the S3 collection.
 Total size: <strong>~42 GB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_landemard_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_landemard_2026"><code>fetch_landemard_2026</code></a> to
 download the dataset. Four filters narrow the download:</p>
@@ -3807,13 +3843,13 @@ download the dataset. Four filters narrow the download:</p>
 <tr>
 <td><code>datatypes</code></td>
 <td>datatype directory</td>
-<td><code>"fusi"</code>, <code>["fusi", "angio"]</code></td>
+<td><code>"fusi"</code>, <code>["fusi", "susi"]</code></td>
 </tr>
 </tbody>
 </table>
 <p>The Landemard dataset has no session layer: every recording sits directly under
-<code>sub-*/fusi/</code> or <code>sub-*/angio/</code>. Files that lack an <code>acq-</code> entity (e.g.
-<code>sub-ALD001_scans.tsv</code>, <code>sub-ALD001/angio/sub-ALD001_pwd.nii.gz</code>) are always
+<code>sub-*/fusi/</code> or <code>sub-*/susi/</code>. Files that lack an <code>acq-</code> entity (e.g.
+<code>sub-ALD001_scans.tsv</code>, <code>sub-ALD001/susi/sub-ALD001_pwd.nii.gz</code>) are always
 included regardless of the <code>acqs</code> filter.</p>
 <p>The <code>datasets</code> filter accepts:</p>
 <table>
@@ -3855,12 +3891,9 @@ included regardless of the <code>acqs</code> filter.</p>
 <div class="tabbed-block">
 <p>Functional ultrasound imaging data from naked mole-rats exposed to olfactory
 stimulation, from Khallaf et al. (2026)<sup id="fnref:khallaf2026"><a class="footnote-ref" href="#fn:khallaf2026">5</a></sup>, organised following <abbr title="Brain Imaging Data Structure">BIDS</abbr> and
-the proposed <abbr title="Functional Ultrasound Imaging">fUSI</abbr> extension BEP-040 and hosted on
-<a href="https://doi.org/10.17617/3.7QCU1F">Edmond (10.17617/3.7QCU1F)</a>.
-Total size: <strong>~19.5 GB</strong>.</p>
-<p>Unlike the OSF-hosted datasets above, this one is distributed as a single ~19.5 GB
-zip archive. ConfUSIus streams the requested members out of it individually by HTTP
-range request, so a filtered fetch never downloads the whole archive.</p>
+the proposed <abbr title="Functional Ultrasound Imaging">fUSI</abbr> extension BEP-040. The original data is published on
+<a href="https://doi.org/10.17617/3.7QCU1F">Edmond (10.17617/3.7QCU1F)</a>; ConfUSIus
+downloads individual files from the S3 collection rather than the source archive.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_khallaf_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_khallaf_2026"><code>fetch_khallaf_2026</code></a> to download the
 dataset. Six filters narrow the download:</p>
 <table>
@@ -3962,20 +3995,29 @@ package for querying files, or simply use <a class="autorefs autorefs-external" 
 </span></code></pre></div>
 <p>See the <a href="../io/">I/O guide</a> for loading NIfTI, Zarr, and Iconeus SCAN files into
 VoxelData arrays.</p>
-<h3 id="refreshing-the-dataset-index">Refreshing the Dataset Index<a class="headerlink" href="#refreshing-the-dataset-index" title="Permanent link">&para;</a></h3>
-<p>Each <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> dataset fetcher caches a <code>dataset_index.json</code> file mapping <abbr title="Brain Imaging Data Structure">BIDS</abbr>-relative
-paths to OSF file metadata (download path and size). Pass <code>refresh=True</code> to re-fetch
-this index from OSF and download any new files that appeared since the last call:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Pick up any files added to OSF since the last fetch.</span>
+<h3 id="selecting-a-new-release">Selecting a New Release<a class="headerlink" href="#selecting-a-new-release" title="Permanent link">&para;</a></h3>
+<p>Collection fetchers resolve the published version from <code>last_versions.conf</code> and
+read that release's <code>manifest.json</code>, which records each file's size and SHA-256 hash.
+A local <code>s3_index.json</code> remembers the selected release. Subsequent calls reuse that
+release without querying the catalog. Existing files are trusted without rereading
+or hashing their contents, so cached fetches work offline and avoid scanning the
+whole collection. Missing files are downloaded and SHA-256 verified. To repair a
+corrupted or manually modified file, delete it and fetch again.</p>
+<p>Pass <code>refresh=True</code> to select the latest published release:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Select the latest release without overwriting a previously cached version.</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">bids_root</span> <span class="o">=</span> <span class="n">fetch_nunez_elizalde_2022</span><span class="p">(</span><span class="n">subjects</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CR020&quot;</span><span class="p">],</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Existing local files are never re-downloaded—<code>refresh=True</code> only adds what is missing.</p>
+<p>Versions are immutable and use separate cache directories. Refreshing an unchanged
+release does not reread or download files whose recorded SHA-256 matches the remote
+manifest. If an upstream hash changes or the cached hash is unknown, the file is
+revalidated and downloaded when necessary. The same release-selection behavior
+applies to template fetchers.</p>
 <h2 id="available-templates">Available Templates<a class="headerlink" href="#available-templates" title="Permanent link">&para;</a></h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Huang 2025</label><label for="__tabbed_2_2">Pepe Mariani 2026</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>A vascular mouse <abbr title="Functional Ultrasound Imaging">fUSI</abbr> template derived from Huang et al. (2025)<sup id="fnref:huang2025"><a class="footnote-ref" href="#fn:huang2025">6</a></sup> and
-distributed as a single NIfTI on <a href="https://osf.io/am3jw/">OSF (am3jw)</a>. Total size:
+distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size:
 <strong>~16.3 MB</strong>.</p>
 <p>Use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_huang_2025&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_huang_2025"><code>fetch_template_huang_2025</code></a> to
 download and load the template directly. The Huang 2025 template is already
@@ -3988,14 +4030,14 @@ resampled to the Allen space:</p>
 </div>
 <div class="tabbed-block">
 <p>A mouse <abbr title="Functional Ultrasound Imaging">fUSI</abbr> template derived from Pepe, Mariani et al. (2026)<sup id="fnref2:pepe_mariani2026"><a class="footnote-ref" href="#fn:pepe_mariani2026">7</a></sup> and
-distributed as a single NIfTI on <a href="https://osf.io/43tu9/">OSF (43tu9)</a>. Total size:
+distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size:
 <strong>~5.5 MB</strong>.</p>
 <p>Use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_pepe_mariani_2026&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_template_pepe_mariani_2026"><code>fetch_template_pepe_mariani_2026</code></a>
-to download and load the template directly. The Pepe, Mariani 2026 template isn't
-resampled to the Allen space to retain the typical orientation from preclinical
-head-fixed setups. However, the <code>sform</code> NIfTI affine contains the transformation
-necessary to resample to the Allen space:</p>
+to download and load the template directly. Its native voxel grid and scanner-space
+<code>qform</code> are retained for registration. The <code>sform</code> encodes the full Allen atlas
+alignment, including shear. Use <code>world_to_sform</code> to resample the atlas onto the
+template's native grid:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">fetch_brainglobe_atlas</span><span class="p">,</span> <span class="n">fetch_template_pepe_mariani_2026</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">template</span> <span class="o">=</span> <span class="n">fetch_template_pepe_mariani_2026</span><span class="p">()</span>

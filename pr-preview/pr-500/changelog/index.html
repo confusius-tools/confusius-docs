@@ -2146,6 +2146,8 @@
       
         
       
+        
+      
     
     
     
@@ -2261,6 +2263,33 @@
     
   
   Load multi-pose recordings
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/io/dataset_collection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  The ConfUSIus Dataset Collection
 
     
   </span>
@@ -4457,6 +4486,16 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Dataset and template fetchers now download immutable, SHA-256-verified releases
+  from S3, with hosting sponsored by AWS Open Data, instead of OSF or the Edmond
+  archive. Releases are cached under <code>&lt;recipe&gt;/&lt;version&gt;/</code>; <code>refresh=True</code> selects
+  the latest published release without overwriting earlier versions. Delete old
+  OSF dataset/template cache directories and fetch again to reclaim space and use
+  the new layouts. Only remove downloaded collection caches under your <code>data_dir</code>,
+  <code>CONFUSIUS_DATA</code>, or platform cache directory—not personal recordings, analysis
+  outputs, or BrainGlobe caches. Angiography datatype directories and filters now
+  use <code>susi</code> instead of <code>angio</code>, and the Huang template filename uses <code>2025</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/490">#490</a>).</li>
 <li><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata now follows draft v0.0.14: renamed frequency/voltage fields,
   including internal attributes <code>probe_central_frequency</code> → <code>probe_center_frequency</code>
   and <code>probe_voltage</code> → <code>transmit_voltage</code>, updated probe/virtual-source validation,
@@ -4529,6 +4568,10 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Nunez-Elizalde dataset task and acquisition filters now retain session-level
+  derivatives without those entities, including registered atlas labels needed
+  by the GUI documentation images
+  (<a href="https://github.com/confusius-tools/confusius/pull/490">#490</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.resample_volume"><code>resample_volume</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> now raise a <code>ValueError</code>
   when <code>fill_value</code> cannot be represented as an integer, but <code>moving</code> is an
@@ -4606,6 +4649,12 @@
 </ul>
 <h3 id="documentation_1"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_1" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Fixed Rich table alignment in gallery examples while preserving wrapped citations
+  (<a href="https://github.com/confusius-tools/confusius/pull/490">#490</a>).</li>
+<li>Added a Dataset Collection tour covering public S3 releases, <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata,
+  verified subset downloads, a structural image preview, and links to worked
+  analyses, with footnote links from the other examples
+  (<a href="https://github.com/confusius-tools/confusius/pull/490">#490</a>).</li>
 <li>Clarified when to use <code>.compute()</code> or <code>.persist()</code> before repeated partial reads from
   gzip-compressed NIfTI files
   (<a href="https://github.com/confusius-tools/confusius/pull/441">#441</a>).</li>
@@ -4641,17 +4690,15 @@
   <code>(...extra, time, pose, k, j, i)</code>.</strong> World coordinates <code>z</code>/<code>y</code>/<code>x</code> are no longer
   stored dimensions: they're derived lazily, per voxel, from a single
   voxel-to-world affine owned by a custom xarray index
-  (<code>VoxelToWorldIndex</code>) attached
-  to native voxel dims <code>k</code>/<code>j</code>/<code>i</code>. This lets ConfUSIus represent oblique,
-  rotated, or sheared acquisitions and registration outputs exactly, without
-  resampling onto an axis-aligned grid. Every loader (<code>load_scan</code>, <code>load_nifti</code>, <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>,
-  EchoFrame), registration function, plotting path, napari layer, and I/O round trip
-  (Zarr, NIfTI) was migrated to this model;
+  (<code>VoxelToWorldIndex</code>) attached to native voxel dims <code>k</code>/<code>j</code>/<code>i</code>. This lets ConfUSIus
+  represent oblique, rotated, or sheared acquisitions and registration outputs exactly,
+  without resampling onto an axis-aligned grid. Every loader (<code>load_scan</code>, <code>load_nifti</code>,
+  <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr>, EchoFrame), registration function, plotting path, napari layer, and I/O round
+  trip (Zarr, NIfTI) was migrated to this model;
   <code>confusius.validation.validate_voxeldata</code>/<code>ensure_voxeldata</code> enforce it
   unconditionally.</li>
 <li>World-space <code>units</code> moved off the <code>z</code>/<code>y</code>/<code>x</code> coordinates' <code>.attrs</code> onto
-  <code>VoxelToWorldIndex</code> as a single shared
-  property, exposed via
+  <code>VoxelToWorldIndex</code> as a single shared property, exposed via
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;units&lt;/span&gt;
 
 
@@ -4659,8 +4706,8 @@
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
   &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.units"><code>data.fusi.affine.units</code></a> and set with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_units&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.set_units"><code>data.fusi.affine.set_units</code></a>. Setting
-  <code>data.coords["z"].attrs["units"]</code> directly no longer has any effect: world
-  coordinates are always regenerated fresh from the index.</li>
+  <code>data.coords["z"].attrs["units"]</code> directly no longer has any effect: world coordinates
+  are always regenerated fresh from the index.</li>
 <li>Multi-pose data now carries pose-dependent voxel-to-world geometry. Sequentially
   acquired multi-pose data correspondingly carries a pose-dependent, <code>(time,
   pose)</code>-shaped <code>time</code> coordinate holding each pose's own real acquisition timestamps

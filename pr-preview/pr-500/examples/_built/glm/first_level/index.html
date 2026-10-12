@@ -2147,6 +2147,8 @@
       
         
       
+        
+      
     
     
     
@@ -2265,6 +2267,33 @@
     
   
   Load multi-pose recordings
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../io/dataset_collection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  The ConfUSIus Dataset Collection
 
     
   </span>
@@ -3443,7 +3472,7 @@ voxel-by-voxel turns a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> r
 brain responded to the stimulus.</p>
 <p>In this example we run a complete first-level (single-subject) <abbr title="General Linear Model">GLM</abbr> on stimulus-evoked
 <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data from the <a href="https://doi.org/10.1038/s41586-026-10772-5">Khallaf et al. 2026
-dataset</a>—functional
+dataset</a><sup id="fnref:collection"><a class="footnote-ref" href="#fn:collection">1</a></sup>—functional
 ultrasound imaging of a naked mole-rat exposed to repeated olfactory stimulation. The notebook
 will go through the following steps:</p>
 <ol>
@@ -3727,12 +3756,9 @@ space in which we can draw region boundaries and pull out anatomically defined m
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../../../../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> gives us the
 Allen atlas as an <code>xarray.Dataset</code>, holding the <code>reference</code>, <code>annotation</code> and
 <code>hemispheres</code> volumes on a common grid plus an <code>.atlas</code> accessor for structure
-queries. The template already carries the affine that maps it into atlas space
-(<code>world_to_sform</code>), so inverting it gives us what
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.resample_like"><code>resample_like</code></a> needs to reslice the
-template onto the atlas grid. Registering against that resampled template means the
-transform we estimate maps the recording directly to the atlas space, with no further
-composition needed.</p>
+queries. The template carries its scanner-to-Allen transform in <code>world_to_sform</code>.
+Composing its inverse with the estimated registration transform maps atlas
+coordinates back to the recording's world space.</p>
 <p>The registration itself gives us the transform between template and average <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 image. We initialize the registration from a coarse manual alignment
 (<code>napari_transform</code>) that we previously obtained using <a href="https://napari.org/stable/howtos/layers/image.html#buttons">napari's manual transform
@@ -3763,9 +3789,9 @@ for guidance on inspecting convergence and tuning the optimizer.</p>
 </span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">initialization</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">napari_transform</span><span class="p">),</span>
 </span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>The estimated transform maps atlas coordinates back onto the recording's world
-space, so inverting it gives exactly the recording's world-to-atlas mapping
-(<code>world_to_sform</code>). With that affine in hand,
+<p>The estimated transform maps template scanner coordinates back onto the recording's
+world space. Compose it with the inverse scanner-to-Allen transform to obtain the
+atlas-to-recording mapping. With that affine in hand,
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../../../../api/registration/#confusius.registration.resample_like"><code>resample_like</code></a> reslices each volume onto the
 atlas grid. We resample the averaged image (for display) and every individual run (the
 <abbr title="General Linear Model">GLM</abbr> input).</p>
@@ -4547,7 +4573,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7ff272579b10&gt;, beta=6.7),
+</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>FirstLevelModel(hrf_model=functools.partial(&lt;function claron2021_hrf at 0x7f3da7ba0e00&gt;, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>FirstLevelModel</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
@@ -4561,7 +4587,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></i></td>
             <td class="param">hrf_model</td>
-            <td class="value">functools.par...10&gt;, beta=6.7)</td>
+            <td class="value">functools.par...00&gt;, beta=6.7)</td>
         </tr>
 
 
@@ -4712,7 +4738,7 @@ a.param-doc-link::before {
        <tr class="default">
            <td class="param"><a class="param-doc-link" style="text-decoration:none;">results_</a></td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;confusius.gl...x7ff2706dd810&gt;, &lt;confusius.gl...x7ff271cab950&gt;, &lt;confusius.gl...x7ff270742f90&gt;, &lt;confusius.gl...x7ff2706bfbd0&gt;, ...]</td>
+           <td>[&lt;confusius.gl...x7f3da7d5a5d0&gt;, &lt;confusius.gl...x7f3d3858fe10&gt;, &lt;confusius.gl...x7f3d38b6f890&gt;, &lt;confusius.gl...x7f3d7a6f6be0&gt;, ...]</td>
 
 
        </tr>
@@ -5017,8 +5043,17 @@ anatomical context.</p>
 </span></code></pre></div>
 <p><a class="glightbox" href="../first_level_output_light/cell_31_0_light.png#only-light" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="light"><img src="../first_level_output_light/cell_31_0_light.png#only-light" alt="Example output from cell 31, image 0"></a><a class="glightbox" href="../first_level_output_dark/cell_31_0_dark.png#only-dark" data-type="image" data-title="Example output from cell 31, image 0" data-gallery="dark"><img src="../first_level_output_dark/cell_31_0_dark.png#only-dark" alt="Example output from cell 31, image 0"></a></p>
 <hr />
-<p><strong>Total running time:</strong> 109.0 s</p>
+<p><strong>Total running time:</strong> 104.4 s</p>
 <p><a class="md-button md-button--primary" href="https://mybinder.org/v2/gh/confusius-tools/confusius/zensical-update?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py">Launch in Binder</a> <a class="md-button" href="../first_level.py">Download .py</a> <a class="md-button" href="../first_level.ipynb">Download .ipynb</a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:collection">
+<p>See <a href="../../io/dataset_collection/">The ConfUSIus Dataset Collection</a>
+for available studies, formats, licenses, and reproducible subset downloads.&#160;<a class="footnote-backref" href="#fnref:collection" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
