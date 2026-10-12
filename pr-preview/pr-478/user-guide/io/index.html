@@ -3860,16 +3860,13 @@ operation:</p>
 SCAN data).</p>
 </div>
 <h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
-<div class="admonition warning">
-<p class="admonition-title">Experimental</p>
-<p>SCAN v2 metadata were reverse-engineered from a few example files kindly provided by
-Iconeus users. The data, timing, voxel spacing, depth origin, <code>world_to_lab</code> affine,
+<p>SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData
+geometry. Metadata recovered into <code>da.attrs</code> include the <code>world_to_lab</code> affine,
 provenance (<code>iconeus_*</code> attrs), acquisition datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding
-acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>transmit_frequency</code>,
-<code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …) are
-recovered into <code>da.attrs</code>. Lateral/elevation coordinates are centered on zero. This
-and multi-pose layouts are unvalidated and may change.</p>
-</div>
+acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>probe_aperture</code>,
+<code>transmit_frequency</code>, <code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>,
+<code>svd_low_cutoff</code>, …). For multi-pose recordings, see the
+<a href="../multipose/#scan-v2-binary">multi-pose user guide</a>.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span>
