@@ -3828,12 +3828,13 @@ the appropriate loader.</p>
 </span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="go">    iconeus_session:       Session01</span>
 </span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="go">    iconeus_scan:          sub-01_task-awake_pwd</span>
 </span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="go">    iconeus_project:       Project01</span>
-</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="go">    iconeus_date:          2021-10-22 14:14:12</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="go">    iconeus_datetime:      2021-10-22T14:14:12+00:00</span>
 </span></code></pre></div>
 <p>Provenance metadata from the file is stored in <code>da.attrs</code>, including
 <code>iconeus_scan_mode</code>, <code>iconeus_subject</code>, <code>iconeus_session</code>, <code>iconeus_scan</code>,
-<code>iconeus_project</code>, <code>iconeus_date</code>, <code>software_version</code>, and
-<code>device_serial_number</code>.</p>
+<code>iconeus_project</code>, <code>iconeus_datetime</code>, <code>software_version</code>, and
+<code>device_serial_number</code>. <code>iconeus_datetime</code> uses ISO 8601 format for both SCAN v1 and
+SCAN v2. SCAN v1 stores the date without a time zone, so ConfUSIus treats it as UTC.</p>
 <p>Note that for recordings consisting of multiple probe poses (e.g., <code>3Dscan</code>, <code>4Dscan</code>),
 the <code>time</code> coordinate is <strong>pose-dependent</strong>, giving the acquisition time of each volume
 for each pose. This is useful for volume-timing corrections and for aligning multi-pose
@@ -3859,16 +3860,13 @@ operation:</p>
 SCAN data).</p>
 </div>
 <h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
-<div class="admonition warning">
-<p class="admonition-title">Experimental</p>
-<p>SCAN v2 metadata were reverse-engineered from a few example files kindly provided by
-Iconeus users. The data, timing, voxel spacing, depth origin, <code>world_to_lab</code> affine,
+<p>SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData
+geometry. Metadata recovered into <code>da.attrs</code> include the <code>world_to_lab</code> affine,
 provenance (<code>iconeus_*</code> attrs), acquisition datetime, and BIDS-corresponding
-acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>transmit_frequency</code>,
-<code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …) are
-recovered into <code>da.attrs</code>. Lateral/elevation coordinates are centered on zero. This
-and multi-pose layouts are unvalidated and may change.</p>
-</div>
+acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>probe_aperture</code>,
+<code>transmit_frequency</code>, <code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>,
+<code>svd_low_cutoff</code>, …). For multi-pose recordings, see the
+<a href="../multipose/#scan-v2-binary">multi-pose user guide</a>.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span>

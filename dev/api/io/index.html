@@ -5582,7 +5582,8 @@ dimensions <code>(time, k, j, i)</code> and a voxel-to-world index deriving worl
 <code>beamforming_sound_velocity</code>) are attached from the EchoFrame sequence parameter
 file. The <code>time</code> coordinate is computed from frame indices and the compound
 sampling frequency; callers with acquisition timestamps for each block should
-override it (e.g. via <code>data.assign_coords(time=...)</code>).</p>
+override it (e.g. via <code>data.assign_coords(time=...)</code>). Each chunk reopens a
+read-only memory map on its worker; in-place processing requires a copy.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5923,9 +5924,8 @@ reproduce the original NIfTI header codes.</p>
   DataArray wraps an open <code>h5py</code> handle via a Dask array; keep it in scope (or call
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
-  payload). The returned DataArray wraps a NumPy memmap via a Dask array. Support is
-  <strong>experimental</strong> (see Notes), including its <code>probe_to_lab</code> affine and, when a
-  <code>bps_path</code> is given, <code>world_to_brain</code>.</li>
+  payload). Each Dask chunk opens its own read-only memory map and, when a
+  <code>bps_path</code> is given, the returned DataArray includes <code>world_to_brain</code>.</li>
 </ul>
 <p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
 
@@ -5958,7 +5958,7 @@ affine is added to <code>da.attrs["affines"]</code>.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Dask chunk specification passed to <code>dask.array.from_array</code>. Accepted forms:</p>
+            <p>Dask chunk specification. Accepted forms:</p>
 <ul>
 <li>A blocksize like <code>1000</code>.</li>
 <li>A blockshape like <code>(1000, 1000)</code>.</li>
@@ -5984,10 +5984,11 @@ affine is added to <code>da.attrs["affines"]</code>.</p>
 <li>v1 <code>3Dscan</code> → <code>(pose, k, j, i)</code>.</li>
 <li>v1 <code>4Dscan</code>/<code>4DscanCustom</code> → <code>(time, pose, k, j, i)</code>.</li>
 <li>v2 single-pose → <code>(time, k, j, i)</code>.</li>
-<li>v2 multi-pose is currently unsupported (see Raises).</li>
+<li>v2 multi-pose → <code>(time, pose, k, j, i)</code>.</li>
+<li>v2 dim6 payloads prepend a <code>dim6</code> dimension.</li>
 </ul>
 <p>World coordinates <code>z</code>, <code>y</code>, <code>x</code> are in millimeters. The <code>time</code> coordinate is in
-seconds. For v1 <code>4Dscan</code>/<code>4DscanCustom</code>, <code>time</code> is pose-dependent
+seconds. For v1/v2 multi-pose time series, <code>time</code> is pose-dependent
 (<code>(time, pose)</code>-shaped), holding each pose's own acquisition timestamps directly.</p>
           </div>
         </li>
@@ -6001,11 +6002,9 @@ seconds. For v1 <code>4Dscan</code>/<code>4DscanCustom</code>, <code>time</code>
             –
           <div class="doc-md-description">
             <p>If <code>path</code> does not exist or is not a file, if the file is neither an
-HDF5-based SCAN (v1) nor a binary SCAN v2 file, if a v2 file's experimental
-<code>probe_to_lab</code> affine cannot be built, if a v1 <code>acquisitionMode</code> is not one
-of <code>"2Dscan"</code>, <code>"3Dscan"</code>, <code>"4Dscan"</code>, or <code>"4DscanCustom"</code>, or if a v2 file has
-multiple poses (currently unsupported -- how v2 encodes per-pose geometry isn't
-known yet).</p>
+HDF5-based SCAN (v1) nor a binary SCAN v2 file, if a v2 file's
+<code>probe_to_lab</code> affine cannot be built, or if a v1 <code>acquisitionMode</code> is not one
+of <code>"2Dscan"</code>, <code>"3Dscan"</code>, <code>"4Dscan"</code>, or <code>"4DscanCustom"</code>.</p>
           </div>
         </li>
     </ul>
@@ -6013,31 +6012,18 @@ known yet).</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p><strong>v2 (experimental).</strong> The v2 field offsets were reverse-engineered from a small
-number of example files. Data, temporal geometry, and voxel spacing are recovered.
-The depth (<code>y</code>) origin is read from the header when the depth range can be located;
-the lateral (<code>x</code>) and elevation (<code>z</code>) origins are not encoded, so those axes are
-centered on zero (correct spacing, arbitrary origin). A <code>probe_to_lab</code> affine is
-built from a header block interpreted as a 6DOF probe pose (translation + rotation),
-the v2 equivalent of SCAN v1's <code>probeToLab</code>; this interpretation is experimental
-(validated on a single near-identity pose, assumed axis order and Euler convention),
-and loading fails if the pose block is implausible.
-Multi-pose v2 files are rejected: the currently reverse-engineered v2 header
-recovers only one 6DOF probe pose regardless of <code>npose</code>, since how v2 encodes
-per-pose geometry isn't known yet, and ConfUSIus requires a <code>pose</code> dimension to
-carry a genuine per-pose voxel-to-world affine.
-Multi-block (<code>nblockRepeat &gt; 1</code>) layouts are inferred by analogy with v1 and have
-not been validated against real files. Provenance strings are mapped to v1-style
-<code>iconeus_*</code> fields heuristically (by position, with the hex-encoded serial/hardware
-strings as anchors); the three still-unidentified plain-string slots are exposed as
-<code>iconeus_unknown1</code>, <code>iconeus_unknown2</code>, and <code>iconeus_unknown3</code>.</p>
+  <p><strong>v2.</strong> The binary layout follows PyIconeus: header fields, measured times, one
+6DOF probe pose per <code>pose</code>, acquisition/provenance metadata, then a Fortran-ordered
+<code>(size_x, size_y, size_z, time, pose, dim6)</code> payload. The loader exposes this as
+VoxelData order <code>(..., time, pose, k, j, i)</code> and keeps dim6 as an extra leading
+dimension when present. Mapped chunks are read-only; in-place chunk-processing
+functions must copy them first.</p>
 <p>Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as
 attributes, in native header units: <code>probe_model</code>, <code>probe_center_frequency</code> (MHz),
-<code>probe_pitch</code> (mm), <code>probe_focal_depth</code> (mm), <code>imaging_depth</code> (mm start/end),
-<code>transmit_frequency</code> (MHz), <code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code>
-(deg), <code>svd_low_cutoff</code>, and <code>power_doppler_integration_window</code>. The probe/sequence
-subset is parsed from a structured block whose layout is anchor-validated against the
-depth origin; if that check fails, those fields are omitted rather than guessed.</p>
+<code>probe_pitch</code> (mm), <code>probe_aperture</code> (mm), <code>probe_focal_depth</code> (mm),
+<code>imaging_depth</code> (mm start/end), <code>transmit_frequency</code> (MHz),
+<code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>svd_low_cutoff</code>, and
+<code>power_doppler_integration_duration</code> (s).</p>
 <p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are <strong>ConfUSIus-ordered
 Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
 as the canonical world frame because it is the one frame that is physically
@@ -6053,7 +6039,10 @@ selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 <p>Provenance attributes are stored in <code>da.attrs</code>: BIDS-compatible fields
 (<code>device_serial_number</code>, <code>software_version</code>) and Iconeus-specific fields
 (<code>iconeus_scan_mode</code>, <code>iconeus_subject</code>, <code>iconeus_session</code>, <code>iconeus_scan</code>,
-<code>iconeus_project</code>, <code>iconeus_date</code>).</p>
+<code>iconeus_project</code>, <code>iconeus_datetime</code>). <code>iconeus_datetime</code> is the acquisition
+date and time in ISO 8601 format, e.g. <code>"2021-10-22T14:14:12+00:00"</code>. SCAN v1
+stores it without a time zone, so ConfUSIus treats it as UTC. SCAN v2 files
+also provide <code>iconeus_hardware</code>.</p>
 </details>
 
     </div>

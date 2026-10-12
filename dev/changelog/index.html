@@ -4523,9 +4523,21 @@
   <code>region</code>/<code>side</code> and return a <code>{acronym: (vertices, faces)}</code> dict with one entry per
   requested region, under <code>_L</code>/<code>_R</code>-suffixed keys for single-hemisphere requests
   (<a href="https://github.com/confusius-tools/confusius/pull/448">#448</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> stores SCAN v2 probe aperture as
+  <code>probe_aperture</code> instead of <code>probe_elevation_aperture</code>, so BIDS sidecars export
+  it as <code>ProbeAperture</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/478">#478</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> stores the SCAN v1 acquisition date as
+  <code>iconeus_datetime</code> in ISO 8601 format (e.g. <code>2021-10-22T14:14:12+00:00</code>),
+  matching SCAN v2, instead of <code>iconeus_date</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/478">#478</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> now supports SCAN v2 <code>4Dscan</code> recordings
+  acquired with the Iconeus IcoPrime-4D MultiArray probe, preserving multi-pose
+  geometry and acquisition timing
+  (<a href="https://github.com/confusius-tools/confusius/pull/478">#478</a>).</li>
 <li>Masks are no longer required to be strictly boolean dtype: any binary numeric mask
   (0 and at most one non-zero value, e.g. <code>{0, 1}</code> or <code>{0.0, 5.0}</code>) is now accepted
   and coerced to boolean, covering masks written by tools without a boolean dtype
@@ -4554,6 +4566,12 @@
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
+<li>EchoFrame DAT loading is faster and uses less resident memory by reopening
+  read-only memory maps per Dask chunk instead of copying each acquisition block,
+  addressing slow DAT-based IQ processing
+  (<a href="https://github.com/confusius-tools/confusius/issues/479">#479</a>). SCAN v2 uses the
+  same worker-side reader, keeping payloads lazy without caching whole-file mappings
+  (<a href="https://github.com/confusius-tools/confusius/pull/478">#478</a>).</li>
 <li><code>fetch_brainglobe_atlas</code>'s <code>reference</code>/<code>annotation</code> are now backed by lazy
   <code>dask.array.Array</code> data instead of being eagerly materialized to
   <code>numpy.ndarray</code> at fetch time, since <code>BrainGlobeAtlas</code>'s v3 API forces this
