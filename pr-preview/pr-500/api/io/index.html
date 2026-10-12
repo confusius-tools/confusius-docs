@@ -5304,9 +5304,9 @@ reduction functions return DataArrays with attributes.</p>
 </ul>
 <p>If <code>attrs["rgb_lookup"]</code> is present but <code>attrs["cmap"]</code>/<code>attrs["norm"]</code> are missing
 (as happens after a save/load round-trip, since matplotlib colormap/norm objects are
-not JSON-serializable and are dropped on save), <code>cmap</code>/<code>norm</code> are rebuilt via
-<code>build_atlas_cmap_and_norm</code> so
-atlas-derived masks and annotations keep their canonical colors after reload.</p>
+not JSON-serializable and are dropped on save), the colormap and normalization
+are rebuilt from the RGB lookup table so atlas-derived masks and annotations
+keep their canonical colors after reload.</p>
 <p>A Zarr-saved VoxelData array stores <code>attrs["voxel_to_world"]</code>
 instead of dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays (see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="./#confusius.io.save"><code>save</code></a>); this rebuilds the world coordinates and
@@ -6013,9 +6013,8 @@ depth origin; if that check fails, those fields are omitted rather than guessed.
 Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
 as the canonical world frame because it is the one frame that is physically
 meaningful across poses. For multi-pose files, <code>da</code>'s voxel-to-world geometry is
-itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one per
-<code>da.coords["pose"]</code> label — see
-<code>VoxelToWorldIndex</code>); world
+itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per
+<code>da.coords["pose"]</code> label); world
 selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 <code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
 <p>If <code>bps_path</code> is provided, a <code>world_to_brain</code> affine is stored in

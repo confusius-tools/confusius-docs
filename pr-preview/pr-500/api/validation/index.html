@@ -3780,12 +3780,10 @@ but retains it as a scalar coordinate. This function restores every missing
 native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a length-one dimension, then orders all
 dimensions as <code>(...extra_dims, time, pose, k, j, i)</code>. It preserves coordinate
 values and their order. When scalar indexing fixed a dimension in a
-<code>VoxelToWorldIndex</code>,
-its geometry is rebuilt from the untouched affine, including its <code>units</code>
-(<code>VoxelToWorldIndex</code> always carries one, defaulting to <code>"mm"</code> since
-<code>attach_voxel_to_world_index</code>
-itself defaults it). Missing time acquisition metadata also defaults where
-possible. This function does not otherwise validate the VoxelData model; use
+<code>VoxelToWorldIndex</code>, its geometry is rebuilt from the unchanged voxel-to-world
+affine, preserving the world-space units. Missing time acquisition metadata
+also defaults where possible. This function does not otherwise validate the
+VoxelData model; use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="./#confusius.validation.ensure_voxeldata">ensure_voxeldata</a> to canonicalize and
 validate.</p>
 
