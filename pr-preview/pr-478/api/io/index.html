@@ -6039,7 +6039,10 @@ selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 <p>Provenance attributes are stored in <code>da.attrs</code>: <abbr title="Brain Imaging Data Structure">BIDS</abbr>-compatible fields
 (<code>device_serial_number</code>, <code>software_version</code>) and Iconeus-specific fields
 (<code>iconeus_scan_mode</code>, <code>iconeus_subject</code>, <code>iconeus_session</code>, <code>iconeus_scan</code>,
-<code>iconeus_project</code>, <code>iconeus_date</code>, <code>iconeus_hardware</code>).</p>
+<code>iconeus_project</code>, <code>iconeus_datetime</code>). <code>iconeus_datetime</code> is the acquisition
+date and time in ISO 8601 format, e.g. <code>"2021-10-22T14:14:12+00:00"</code>. SCAN v1
+stores it without a time zone, so ConfUSIus treats it as UTC. SCAN v2 files
+also provide <code>iconeus_hardware</code>.</p>
 </details>
 
     </div>
