@@ -8,4 +8,4 @@
 >
 > - `smooth_volume`: Smooth a DataArray spatially using a Gaussian kernel, with FWHM specified in physical units.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/spatial/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/spatial/index.md>) for more information.

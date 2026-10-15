@@ -15,7 +15,7 @@ uv add confusius
 
 ## Development Installation
 
-Please find all development installation instructions on the [Community page](<https://confusius.tools/contributing/#development-installation>).
+Please find all development installation instructions on the [Community page](<https://confusius.tools/pr-preview/pr-513/contributing/#development-installation>).
 
 ## Verify Installation
 

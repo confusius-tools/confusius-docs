@@ -13,7 +13,7 @@ ConfUSIus uses [Xarray](<https://docs.xarray.dev/>) as its core data structure f
 - **Metadata storage**: Keep acquisition parameters, units, and other metadata alongside your data.
 - **Unified API**: Use the same operations regardless of the underlying storage format.
 
-Every loader in this guide returns **VoxelData arrays**: DataArrays with `(k, j, i)` voxel dimensions backed by a `VoxelToWorldIndex`, which derives world coordinates `(z, y, x)` from voxel-to-world affine transformations. See [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/index.md>) for details on the coordinate model.
+Every loader in this guide returns **VoxelData arrays**: DataArrays with `(k, j, i)` voxel dimensions backed by a `VoxelToWorldIndex`, which derives world coordinates `(z, y, x)` from voxel-to-world affine transformations. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/index.md>) for details on the coordinate model.
 
 ### Xarray-Compatible Formats
 
@@ -192,7 +192,7 @@ Provenance metadata from the file is stored in `da.attrs`, including `iconeus_sc
 
 Note that for recordings consisting of multiple probe poses (e.g., `3Dscan`, `4Dscan`), the `time` coordinate is **pose-dependent**, giving the acquisition time of each volume for each pose. This is useful for volume-timing corrections and for aligning multi-pose acquisitions with external events.
 
-Additionally, each pose has its own voxel-to-world affine transformation, meaning the `z`/`y`/`x` world coordinates are **pose-dependent**. The `pose` coordinate indexes the pose dimension, and the `z`/`y`/`x` coordinates are derived from the corresponding pose's affine. See [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/index.md>) for details on how world coordinates are derived from voxel indices and affines.
+Additionally, each pose has its own voxel-to-world affine transformation, meaning the `z`/`y`/`x` world coordinates are **pose-dependent**. The `pose` coordinate indexes the pose dimension, and the `z`/`y`/`x` coordinates are derived from the corresponding pose's affine. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/index.md>) for details on how world coordinates are derived from voxel indices and affines.
 
 > [!WARNING]
 >
@@ -211,7 +211,7 @@ Additionally, each pose has its own voxel-to-world affine transformation, meanin
 
 #### SCAN v2 (binary format)
 
-SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, `svd_low_cutoff`, …). For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/user-guide/multipose/#scan-v2-binary>).
+SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, `svd_low_cutoff`, …). For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/#scan-v2-binary>).
 
 ```pycon
 >>> import confusius as cf
@@ -291,7 +291,7 @@ cf.save(da, "sub-01_task-awake_pwd.nii.gz")
 da.fusi.save("sub-01_task-awake_pwd.nii.gz")
 ```
 
-For **3Dscan** and **4Dscan** data, consolidate the poses into a single volume before saving, or save each pose separately if you want to retain the multi-pose structure. See the [Multi-Pose Data guide](<https://confusius.tools/user-guide/multipose/index.md>) for details on working with multi-pose acquisitions.
+For **3Dscan** and **4Dscan** data, consolidate the poses into a single volume before saving, or save each pose separately if you want to retain the multi-pose structure. See the [Multi-Pose Data guide](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/index.md>) for details on working with multi-pose acquisitions.
 
 ```python
 import confusius as cf
@@ -373,7 +373,7 @@ power = cf.create_voxeldata(
 )
 ```
 
-See the [Create a VoxelData array from a MAT file](<https://confusius.tools/examples/_built/io/create_voxeldata_from_mat/index.md>) example for a complete walkthrough, from a real lab-specific MAT file to motion correction and a task GLM.
+See the [Create a VoxelData array from a MAT file](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat/index.md>) example for a complete walkthrough, from a real lab-specific MAT file to motion correction and a task GLM.
 
 ## Converting Beamformed IQ Data to Zarr
 
@@ -459,7 +459,7 @@ iq = cf.create_voxeldata(
 validate_voxeldata(iq, require_velocity_attrs=True)
 ```
 
-See [Processing Beamformed IQ Data](<https://confusius.tools/user-guide/beamformed-iq/#expected-data-structure>) for the required dimensions, metadata fields, and processing assumptions.
+See [Processing Beamformed IQ Data](<https://confusius.tools/pr-preview/pr-513/user-guide/beamformed-iq/#expected-data-structure>) for the required dimensions, metadata fields, and processing assumptions.
 
 ## Saving Data
 

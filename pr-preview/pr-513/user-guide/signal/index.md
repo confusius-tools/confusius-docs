@@ -22,4 +22,4 @@
 > - `detrend`: Remove linear or polynomial trends from time series.
 > - `clean`: Apply full preprocessing pipeline in one step.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/signal/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/signal/index.md>) for more information.

@@ -4,4 +4,4 @@
 >
 > **Coming soon**
 >
-> This guide is being written. In the meantime, see the API reference for `SearchLight`, and the [searchlight example](<https://confusius.tools/examples/_built/decoding/searchlight_speed/index.md>).
+> This guide is being written. In the meantime, see the API reference for `SearchLight`, and the [searchlight example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decoding/searchlight_speed/index.md>).

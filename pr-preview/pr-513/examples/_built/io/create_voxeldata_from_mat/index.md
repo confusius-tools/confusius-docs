@@ -1,6 +1,6 @@
 # Create a VoxelData array from a MAT file
 
-This example downloads a power Doppler MAT file from the public dataset accompanying [Rabut *et al.* (2024)](<https://doi.org/10.1126/scitranslmed.adj3143>)[^/examples/_built/io/create_voxeldata_from_mat/#1][^/examples/_built/io/create_voxeldata_from_mat/#collection] and wraps it in a VoxelData array with `create_voxeldata`.
+This example downloads a power Doppler MAT file from the public dataset accompanying [Rabut *et al.* (2024)](<https://doi.org/10.1126/scitranslmed.adj3143>)[^/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat/#1][^/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat/#collection] and wraps it in a VoxelData array with `create_voxeldata`.
 
 Since MAT files can contain any custom data, ConfUSIus cannot read them directly. The point of this example is to show the shortest path from a lab-specific MAT file array plus metadata to a VoxelData array. This example then reproduces figure 4D from Rabut *et al.* (2024) using a simple general linear model.
 
@@ -71,7 +71,7 @@ Data shape: (270, 128, 240)
 
 ## Wrap the raw array with `create_voxeldata`
 
-The MATLAB array is `(time, i, j)` natively: 128 lateral positions matching the probe pitch, and 240 depth samples. ConfUSIus adds the missing singleton `k` axis and returns the canonical `(time, k, j, i)` layout, with `z`/`y`/`x` attached as world coordinates. The timestamps have small acquisition jitter, so we pass them as an exact coordinate. Following the authors' analysis code, we use the acoustic wavelength from `UF.Lambda` for axial (`y`) spacing and the 0.3 mm probe pitch for lateral (`x`) spacing. With no explicit `x0`/`y0`, ConfUSIus applies its default convention of using the probe surface as the origin. See the [Spatial Conventions](<https://confusius.tools/user-guide/voxeldata/index.md>) guide for details.
+The MATLAB array is `(time, i, j)` natively: 128 lateral positions matching the probe pitch, and 240 depth samples. ConfUSIus adds the missing singleton `k` axis and returns the canonical `(time, k, j, i)` layout, with `z`/`y`/`x` attached as world coordinates. The timestamps have small acquisition jitter, so we pass them as an exact coordinate. Following the authors' analysis code, we use the acoustic wavelength from `UF.Lambda` for axial (`y`) spacing and the 0.3 mm probe pitch for lateral (`x`) spacing. With no explicit `x0`/`y0`, ConfUSIus applies its default convention of using the probe surface as the origin. See the [Spatial Conventions](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/index.md>) guide for details.
 
 ```python
 power_doppler = cf.create_voxeldata(
@@ -335,7 +335,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f053cf43100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2222763100>
     ```
   - time
 
@@ -616,7 +616,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f053412f290>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2214a0ecf0>
     ```
 - [ ] Attributes: (6)
 
@@ -689,10 +689,10 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 46.8 s
+**Total running time:** 55.7 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/examples/_built/io/create_voxeldata_from_mat.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
-[^/examples/_built/io/create_voxeldata_from_mat/#collection]: This example downloads an external archive, not a collection release. See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for the fUSI-BIDS studies and templates hosted by ConfUSIus.
+[^/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat/#collection]: This example downloads an external archive, not a collection release. See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for the fUSI-BIDS studies and templates hosted by ConfUSIus.
 
-[^/examples/_built/io/create_voxeldata_from_mat/#1]: Rabut, Claire, et al. “Functional Ultrasound Imaging of Human Brain Activity through an Acoustically Transparent Cranial Window.” *Science Translational Medicine*, vol. 16, no. 749, May 2024, p. eadj3143. DOI.org (Crossref), [https://doi.org/10.1126/scitranslmed.adj3143](<https://doi.org/10.1126/scitranslmed.adj3143>).
+[^/pr-preview/pr-513/examples/_built/io/create_voxeldata_from_mat/#1]: Rabut, Claire, et al. “Functional Ultrasound Imaging of Human Brain Activity through an Acoustically Transparent Cranial Window.” *Science Translational Medicine*, vol. 16, no. 749, May 2024, p. eadj3143. DOI.org (Crossref), [https://doi.org/10.1126/scitranslmed.adj3143](<https://doi.org/10.1126/scitranslmed.adj3143>).

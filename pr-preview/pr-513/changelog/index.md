@@ -19,6 +19,10 @@ Current development version for the next ConfUSIus release.
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is remembered per annotation-set version; available meshes deleted locally are still downloaded again ([\#508](<https://github.com/confusius-tools/confusius/pull/508>)).
 
+### 📚 Documentation
+
+- The documentation site publishes [`llms.txt`](<https://confusius.tools/latest/llms.txt>) and `llms-full.txt` for AI assistants, along with a Markdown copy of every page and a "Copy as Markdown" button in the page header ([\#513](<https://github.com/confusius-tools/confusius/pull/513>)).
+
 ### 🖼 Napari plugin
 
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
@@ -67,7 +71,6 @@ Released 2026-10-13.
 ### 📚 Documentation
 
 - Docs now build with Zensical 0.0.69 (up from 0.0.55), which validates cross-reference links in strict mode; the broken autoref links that surfaced are fixed, and docstring types such as `xarray.DataArray` link to the xarray docs instead of resolving to the `confusius.xarray` subpackage ([\#500](<https://github.com/confusius-tools/confusius/pull/500>)).
-- The documentation site publishes [`llms.txt`](<https://confusius.tools/latest/llms.txt>) and `llms-full.txt` for AI assistants, along with a Markdown copy of every page and a "Copy as Markdown" button in the page header ([\#513](<https://github.com/confusius-tools/confusius/pull/513>)).
 
 ### 🖼 Napari plugin
 
@@ -220,8 +223,8 @@ Released 2026-07-18.
 
 ### 📚 Documentation
 
-- Fixed velocity sign interpretation in [Beamformed IQ user guide](<https://confusius.tools/user-guide/beamformed-iq/index.md>) ([\#313](<https://github.com/confusius-tools/confusius/pull/313>)).
-- Added a [searchlight decoding example](<https://confusius.tools/examples/_built/decoding/searchlight_speed/index.md>) that decodes locomotion speed from a single fUSI plane and compares the searchlight map against a matched GLM ([\#334](<https://github.com/confusius-tools/confusius/pull/334>)).
+- Fixed velocity sign interpretation in [Beamformed IQ user guide](<https://confusius.tools/pr-preview/pr-513/user-guide/beamformed-iq/index.md>) ([\#313](<https://github.com/confusius-tools/confusius/pull/313>)).
+- Added a [searchlight decoding example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decoding/searchlight_speed/index.md>) that decodes locomotion speed from a single fUSI plane and compares the searchlight map against a matched GLM ([\#334](<https://github.com/confusius-tools/confusius/pull/334>)).
 - Added a first-level GLM example that fits a voxel-wise first-level model to a stimulus-evoked olfactory task with the [Khallaf et al. 2026](<https://doi.org/10.1038/s41586-026-10772-5>) fUSI dataset ([\#320](<https://github.com/confusius-tools/confusius/pull/320>)).
 
 ### 🔧 Maintenance
@@ -244,7 +247,7 @@ Released 2026-07-10.
 
 ### ✨ Enhancements
 
-- **\[Napari plugin\]** Added a `File > Open Sample` entries for a [Nunez-Elizalde 2022](<https://confusius.tools/citing/#nunez-elizalde-et-al-2022>) mouse recording and for a pair of [Cybis Pereira 2026](<https://confusius.tools/citing/#cybis-pereira-et-al-2026>) rat recordings. Samples are fetched on demand, shows download progress with an abort button, and only downloads the matching raw fUSI files instead of the full dataset ([\#273](<https://github.com/confusius-tools/confusius/pull/273>)).
+- **\[Napari plugin\]** Added a `File > Open Sample` entries for a [Nunez-Elizalde 2022](<https://confusius.tools/pr-preview/pr-513/citing/#nunez-elizalde-et-al-2022>) mouse recording and for a pair of [Cybis Pereira 2026](<https://confusius.tools/pr-preview/pr-513/citing/#cybis-pereira-et-al-2026>) rat recordings. Samples are fetched on demand, shows download progress with an abort button, and only downloads the matching raw fUSI files instead of the full dataset ([\#273](<https://github.com/confusius-tools/confusius/pull/273>)).
 - Dataset fetchers now print the citation to use for the fetched data and accept a `print_citation` argument to silence it. The template fetchers `fetch_template_huang_2025` and `fetch_template_pepe_mariani_2026` also expose the citation on the returned DataArray as `da.attrs["citation"]` ([\#279](<https://github.com/confusius-tools/confusius/pull/279>)).
 - Dataset fetchers called with `refresh=True` now re-download cached files whose upstream MD5 changed, comparing the cached dataset index against the freshly fetched one instead of only checking whether the file exists; downloads are additionally verified against the index MD5. A locally cached dataset whose `dataset_index.json` predates this format is detected on fetch and reported with a clear error naming the directory to delete and re-fetch, rather than being silently mishandled. Affects `fetch_cybis_pereira_2026`, `fetch_nunez_elizalde_2022`, and `fetch_landemard_2026` ([\#261](<https://github.com/confusius-tools/confusius/pull/261>)).
 - Added `sample_displacement_field`, `sample_displacement_field_like`, and `invert_displacement_field` to sample a B-spline (or composite affine + B-spline) registration transform into a dense displacement field and invert it via SimpleITK's `InvertDisplacementFieldImageFilter`. `resample_volume` and `resample_like` now also accept displacement fields directly, so a saved B-spline transform's inverse can be applied without a closed-form inverse ([\#235](<https://github.com/confusius-tools/confusius/pull/235>)).
@@ -259,7 +262,7 @@ Released 2026-07-10.
 
 ### 📚 Documentation
 
-- The [same-subject registration example](<https://confusius.tools/examples/_built/registration/register_volume_same_subject/index.md>) now follows the rigid registration step with a B-spline refinement, showing the extra local correction it adds and how its parameters differ from the rigid step's ([\#235](<https://github.com/confusius-tools/confusius/pull/235>)).
+- The [same-subject registration example](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject/index.md>) now follows the rigid registration step with a B-spline refinement, showing the extra local correction it adds and how its parameters differ from the rigid step's ([\#235](<https://github.com/confusius-tools/confusius/pull/235>)).
 - Long output in gallery examples—warnings, text reprs, tracebacks, and rich-rendered text such as the dataset citation banner—now wraps instead of showing a horizontal scrollbar ([\#285](<https://github.com/confusius-tools/confusius/pull/285>)).
 
 ### 🔧 Maintenance
@@ -303,8 +306,8 @@ Released 2026-07-07.
 
 ### 📚 Documentation
 
-- Add an [NMF example](<https://confusius.tools/examples/_built/decomposition/nmf_single_recording/index.md>) to the gallery, demonstrating the z-score + absolute-value standardization that makes signed fUSI signals NMF-compatible.
-- Add an [atlas-based region correlation matrix example](<https://confusius.tools/examples/_built/connectivity/atlas_correlation_matrix/index.md>) to the gallery, demonstrating registration to the Pepe-Mariani 2026 template, resampling the Allen Mouse Brain Atlas onto a recording's native grid, and plotting a region correlation matrix with `plot_matrix`'s `groups` annotation ([\#243](<https://github.com/confusius-tools/confusius/pull/243>)).
+- Add an [NMF example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/nmf_single_recording/index.md>) to the gallery, demonstrating the z-score + absolute-value standardization that makes signed fUSI signals NMF-compatible.
+- Add an [atlas-based region correlation matrix example](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_correlation_matrix/index.md>) to the gallery, demonstrating registration to the Pepe-Mariani 2026 template, resampling the Allen Mouse Brain Atlas onto a recording's native grid, and plotting a region correlation matrix with `plot_matrix`'s `groups` annotation ([\#243](<https://github.com/confusius-tools/confusius/pull/243>)).
 
 ### 🔧 Maintenance
 
@@ -366,7 +369,7 @@ Released 2026-07-07.
 
 ### 📚 Documentation
 
-- Added a [Registration of two sessions from the same subject](<https://confusius.tools/examples/registration/register_volume_same_subject.py>) example demonstrating `register_volume`, the new diagnostics, and confusius's `plot_composite` overlay pattern for inspecting alignment before and after registration ([\#139](<https://github.com/confusius-tools/confusius/pull/139>)).
+- Added a [Registration of two sessions from the same subject](<https://confusius.tools/pr-preview/pr-513/examples/registration/register_volume_same_subject.py>) example demonstrating `register_volume`, the new diagnostics, and confusius's `plot_composite` overlay pattern for inspecting alignment before and after registration ([\#139](<https://github.com/confusius-tools/confusius/pull/139>)).
 
 ### 🔧 Maintenance
 

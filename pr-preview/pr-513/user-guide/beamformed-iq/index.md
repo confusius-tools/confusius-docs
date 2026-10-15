@@ -2,7 +2,7 @@
 
 ## Introduction
 
-After [loading your beamformed IQ data](<https://confusius.tools/user-guide/io/#loading-data>), the next step in most fUSI workflows is processing it to extract hemodynamic signals. This guide explains how to use ConfUSIus to transform beamformed IQ data into measures like B-mode, power Doppler, and axial velocity.
+After [loading your beamformed IQ data](<https://confusius.tools/pr-preview/pr-513/user-guide/io/#loading-data>), the next step in most fUSI workflows is processing it to extract hemodynamic signals. This guide explains how to use ConfUSIus to transform beamformed IQ data into measures like B-mode, power Doppler, and axial velocity.
 
 ## Why Process IQ Data?
 
@@ -49,11 +49,11 @@ where \\(A\\) is amplitude, \\(\\phi\\) is phase, \\((i, j, k)\\) are spatial co
 > - **Fast time**: RF signals sampled at MHz rates.
 > - **Slow time**: Beamformed IQ signals sampled once per pulse, at kHz rates.
 
-For single plane-wave imaging, the sampling rate of the beamformed IQ signals equals the pulse repetition frequency (PRF), typically kHz rates. With **compound imaging** (common in fUSI), multiple plane waves are emitted at different angles and their echoes are combined to form a single compound volume[^/user-guide/beamformed-iq/#montaldo2009]. In this case, the effective sampling rate, the **compound frequency**, is the PRF divided by the number of angles, typically hundreds of hertz.
+For single plane-wave imaging, the sampling rate of the beamformed IQ signals equals the pulse repetition frequency (PRF), typically kHz rates. With **compound imaging** (common in fUSI), multiple plane waves are emitted at different angles and their echoes are combined to form a single compound volume[^/pr-preview/pr-513/user-guide/beamformed-iq/#montaldo2009]. In this case, the effective sampling rate, the **compound frequency**, is the PRF divided by the number of angles, typically hundreds of hertz.
 
 ### Expected Data Structure
 
-Beamformed IQ data in ConfUSIus is a complex-valued, [VoxelData model](<https://confusius.tools/user-guide/voxeldata/#the-voxeldata-model>) DataArray, with `time` as the slow-time dimension. This dimension order keeps IQ processing's sliding-window operations efficient.
+Beamformed IQ data in ConfUSIus is a complex-valued, [VoxelData model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#the-voxeldata-model>) DataArray, with `time` as the slow-time dimension. This dimension order keeps IQ processing's sliding-window operations efficient.
 
 Beyond the VoxelData requirements, axial velocity estimation also requires the `transmit_frequency` and `beamforming_sound_velocity` DataArray attributes. `create_voxeldata` accepts both as optional arguments, and `process_iq_to_axial_velocity` checks for their presence internally via `validate_voxeldata`.
 
@@ -85,7 +85,7 @@ Attributes:
     beamforming_sound_velocity:   1540.0
 ```
 
-If your acquisition system isn't directly supported by ConfUSIus, see [Other Systems](<https://confusius.tools/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
+If your acquisition system isn't directly supported by ConfUSIus, see [Other Systems](<https://confusius.tools/pr-preview/pr-513/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
 
 > [!NOTE]
 >
@@ -252,13 +252,13 @@ The challenge is that tissue motion (especially in awake subjects) can create Do
 
 ConfUSIus provides several clutter filtering methods, each with different trade-offs:
 
-Singular Value Decomposition (SVD) filters exploit both spatial and temporal information to separate tissue from blood[^/user-guide/beamformed-iq/#demene2015]. The SVD decomposes IQ signals into orthogonal components (modes) sorted by energy. Tissue motion, being spatially coherent and energetic, concentrates in the highest-energy modes. Blood flow, being spatially incoherent and weak, distributes across lower-energy modes. By removing the top singular vectors, tissue clutter is suppressed while preserving blood signals.
+Singular Value Decomposition (SVD) filters exploit both spatial and temporal information to separate tissue from blood[^/pr-preview/pr-513/user-guide/beamformed-iq/#demene2015]. The SVD decomposes IQ signals into orthogonal components (modes) sorted by energy. Tissue motion, being spatially coherent and energetic, concentrates in the highest-energy modes. Blood flow, being spatially incoherent and weak, distributes across lower-energy modes. By removing the top singular vectors, tissue clutter is suppressed while preserving blood signals.
 
 **Static filter:**
 
 - **`svd_indices`**: Removes a fixed number of singular vectors across all windows. Simple and widely used, but assumes constant motion levels throughout the acquisition.
 
-**Adaptive filters:**[^/user-guide/beamformed-iq/#baranger2018]
+**Adaptive filters:**[^/pr-preview/pr-513/user-guide/beamformed-iq/#baranger2018]
 
 - **`svd_energy`**: Adaptively determines the threshold based on individual singular vector energies. Adjusts to varying motion levels, but its interpretation can be less intuitive.
 - **`svd_cumulative_energy`**: Adaptively determines the threshold based on cumulative energy distribution. More robust to motion variations, but removes global energy variations across windows (similar to global signal regression).
@@ -267,9 +267,9 @@ Singular Value Decomposition (SVD) filters exploit both spatial and temporal inf
 >
 > **Static vs. adaptive SVD filters**
 >
-> **Static SVD filters** (`svd_indices`) are the standard method used in the vast majority of fUSI studies[^/user-guide/beamformed-iq/#ferrier2020] [^/user-guide/beamformed-iq/#rabut2020] [^/user-guide/beamformed-iq/#brunner2021] [^/user-guide/beamformed-iq/#nunez-elizalde2022]. They are well-tested and effective for typical imaging conditions.
+> **Static SVD filters** (`svd_indices`) are the standard method used in the vast majority of fUSI studies[^/pr-preview/pr-513/user-guide/beamformed-iq/#ferrier2020] [^/pr-preview/pr-513/user-guide/beamformed-iq/#rabut2020] [^/pr-preview/pr-513/user-guide/beamformed-iq/#brunner2021] [^/pr-preview/pr-513/user-guide/beamformed-iq/#nunez-elizalde2022]. They are well-tested and effective for typical imaging conditions.
 >
-> However, static filters assume constant tissue energy levels throughout the acquisition. This assumption breaks down in paradigms with strong, variable tissue motion, such as awake preclinical imaging. In these cases, **adaptive clutter filters** have shown promise by adjusting thresholds to each window's characteristics[^/user-guide/beamformed-iq/#lemeurdiebolt2025] [^/user-guide/beamformed-iq/#bertolo2023].
+> However, static filters assume constant tissue energy levels throughout the acquisition. This assumption breaks down in paradigms with strong, variable tissue motion, such as awake preclinical imaging. In these cases, **adaptive clutter filters** have shown promise by adjusting thresholds to each window's characteristics[^/pr-preview/pr-513/user-guide/beamformed-iq/#lemeurdiebolt2025] [^/pr-preview/pr-513/user-guide/beamformed-iq/#bertolo2023].
 >
 > **Important caveats for adaptive filters:**
 >
@@ -291,7 +291,7 @@ Temporal high-pass Butterworth filter that removes low-frequency components. Use
 >
 > Butterworth filters alone are **inadequate for fUSI** because they cannot separate tissue and blood when Doppler frequencies overlap (common during motion), and they remove slow blood flows in capillaries and small vessels.
 >
-> May be used as a pre-processing step before SVD filtering[^/user-guide/beamformed-iq/#brunner2020] [^/user-guide/beamformed-iq/#nunez-elizalde2022] [^/user-guide/beamformed-iq/#lemeurdiebolt2025] or for specialized applications like tissue motion tracking.
+> May be used as a pre-processing step before SVD filtering[^/pr-preview/pr-513/user-guide/beamformed-iq/#brunner2020] [^/pr-preview/pr-513/user-guide/beamformed-iq/#nunez-elizalde2022] [^/pr-preview/pr-513/user-guide/beamformed-iq/#lemeurdiebolt2025] or for specialized applications like tissue motion tracking.
 
 ### Filter Parameters
 
@@ -333,7 +333,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 
 ### Clutter Masks for SVD Filters
 
-For SVD-based filters, you can provide a spatial mask identifying tissue regions. This improves filter performance by computing tissue subspaces only from masked voxels[^/user-guide/beamformed-iq/#lemeurdiebolt2025]:
+For SVD-based filters, you can provide a spatial mask identifying tissue regions. This improves filter performance by computing tissue subspaces only from masked voxels[^/pr-preview/pr-513/user-guide/beamformed-iq/#lemeurdiebolt2025]:
 
 ```python
 import xarray as xr
@@ -359,8 +359,8 @@ ConfUSIus can compute several derived measures from beamformed IQ data. In fUSI,
 >
 > While clutter filtering is essential for isolating blood signals in fUSI, it can be skipped for applications focused on tissue motion rather than blood flow.
 >
-> - **Tissue velocity estimation**: Computing axial velocity without clutter filtering captures tissue motion, useful for extracting physiological signals like cardiac pulsatility and respiration[^/user-guide/beamformed-iq/#zucker2025].
-> - **Motion tracking**: Brain tissue motion can also be used to estimate animal movement during awake imaging[^/user-guide/beamformed-iq/#lemeurdiebolt2025].
+> - **Tissue velocity estimation**: Computing axial velocity without clutter filtering captures tissue motion, useful for extracting physiological signals like cardiac pulsatility and respiration[^/pr-preview/pr-513/user-guide/beamformed-iq/#zucker2025].
+> - **Motion tracking**: Brain tissue motion can also be used to estimate animal movement during awake imaging[^/pr-preview/pr-513/user-guide/beamformed-iq/#lemeurdiebolt2025].
 >
 > To disable clutter filtering, omit both the `low_cutoff` and `high_cutoff` parameters.
 
@@ -614,29 +614,29 @@ bmode = iq.fusi.iq.process_to_bmode(bmode_window_width=200)
 
 Now that you've processed your beamformed IQ data into power Doppler or velocity volumes, you're ready to:
 
-1. **[Visualization](<https://confusius.tools/user-guide/visualization/index.md>)**: explore your data interactively with napari and generate static figures with Matplotlib.
-2. **[Quality Control](<https://confusius.tools/user-guide/quality-control/index.md>)**: assess data quality and identify artifacts *(coming soon)*
-3. **[Registration](<https://confusius.tools/user-guide/registration/index.md>)**: correct for motion and align to anatomical templates *(coming soon)*
-4. **[Signal Processing](<https://confusius.tools/user-guide/signal/index.md>)**: extract regional signals and apply denoising *(coming soon)*
+1. **[Visualization](<https://confusius.tools/pr-preview/pr-513/user-guide/visualization/index.md>)**: explore your data interactively with napari and generate static figures with Matplotlib.
+2. **[Quality Control](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/index.md>)**: assess data quality and identify artifacts *(coming soon)*
+3. **[Registration](<https://confusius.tools/pr-preview/pr-513/user-guide/registration/index.md>)**: correct for motion and align to anatomical templates *(coming soon)*
+4. **[Signal Processing](<https://confusius.tools/pr-preview/pr-513/user-guide/signal/index.md>)**: extract regional signals and apply denoising *(coming soon)*
 
-[^/user-guide/beamformed-iq/#montaldo2009]: Montaldo, G., et al. "Coherent Plane-Wave Compounding for Very High Frame Rate Ultrasonography and Transient Elastography." IEEE Transactions on Ultrasonics, Ferroelectrics and Frequency Control, vol. 56, no. 3, Mar. 2009, pp. 489–506. DOI.org (Crossref), [https://doi.org/10.1109/TUFFC.2009.1067](<https://doi.org/10.1109/TUFFC.2009.1067>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#montaldo2009]: Montaldo, G., et al. "Coherent Plane-Wave Compounding for Very High Frame Rate Ultrasonography and Transient Elastography." IEEE Transactions on Ultrasonics, Ferroelectrics and Frequency Control, vol. 56, no. 3, Mar. 2009, pp. 489–506. DOI.org (Crossref), [https://doi.org/10.1109/TUFFC.2009.1067](<https://doi.org/10.1109/TUFFC.2009.1067>).
 
-[^/user-guide/beamformed-iq/#demene2015]: Demené, Charlie, et al. "Spatiotemporal Clutter Filtering of Ultrafast Ultrasound Data Highly Increases Doppler and fUltrasound Sensitivity." IEEE Transactions on Medical Imaging, vol. 34, no. 11, Nov. 2015, pp. 2271–85. DOI.org (Crossref), [https://doi.org/10.1109/TMI.2015.2428634](<https://doi.org/10.1109/TMI.2015.2428634>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#demene2015]: Demené, Charlie, et al. "Spatiotemporal Clutter Filtering of Ultrafast Ultrasound Data Highly Increases Doppler and fUltrasound Sensitivity." IEEE Transactions on Medical Imaging, vol. 34, no. 11, Nov. 2015, pp. 2271–85. DOI.org (Crossref), [https://doi.org/10.1109/TMI.2015.2428634](<https://doi.org/10.1109/TMI.2015.2428634>).
 
-[^/user-guide/beamformed-iq/#baranger2018]: Baranger, J., et al. "Adaptive Spatiotemporal SVD Clutter Filtering for Ultrafast Doppler Imaging Using Similarity of Spatial Singular Vectors." IEEE Transactions on Medical Imaging, vol. 37, no. 7, 2018, pp. 1574–86. DOI.org (Crossref), [https://doi.org/10.1109/TMI.2018.2789499](<https://doi.org/10.1109/TMI.2018.2789499>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#baranger2018]: Baranger, J., et al. "Adaptive Spatiotemporal SVD Clutter Filtering for Ultrafast Doppler Imaging Using Similarity of Spatial Singular Vectors." IEEE Transactions on Medical Imaging, vol. 37, no. 7, 2018, pp. 1574–86. DOI.org (Crossref), [https://doi.org/10.1109/TMI.2018.2789499](<https://doi.org/10.1109/TMI.2018.2789499>).
 
-[^/user-guide/beamformed-iq/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
 
-[^/user-guide/beamformed-iq/#bertolo2023]: Bertolo, Adrien, et al. "High Sensitivity Mapping of Brain-Wide Functional Networks in Awake Mice Using Simultaneous Multi-Slice fUS Imaging." Imaging Neuroscience, vol. 1, Nov. 2023, p. imag\_a\_00030. DOI.org (Crossref), [https://doi.org/10.1162/imag\_a\_00030](<https://doi.org/10.1162/imag_a_00030>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#bertolo2023]: Bertolo, Adrien, et al. "High Sensitivity Mapping of Brain-Wide Functional Networks in Awake Mice Using Simultaneous Multi-Slice fUS Imaging." Imaging Neuroscience, vol. 1, Nov. 2023, p. imag\_a\_00030. DOI.org (Crossref), [https://doi.org/10.1162/imag\_a\_00030](<https://doi.org/10.1162/imag_a_00030>).
 
-[^/user-guide/beamformed-iq/#brunner2020]: Brunner, Clément, et al. "A Platform for Brain-Wide Volumetric Functional Ultrasound Imaging and Analysis of Circuit Dynamics in Awake Mice." Neuron, vol. 108, no. 5, Dec. 2020, pp. 861–875.e7. DOI.org (Crossref), [https://doi.org/10.1016/j.neuron.2020.09.020](<https://doi.org/10.1016/j.neuron.2020.09.020>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#brunner2020]: Brunner, Clément, et al. "A Platform for Brain-Wide Volumetric Functional Ultrasound Imaging and Analysis of Circuit Dynamics in Awake Mice." Neuron, vol. 108, no. 5, Dec. 2020, pp. 861–875.e7. DOI.org (Crossref), [https://doi.org/10.1016/j.neuron.2020.09.020](<https://doi.org/10.1016/j.neuron.2020.09.020>).
 
-[^/user-guide/beamformed-iq/#zucker2025]: Zucker, Nicolas, et al. “Physio-fUS: A Tissue-Motion Based Method for Heart and Breathing Rate Assessment in Neurofunctional Ultrasound Imaging.” eBioMedicine, vol. 112, Feb. 2025, p. 105581. DOI.org (Crossref), [https://doi.org/10.1016/j.ebiom.2025.105581](<https://doi.org/10.1016/j.ebiom.2025.105581>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#zucker2025]: Zucker, Nicolas, et al. “Physio-fUS: A Tissue-Motion Based Method for Heart and Breathing Rate Assessment in Neurofunctional Ultrasound Imaging.” eBioMedicine, vol. 112, Feb. 2025, p. 105581. DOI.org (Crossref), [https://doi.org/10.1016/j.ebiom.2025.105581](<https://doi.org/10.1016/j.ebiom.2025.105581>).
 
-[^/user-guide/beamformed-iq/#ferrier2020]: Ferrier, Jeremy, et al. “Functional Imaging Evidence for Task-Induced Deactivation and Disconnection of a Major Default Mode Network Hub in the Mouse Brain.” Proceedings of the National Academy of Sciences, vol. 117, no. 26, June 2020, pp. 15270–80. DOI.org (Crossref), [https://doi.org/10.1073/pnas.1920475117](<https://doi.org/10.1073/pnas.1920475117>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#ferrier2020]: Ferrier, Jeremy, et al. “Functional Imaging Evidence for Task-Induced Deactivation and Disconnection of a Major Default Mode Network Hub in the Mouse Brain.” Proceedings of the National Academy of Sciences, vol. 117, no. 26, June 2020, pp. 15270–80. DOI.org (Crossref), [https://doi.org/10.1073/pnas.1920475117](<https://doi.org/10.1073/pnas.1920475117>).
 
-[^/user-guide/beamformed-iq/#rabut2020]: Rabut, Claire, et al. “Pharmaco-fUS: Quantification of Pharmacologically-Induced Dynamic Changes in Brain Perfusion and Connectivity by Functional Ultrasound Imaging in Awake Mice.” NeuroImage, vol. 222, Nov. 2020, p. 117231. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2020.117231](<https://doi.org/10.1016/j.neuroimage.2020.117231>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#rabut2020]: Rabut, Claire, et al. “Pharmaco-fUS: Quantification of Pharmacologically-Induced Dynamic Changes in Brain Perfusion and Connectivity by Functional Ultrasound Imaging in Awake Mice.” NeuroImage, vol. 222, Nov. 2020, p. 117231. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2020.117231](<https://doi.org/10.1016/j.neuroimage.2020.117231>).
 
-[^/user-guide/beamformed-iq/#brunner2021]: Brunner, Clément, et al. “Whole-Brain Functional Ultrasound Imaging in Awake Head-Fixed Mice.” Nature Protocols, vol. 16, no. 7, July 2021, pp. 3547–71. DOI.org (Crossref), [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#brunner2021]: Brunner, Clément, et al. “Whole-Brain Functional Ultrasound Imaging in Awake Head-Fixed Mice.” Nature Protocols, vol. 16, no. 7, July 2021, pp. 3547–71. DOI.org (Crossref), [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>).
 
-[^/user-guide/beamformed-iq/#nunez-elizalde2022]: Nunez-Elizalde, Anwar O., et al. “Neural Correlates of Blood Flow Measured by Ultrasound.” Neuron, vol. 110, no. 10, May 2022, pp. 1631-1640.e4. DOI.org (Crossref), [https://doi.org/10.1016/j.neuron.2022.02.012](<https://doi.org/10.1016/j.neuron.2022.02.012>).
+[^/pr-preview/pr-513/user-guide/beamformed-iq/#nunez-elizalde2022]: Nunez-Elizalde, Anwar O., et al. “Neural Correlates of Blood Flow Measured by Ultrasound.” Neuron, vol. 110, no. 10, May 2022, pp. 1631-1640.e4. DOI.org (Crossref), [https://doi.org/10.1016/j.neuron.2022.02.012](<https://doi.org/10.1016/j.neuron.2022.02.012>).

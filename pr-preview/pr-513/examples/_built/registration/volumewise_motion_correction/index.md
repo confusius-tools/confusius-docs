@@ -1,6 +1,6 @@
 # Motion correction of a single recording
 
-This example shows how to correct volume-to-volume brain motion in one fUSI recording with `register_volumewise`. For this example, we use a short subset of an open-field 2D+t recording from the [Cybis Pereira 2026 dataset](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/examples/_built/registration/volumewise_motion_correction/#collection]. After volumewise registration, we inspect three things that are useful in practice:
+This example shows how to correct volume-to-volume brain motion in one fUSI recording with `register_volumewise`. For this example, we use a short subset of an open-field 2D+t recording from the [Cybis Pereira 2026 dataset](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/#collection]. After volumewise registration, we inspect three things that are useful in practice:
 
 - the motion diagnostics returned by `create_motion_dataframe`;
 - a representative voxel trace before and after registration;
@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f44855be350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f96a08da350>
     ```
 - [ ] Attributes: (21)
 
@@ -460,7 +460,7 @@ registered = cf.registration.register_volumewise(
 )
 ```
 
-`register_volumewise` adds a `motion_params` attribute to the motion-corrected DataArray. `motion_params` is a DataFrame created using `create_motion_dataframe` and containing the motion parameters and registration diagnostics: rotations (`rot_x`, `rot_y`, `rot_z`), translations (`trans_x`, `trans_y`, `trans_z`), the framewise displacement (FD)[^/examples/_built/registration/volumewise_motion_correction/#1] summaries (`mean_fd`, `max_fd`, `rms_fd`), and the optimizer summaries (`final_metric_value`, `n_iterations`) added by `register_volumewise`. Since we registered a 2D+t recording, only the rotation along the z-axis and the translations along the x- and y-axes are non-zero.
+`register_volumewise` adds a `motion_params` attribute to the motion-corrected DataArray. `motion_params` is a DataFrame created using `create_motion_dataframe` and containing the motion parameters and registration diagnostics: rotations (`rot_x`, `rot_y`, `rot_z`), translations (`trans_x`, `trans_y`, `trans_z`), the framewise displacement (FD)[^/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/#1] summaries (`mean_fd`, `max_fd`, `rms_fd`), and the optimizer summaries (`final_metric_value`, `n_iterations`) added by `register_volumewise`. Since we registered a 2D+t recording, only the rotation along the z-axis and the translations along the x- and y-axes are non-zero.
 
 ```python
 motion_df = registered.attrs["motion_params"]
@@ -471,17 +471,17 @@ motion_df.head()
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
 | 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | \-1.719862e-21 | \-1.379504e-21 | \-0.000198 | 0.001800 | 0.000109 | \-1.800995e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | 5.060800e-21 | 1.657826e-21 | 0.000507 | 0.023651 | \-0.020930 | 5.297817e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | \-3.202291e-21 | 3.400277e-22 | 0.002885 | 0.025834 | \-0.046818 | \-3.353837e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | \-5.642973e-21 | 3.699684e-22 | 0.002614 | 0.032245 | \-0.045404 | \-5.909230e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.801400 | \-4.441134e-21 | \-2.322813e-21 | \-0.000198 | 0.001800 | 0.000109 | \-4.650384e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | \-2.287485e-21 | 1.893490e-21 | 0.000507 | 0.023651 | \-0.020930 | \-2.396020e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | \-2.064631e-21 | \-1.442767e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.161240e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | \-3.812090e-21 | \-1.622439e-21 | 0.002614 | 0.032245 | \-0.045404 | \-3.986836e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
 ConfUSIus provides the function `plot_motion_diagnostics` to plot `motion_params` using four panels:
 
 - The first two panels show the rotations and translations found at each frame.
-- The third panel shows the mean, maximum, and RMS of the framewise displacement (FD). The FD is a metric used to quantify brain motion between consecutive volumes by summing the absolute temporal derivatives of the realignment parameters (translations and rotations)[^/examples/_built/registration/volumewise_motion_correction/#1].
+- The third panel shows the mean, maximum, and RMS of the framewise displacement (FD). The FD is a metric used to quantify brain motion between consecutive volumes by summing the absolute temporal derivatives of the realignment parameters (translations and rotations)[^/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/#1].
 - The fourth panel shows the final registration metric and iteration count for each volume. Volumes showing outlier metric values or reaching the maximum number of iterations configured in `register_volumewise` are likely to not be registered correctly. In that case, you might want to tweak the registration parameters, or remove the corresponding volumes from further analysis.
 
 ```python
@@ -568,10 +568,10 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 34.7 s
+**Total running time:** 41.8 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/examples/_built/registration/volumewise_motion_correction.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
-[^/examples/_built/registration/volumewise_motion_correction/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
-[^/examples/_built/registration/volumewise_motion_correction/#1]: Power, J. D., Barnes, K. A., Snyder, A. Z., Schlaggar, B. L. &amp; Petersen, S. E. Spurious but systematic correlations in functional connectivity MRI networks arise from subject motion. Neuroimage 59, 2142-2154
+[^/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/#1]: Power, J. D., Barnes, K. A., Snyder, A. Z., Schlaggar, B. L. &amp; Petersen, S. E. Spurious but systematic correlations in functional connectivity MRI networks arise from subject motion. Neuroimage 59, 2142-2154

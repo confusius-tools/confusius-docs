@@ -66,7 +66,7 @@ All ConfUSIus functions that expect a VoxelData array call `ensure_voxeldata` on
 
 The `time` coordinate marks when each volume was acquired, in the units named by its `units` attribute (seconds, typically). Because a volume is acquired over a nonzero window rather than instantaneously, `time` alone doesn't say which point of that window the value refers to—`volume_acquisition_reference` disambiguates this: `"start"`, `"center"`, or `"end"` of the acquisition window. `volume_acquisition_duration` gives the window's length, in the same units as `time`. Together, these three attributes let downstream code (e.g. GLM HRF convolution) reconstruct the exact acquisition window of every volume rather than treating `time` as an instantaneous sample.
 
-The rest of this section covers how these definitions adapt for [multi-pose data](<https://confusius.tools/user-guide/multipose/index.md>), where poses making up one volume are swept through sequentially rather than acquired simultaneously.
+The rest of this section covers how these definitions adapt for [multi-pose data](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/index.md>), where poses making up one volume are swept through sequentially rather than acquired simultaneously.
 
 ### Unconsolidated Multi-Pose Data
 
@@ -87,7 +87,7 @@ This doesn't forbid overlap between consecutive volumes: `volume_acquisition_dur
 
 ### Slice Timing Correction
 
-`correct_slice_timings` uses `slice_time` (or an unconsolidated pose-dependent `time`) to resample each slice's or pose's time series onto the shared, whole-array `time` reference—working on both unconsolidated and consolidated data. See the [Multi-Pose Imaging guide](<https://confusius.tools/user-guide/multipose/#pose-consolidation>) for a full example.
+`correct_slice_timings` uses `slice_time` (or an unconsolidated pose-dependent `time`) to resample each slice's or pose's time series onto the shared, whole-array `time` reference—working on both unconsolidated and consolidated data. See the [Multi-Pose Imaging guide](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/#pose-consolidation>) for a full example.
 
 ## Spatial Conventions
 
@@ -142,7 +142,7 @@ array([3, 4, 5])
 3
 ```
 
-Use `reindex_voxels` to rebase voxel labels back to dense array-space positions—see [Rebasing voxel coordinates to dense positions](<https://confusius.tools/user-guide/xarray/#rebasing-voxel-coordinates-to-dense-positions>) in Working with Xarray.
+Use `reindex_voxels` to rebase voxel labels back to dense array-space positions—see [Rebasing voxel coordinates to dense positions](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/#rebasing-voxel-coordinates-to-dense-positions>) in Working with Xarray.
 
 ### World Space
 
@@ -190,7 +190,7 @@ That raw mapping is rarely what you want directly, though: most tools that consu
 
 #### Origin, Spacing, Direction
 
-`.fusi.origin`, `.fusi.spacing`, and `.fusi.direction` (see [Global Helpers](<https://confusius.tools/user-guide/xarray/#global-helpers>) in Working with Xarray) describe the same voxel-to-world affine, but anchored to array space rather than voxel labels. They are the typical parameters used to describe a world-space grid in neuroimaging tools like ITK:
+`.fusi.origin`, `.fusi.spacing`, and `.fusi.direction` (see [Global Helpers](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/#global-helpers>) in Working with Xarray) describe the same voxel-to-world affine, but anchored to array space rather than voxel labels. They are the typical parameters used to describe a world-space grid in neuroimaging tools like ITK:
 
 - **origin**: world position of the array space's origin. Keyed by world axis (`z`/`y`/`x`).
 - **spacing**: world distance covered by one array-space step. Keyed by voxel axis (`k`/`j`/`i`).
@@ -258,4 +258,4 @@ array([-1., -1., -1., -1.,  0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
        [0., 0., 0., 1.]])}
 ```
 
-See [Affine Transforms](<https://confusius.tools/user-guide/xarray/#affine-transforms>) in Working with Xarray for the rest of the `.fusi.affine` API (`voxel_to_world`, `set_voxel_to_world`, `to`).
+See [Affine Transforms](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/#affine-transforms>) in Working with Xarray for the rest of the `.fusi.affine` API (`voxel_to_world`, `set_voxel_to_world`, `to`).

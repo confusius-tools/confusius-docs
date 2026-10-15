@@ -1,6 +1,6 @@
 # Atlases
 
-A brain atlas ties every voxel of a template volume to a named region. In ConfUSIus an atlas is a plain `xarray.Dataset` on a common [VoxelData grid](<https://confusius.tools/user-guide/voxeldata/#the-voxeldata-model>) (`k`/`j`/`i` voxel dims, derived world `z`/`y`/`x` coordinates), with three data variables (`template`, the anatomical template volume; `annotation`, integer region labels; and `hemispheres`, 1 = left, 2 = right), plus an `.atlas` accessor that carries all atlas-aware operations. The structure hierarchy rides along in `Dataset.attrs["structures"]`, so a single object fully describes the atlas and its region tree.
+A brain atlas ties every voxel of a template volume to a named region. In ConfUSIus an atlas is a plain `xarray.Dataset` on a common [VoxelData grid](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#the-voxeldata-model>) (`k`/`j`/`i` voxel dims, derived world `z`/`y`/`x` coordinates), with three data variables (`template`, the anatomical template volume; `annotation`, integer region labels; and `hemispheres`, 1 = left, 2 = right), plus an `.atlas` accessor that carries all atlas-aware operations. The structure hierarchy rides along in `Dataset.attrs["structures"]`, so a single object fully describes the atlas and its region tree.
 
 ## BrainGlobe Atlases
 
@@ -196,18 +196,18 @@ Coordinates:
   * mask     (mask) <U5 20B 'HIP_L'
 ```
 
-These masks feed directly into signal extraction and connectivity; see the examples [Atlas-based region correlation matrix](<https://confusius.tools/examples/_built/connectivity/atlas_correlation_matrix/index.md>) and [Atlas-based seed connectivity maps](<https://confusius.tools/examples/_built/connectivity/atlas_seed_map/index.md>) for more.
+These masks feed directly into signal extraction and connectivity; see the examples [Atlas-based region correlation matrix](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_correlation_matrix/index.md>) and [Atlas-based seed connectivity maps](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map/index.md>) for more.
 
 ## Aligning an Atlas to a Recording
 
-An atlas is only useful once it shares a grid with your data. After registering a recording to the atlas template (see [Registration](<https://confusius.tools/user-guide/registration/index.md>)), `resample_like` warps the template, annotation, hemisphere map, and region meshes onto the recording's grid in one call, using an affine, B-spline, or displacement-field transform from `register_volume`:
+An atlas is only useful once it shares a grid with your data. After registering a recording to the atlas template (see [Registration](<https://confusius.tools/pr-preview/pr-513/user-guide/registration/index.md>)), `resample_like` warps the template, annotation, hemisphere map, and region meshes onto the recording's grid in one call, using an affine, B-spline, or displacement-field transform from `register_volume`:
 
 ```python
 resampled = atlas.atlas.resample_like(recording, transform)
 ```
 
-Resampling can be costly, so it is worth doing once and caching the result. `save_atlas` / `load_atlas` write the whole atlas (arrays, structure hierarchy, and region meshes) to a Zarr store and read it back ready to use. The [Register a recording to an Allen fUSI template](<https://confusius.tools/examples/_built/registration/register_to_allen_fusi_template/index.md>) example walks through the full register → resample → save → reload workflow.
+Resampling can be costly, so it is worth doing once and caching the result. `save_atlas` / `load_atlas` write the whole atlas (arrays, structure hierarchy, and region meshes) to a Zarr store and read it back ready to use. The [Register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_to_allen_fusi_template/index.md>) example walks through the full register → resample → save → reload workflow.
 
 ## API Reference
 
-For full parameter documentation, see the [atlas API reference](<https://confusius.tools/api/atlas/index.md>) and the [I/O API reference](<https://confusius.tools/api/io/index.md>) for `save_atlas`/`load_atlas`.
+For full parameter documentation, see the [atlas API reference](<https://confusius.tools/pr-preview/pr-513/api/atlas/index.md>) and the [I/O API reference](<https://confusius.tools/pr-preview/pr-513/api/io/index.md>) for `save_atlas`/`load_atlas`.

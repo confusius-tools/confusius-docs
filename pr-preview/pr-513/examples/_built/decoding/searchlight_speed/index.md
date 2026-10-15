@@ -2,7 +2,7 @@
 
 This example maps which parts of a fUSI recording carry information about how fast a rat is moving with a searchlight: a small cross-validated model run over the local neighborhood of every voxel. Unlike a GLM, which asks voxel by voxel whether one voxel's signal tracks the regressor, the searchlight asks whether the local pattern around each voxel can predict it, picking up information carried jointly by neighboring voxels rather than by any one alone.
 
-We follow the experimental setting and dataset of [Cybis Pereira et al. 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/examples/_built/decoding/searchlight_speed/#collection], decoding locomotion speed from a single sagittal plane, and compare the searchlight map against a GLM fit on the same data. Both analyses receive the same preprocessing steps, so the only thing that differs between them is univariate versus multivariate, which is the comparison we actually want to make.
+We follow the experimental setting and dataset of [Cybis Pereira et al. 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-513/examples/_built/decoding/searchlight_speed/#collection], decoding locomotion speed from a single sagittal plane, and compare the searchlight map against a GLM fit on the same data. Both analyses receive the same preprocessing steps, so the only thing that differs between them is univariate versus multivariate, which is the comparison we actually want to make.
 
 ## Load the recording and the tracking data
 
@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5f84e67250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2f27293250>
     ```
 - [ ] Attributes: (21)
 
@@ -432,7 +432,7 @@ The rat moves freely, so a real analysis should first correct volume-to-volume b
 >
 > **Recommended in a real analysis**
 >
-> Register every volume to a reference frame with `register_volumewise` before building the regressors, then continue with the corrected `data`. Removing motion-driven variance sharpens the speed maps and their statistics. See the [Motion correction of a single recording](<https://confusius.tools/examples/_built/registration/volumewise_motion_correction/index.md>) example for the full workflow and diagnostics.
+> Register every volume to a reference frame with `register_volumewise` before building the regressors, then continue with the corrected `data`. Removing motion-driven variance sharpens the speed maps and their statistics. See the [Motion correction of a single recording](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/index.md>) example for the full workflow and diagnostics.
 >
 > ```python
 > data = cf.registration.register_volumewise(data, learning_rate=1)
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5f781d7770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2f2044ac10>
     ```
 - [ ] Attributes: (23)
 
@@ -902,8 +902,8 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 65.4 s
+**Total running time:** 86.1 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/examples/_built/decoding/searchlight_speed.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/decoding/searchlight_speed.ipynb>)
 
-[^/examples/_built/decoding/searchlight_speed/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/decoding/searchlight_speed/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

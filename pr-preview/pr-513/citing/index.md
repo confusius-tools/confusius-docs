@@ -49,7 +49,7 @@ Or in BibTeX format:
 
 ### Napari
 
-The [ConfUSIus GUI](<https://confusius.tools/gui/overview>) is built on top of [napari](<https://napari.org>), a powerful multi-dimensional image viewer for Python. If you use the ConfUSIus GUI in your research, please also cite napari:
+The [ConfUSIus GUI](<https://confusius.tools/pr-preview/gui/overview>) is built on top of [napari](<https://napari.org>), a powerful multi-dimensional image viewer for Python. If you use the ConfUSIus GUI in your research, please also cite napari:
 
 > napari contributors (2019). napari: a multi-dimensional image viewer for Python. Zenodo. https://doi.org/10.5281/zenodo.3555620
 

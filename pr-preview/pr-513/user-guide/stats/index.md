@@ -14,4 +14,4 @@
 >
 > - `apply_statistical_threshold`: Threshold a z-scaled statistical map with multiple-comparison correction and an optional cluster-extent threshold.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/stats/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/stats/index.md>) for more information.

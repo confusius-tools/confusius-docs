@@ -2,9 +2,9 @@
 
 This example shows how to use FastICA to decompose a fUSI recording into independent components.
 
-[PCA](<https://confusius.tools/examples/_built/decomposition/pca_single_recording/index.md>) decomposes fUSI data into spatial maps and time courses by finding orthogonal axes that capture dominant covariance/correlation structure. The resulting components are uncorrelated but not necessarily independent: they may still share higher-order statistical structure.
+[PCA](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/pca_single_recording/index.md>) decomposes fUSI data into spatial maps and time courses by finding orthogonal axes that capture dominant covariance/correlation structure. The resulting components are uncorrelated but not necessarily independent: they may still share higher-order statistical structure.
 
-ICA uses a stronger statistical objective. Instead of diagonalising covariance, it searches for components that are as statistically independent as possible, using higher-order structure beyond variance and correlation[^/examples/_built/decomposition/fastica_single_recording/#1]. The interpretation of an ICA component depends on the orientation of the data:
+ICA uses a stronger statistical objective. Instead of diagonalising covariance, it searches for components that are as statistically independent as possible, using higher-order structure beyond variance and correlation[^/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording/#1]. The interpretation of an ICA component depends on the orientation of the data:
 
 - **Temporal ICA** (`mode="temporal"`): the independent components are time courses and the spatial maps are their voxel-wise mixing weights.
 - **Spatial ICA** (`mode="spatial"`): the independent components are spatial maps and the corresponding time courses are their time-wise mixing weights.
@@ -15,7 +15,7 @@ Historically, temporal ICA was less used in resting-state fMRI because acquisiti
 
 ## Load a fUSI recording
 
-To demonstrate the use of ICA on fUSI data, we use the same spontaneous activity recording from the [Nunez-Elizalde 2022 dataset](<https://doi.org/10.1016/j.neuron.2022.02.012>)[^/examples/_built/decomposition/fastica_single_recording/#collection] as in the [PCA example](<https://confusius.tools/examples/_built/decomposition/pca_single_recording/index.md>). See the [Datasets](<https://confusius.tools/user-guide/datasets/index.md>) user guide for more details on how to download this dataset using ConfUSIus.
+To demonstrate the use of ICA on fUSI data, we use the same spontaneous activity recording from the [Nunez-Elizalde 2022 dataset](<https://doi.org/10.1016/j.neuron.2022.02.012>)[^/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording/#collection] as in the [PCA example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/pca_single_recording/index.md>). See the [Datasets](<https://confusius.tools/pr-preview/pr-513/user-guide/datasets/index.md>) user guide for more details on how to download this dataset using ConfUSIus.
 
 ```python
 from pathlib import Path
@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7facac8060d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fea991da0d0>
     ```
 - [ ] Attributes: (25)
 
@@ -446,7 +446,7 @@ xarray.DataArray
 
 # Correct for brain motion
 
-This recording contains some brain motion, which we can mitigate by performing a rigid transform correction with `register_volumewise`. This is the same preprocessing step used in the [PCA example](<https://confusius.tools/examples/_built/decomposition/pca_single_recording/#correct-for-brain-motion>), and it helps avoid components dominated by motion artefacts.
+This recording contains some brain motion, which we can mitigate by performing a rigid transform correction with `register_volumewise`. This is the same preprocessing step used in the [PCA example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/pca_single_recording/#correct-for-brain-motion>), and it helps avoid components dominated by motion artefacts.
 
 ```python
 data = cf.registration.register_volumewise(data, learning_rate=1e-2)
@@ -456,7 +456,7 @@ data = cf.registration.register_volumewise(data, learning_rate=1e-2)
 
 Temporal ICA treats time courses as signals and voxels as instances. It is useful for separating components that are temporally independent but may overlap in space, and can help separate low-frequency physiological fluctuations.
 
-Before fitting, we standardize the recording by centering and scaling each voxel's time series to zero mean and unit variance with `standardize`, for the same reasons as in the [PCA example](<https://confusius.tools/examples/_built/decomposition/pca_single_recording/#temporal-pca-modetemporal>).
+Before fitting, we standardize the recording by centering and scaling each voxel's time series to zero mean and unit variance with `standardize`, for the same reasons as in the [PCA example](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/pca_single_recording/#temporal-pca-modetemporal>).
 
 ```python
 data_std = cf.signal.standardize(data)
@@ -483,22 +483,22 @@ xarray.DataArray
 
 - [ ]
 
-  1.705 0.4722 0.6067 0.5974 0.3297 ... 0.2544 1.129 0.08552 -0.1393
+  1.705 0.4722 0.6064 0.5975 0.3297 ... 0.2545 1.129 0.08549 -0.1394
 
   ```
-  array([[ 1.7053471 ,  0.47218508,  0.60667574, ...,  0.9067501 ,
-           0.8413501 , -1.3073945 ],
-         [ 3.3142476 ,  1.4946027 ,  0.289191  , ...,  0.22860953,
-           0.29316697,  0.7450524 ],
-         [ 3.6038916 ,  0.4376343 ,  0.08941008, ..., -0.78943026,
-           0.82355165,  0.8383995 ],
+  array([[ 1.7054038 ,  0.47218907,  0.6064326 , ...,  0.90661407,
+           0.8411919 , -1.3073498 ],
+         [ 3.314502  ,  1.4946285 ,  0.28877422, ...,  0.22849068,
+           0.29297888,  0.74503154],
+         [ 3.6042025 ,  0.43766832,  0.08901776, ..., -0.78946877,
+           0.82339287,  0.83835304],
          ...,
-         [ 0.19005749,  0.06548941,  1.6409812 , ...,  0.31566784,
-           1.4230514 ,  0.11540988],
-         [ 0.18706222,  1.7543579 ,  2.2873359 , ...,  1.463107  ,
-           0.6754403 ,  0.90918803],
-         [ 0.6318028 ,  0.74639934,  1.4053494 , ...,  1.1292399 ,
-           0.08552428, -0.13928768]], shape=(751, 10), dtype=float32)
+         [ 0.19027728,  0.06551931,  1.6410432 , ...,  0.31593418,
+           1.4230698 ,  0.11517171],
+         [ 0.18749171,  1.7544034 ,  2.287215  , ...,  1.4634942 ,
+           0.67545384,  0.908817  ],
+         [ 0.6320407 ,  0.7464211 ,  1.4051484 , ...,  1.12944   ,
+           0.08549026, -0.1394371 ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -605,22 +605,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-520.3 3.505e+03 1.6e+03 -779.5 ... 1.028e+03 2.523e+03 -1.685e+03
+  \-519.2 -3.525e+03 1.596e+03 -784.8 ... 1.026e+03 2.485e+03 1.667e+03
 
   ```
-  array([[ -520.2989 ,  3504.755  ,  1599.7559 , ...,   669.60266,
-           1261.5713 , -1242.1854 ],
-         [ 1308.4633 ,  2354.9707 ,   317.7082 , ...,    -9.72171,
-           1024.7684 ,  1084.4003 ],
-         [  343.88522,  2318.199  ,   617.4685 , ...,   272.92017,
-           1235.4524 ,  1638.7083 ],
+  array([[ -519.1568  , -3524.992   ,  1596.1387  , ...,   668.32086 ,
+           1224.2369  ,  1221.0983  ],
+         [ 1309.4406  , -2365.1877  ,   315.39682 , ...,   -10.108643,
+           1006.35046 , -1100.6206  ],
+         [  344.98694 , -2330.7832  ,   614.9462  , ...,   272.7893  ,
+           1223.0826  , -1656.1445  ],
          ...,
-         [-1046.7009 ,  2457.6367 ,  3385.7192 , ...,   949.4414 ,
-           1884.1799 , -1266.8386 ],
-         [  466.82806,  2348.8738 ,  2849.441  , ...,   690.0863 ,
-           2512.9348 , -1817.8994 ],
-         [ -452.74954,  2462.4834 ,  1238.6765 , ...,  1027.5919 ,
-           2522.82   , -1685.204  ]], shape=(751, 10), dtype=float32)
+         [-1045.5885  , -2484.69    ,  3381.5269  , ...,   948.50446 ,
+           1858.6206  ,  1249.6975  ],
+         [  468.08606 , -2381.7354  ,  2844.24    , ...,   688.9029  ,
+           2480.0574  ,  1800.4146  ],
+         [ -451.43054 , -2493.9385  ,  1233.4158  , ...,  1026.327   ,
+           2484.9666  ,  1666.9863  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -712,10 +712,10 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 229.1 s
+**Total running time:** 277.3 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/examples/_built/decomposition/fastica_single_recording.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
-[^/examples/_built/decomposition/fastica_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
-[^/examples/_built/decomposition/fastica_single_recording/#1]: Hyvärinen, A., and Oja, E. (2000). "Independent component analysis: algorithms and applications". *Neural Networks*, 13(4-5), 411-430.
+[^/pr-preview/pr-513/examples/_built/decomposition/fastica_single_recording/#1]: Hyvärinen, A., and Oja, E. (2000). "Independent component analysis: algorithms and applications". *Neural Networks*, 13(4-5), 411-430.

@@ -2,7 +2,7 @@
 
 The General Linear Model (GLM) is the workhorse of task-based neuroimaging analysis. It treats every voxel independently and asks a simple question: how much of this voxel's time course can be explained by the experimental paradigm, once we account for nuisance signals such as slow drifts and physiological noise? Fitting that model voxel-by-voxel turns a fUSI recording into a statistical map that highlights where the brain responded to the stimulus.
 
-In this example we run a complete first-level (single-subject) GLM on stimulus-evoked fUSI data from the [Khallaf et al. 2026 dataset](<https://doi.org/10.1038/s41586-026-10772-5>)[^/examples/_built/glm/first_level/#collection]—functional ultrasound imaging of a naked mole-rat exposed to repeated olfactory stimulation. The notebook will go through the following steps:
+In this example we run a complete first-level (single-subject) GLM on stimulus-evoked fUSI data from the [Khallaf et al. 2026 dataset](<https://doi.org/10.1038/s41586-026-10772-5>)[^/pr-preview/pr-513/examples/_built/glm/first_level/#collection]—functional ultrasound imaging of a naked mole-rat exposed to repeated olfactory stimulation. The notebook will go through the following steps:
 
 1. **Fetch and load** the five fUSI recordings.
 2. **Register** the recording to a reference template aligned with an anatomical atlas, so we can define masks and draw region boundaries in a common space.
@@ -96,7 +96,7 @@ events
 
 ## Load the recordings and fix their spatial convention
 
-This dataset is stored with a spatial convention that differs from the [spatial convention that ConfUSIus assumes](<https://confusius.tools/user-guide/voxeldata/index.md>) (the axes are labelled differently, the depth direction is flipped, and the stored world-space affine is not metric). We correct these differences so the data conform to ConfUSIus's spatial convention. The collapsed `_load_and_prepare_fusi` helper explains each step; otherwise, continue to the next cell.
+This dataset is stored with a spatial convention that differs from the [spatial convention that ConfUSIus assumes](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/index.md>) (the axes are labelled differently, the depth direction is flipped, and the stored world-space affine is not metric). We correct these differences so the data conform to ConfUSIus's spatial convention. The collapsed `_load_and_prepare_fusi` helper explains each step; otherwise, continue to the next cell.
 
 > [!NOTE]
 >
@@ -239,7 +239,7 @@ The registration itself gives us the transform between template and average fUSI
 
 > [!NOTE]
 >
-> Registration results are sensitive to their arguments. See the [registration examples](<https://confusius.tools/examples/#registration>) for guidance on inspecting convergence and tuning the optimizer.
+> Registration results are sensitive to their arguments. See the [registration examples](<https://confusius.tools/pr-preview/pr-513/examples/#registration>) for guidance on inspecting convergence and tuning the optimizer.
 
 ```python
 # Copied and pasted transform after manual transformation in napari.
@@ -331,7 +331,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f032aa6dc70>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f4f0736b480>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -346,7 +346,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...70\>, beta=6.7) |
+|  | hrf\_model | functools.par...80\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -365,7 +365,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f03287274d0\>, \<confusius.gl...x7f032874f820\>, \<confusius.gl...x7f032881a570\>, \<confusius.gl...x7f03287b3f00\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f4efbf35f90\>, \<confusius.gl...x7f4efbf12c40\>, \<confusius.gl...x7f4f0cfbc290\>, \<confusius.gl...x7f4efbf7a9c0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -480,8 +480,8 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 106.2 s
+**Total running time:** 106.0 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/examples/_built/glm/first_level.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level.ipynb>)
 
-[^/examples/_built/glm/first_level/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/glm/first_level/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

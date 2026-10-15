@@ -10,7 +10,7 @@ ConfUSIus ships a [napari](<https://napari.org>) plugin that provides an interac
 
 ## Launching the Plugin
 
-The `confusius` command is available in any Python environment where ConfUSIus is installed—see the [Installation guide](<https://confusius.tools/user-guide/installation/index.md>) for details. Alternatively, [`uvx`](<https://docs.astral.sh/uv/guides/tools/>) can fetch and run ConfUSIus without a prior install step.
+The `confusius` command is available in any Python environment where ConfUSIus is installed—see the [Installation guide](<https://confusius.tools/pr-preview/pr-513/user-guide/installation/index.md>) for details. Alternatively, [`uvx`](<https://docs.astral.sh/uv/guides/tools/>) can fetch and run ConfUSIus without a prior install step.
 
 There are two ways to start the plugin:
 
@@ -28,13 +28,13 @@ With `uvx`, no prior installation is needed:
 uvx -p 3.13 confusius
 ```
 
-The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/gui/plugin/#data-io-panel>), [Video](<https://confusius.tools/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/gui/plugin/#events-panel>), [QC](<https://confusius.tools/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
+The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#data-io-panel>), [Video](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
 
 > [!TIP]
 >
 > **Running napari programmatically**
 >
-> If you prefer to open napari from a Python script or Jupyter notebook, see the [Visualization](<https://confusius.tools/user-guide/visualization/#interactive-exploration-with-napari>) guide, which covers `plot_napari` and related functions.
+> If you prefer to open napari from a Python script or Jupyter notebook, see the [Visualization](<https://confusius.tools/pr-preview/pr-513/user-guide/visualization/#interactive-exploration-with-napari>) guide, which covers `plot_napari` and related functions.
 
 ## Opening Data
 
@@ -46,7 +46,7 @@ The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://conf
 
 ### Recommended: Data Panel and CLI
 
-The recommended way to open files is through the [Data Panel](<https://confusius.tools/gui/plugin/#data-io-panel>) or by passing one or multiple paths to the `confusius` command on launch:
+The recommended way to open files is through the [Data Panel](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#data-io-panel>) or by passing one or multiple paths to the `confusius` command on launch:
 
 ```bash
 confusius path/to/data.zarr path/to/other/data.zarr
@@ -72,7 +72,7 @@ ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN, and
 
 ### Recommended: Data I/O Panel
 
-The [Data I/O Panel](<https://confusius.tools/gui/plugin/#saving-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
+The [Data I/O Panel](<https://confusius.tools/pr-preview/pr-513/gui/plugin/#saving-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
 
 > [!WARNING]
 >
@@ -86,8 +86,8 @@ ConfUSIus also registers native napari writers for NIfTI and Zarr files. These l
 
 ## Next Steps
 
-- [Using the Plugin](<https://confusius.tools/gui/plugin/index.md>): a walkthrough of each panel, including loading and saving.
-- [Visualization](<https://confusius.tools/user-guide/visualization/index.md>): programmatic napari and Matplotlib plotting from Python.
-- [Quality Control](<https://confusius.tools/user-guide/quality-control/index.md>): background and interpretation of the QC metrics computed by the plugin.
+- [Using the Plugin](<https://confusius.tools/pr-preview/pr-513/gui/plugin/index.md>): a walkthrough of each panel, including loading and saving.
+- [Visualization](<https://confusius.tools/pr-preview/pr-513/user-guide/visualization/index.md>): programmatic napari and Matplotlib plotting from Python.
+- [Quality Control](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/index.md>): background and interpretation of the QC metrics computed by the plugin.
 - [napari tutorials](<https://napari.org/dev/tutorials/index.html>): official guides covering the viewer, layer system, and annotation tools.
 - [napari hub](<https://napari-hub.org>): community plugins for loading additional data types and extending the viewer.

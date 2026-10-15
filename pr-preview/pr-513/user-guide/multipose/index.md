@@ -23,7 +23,7 @@ A multi-pose VoxelData array follows the same dimension order as any other Voxel
 
 `pose` is not just an extra axis: it changes what the `z`/`y`/`x` world coordinates and the `time` coordinate mean, because both are per-pose rather than per-array.
 
-- **Geometry is per-pose.** Each pose has its own voxel-to-world affine, so the world coordinates `z`/`y`/`x` are pose-dependent with shape `(pose, k, j, i)`. Resolving a voxel to a single world position requires selecting a scalar `pose` first, e.g. `data.isel(pose=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/#the-voxeldata-model>) for the full explanation of pose-dependent voxel-to-world geometry.
+- **Geometry is per-pose.** Each pose has its own voxel-to-world affine, so the world coordinates `z`/`y`/`x` are pose-dependent with shape `(pose, k, j, i)`. Resolving a voxel to a single world position requires selecting a scalar `pose` first, e.g. `data.isel(pose=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#the-voxeldata-model>) for the full explanation of pose-dependent voxel-to-world geometry.
 - **Timing can be per-pose.** When poses are acquired sequentially rather than simultaneously, each pose is captured at a slightly different time. The `time` coordinate then holds each pose's own acquisition timestamp directly, shaped `(time, pose)` instead of the usual 1D `(time,)`—mirroring how `z`/`y`/`x` require a scalar `pose` selection before they resolve to a single value:
 
   ```python
@@ -160,7 +160,7 @@ A number of ConfUSIus functions go further and require multi-pose data to be red
 
 | Operation | Requires |
 | --- | --- |
-| Registration ([registration guide](<https://confusius.tools/user-guide/registration/index.md>)) | Single pose, or [consolidated](<#pose-consolidation>) data |
+| Registration ([registration guide](<https://confusius.tools/pr-preview/pr-513/user-guide/registration/index.md>)) | Single pose, or [consolidated](<#pose-consolidation>) data |
 | Saving to NIfTI (single affine per file) | Single pose, or consolidated data—see [Saving](<#saving>) |
 
 ## Slice Timing Correction

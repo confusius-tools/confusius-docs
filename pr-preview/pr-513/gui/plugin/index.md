@@ -52,7 +52,7 @@ The Video Panel loads one or more videos (`.mp4`, `.mov`, `.avi`) and overlays t
 
 ### Loading a video
 
-1. Pick the fUSI image layer to synchronize against in the **Reference layer** dropdown. The reference must have ConfUSIus coordinate metadata, so load it through the [Data I/O Panel](<#data-io-panel>) or the [`confusius` CLI](<https://confusius.tools/gui/overview/#recommended-data-panel-and-cli>) command.
+1. Pick the fUSI image layer to synchronize against in the **Reference layer** dropdown. The reference must have ConfUSIus coordinate metadata, so load it through the [Data I/O Panel](<#data-io-panel>) or the [`confusius` CLI](<https://confusius.tools/pr-preview/pr-513/gui/overview/#recommended-data-panel-and-cli>) command.
 2. Insert a path or click **Browse** to pick a video file.
 3. Click **Add video**. The video appears as a new Image layer, grid mode is enabled with a single-row layout, and the viewer shows the reference scan and the video side by side.
 
@@ -197,11 +197,11 @@ Temporal metrics are rendered as plots in the bottom dock (the same dock used by
 
 ****DVARS****
 
-Plots the standardized temporal derivative of variance over time. A vertical cursor follows the napari time slider. See [DVARS](<https://confusius.tools/user-guide/quality-control/#dvars>) for interpretation.
+Plots the standardized temporal derivative of variance over time. A vertical cursor follows the napari time slider. See [DVARS](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/#dvars>) for interpretation.
 
 ****Carpet plot****
 
-Displays the full voxel time series as a 2D raster (time × voxels). See [Carpet Plot](<https://confusius.tools/user-guide/quality-control/#carpet-plot>) for interpretation.
+Displays the full voxel time series as a 2D raster (time × voxels). See [Carpet Plot](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/#carpet-plot>) for interpretation.
 
 > [!TIP]
 >
@@ -223,7 +223,7 @@ Temporal signal-to-noise ratio map.
 >
 > **Prefer CV over tSNR for fUSI power Doppler data**
 >
-> tSNR is misleading for power Doppler: low-signal regions such as gel layers and shadow zones behind the skull can appear bright. CV correctly highlights regions with high temporal variability. See the [Quality Control guide](<https://confusius.tools/user-guide/quality-control/#temporal-snr>) for a full explanation.
+> tSNR is misleading for power Doppler: low-signal regions such as gel layers and shadow zones behind the skull can appear bright. CV correctly highlights regions with high temporal variability. See the [Quality Control guide](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/#temporal-snr>) for a full explanation.
 
 ## Registration Panel
 

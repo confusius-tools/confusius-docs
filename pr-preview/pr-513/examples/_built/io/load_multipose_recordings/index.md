@@ -2,7 +2,7 @@
 
 This example shows how to assemble a multi-pose fUSI recording that was not acquired through an Iconeus SCAN file, by loading each pose as a separate NIfTI file and stacking them into a single VoxelData array with pose-dependent voxel-to-world geometry.
 
-The Pepe, Mariani et al. (2026) dataset[^/examples/_built/io/load_multipose_recordings/#collection] contains transcranial mouse resting-state recordings acquired with a linear probe stepped across several positions. In the fUSI-BIDS export, each probe position is one file, distinguished by the `chunk-` entity (`chunk-0`, `chunk-1`, ...); this is exactly the "Other Systems" case described in the [Multi-Pose Imaging guide](<https://confusius.tools/user-guide/multipose/#other-systems>) — data must be assembled manually rather than loaded as one file, unlike Iconeus SCAN's `3Dscan`/`4Dscan` modes.
+The Pepe, Mariani et al. (2026) dataset[^/pr-preview/pr-513/examples/_built/io/load_multipose_recordings/#collection] contains transcranial mouse resting-state recordings acquired with a linear probe stepped across several positions. In the fUSI-BIDS export, each probe position is one file, distinguished by the `chunk-` entity (`chunk-0`, `chunk-1`, ...); this is exactly the "Other Systems" case described in the [Multi-Pose Imaging guide](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/#other-systems>) — data must be assembled manually rather than loaded as one file, unlike Iconeus SCAN's `3Dscan`/`4Dscan` modes.
 
 ## Fetch one recording's chunks
 
@@ -426,7 +426,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f64a9b89430>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f72e4905430>
     ```
 - [ ] Attributes: (25)
 
@@ -545,8 +545,8 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 11.4 s
+**Total running time:** 13.3 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/examples/_built/io/load_multipose_recordings.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/load_multipose_recordings.ipynb>)
 
-[^/examples/_built/io/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/io/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

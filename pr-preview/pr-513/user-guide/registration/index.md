@@ -24,4 +24,4 @@
 > - `compose_affine`: Compose multiple affine transformations into one.
 > - `decompose_affine`: Decompose an affine matrix into translation, rotation, and scaling components.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/registration/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/registration/index.md>) for more information.

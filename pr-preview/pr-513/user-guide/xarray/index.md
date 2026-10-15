@@ -30,7 +30,7 @@ ConfUSIus leverages Xarray to provide a robust data model for fUSI recordings wh
 
 Xarray has two core data structures: **DataArrays** and **Datasets**.
 
-A **DataArray** is a single array with its own dimensions, coordinates, and attributes. You get a DataArray whenever you load a single fUSI recording, for example a power Doppler NIfTI file from the Nunez-Elizalde 2022 dataset via `confusius.load`. Such a DataArray follows **VoxelData**, ConfUSIus's canonical model for any spatially referenced voxel array—see [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/#the-voxeldata-model>) for the full definition:
+A **DataArray** is a single array with its own dimensions, coordinates, and attributes. You get a DataArray whenever you load a single fUSI recording, for example a power Doppler NIfTI file from the Nunez-Elizalde 2022 dataset via `confusius.load`. Such a DataArray follows **VoxelData**, ConfUSIus's canonical model for any spatially referenced voxel array—see [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#the-voxeldata-model>) for the full definition:
 
 ```pycon
 >>> import confusius as cf
@@ -74,7 +74,7 @@ Reading the output from top to bottom, a DataArray has four components:
 
   > **Why `(time, k, j, i)` instead of `(i, j, k, time)`?**
   >
-  > Neuroimaging formats such as NIfTI conventionally order axes `(x, y, z, time, ...)`, with the first axis varying fastest in storage. NumPy uses the opposite convention: its default memory layout has the last axis varying fastest. ConfUSIus therefore uses `(..., time, k, j, i)`, which maps NIfTI data naturally onto the memory layout used throughout the Python scientific ecosystem, often without copying or rearranging the data. In practice, this ordering is usually transparent because Xarray operations refer to dimensions by name rather than by position. See [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/#dimension-ordering-time-pose-k-j-i>) for the full explanation.
+  > Neuroimaging formats such as NIfTI conventionally order axes `(x, y, z, time, ...)`, with the first axis varying fastest in storage. NumPy uses the opposite convention: its default memory layout has the last axis varying fastest. ConfUSIus therefore uses `(..., time, k, j, i)`, which maps NIfTI data naturally onto the memory layout used throughout the Python scientific ecosystem, often without copying or rearranging the data. In practice, this ordering is usually transparent because Xarray operations refer to dimensions by name rather than by position. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#dimension-ordering-time-pose-k-j-i>) for the full explanation.
 - **Data**: the underlying array. ConfUSIus loaders return [Dask](<https://www.dask.org/>)-backed data, meaning values are not loaded into memory until you explicitly request them (e.g., by calling `.compute()` or accessing `.values`).
 - **Coordinates**: timestamps and world positions, typically in seconds and millimeters. The world coordinates `x`, `y`, and `z` are derived from the voxel-to-world geometry (via the `VoxelToWorldIndex` shown under `Indexes`) and enable slicing to work in physical units rather than array indices.
 - **Attributes**: acquisition metadata as a flat key-value dictionary. Attributes are preserved through most ConfUSIus operations, and some are required for certain functions (for example, `transmit_frequency` is needed for velocity calculations).
@@ -206,7 +206,7 @@ multipose = cf.create_voxeldata(
 )
 ```
 
-See the [Multi-Pose Data guide](<https://confusius.tools/user-guide/multipose/index.md>) for a full example.
+See the [Multi-Pose Data guide](<https://confusius.tools/pr-preview/pr-513/user-guide/multipose/index.md>) for a full example.
 
 ### Beamformed IQ Data
 
@@ -229,7 +229,7 @@ iq = cf.create_voxeldata(
 
 Most of the functions you have seen so far (`cf.load`, `create_voxeldata`, etc.) are module-level, imported explicitly from `confusius`. An **accessor** is Xarray's mechanism for attaching a custom namespace directly to a DataArray or Dataset instead, so related functionality is reachable straight off the data—for example, `pwd.fusi.scale.db()`. This also keeps the boundary between Xarray's own API and library-specific functionality explicit; see [Xarray's guide to extending Xarray](<https://docs.xarray.dev/en/stable/internals/extending-xarray.html>) for the general mechanism.
 
-ConfUSIus registers two such accessors: `.fusi` on DataArrays, and `.atlas` on Datasets. `.atlas` is useful on atlas Datasets such as the one returned by `fetch_brainglobe_atlas`, and is covered separately in the [Atlases guide](<https://confusius.tools/user-guide/atlas/index.md>). The rest of this section covers `.fusi`.
+ConfUSIus registers two such accessors: `.fusi` on DataArrays, and `.atlas` on Datasets. `.atlas` is useful on atlas Datasets such as the one returned by `fetch_brainglobe_atlas`, and is covered separately in the [Atlases guide](<https://confusius.tools/pr-preview/pr-513/user-guide/atlas/index.md>). The rest of this section covers `.fusi`.
 
 Importing ConfUSIus registers the accessors automatically:
 
@@ -255,7 +255,7 @@ The sub-accessors offer the same functions as the module-level API, but with an 
 
 ### Global Helpers
 
-Currently, three global helpers are available. Together they decompose the DataArray's voxel-to-world affine into origin, spacing, and direction—see [The voxel-to-world affine](<https://confusius.tools/user-guide/voxeldata/#world-space>) in The VoxelData Model for how the three combine:
+Currently, three global helpers are available. Together they decompose the DataArray's voxel-to-world affine into origin, spacing, and direction—see [The voxel-to-world affine](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#world-space>) in The VoxelData Model for how the three combine:
 
 - `.fusi.spacing`, which returns the step size along each dimension as a dictionary:
 
@@ -288,7 +288,7 @@ This is the identity for axis-aligned data (the common case). For oblique data, 
 
 ### IQ Processing
 
-The `.fusi.iq` accessor lets you access the `process_iq_to_power_doppler` and `process_iq_to_axial_velocity` functions directly on a DataArray containing beamformed IQ data. Refer to the [Beamformed IQ guide](<https://confusius.tools/user-guide/beamformed-iq/index.md>) for background IQ processing.
+The `.fusi.iq` accessor lets you access the `process_iq_to_power_doppler` and `process_iq_to_axial_velocity` functions directly on a DataArray containing beamformed IQ data. Refer to the [Beamformed IQ guide](<https://confusius.tools/pr-preview/pr-513/user-guide/beamformed-iq/index.md>) for background IQ processing.
 
 ```python
 import dask
@@ -356,7 +356,7 @@ By default, rigid registration allows translation and rotation. Pass `transform=
 
 ### Affine Transforms
 
-The `.fusi.affine` accessor inspects and applies the voxel-to-world and world-to-reference affines described in [The VoxelData Model](<https://confusius.tools/user-guide/voxeldata/#spatial-conventions>). The voxel-to-world affine returned by `voxel_to_world` below is the same one [Global Helpers](<#global-helpers>) decomposes into `origin`/`spacing`/`direction`—use whichever form suits the task: the `(4, 4)` matrix for composing with other affines, the decomposed form for sanity-checking or constructing SimpleITK/ITK images.
+The `.fusi.affine` accessor inspects and applies the voxel-to-world and world-to-reference affines described in [The VoxelData Model](<https://confusius.tools/pr-preview/pr-513/user-guide/voxeldata/#spatial-conventions>). The voxel-to-world affine returned by `voxel_to_world` below is the same one [Global Helpers](<#global-helpers>) decomposes into `origin`/`spacing`/`direction`—use whichever form suits the task: the `(4, 4)` matrix for composing with other affines, the decomposed form for sanity-checking or constructing SimpleITK/ITK images.
 
 #### Reading and applying affines
 
@@ -549,4 +549,4 @@ spatial_maps = pca.maps_
 
 ## API Reference
 
-For full parameter documentation, see the [Xarray Integration API reference](<https://confusius.tools/api/xarray/index.md>).
+For full parameter documentation, see the [Xarray Integration API reference](<https://confusius.tools/pr-preview/pr-513/api/xarray/index.md>).

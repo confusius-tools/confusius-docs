@@ -2,7 +2,7 @@
 
 This example shows how to align two power Doppler images acquired from the same subject in different sessions. We use `register_volume` with a rigid transform, which is appropriate when the imaged anatomy is the same but the probe placement differs slightly between the two recordings.
 
-We pick two `susi` acquisitions from the [Cybis Pereira 2026 dataset](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/examples/_built/registration/register_volume_same_subject/#collection] using `fetch_cybis_pereira_2026`: subject `rat75`, slice `slice32`, recorded on consecutive days (sessions `20220523` and `20220524`).
+We pick two `susi` acquisitions from the [Cybis Pereira 2026 dataset](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject/#collection] using `fetch_cybis_pereira_2026`: subject `rat75`, slice `slice32`, recorded on consecutive days (sessions `20220523` and `20220524`).
 
 ## Fetch and load both recordings
 
@@ -240,7 +240,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa841aebbb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f34b78ebbb0>
     ```
 - [ ] Attributes: (23)
 
@@ -521,7 +521,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa841e7e550>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f34ba02f350>
     ```
 - [ ] Attributes: (23)
 
@@ -654,9 +654,9 @@ print(f"Rigid transform:\n{rigid_transform}")
 
 ```text
 Rigid transform:
-[[ 1.00000000e+00 -1.19034059e-20 -6.54108347e-21  1.24629613e-19]
- [ 1.15250165e-20  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
- [ 7.18685176e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
+[[ 1.00000000e+00 -8.56493346e-21  8.59601164e-21  8.96755349e-20]
+ [ 9.02544086e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
+ [-8.11116013e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
 ```
 
@@ -726,49 +726,49 @@ xarray.DataArray
 
 - [ ]
 
-  1.092e-10 4.056e-12 1.881e-13 -1.953e-12 ... -729.7 -293.6 -23.78
+  \-1.775e-13 8.484e-15 -2.461e-15 -7.449e-14 ... -360.0 -87.65 -7.765
 
   ```
-  array([[[[ 1.09209548e-10,  4.05555242e-12,  1.88114710e-13, ...,
-            -1.18934027e-12, -2.24415626e-13, -1.06879393e-14],
-           [ 1.43509113e-13,  1.13682933e-13,  6.88074909e-15, ...,
-            -3.86472502e-13, -5.81786392e-14,  1.64529813e-14],
-           [-6.03176940e-13, -2.39451798e-13, -2.27043818e-13, ...,
-            -1.69508921e-13,  6.06758352e-14,  7.83773368e-14],
+  array([[[[-1.77492979e-13,  8.48355610e-15, -2.46106936e-15, ...,
+            -2.20501016e-13, -6.84941385e-14, -6.13838048e-15],
+           [-2.16610092e-14, -2.56769082e-15, -4.60494784e-15, ...,
+            -7.52996368e-14, -1.30106995e-14,  2.71086406e-15],
+           [-1.64697461e-13, -4.92579422e-14, -6.31303890e-14, ...,
+            -3.50503622e-14,  1.48011569e-14,  1.24213543e-14],
            ...,
-           [-5.78614135e-13, -6.51705583e-15,  5.58087760e-13, ...,
-             3.23086233e-13,  1.87236071e-13,  5.00235663e-14],
-           [ 3.73489116e-13,  2.16776785e-13,  3.33848257e-13, ...,
-             2.07028031e-13,  1.03767936e-13,  1.68064564e-14],
-           [ 2.76250735e-11,  1.97808115e-12,  3.52652414e-13, ...,
-             7.90769979e-13,  8.63359490e-13,  1.87746919e-13]],
+           [-1.39095297e-13, -1.78030106e-14,  1.28119694e-13, ...,
+             7.96353706e-14,  7.50795315e-14,  2.23389308e-14],
+           [ 1.06932767e-13,  6.88730173e-14,  1.45901854e-13, ...,
+             6.58634441e-14,  4.41173317e-14,  7.13434698e-15],
+           [ 2.82946716e-11,  5.17602129e-12,  3.75685078e-13, ...,
+             1.91677845e-13,  8.15806583e-13,  2.66539467e-13]],
 
-          [[ 1.27973583e-13,  4.75236440e-15,  2.20435975e-16, ...,
-            -1.39368889e-15, -2.62973997e-16, -1.25243066e-17],
-           [ 1.68166388e-16,  1.33215569e-16,  8.06297728e-18, ...,
-            -4.52874964e-16, -6.81747060e-17,  1.92798796e-17],
-           [-7.06812863e-16, -2.80593636e-16, -2.66053757e-16, ...,
-            -1.98633399e-16,  7.11009621e-17,  9.18438788e-17],
+          [[-2.07989252e-16,  9.94117344e-18, -2.88392238e-18, ...,
+            -2.58386792e-16, -8.02625812e-17, -7.19305728e-18],
+           [-2.53827341e-17, -3.00886320e-18, -5.39615517e-18, ...,
+            -8.82373783e-17, -1.52461560e-17,  3.17663601e-18],
+           [-1.92995249e-16, -5.77212835e-17, -7.39772494e-17, ...,
+            -4.10726027e-17,  1.73442440e-17,  1.45555515e-17],
   ...
-            -8.95684190e-02, -7.87981247e-02, -1.27521722e-02],
-           [ 1.18435754e-02,  3.73071937e-02,  1.63803018e-01, ...,
-            -1.48849675e-01, -8.71328543e-02, -9.15778574e-03],
-           [ 2.37062010e-04,  9.33276367e-02,  2.96773133e-02, ...,
-            -8.55124980e-01, -3.44022767e-01, -2.78707368e-02]],
+            -1.04728387e-01, -5.05726538e-02, -4.48164867e-03],
+           [ 8.06572528e-03,  2.95240205e-02,  1.15520641e-01, ...,
+            -5.30822467e-02, -2.24241403e-02, -2.79517556e-03],
+           [ 6.93552997e-03,  5.55268592e-02,  4.78635518e-01, ...,
+            -4.21818557e-01, -1.02705291e-01, -9.09910487e-03]],
 
-          [[ 3.58926265e+03,  3.54828705e+02, -7.11790044e+02, ...,
-            -4.55190582e+02,  3.11113693e+01,  4.35591404e+02],
-           [ 2.90589397e+02,  6.08356030e+01, -1.16767126e+02, ...,
-            -8.04020207e+01,  3.06131038e+01,  1.39699509e+02],
-           [-9.80861042e+02,  1.04044142e+02,  7.55388846e+01, ...,
-            -9.44108988e+01,  1.94707010e+01,  4.90729111e+00],
+          [[ 4.56478913e+06,  2.49758061e+02, -1.09000835e+03, ...,
+            -7.59027307e+01, -3.63659801e+00,  1.11600327e+01],
+           [-1.35676481e+04, -1.29906084e+02, -7.92046134e+01, ...,
+            -5.30412013e+01, -4.51053501e+00,  1.29140874e+01],
+           [ 2.21460618e+02,  1.35715782e+02,  2.50160720e+01, ...,
+            -1.14755494e+02, -1.02736659e+01, -1.30198749e-01],
            ...,
-           [-1.79025336e+02,  1.31385331e+02,  2.73945401e+02, ...,
-            -7.64355145e+01, -6.72444068e+01, -1.08823942e+01],
-           [ 1.01070198e+01,  3.18370534e+01,  1.39785520e+02, ...,
-            -1.27024700e+02, -7.43570628e+01, -7.81503210e+00],
-           [ 2.02302964e-01,  7.96435398e+01,  2.53258988e+01, ...,
-            -7.29742899e+02, -2.93580675e+02, -2.37842096e+01]]]],
+           [-1.02016821e+01,  4.21732155e+01,  1.16652356e+02, ...,
+            -8.93726630e+01, -4.31574753e+01, -3.82453020e+00],
+           [ 6.88309423e+00,  2.51950824e+01,  9.85825112e+01, ...,
+            -4.52991009e+01, -1.91362170e+01, -2.38533500e+00],
+           [ 5.91861318e+00,  4.73852741e+01,  4.08455937e+02, ...,
+            -3.59969719e+02, -8.76462017e+01, -7.76495491e+00]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -923,7 +923,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa824f38b90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f349ad40e30>
     ```
 - [x] Attributes: (4)
 
@@ -941,7 +941,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, -1.1903405882410274e-20, -6.541083465249015e-21, 1.2462961252218086e-19\], \[1.1525016541509118e-20, 0.9984816653136261, -0.05508506179108768, -0.17708957996671354\], \[7.186851759894228e-21, 0.05508506179108768, 0.9984816653136261, 0.8544666816293937\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, -8.56493345977435e-21, 8.59601164488132e-21, 8.967553493031774e-20\], \[9.025440856831084e-21, 0.9984816653136261, -0.05508506179108739, -0.17708957996670588\], \[-8.1111601333682e-21, 0.05508506179108739, 0.9984816653136261, 0.854466681629407\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -954,7 +954,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8951
+Rigid + B-spline final metric: -0.8859
 ```
 
 ```python
@@ -1043,8 +1043,8 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 61.8 s
+**Total running time:** 55.1 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/examples/_built/registration/register_volume_same_subject.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject.ipynb>)
 
-[^/examples/_built/registration/register_volume_same_subject/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

@@ -12,7 +12,7 @@ The ConfUSIus dataset collection is hosted on Amazon S3, with hosting sponsored 
 
 ## Quick Start
 
-The fastest way to get started is to fetch a single subject from the Nunez-Elizalde 2022 dataset[^/user-guide/datasets/#nunez2022] and load one of its NIfTI files:
+The fastest way to get started is to fetch a single subject from the Nunez-Elizalde 2022 dataset[^/pr-preview/pr-513/user-guide/datasets/#nunez2022] and load one of its NIfTI files:
 
 ```pycon
 >>> import confusius as cf
@@ -120,7 +120,7 @@ confusius datasets --list
 
 ## Available fUSI-BIDS Datasets
 
-Simultaneous neural activity and cerebral blood volume recordings in awake mice, from Nunez-Elizalde et al. (2022)[^/user-guide/datasets/#nunez2022], converted to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~7 GB**.
+Simultaneous neural activity and cerebral blood volume recordings in awake mice, from Nunez-Elizalde et al. (2022)[^/pr-preview/pr-513/user-guide/datasets/#nunez2022], converted to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~7 GB**.
 
 Use `fetch_nunez_elizalde_2022` to download the dataset. Four filters narrow the download:
 
@@ -144,7 +144,7 @@ bids_root = fetch_nunez_elizalde_2022(
 )
 ```
 
-Functional ultrasound imaging data from a rat model of neuroinflammation, from Pereira et al. (2025)[^/user-guide/datasets/#pereira2025], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~30 GB**.
+Functional ultrasound imaging data from a rat model of neuroinflammation, from Pereira et al. (2025)[^/pr-preview/pr-513/user-guide/datasets/#pereira2025], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~30 GB**.
 
 Use `fetch_pereira_2025` to download the dataset. Three filters narrow the download:
 
@@ -164,7 +164,7 @@ bids_root = fetch_pereira_2025(
 )
 ```
 
-Functional ultrasound imaging data from freely-moving rats investigating vascular coding of speed in the spatial navigation system, from Cybis Pereira et al. (2026)[^/user-guide/datasets/#cybis2026], hosted in the S3 collection. Total size: **\~13 GB**.
+Functional ultrasound imaging data from freely-moving rats investigating vascular coding of speed in the spatial navigation system, from Cybis Pereira et al. (2026)[^/pr-preview/pr-513/user-guide/datasets/#cybis2026], hosted in the S3 collection. Total size: **\~13 GB**.
 
 Use `fetch_cybis_pereira_2026` to download the dataset. Four filters narrow the download:
 
@@ -205,7 +205,7 @@ bids_root = fetch_cybis_pereira_2026(
 )
 ```
 
-Transcranial mouse resting-state fUSI recordings and derivatives, from Pepe, Mariani et al. (2026)[^/user-guide/datasets/#pepe_mariani2026], re-exported to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~38 GB**.
+Transcranial mouse resting-state fUSI recordings and derivatives, from Pepe, Mariani et al. (2026)[^/pr-preview/pr-513/user-guide/datasets/#pepe_mariani2026], re-exported to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~38 GB**.
 
 Use `fetch_pepe_mariani_2026` to download the dataset. Five filters narrow the download:
 
@@ -226,7 +226,7 @@ from confusius.datasets import fetch_pepe_mariani_2026
 bids_root = fetch_pepe_mariani_2026(datasets="registered", datatypes="fusi")
 ```
 
-Functional ultrasound imaging recordings from awake, head-fixed, freely-running mice, from Landemard et al. (2026)[^/user-guide/datasets/#landemard2026], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~42 GB**.
+Functional ultrasound imaging recordings from awake, head-fixed, freely-running mice, from Landemard et al. (2026)[^/pr-preview/pr-513/user-guide/datasets/#landemard2026], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~42 GB**.
 
 Use `fetch_landemard_2026` to download the dataset. Four filters narrow the download:
 
@@ -262,7 +262,7 @@ bids_root = fetch_landemard_2026(
 )
 ```
 
-Functional ultrasound imaging data from naked mole-rats exposed to olfactory stimulation, from Khallaf et al. (2026)[^/user-guide/datasets/#khallaf2026], organised following BIDS and the proposed fUSI extension BEP-040. The original data is published on [Edmond (10.17617/3.7QCU1F)](<https://doi.org/10.17617/3.7QCU1F>); ConfUSIus downloads individual files from the S3 collection rather than the source archive.
+Functional ultrasound imaging data from naked mole-rats exposed to olfactory stimulation, from Khallaf et al. (2026)[^/pr-preview/pr-513/user-guide/datasets/#khallaf2026], organised following BIDS and the proposed fUSI extension BEP-040. The original data is published on [Edmond (10.17617/3.7QCU1F)](<https://doi.org/10.17617/3.7QCU1F>); ConfUSIus downloads individual files from the S3 collection rather than the source archive.
 
 Use `fetch_khallaf_2026` to download the dataset. Six filters narrow the download:
 
@@ -315,7 +315,7 @@ for nii in sorted((bids_root / "sub-CR020").rglob("*_pwd.nii.gz")):
     print(nii.relative_to(bids_root))
 ```
 
-See the [I/O guide](<https://confusius.tools/user-guide/io/index.md>) for loading NIfTI, Zarr, and Iconeus SCAN files into VoxelData arrays.
+See the [I/O guide](<https://confusius.tools/pr-preview/pr-513/user-guide/io/index.md>) for loading NIfTI, Zarr, and Iconeus SCAN files into VoxelData arrays.
 
 ### Selecting a New Release
 
@@ -332,7 +332,7 @@ Versions are immutable and use separate cache directories. Refreshing an unchang
 
 ## Available Templates
 
-A vascular mouse fUSI template derived from Huang et al. (2025)[^/user-guide/datasets/#huang2025] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~16.3 MB**.
+A vascular mouse fUSI template derived from Huang et al. (2025)[^/pr-preview/pr-513/user-guide/datasets/#huang2025] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~16.3 MB**.
 
 Use `fetch_template_huang_2025` to download and load the template directly. The Huang 2025 template is already resampled to the Allen space:
 
@@ -343,7 +343,7 @@ template = fetch_template_huang_2025()
 atlas = fetch_brainglobe_atlas("allen_mouse_50um")
 ```
 
-A mouse fUSI template derived from Pepe, Mariani et al. (2026)[^/user-guide/datasets/#pepe_mariani2026] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~5.5 MB**.
+A mouse fUSI template derived from Pepe, Mariani et al. (2026)[^/pr-preview/pr-513/user-guide/datasets/#pepe_mariani2026] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~5.5 MB**.
 
 Use `fetch_template_pepe_mariani_2026` to download and load the template directly. Its native voxel grid and scanner-space `qform` are retained for registration. The `sform` encodes the full Allen atlas alignment, including shear. Use `world_to_sform` to resample the atlas onto the template's native grid:
 
@@ -375,16 +375,16 @@ Unlike the fUSI-BIDS datasets above, BrainGlobe atlases are cached in BrainGlobe
 
 See the `confusius.datasets` API reference for the full list of parameters and return types.
 
-[^/user-guide/datasets/#nunez2022]: Nunez-Elizalde, A.O. et al. (2022). Neural correlates of blood flow measured by ultrasound. *Neuron*, 110(10), 1631–1640. [https://doi.org/10.1016/j.neuron.2022.02.012](<https://doi.org/10.1016/j.neuron.2022.02.012>)
+[^/pr-preview/pr-513/user-guide/datasets/#nunez2022]: Nunez-Elizalde, A.O. et al. (2022). Neural correlates of blood flow measured by ultrasound. *Neuron*, 110(10), 1631–1640. [https://doi.org/10.1016/j.neuron.2022.02.012](<https://doi.org/10.1016/j.neuron.2022.02.012>)
 
-[^/user-guide/datasets/#cybis2026]: Cybis Pereira, F. et al. (2026). A vascular code for speed in the spatial navigation system. *Cell Reports*, 45(1). [https://doi.org/10.1016/j.celrep.2025.116791](<https://doi.org/10.1016/j.celrep.2025.116791>)
+[^/pr-preview/pr-513/user-guide/datasets/#cybis2026]: Cybis Pereira, F. et al. (2026). A vascular code for speed in the spatial navigation system. *Cell Reports*, 45(1). [https://doi.org/10.1016/j.celrep.2025.116791](<https://doi.org/10.1016/j.celrep.2025.116791>)
 
-[^/user-guide/datasets/#landemard2026]: Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. (2026). Brainwide blood volume reflects opposing neural populations. *Nature*. [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>)
+[^/pr-preview/pr-513/user-guide/datasets/#landemard2026]: Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. (2026). Brainwide blood volume reflects opposing neural populations. *Nature*. [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>)
 
-[^/user-guide/datasets/#pereira2025]: Pereira, M. et al. (2025). Induction of haemodynamic travelling waves by glial-related vasomotion in a rat model of neuroinflammation: Implications for functional neuroimaging. *eBioMedicine*, 116, 105777. [https://doi.org/10.1016/j.ebiom.2025.105777](<https://doi.org/10.1016/j.ebiom.2025.105777>)
+[^/pr-preview/pr-513/user-guide/datasets/#pereira2025]: Pereira, M. et al. (2025). Induction of haemodynamic travelling waves by glial-related vasomotion in a rat model of neuroinflammation: Implications for functional neuroimaging. *eBioMedicine*, 116, 105777. [https://doi.org/10.1016/j.ebiom.2025.105777](<https://doi.org/10.1016/j.ebiom.2025.105777>)
 
-[^/user-guide/datasets/#khallaf2026]: Khallaf, M. A. et al. (2026). A queen odour mediates reproductive suppression in a eusocial mammal. *Nature*. [https://doi.org/10.1038/s41586-026-10772-5](<https://doi.org/10.1038/s41586-026-10772-5>)
+[^/pr-preview/pr-513/user-guide/datasets/#khallaf2026]: Khallaf, M. A. et al. (2026). A queen odour mediates reproductive suppression in a eusocial mammal. *Nature*. [https://doi.org/10.1038/s41586-026-10772-5](<https://doi.org/10.1038/s41586-026-10772-5>)
 
-[^/user-guide/datasets/#huang2025]: Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. [https://doi.org/10.1101/2025.09.16.676515](<https://doi.org/10.1101/2025.09.16.676515>)
+[^/pr-preview/pr-513/user-guide/datasets/#huang2025]: Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. [https://doi.org/10.1101/2025.09.16.676515](<https://doi.org/10.1101/2025.09.16.676515>)
 
-[^/user-guide/datasets/#pepe_mariani2026]: Pepe, C. et al. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). [https://doi.org/10.64898/2026.02.05.704055](<https://doi.org/10.64898/2026.02.05.704055>)
+[^/pr-preview/pr-513/user-guide/datasets/#pepe_mariani2026]: Pepe, C. et al. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). [https://doi.org/10.64898/2026.02.05.704055](<https://doi.org/10.64898/2026.02.05.704055>)

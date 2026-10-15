@@ -1,6 +1,6 @@
 # Lagged first-level GLM analysis of fUSI data with a continuous regressor
 
-This example reproduces the lagged-GLM analysis reported by [Cybis Pereira *et al.* 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/examples/_built/glm/first_level_continuous/#collection], which uses functional ultrasound imaging of a freely moving rat exploring an open field with its body position tracked from video. Unlike the block-design task in the [First-level GLM analysis of fUSI data](<https://confusius.tools/examples/_built/glm/first_level/index.md>) example, the regressor of interest is a *continuous* variable measured throughout the recording, the animal's locomotion speed, and we ask at every voxel how much of the power Doppler time course tracks it at different lags.
+This example reproduces the lagged-GLM analysis reported by [Cybis Pereira *et al.* 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-513/examples/_built/glm/first_level_continuous/#collection], which uses functional ultrasound imaging of a freely moving rat exploring an open field with its body position tracked from video. Unlike the block-design task in the [First-level GLM analysis of fUSI data](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level/index.md>) example, the regressor of interest is a *continuous* variable measured throughout the recording, the animal's locomotion speed, and we ask at every voxel how much of the power Doppler time course tracks it at different lags.
 
 Rather than convolving the speed regressor with a hemodynamic response function, the analysis shifts it across a range of temporal lags and fits one model per lag, much like a voxel-wise cross-correlation between speed and the vascular signal. The notebook goes through:
 
@@ -360,7 +360,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f91d3c0a0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0cd3fb60d0>
     ```
 - [ ] Attributes: (21)
 
@@ -456,7 +456,7 @@ The rat moves freely, so a real analysis should first correct volume-to-volume b
 >
 > **Recommended in a real analysis**
 >
-> Register every volume to a reference frame with `register_volumewise` before building the regressors, then continue with the corrected `data`. Removing motion-driven variance sharpens the speed maps and their statistics. See the [Motion correction of a single recording](<https://confusius.tools/examples/_built/registration/volumewise_motion_correction/index.md>) example for the full workflow and diagnostics.
+> Register every volume to a reference frame with `register_volumewise` before building the regressors, then continue with the corrected `data`. Removing motion-driven variance sharpens the speed maps and their statistics. See the [Motion correction of a single recording](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/volumewise_motion_correction/index.md>) example for the full workflow and diagnostics.
 >
 > ```python
 > data = cf.registration.register_volumewise(data, learning_rate=1)
@@ -597,8 +597,8 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 20.9 s
+**Total running time:** 24.8 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/examples/_built/glm/first_level_continuous.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level_continuous.ipynb>)
 
-[^/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

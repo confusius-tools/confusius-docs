@@ -13,4 +13,4 @@
 > - `resample_time`: Resample fUSI time series to new time coordinates.
 > - `resample_to_uniform_time`: Resample fUSI time series onto a uniform time grid, fixing jitter, dropped frames, or non-uniform sampling.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/timing/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/timing/index.md>) for more information.

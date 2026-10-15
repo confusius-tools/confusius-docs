@@ -1,6 +1,6 @@
 # API Reference
 
-Complete reference documentation for the ConfUSIus API. Please refer to the [user guide](<https://confusius.tools/user-guide/getting-started>) for more detailed explanations and usage examples.
+Complete reference documentation for the ConfUSIus API. Please refer to the [user guide](<https://confusius.tools/pr-preview/pr-513/user-guide/getting-started>) for more detailed explanations and usage examples.
 
 ## Core Modules
 

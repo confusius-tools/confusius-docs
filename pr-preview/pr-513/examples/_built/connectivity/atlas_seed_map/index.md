@@ -2,7 +2,7 @@
 
 This example computes voxel-wise seed-based functional connectivity maps: register a single-slice fUSI recording to an Allen-space template, bring an Allen Mouse Brain Atlas into the recording's native space, pick four atlas regions of interest as seeds, and correlate each seed's signal against every voxel with `SeedBasedMaps`. Each resulting map is displayed with `plot_stat_map`, using the resampled Allen template volume as background.
 
-We use an awake freely-running acquisition from subject `CR022`, session `20201007`, in the Nunez-Elizalde 2022 dataset[^/examples/_built/connectivity/atlas_seed_map/#collection], and the Pepe, Mariani 2026 fUSI template, which carries the affine transform required to bring it into Allen Common Coordinate Framework (CCF) space. For the full registration workflow, see [Register a recording to an Allen fUSI template](<https://confusius.tools/examples/_built/registration/register_to_allen_fusi_template/index.md>).
+We use an awake freely-running acquisition from subject `CR022`, session `20201007`, in the Nunez-Elizalde 2022 dataset[^/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map/#collection], and the Pepe, Mariani 2026 fUSI template, which carries the affine transform required to bring it into Allen Common Coordinate Framework (CCF) space. For the full registration workflow, see [Register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_to_allen_fusi_template/index.md>).
 
 ## Fetch the recording and register to the Allen atlas
 
@@ -61,7 +61,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_52418/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_52797/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -71,7 +71,7 @@ We don't describe the registration process here to keep the notebook focused on 
 - Use `register_volume` to refine the alignment.
 - Resample the Allen atlas into the recording's native space with `resample_like`.
 
-For the full walkthrough, see [Register a recording to an Allen fUSI template](<https://confusius.tools/examples/_built/registration/register_to_allen_fusi_template/index.md>).
+For the full walkthrough, see [Register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_to_allen_fusi_template/index.md>).
 
 > [!NOTE]
 >
@@ -329,7 +329,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4573590170>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1772f000b0>
     ```
   - region
 
@@ -452,7 +452,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f4573610830\>
+  \<matplotlib.colors.Normalize object at 0x7f1772fb8830\>
 
 ## Plot the seed maps
 
@@ -492,8 +492,8 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 14.2 s
+**Total running time:** 16.1 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/examples/_built/connectivity/atlas_seed_map.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
-[^/examples/_built/connectivity/atlas_seed_map/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

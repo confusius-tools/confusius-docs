@@ -14,7 +14,7 @@ ConfUSIus provides three QC metrics, divided into two categories:
 >
 > **Example dataset setup (Nunez-Elizalde *et al.*, 2022)**
 >
-> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/user-guide/quality-control/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler and Allen atlas segmentation for one acquisition. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
+> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/pr-preview/pr-513/user-guide/quality-control/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler and Allen atlas segmentation for one acquisition. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
 >
 > ```python
 > import confusius as cf
@@ -44,9 +44,9 @@ ConfUSIus provides three QC metrics, divided into two categories:
 
 ## DVARS
 
-DVARS (temporal **D**erivative of **VAR**iance**S**) measures how much the signal intensity changes between consecutive time points, averaged across all brain voxels[^/user-guide/quality-control/#power2012]. A spike in DVARS typically indicates a motion event, a scanner artifact, or another transient disturbance that corrupted one or more volumes.
+DVARS (temporal **D**erivative of **VAR**iance**S**) measures how much the signal intensity changes between consecutive time points, averaged across all brain voxels[^/pr-preview/pr-513/user-guide/quality-control/#power2012]. A spike in DVARS typically indicates a motion event, a scanner artifact, or another transient disturbance that corrupted one or more volumes.
 
-By default, ConfUSIus computes the **standardized** DVARS[^/user-guide/quality-control/#nichols2017], which accounts for the temporal autocorrelation structure of the data and is therefore more comparable across acquisitions. Standardized DVARS is approximately 1 for a stationary recording; values significantly above 1 indicate outlier volumes.
+By default, ConfUSIus computes the **standardized** DVARS[^/pr-preview/pr-513/user-guide/quality-control/#nichols2017], which accounts for the temporal autocorrelation structure of the data and is therefore more comparable across acquisitions. Standardized DVARS is approximately 1 for a stationary recording; values significantly above 1 indicate outlier volumes.
 
 ### Usage
 
@@ -91,7 +91,7 @@ ax.legend()
 print(f"{flagged.sum().item()} outlier frames detected out of {len(dvars)} total.")
 ```
 
-Simply dropping flagged frames introduces discontinuities in the time series and can bias downstream connectivity estimates. The recommended approach is to pass the outlier mask to the scrubbing step in the signal cleaning pipeline—see [Signal Processing](<https://confusius.tools/user-guide/signal/index.md>) for details.
+Simply dropping flagged frames introduces discontinuities in the time series and can bias downstream connectivity estimates. The recommended approach is to pass the outlier mask to the scrubbing step in the signal cleaning pipeline—see [Signal Processing](<https://confusius.tools/pr-preview/pr-513/user-guide/signal/index.md>) for details.
 
 ## Carpet Plot
 
@@ -151,9 +151,9 @@ plotter = cv.fusi.plot.volume(slice_mode="z", vmin=0, vmax=1)
 >
 > The temporal signal-to-noise ratio is well-established in fMRI, where higher tSNR reliably indicates a better signal. **This interpretation does not hold for fUSI power Doppler data.**
 >
-> Power Doppler signals are non-negative and scale with cerebral blood volume. As a consequence, the temporal mean and temporal standard deviation are intrinsically positively correlated across voxels: regions with more blood have both a higher mean *and* a higher standard deviation. The ratio mean/std is therefore roughly constant across the vasculature. Paradoxically, regions with **very low vascular signal**—noise regions, gel layers, shadow zones behind the skull—can exhibit disproportionately high tSNR, because their mean remains relatively large compared to their near-zero temporal standard deviation. This behavior is the opposite of what a signal-quality metric should indicate[^/user-guide/quality-control/#lemeurdiebolt2025].
+> Power Doppler signals are non-negative and scale with cerebral blood volume. As a consequence, the temporal mean and temporal standard deviation are intrinsically positively correlated across voxels: regions with more blood have both a higher mean *and* a higher standard deviation. The ratio mean/std is therefore roughly constant across the vasculature. Paradoxically, regions with **very low vascular signal**—noise regions, gel layers, shadow zones behind the skull—can exhibit disproportionately high tSNR, because their mean remains relatively large compared to their near-zero temporal standard deviation. This behavior is the opposite of what a signal-quality metric should indicate[^/pr-preview/pr-513/user-guide/quality-control/#lemeurdiebolt2025].
 >
-> **Recommendation:** use [CV](<https://confusius.tools/user-guide/quality-control/#coefficient-of-variation>) and average power Doppler images instead of tSNR for assessing spatial signal quality in fUSI data. CV is the mathematical inverse of tSNR but correctly highlights regions with high temporal variability, regardless of their absolute signal level.
+> **Recommendation:** use [CV](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/#coefficient-of-variation>) and average power Doppler images instead of tSNR for assessing spatial signal quality in fUSI data. CV is the mathematical inverse of tSNR but correctly highlights regions with high temporal variability, regardless of their absolute signal level.
 
 The tSNR function is provided for completeness and for compatibility with workflows that report it:
 
@@ -171,17 +171,17 @@ Comparing tSNR to the mean power Doppler image makes the paradox concrete: low-s
 
 After quality control, you're ready to move on to:
 
-1. **[Registration](<https://confusius.tools/user-guide/registration/index.md>)**: Correct for motion and align acquisitions to an anatomical template.
-2. **[Signal Processing](<https://confusius.tools/user-guide/signal/index.md>)**: Extract regional signals and apply denoising.
+1. **[Registration](<https://confusius.tools/pr-preview/pr-513/user-guide/registration/index.md>)**: Correct for motion and align acquisitions to an anatomical template.
+2. **[Signal Processing](<https://confusius.tools/pr-preview/pr-513/user-guide/signal/index.md>)**: Extract regional signals and apply denoising.
 
 ## API Reference
 
-For full parameter documentation, see the [QC API reference](<https://confusius.tools/api/qc/index.md>).
+For full parameter documentation, see the [QC API reference](<https://confusius.tools/pr-preview/pr-513/api/qc/index.md>).
 
-[^/user-guide/quality-control/#power2012]: Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
+[^/pr-preview/pr-513/user-guide/quality-control/#power2012]: Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
 
-[^/user-guide/quality-control/#nichols2017]: Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
+[^/pr-preview/pr-513/user-guide/quality-control/#nichols2017]: Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
 
-[^/user-guide/quality-control/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
+[^/pr-preview/pr-513/user-guide/quality-control/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
 
-[^/user-guide/quality-control/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+[^/pr-preview/pr-513/user-guide/quality-control/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).

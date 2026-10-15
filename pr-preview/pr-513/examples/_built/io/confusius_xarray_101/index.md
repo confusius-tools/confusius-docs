@@ -1,6 +1,6 @@
 # ConfUSIus and Xarray 101
 
-This example demonstrates how to use ConfUSIus to load and handle fUSI data as DataArray instances. We will use a small subset of the Nunez-Elizalde 2022 dataset[^/examples/_built/io/confusius_xarray_101/#collection] and use a few basic Xarray operations to inspect, subset, and summarize the data.
+This example demonstrates how to use ConfUSIus to load and handle fUSI data as DataArray instances. We will use a small subset of the Nunez-Elizalde 2022 dataset[^/pr-preview/pr-513/examples/_built/io/confusius_xarray_101/#collection] and use a few basic Xarray operations to inspect, subset, and summarize the data.
 
 ## Fetch one recording from the Nunez-Elizalde 2022 dataset
 
@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8e5433e3c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc94c06e3c0>
     ```
 - [ ] Attributes: (25)
 
@@ -364,7 +364,7 @@ xarray.DataArray
 
   {'world\_to\_sform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\]), 'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\])}
 
-ConfUSIus also registers a `.fusi` accessor on every DataArray, which exposes fUSI-specific helpers and methods. For example, we can inspect the sampling step along each dimension. Note that for this recording, the temporal step isn't defined because the time coordinate isn't regularly sampled. See the [Working with Xarray](<https://confusius.tools/user-guide/xarray/index.md>) guide for a broader overview of the accessor.
+ConfUSIus also registers a `.fusi` accessor on every DataArray, which exposes fUSI-specific helpers and methods. For example, we can inspect the sampling step along each dimension. Note that for this recording, the temporal step isn't defined because the time coordinate isn't regularly sampled. See the [Working with Xarray](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/index.md>) guide for a broader overview of the accessor.
 
 ```python
 data.fusi.spacing
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8e8c515950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc97830d950>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8e532d16d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc94affd6d0>
     ```
 - [ ] Attributes: (25)
 
@@ -1393,8 +1393,8 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.6 s
+**Total running time:** 9.8 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/examples/_built/io/confusius_xarray_101.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/confusius_xarray_101.ipynb>)
 
-[^/examples/_built/io/confusius_xarray_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+[^/pr-preview/pr-513/examples/_built/io/confusius_xarray_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

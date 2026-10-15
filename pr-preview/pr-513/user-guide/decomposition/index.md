@@ -10,4 +10,4 @@
 > - `NMF`: Non-negative matrix factorization for `(time, ...)` `xarray.DataArray` inputs while preserving metadata through `transform` and `inverse_transform`.
 > - `FastICA`: Fast independent component analysis for `(time, ...)` `xarray.DataArray` inputs while preserving metadata through `transform` and `inverse_transform`.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/decomposition/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/decomposition/index.md>) for more information.

@@ -338,7 +338,7 @@ model_copy(
 >
 > **Usage Documentation**
 >
-> [`model_copy`](<https://confusius.tools/concepts/models/#model-copy>)
+> [`model_copy`](<https://confusius.tools/pr-preview/concepts/models/#model-copy>)
 
 Returns a copy of the model.
 
@@ -377,7 +377,7 @@ model_dump(
 >
 > **Usage Documentation**
 >
-> [`model_dump`](<https://confusius.tools/concepts/serialization/#python-mode>)
+> [`model_dump`](<https://confusius.tools/pr-preview/concepts/serialization/#python-mode>)
 
 Generate a dictionary representation of the model, optionally specifying which fields to include or exclude.
 
@@ -413,7 +413,7 @@ model_dump_json(
 >
 > **Usage Documentation**
 >
-> [`model_dump_json`](<https://confusius.tools/concepts/serialization/#json-mode>)
+> [`model_dump_json`](<https://confusius.tools/pr-preview/concepts/serialization/#json-mode>)
 
 Generates a JSON representation of the model using Pydantic's `to_json` method.
 
@@ -555,7 +555,7 @@ model_validate_json(
 >
 > **Usage Documentation**
 >
-> [JSON Parsing](<https://confusius.tools/concepts/json/#json-parsing>)
+> [JSON Parsing](<https://confusius.tools/pr-preview/concepts/json/#json-parsing>)
 
 Validate the given JSON data against the Pydantic model.
 

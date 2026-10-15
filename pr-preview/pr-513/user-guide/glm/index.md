@@ -30,4 +30,4 @@
 > - `verhoef2025_hrf`: Human fUSI HRF preset (Verhoef et al., 2025).
 > - `claron2021_hrf`: Rodent spinal cord fUSI HRF preset (Claron et al., 2021).
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/glm/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/glm/index.md>) for more information.

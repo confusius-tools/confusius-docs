@@ -1,8 +1,8 @@
 # The ConfUSIus Dataset Collection
 
-ConfUSIus provides access to public fUSI datasets and brain templates from several studies. The [datasets user guide](<https://confusius.tools/user-guide/datasets/index.md>) describes the available data, fetchers, and source publications; the [collection repository](<https://github.com/confusius-tools/confusius-datasets>) documents preparation recipes, provenance, and per-source licenses.
+ConfUSIus provides access to public fUSI datasets and brain templates from several studies. The [datasets user guide](<https://confusius.tools/pr-preview/pr-513/user-guide/datasets/index.md>) describes the available data, fetchers, and source publications; the [collection repository](<https://github.com/confusius-tools/confusius-datasets>) documents preparation recipes, provenance, and per-source licenses.
 
-This example introduces the collection's organization and access conventions. The other [gallery examples](<https://confusius.tools/examples/index.md>) demonstrate how to use these data for registration, decomposition, connectivity, and statistical analysis.
+This example introduces the collection's organization and access conventions. The other [gallery examples](<https://confusius.tools/pr-preview/pr-513/examples/index.md>) demonstrate how to use these data for registration, decomposition, connectivity, and statistical analysis.
 
 ## Browse the collection
 
@@ -45,15 +45,15 @@ cf.datasets.list_datasets()
 
 Datasets follow fUSI-BIDS, the functional ultrasound extension of [BIDS](<https://bids.neuroimaging.io/>); see the [current specification draft](<https://docs.google.com/document/d/1W3z01mf1E8cfg_OY7ZGqeUeOKv659jCHQBXavtmT-T8/edit?usp=sharing>). Images are stored as [NIfTI](<https://nifti.nimh.nih.gov/>) files with acquisition, processing, and timing metadata in JSON sidecars. `confusius.load` loads both automatically, merging matching sidecars according to the BIDS inheritance principle: more specific metadata overrides less specific metadata.
 
-Templates are reference NIfTI volumes for spatial alignment; their fetchers return VoxelData arrays directly. The [gallery](<https://confusius.tools/examples/index.md>) shows how to use collection datasets and templates in analysis workflows.
+Templates are reference NIfTI volumes for spatial alignment; their fetchers return VoxelData arrays directly. The [gallery](<https://confusius.tools/pr-preview/pr-513/examples/index.md>) shows how to use collection datasets and templates in analysis workflows.
 
-Each dataset and template retains its own license. Fetchers print source citations by default (`print_citation=False` disables this); citations and per-source licenses are also listed on the [citing page](<https://confusius.tools/citing/index.md>).
+Each dataset and template retains its own license. Fetchers print source citations by default (`print_citation=False` disables this); citations and per-source licenses are also listed on the [citing page](<https://confusius.tools/pr-preview/pr-513/citing/index.md>).
 
 ## A small structural preview
 
 As a quick view of the collection, fetch one structural ultrasound image from [Cybis Pereira et al. (2026)](<https://doi.org/10.1016/j.celrep.2025.116791>). Dataset fetchers accept study-specific filters such as subject, session, acquisition, and datatype. Matching JSON sidecars and supporting BIDS metadata are included, and downloaded files are verified against the release manifest.
 
-For a fuller introduction to downloading, loading, and manipulating recordings, see [ConfUSIus and Xarray 101](<https://confusius.tools/examples/_built/io/confusius_xarray_101/index.md>).
+For a fuller introduction to downloading, loading, and manipulating recordings, see [ConfUSIus and Xarray 101](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/confusius_xarray_101/index.md>).
 
 ```python
 bids_root = Path(
@@ -91,7 +91,7 @@ Release: 1.0.0
 Voxel dimensions: {'k': 1, 'j': 112, 'i': 128}
 ```
 
-This is a static anatomical reference, with vessels that can serve as alignment landmarks. Display it in the source's metric `qform` space, as in [two-session registration](<https://confusius.tools/examples/_built/registration/register_volume_same_subject/index.md>).
+This is a static anatomical reference, with vessels that can serve as alignment landmarks. Display it in the source's metric `qform` space, as in [two-session registration](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_volume_same_subject/index.md>).
 
 ```python
 image_qform = image.fusi.affine.apply(image.attrs["affines"]["world_to_qform"])
@@ -106,15 +106,15 @@ plotter = image_qform.fusi.scale.db().fusi.plot.volume(
 
 The worked analysis examples show how to answer scientific questions with these recordings, including the preprocessing, models, and visualizations:
 
-- [Lagged GLM](<https://confusius.tools/examples/_built/glm/first_level_continuous/index.md>): how does vascular activity relate to locomotion speed? Reproduce the Cybis Pereira analysis with a continuous behavioral regressor at different temporal lags.
-- [PCA](<https://confusius.tools/examples/_built/decomposition/pca_single_recording/index.md>): which spatial patterns explain the dominant variance in a recording? Extract component maps and time courses.
-- [Task GLM](<https://confusius.tools/examples/_built/glm/first_level/index.md>): which regions respond to olfactory stimulation in the Khallaf recordings? Fit and visualize a stimulus contrast.
-- [Regional connectivity](<https://confusius.tools/examples/_built/connectivity/atlas_correlation_matrix/index.md>): how do atlas-defined regional signals covary in the Nunez-Elizalde recordings?
+- [Lagged GLM](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level_continuous/index.md>): how does vascular activity relate to locomotion speed? Reproduce the Cybis Pereira analysis with a continuous behavioral regressor at different temporal lags.
+- [PCA](<https://confusius.tools/pr-preview/pr-513/examples/_built/decomposition/pca_single_recording/index.md>): which spatial patterns explain the dominant variance in a recording? Extract component maps and time courses.
+- [Task GLM](<https://confusius.tools/pr-preview/pr-513/examples/_built/glm/first_level/index.md>): which regions respond to olfactory stimulation in the Khallaf recordings? Fit and visualize a stimulus contrast.
+- [Regional connectivity](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_correlation_matrix/index.md>): how do atlas-defined regional signals covary in the Nunez-Elizalde recordings?
 
-Beyond these examples, the ConfUSIus dataset collection can support further analyses and cross-study meta-analyses, taking each study's acquisition and processing differences into account. See the [citing page](<https://confusius.tools/citing/index.md>) for source references and licenses.
+Beyond these examples, the ConfUSIus dataset collection can support further analyses and cross-study meta-analyses, taking each study's acquisition and processing differences into account. See the [citing page](<https://confusius.tools/pr-preview/pr-513/citing/index.md>) for source references and licenses.
 
 ---
 
-**Total running time:** 5.3 s
+**Total running time:** 5.7 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/examples/_built/io/dataset_collection.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-llms-txt?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-513/examples/_built/io/dataset_collection.ipynb>)

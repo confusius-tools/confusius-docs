@@ -4,7 +4,7 @@ Welcome to ConfUSIus! This guide introduces the package and helps you understand
 
 ## What is fUSI?
 
-Functional ultrasound imaging (fUSI) is a neuroimaging technique that measures brain activity by detecting changes in cerebral blood volume[^/user-guide/getting-started/#mace2011] [^/user-guide/getting-started/#deffieux2021] [^/user-guide/getting-started/#montaldo2022]. fUSI offers:
+Functional ultrasound imaging (fUSI) is a neuroimaging technique that measures brain activity by detecting changes in cerebral blood volume[^/pr-preview/pr-513/user-guide/getting-started/#mace2011] [^/pr-preview/pr-513/user-guide/getting-started/#deffieux2021] [^/pr-preview/pr-513/user-guide/getting-started/#montaldo2022]. fUSI offers:
 
 - **High spatiotemporal resolution**: Sub-millimeter spatial resolution (\~100 μm in-plane and \~500 μm out-of-plane with 15 MHz linear probes) with temporal resolution on the order of 0.5–10 Hz, depending on the acquisition protocol.
 - **Wide field of view**: Ability to image large cortical and subcortical regions simultaneously.
@@ -23,7 +23,7 @@ ConfUSIus is a Python package for handling, processing, and analyzing functional
 >
 > **Prefer not to script?**
 >
-> The [ConfUSIus napari plugin](<https://confusius.tools/gui/overview/index.md>) is a good starting point if you want to explore a dataset before writing any analysis code. It covers data loading and exploration, time series inspection, and quality control—all without scripting.
+> The [ConfUSIus napari plugin](<https://confusius.tools/pr-preview/pr-513/gui/overview/index.md>) is a good starting point if you want to explore a dataset before writing any analysis code. It covers data loading and exploration, time series inspection, and quality control—all without scripting.
 
 ## Key Features
 
@@ -142,7 +142,7 @@ ConfUSIus supports the complete fUSI analysis pipeline, from raw data acquisitio
 ConfUSIus is designed for anyone working with fUSI data:
 
 - **Comprehensive fUSI toolkit**: ConfUSIus covers the entire analysis pipeline in a single, actively maintained open-source package—from IQ processing and quality control to atlas integration, signal extraction, and connectivity analysis.
-- **Accessible at every skill level**: Non-programmers can use the [napari plugin](<https://confusius.tools/gui/overview/index.md>) for interactive data loading, time series inspection, and quality control. Python users can build fully custom pipelines using the scripting API.
+- **Accessible at every skill level**: Non-programmers can use the [napari plugin](<https://confusius.tools/pr-preview/pr-513/gui/overview/index.md>) for interactive data loading, time series inspection, and quality control. Python users can build fully custom pipelines using the scripting API.
 - **Python ecosystem integration**: Works seamlessly with NumPy, Xarray, Dask, Nilearn, scikit-learn, and other scientific Python libraries.
 - **Standardized workflows**: Follow fUSI-BIDS conventions for reproducible, shareable research.
 - **Scalable to large datasets**: Process large beamformed IQ datasets out-of-core using Dask and Zarr without running out of memory.
@@ -155,17 +155,17 @@ ConfUSIus is built on several key technologies:
 - **[Zarr](<https://zarr.readthedocs.io/>)**: Chunked, compressed array storage for large datasets.
 - **[Dask](<https://www.dask.org/>)**: Parallel computing and out-of-core processing.
 
-If you're new to these tools, check out the [Working with Xarray](<https://confusius.tools/user-guide/xarray/index.md>) section to get familiar with the core concepts. You may also want to review the [Input/Output Guide](<https://confusius.tools/user-guide/io/index.md>) to understand how ConfUSIus handles data formats.
+If you're new to these tools, check out the [Working with Xarray](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/index.md>) section to get familiar with the core concepts. You may also want to review the [Input/Output Guide](<https://confusius.tools/pr-preview/pr-513/user-guide/io/index.md>) to understand how ConfUSIus handles data formats.
 
 ## Next Steps
 
 Ready to get started?
 
-1. **[Install ConfUSIus](<https://confusius.tools/user-guide/installation/index.md>)**: Set up your environment and install the package.
-2. **[I/O Guide](<https://confusius.tools/user-guide/io/index.md>)**: Learn how to load and convert your fUSI data.
-3. **[Graphical Interface](<https://confusius.tools/gui/overview/index.md>)**: Explore your data interactively with the napari plugin—no scripting required.
-4. **[Examples](<https://confusius.tools/examples/index.md>)**: See complete workflows for common tasks.
-5. **[API Reference](<https://confusius.tools/api/index.md>)**: Explore detailed function documentation.
+1. **[Install ConfUSIus](<https://confusius.tools/pr-preview/pr-513/user-guide/installation/index.md>)**: Set up your environment and install the package.
+2. **[I/O Guide](<https://confusius.tools/pr-preview/pr-513/user-guide/io/index.md>)**: Learn how to load and convert your fUSI data.
+3. **[Graphical Interface](<https://confusius.tools/pr-preview/pr-513/gui/overview/index.md>)**: Explore your data interactively with the napari plugin—no scripting required.
+4. **[Examples](<https://confusius.tools/pr-preview/pr-513/examples/index.md>)**: See complete workflows for common tasks.
+5. **[API Reference](<https://confusius.tools/pr-preview/pr-513/api/index.md>)**: Explore detailed function documentation.
 
 Still have questions? Check the [GitHub issues](<https://github.com/confusius-tools/confusius/issues>) or open a new one! You can also join the [fUSI community Discord](<https://discord.gg/mZd87tgmy2>) to ask questions and connect with other researchers using fUSI.
 
@@ -196,8 +196,8 @@ While ConfUSIus offers many features to handle fUSI data, it obviously does not 
 - [Matplotlib](<https://matplotlib.org/stable/>): The obvious choice for creating static figures in Python.
 - [PyVista](<https://pyvista.org/>): While ConfUSIus uses napari for 3D rendering, PyVista also offers a simple API to make custom 3D visualizations.
 
-[^/user-guide/getting-started/#mace2011]: Macé, Emilie, et al. “Functional Ultrasound Imaging of the Brain.” Nature Methods, vol. 8, no. 8, Aug. 2011, pp. 662–64. DOI.org (Crossref), [https://doi.org/10.1038/nmeth.1641](<https://doi.org/10.1038/nmeth.1641>).
+[^/pr-preview/pr-513/user-guide/getting-started/#mace2011]: Macé, Emilie, et al. “Functional Ultrasound Imaging of the Brain.” Nature Methods, vol. 8, no. 8, Aug. 2011, pp. 662–64. DOI.org (Crossref), [https://doi.org/10.1038/nmeth.1641](<https://doi.org/10.1038/nmeth.1641>).
 
-[^/user-guide/getting-started/#deffieux2021]: Deffieux, Thomas, et al. “Functional Ultrasound Imaging: A New Imaging Modality for Neuroscience.” Neuroscience, vol. 474, Oct. 2021, pp. 110–21. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroscience.2021.03.005](<https://doi.org/10.1016/j.neuroscience.2021.03.005>).
+[^/pr-preview/pr-513/user-guide/getting-started/#deffieux2021]: Deffieux, Thomas, et al. “Functional Ultrasound Imaging: A New Imaging Modality for Neuroscience.” Neuroscience, vol. 474, Oct. 2021, pp. 110–21. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroscience.2021.03.005](<https://doi.org/10.1016/j.neuroscience.2021.03.005>).
 
-[^/user-guide/getting-started/#montaldo2022]: Montaldo, Gabriel, et al. “Functional Ultrasound Neuroimaging.” Annual Review of Neuroscience, vol. 45, no. 1, July 2022, pp. 491–513. DOI.org (Crossref), [https://doi.org/10.1146/annurev-neuro-111020-100706](<https://doi.org/10.1146/annurev-neuro-111020-100706>).
+[^/pr-preview/pr-513/user-guide/getting-started/#montaldo2022]: Montaldo, Gabriel, et al. “Functional Ultrasound Neuroimaging.” Annual Review of Neuroscience, vol. 45, no. 1, July 2022, pp. 491–513. DOI.org (Crossref), [https://doi.org/10.1146/annurev-neuro-111020-100706](<https://doi.org/10.1146/annurev-neuro-111020-100706>).

@@ -14,4 +14,4 @@
 >
 > - `ConnectivityMatrix`: Compute functional connectivity matrices from fUSI time series.
 >
-> Please refer to the [API Reference](<https://confusius.tools/api/connectivity/index.md>) for more information.
+> Please refer to the [API Reference](<https://confusius.tools/pr-preview/pr-513/api/connectivity/index.md>) for more information.

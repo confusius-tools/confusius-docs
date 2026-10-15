@@ -13,13 +13,13 @@ ConfUSIus provides tools for both **interactive exploration** and **static figur
 | `plot_carpet` / `.fusi.plot.carpet()` | Matplotlib | Voxel time-series raster (quality control) |
 | `plot_matrix` | Matplotlib | Any square 2D matrix (e.g. correlation, connectivity, or statistical matrices) |
 
-All functions accept DataArrays and use world coordinates for axis scaling automatically. The [Xarray accessor](<https://confusius.tools/user-guide/xarray/index.md>) variants (`.fusi.plot.*`) offer a more concise syntax; both call the same underlying functions.
+All functions accept DataArrays and use world coordinates for axis scaling automatically. The [Xarray accessor](<https://confusius.tools/pr-preview/pr-513/user-guide/xarray/index.md>) variants (`.fusi.plot.*`) offer a more concise syntax; both call the same underlying functions.
 
 > [!NOTE]
 >
 > **Example dataset setup (Nunez-Elizalde *et al.*, 2022)**
 >
-> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/user-guide/visualization/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler, angiography, and Allen atlas segmentation for one acquisition and build a napari colormap from the Allen structure tree. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
+> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/pr-preview/pr-513/user-guide/visualization/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler, angiography, and Allen atlas segmentation for one acquisition and build a napari colormap from the Allen structure tree. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
 >
 > ```python
 > import csv
@@ -265,7 +265,7 @@ plotter = angio.fusi.plot.volume(slice_mode="z", show_colorbar=False)
 
 ### Selecting Slices and Colormap
 
-By default all coordinates along `slice_mode` are shown. Use `slice_coords` to pick specific ones and `cmap`/`vmin`/`vmax` to control the colormap and contrast. The grid layout can be controlled using `nrows` and `ncols`, or by specifying axes directly with `axes` (see the [API reference](<https://confusius.tools/api/plotting/#confusius.plotting.plot_volume>) for details).
+By default all coordinates along `slice_mode` are shown. Use `slice_coords` to pick specific ones and `cmap`/`vmin`/`vmax` to control the colormap and contrast. The grid layout can be controlled using `nrows` and `ncols`, or by specifying axes directly with `axes` (see the [API reference](<https://confusius.tools/pr-preview/pr-513/api/plotting/#confusius.plotting.plot_volume>) for details).
 
 ```python
 import numpy as np
@@ -287,7 +287,7 @@ plotter = angio.fusi.scale.db().fusi.plot.volume(
 
 ### Slicing Over a Non-Spatial Dimension
 
-`slice_mode` can be a world axis (`z`/`y`/`x`) or any extra non-voxel dim, e.g. `time`, `pose`, or a `region` dim such as the one a seed-based connectivity map is stacked along (see [below](<#statistical-maps>) and the [seed-based connectivity example](<https://confusius.tools/examples/_built/connectivity/atlas_seed_map/index.md>)). Native voxel dims (`k`/`j`/`i`) are not valid slice modes. Each requested coordinate along that dim becomes its own panel, the same as slicing over `z`.
+`slice_mode` can be a world axis (`z`/`y`/`x`) or any extra non-voxel dim, e.g. `time`, `pose`, or a `region` dim such as the one a seed-based connectivity map is stacked along (see [below](<#statistical-maps>) and the [seed-based connectivity example](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map/index.md>)). Native voxel dims (`k`/`j`/`i`) are not valid slice modes. Each requested coordinate along that dim becomes its own panel, the same as slicing over `z`.
 
 Display is always in world space, labeled in mm. For already axis-aligned data this is a cheap dim rename onto a regular world grid — the same display `z`/`y`/`x` slicing produces. For oblique data, each panel is resampled onto the world-axis-aligned grid, keeping its own native per-axis resolution, so cells always render rectangular.
 
@@ -376,7 +376,7 @@ Pass an explicit `cmap` to override the automatic choice, `auto_range=False` to 
 
 To overlay a statistical map onto an existing plot (for example one built with `plot_volume`), call `VolumePlotter.add_stat_map` on the returned plotter; it applies the same automatic colormap and range logic as `plot_stat_map`. For full manual control over the colormap and range, use `VolumePlotter.add_volume` instead.
 
-This figure is generated in the [atlas-based seed connectivity maps example](<https://confusius.tools/examples/_built/connectivity/atlas_seed_map/index.md>), which walks through registering a recording to an Allen-space template, resampling the Allen Mouse Brain Atlas onto the recording's native grid, and computing voxel-wise seed-based correlation maps with `SeedBasedMaps`. `SeedBasedMaps` stacks one map per seed along a `region` dim, so the figure is produced with `slice_mode="region"` — one panel per seed, faceted over a non-spatial dim as described [above](<#slicing-over-a-non-spatial-dimension>).
+This figure is generated in the [atlas-based seed connectivity maps example](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_seed_map/index.md>), which walks through registering a recording to an Allen-space template, resampling the Allen Mouse Brain Atlas onto the recording's native grid, and computing voxel-wise seed-based correlation maps with `SeedBasedMaps`. `SeedBasedMaps` stacks one map per seed along a `region` dim, so the figure is produced with `slice_mode="region"` — one panel per seed, faceted over a non-spatial dim as described [above](<#slicing-over-a-non-spatial-dimension>).
 
 ## Overlaying Contours
 
@@ -390,7 +390,7 @@ The most common use case is to draw atlas outlines on top of a fUSI volume. `plo
 >
 > **Registering your data to an atlas**
 >
-> This example assumes your fUSI data has already been registered to the Allen Mouse Brain atlas. See the [Atlases](<https://confusius.tools/user-guide/atlas/index.md>) guide for loading and working with brain atlases, and the [register a recording to an Allen fUSI template](<https://confusius.tools/examples/_built/registration/register_to_allen_fusi_template/index.md>) example for how to obtain the `transform` used in `atlas.atlas.resample_like` below.
+> This example assumes your fUSI data has already been registered to the Allen Mouse Brain atlas. See the [Atlases](<https://confusius.tools/pr-preview/pr-513/user-guide/atlas/index.md>) guide for loading and working with brain atlases, and the [register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_to_allen_fusi_template/index.md>) example for how to obtain the `transform` used in `atlas.atlas.resample_like` below.
 
 ```python
 from confusius.datasets import fetch_brainglobe_atlas
@@ -407,7 +407,7 @@ plotter = cf.plotting.plot_volume(mean_vol.fusi.scale.db(), show_colorbar=False)
 plotter.add_contours(atlas_fusi.annotation)
 ```
 
-This figure is generated in the [register a recording to an Allen fUSI template example](<https://confusius.tools/examples/_built/registration/register_to_allen_fusi_template/index.md>), which walks through the full registration and atlas-resampling workflow.
+This figure is generated in the [register a recording to an Allen fUSI template example](<https://confusius.tools/pr-preview/pr-513/examples/_built/registration/register_to_allen_fusi_template/index.md>), which walks through the full registration and atlas-resampling workflow.
 
 Coordinate matching is done along the plotter's `slice_mode`'s own coordinate value — world position for `z`/`y`/`x`, voxel index for `k`/`j`/`i`, or the facet's own coordinate (e.g. a region label) for a non-spatial `slice_mode` — matching contour panels with those of the previously plotted volume. Slices present in the mask but absent from the volume are skipped with a warning.
 
@@ -485,9 +485,9 @@ When `resample=False`, the two arrays must share dimensions, shape, and coordina
 
 ## Carpet Plots
 
-A **carpet plot** (also called a grayplot or Power plot[^/user-guide/visualization/#power2017]) displays every voxel's time-series as a row in a 2D raster image with time on the x-axis. Z-scored by default, it makes motion artifacts, global signal transients, and outlier volumes immediately visible as vertical stripes or abrupt intensity changes.
+A **carpet plot** (also called a grayplot or Power plot[^/pr-preview/pr-513/user-guide/visualization/#power2017]) displays every voxel's time-series as a row in a 2D raster image with time on the x-axis. Z-scored by default, it makes motion artifacts, global signal transients, and outlier volumes immediately visible as vertical stripes or abrupt intensity changes.
 
-Carpet plots are primarily used for quality control—for a deeper discussion of QC metrics, see the [Quality Control](<https://confusius.tools/user-guide/quality-control/index.md>) guide.
+Carpet plots are primarily used for quality control—for a deeper discussion of QC metrics, see the [Quality Control](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/index.md>) guide.
 
 ### Basic Usage
 
@@ -528,20 +528,20 @@ fig, ax = cf.plotting.plot_matrix(
 )
 ```
 
-This figure is generated in the [atlas-based region correlation matrix example](<https://confusius.tools/examples/_built/connectivity/atlas_correlation_matrix/index.md>), which walks through registering a recording to an Allen-space template, resampling the Allen Mouse Brain Atlas onto the recording's native grid, and extracting region signals—including `group_colors`, sourced directly from the atlas so each area is colored with its official Allen color.
+This figure is generated in the [atlas-based region correlation matrix example](<https://confusius.tools/pr-preview/pr-513/examples/_built/connectivity/atlas_correlation_matrix/index.md>), which walks through registering a recording to an Allen-space template, resampling the Allen Mouse Brain Atlas onto the recording's native grid, and extracting region signals—including `group_colors`, sourced directly from the atlas so each area is colored with its official Allen color.
 
 ## Next Steps
 
 Now that you can visualize your data, you're ready for:
 
-1. **[Registration](<https://confusius.tools/user-guide/registration/index.md>)**: Correct for motion and align acquisitions to an anatomical template.
-2. **[Quality Control](<https://confusius.tools/user-guide/quality-control/index.md>)**: Assess data quality and identify artifacts.
-3. **[Signal Processing](<https://confusius.tools/user-guide/signal/index.md>)**: Extract regional signals and apply denoising.
+1. **[Registration](<https://confusius.tools/pr-preview/pr-513/user-guide/registration/index.md>)**: Correct for motion and align acquisitions to an anatomical template.
+2. **[Quality Control](<https://confusius.tools/pr-preview/pr-513/user-guide/quality-control/index.md>)**: Assess data quality and identify artifacts.
+3. **[Signal Processing](<https://confusius.tools/pr-preview/pr-513/user-guide/signal/index.md>)**: Extract regional signals and apply denoising.
 
 ## API Reference
 
-For full parameter documentation, see the [Plotting API reference](<https://confusius.tools/api/plotting/index.md>) and the [Xarray Integration API reference](<https://confusius.tools/api/xarray/index.md>).
+For full parameter documentation, see the [Plotting API reference](<https://confusius.tools/pr-preview/pr-513/api/plotting/index.md>) and the [Xarray Integration API reference](<https://confusius.tools/pr-preview/pr-513/api/xarray/index.md>).
 
-[^/user-guide/visualization/#power2017]: Power, Jonathan D. "A Simple but Useful Way to Assess fMRI Scan Qualities." NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2016.08.009](<https://doi.org/10.1016/j.neuroimage.2016.08.009>).
+[^/pr-preview/pr-513/user-guide/visualization/#power2017]: Power, Jonathan D. "A Simple but Useful Way to Assess fMRI Scan Qualities." NeuroImage, vol. 154, July 2017, pp. 150–58. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2016.08.009](<https://doi.org/10.1016/j.neuroimage.2016.08.009>).
 
-[^/user-guide/visualization/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+[^/pr-preview/pr-513/user-guide/visualization/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
