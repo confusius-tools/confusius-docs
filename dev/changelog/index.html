@@ -4608,19 +4608,18 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>
-<p>Atlas Datasets use <code>template</code> instead of <code>reference</code>, matching BrainGlobe's naming.
+<li>Rename <code>labels_from_layer</code> to <code>extract_labels_from_layer</code>, including the
+  <code>.fusi.plot</code> accessor
+  (<a href="https://github.com/confusius-tools/confusius/pull/512">#512</a>).</li>
+<li>Atlas Datasets use <code>template</code> instead of <code>reference</code>, matching BrainGlobe's naming.
   Use <code>atlas.atlas.template</code> or <code>atlas["template"]</code>; update custom atlas Datasets and
   regenerate previously saved atlas stores
-  (<a href="https://github.com/confusius-tools/confusius/pull/510">#510</a>).</p>
-</li>
-<li>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> and its <code>data.fusi.plot.napari()</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/510">#510</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> and its <code>data.fusi.plot.napari()</code>
   and <code>data.fusi.plot()</code> accessors default to <code>layer_type="auto"</code> instead of
   <code>"image"</code>: integer and boolean data open as a labels layer,
   other data as an image layer. Pass <code>layer_type="image"</code> to display integer data
-  as an image (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</p>
-</li>
+  as an image (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4631,6 +4630,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Labels painted over oblique or sheared data in napari now return to the original
+  reference voxel grid using nearest-neighbor interpolation, rather than retaining
+  the display grid or being assigned incorrect geometry. The drawing documentation
+  explains interpolation limits and recommends an existing axis-aligned frame
+  (<a href="https://github.com/confusius-tools/confusius/pull/512">#512</a>).</li>
 <li>Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly
   for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is
   remembered per annotation-set version; available meshes deleted locally are still
