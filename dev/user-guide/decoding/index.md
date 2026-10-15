@@ -1,0 +1,7 @@
+# Decoding
+
+> [!NOTE]
+>
+> **Coming soon**
+>
+> This guide is being written. In the meantime, see the API reference for `SearchLight`, and the [searchlight example](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed/index.md>).
