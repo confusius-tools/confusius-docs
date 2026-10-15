@@ -4360,12 +4360,12 @@ already follow that model.</p>
 by the <code>.atlas</code> accessor:</p>
 <ol>
 <li><strong>Type</strong>: <code>ds</code> is an <code>xarray.Dataset</code>.</li>
-<li><strong>Data variables</strong>: <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> are all present as
+<li><strong>Data variables</strong>: <code>template</code>, <code>annotation</code>, and <code>hemispheres</code> are all present as
    data variables (a <code>hemispheres</code> stored as a coordinate is reported as missing).</li>
 <li><strong>Grid</strong>: the three variables share identical dimensions, those dimensions are a
    subset of <code>(k, j, i)</code> (a resampled single slice has a singleton <code>k</code>), and each
    variable carries a <code>VoxelToWorldIndex</code> deriving its world <code>z</code>/<code>y</code>/<code>x</code> coordinates.</li>
-<li><strong>Data types</strong>: <code>reference</code> is floating-point; <code>annotation</code> and <code>hemispheres</code> are
+<li><strong>Data types</strong>: <code>template</code> is floating-point; <code>annotation</code> and <code>hemispheres</code> are
    integer-valued.</li>
 <li><strong>Attributes</strong>: <code>attrs["structures"]</code> is present and is a brainglobe
    <code>StructuresDict</code>. The descriptive metadata the builder adds (<code>name</code>, <code>citation</code>,
@@ -4409,7 +4409,7 @@ transform attribute and at least one existing region mesh file.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError">TypeError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>ds</code> is not an <code>xarray.Dataset</code>, or if <code>reference</code> is not floating-point or
+            <p>If <code>ds</code> is not an <code>xarray.Dataset</code>, or if <code>template</code> is not floating-point or
 <code>annotation</code>/<code>hemispheres</code> are not integer-valued.</p>
           </div>
         </li>

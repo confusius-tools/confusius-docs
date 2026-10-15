@@ -1007,10 +1007,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotting-annotations-over-the-reference" class="md-nav__link">
+  <a href="#plotting-annotations-over-the-template" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Plotting Annotations over the Reference
+        Plotting Annotations over the Template
       </span>
     </span>
   </a>
@@ -3252,10 +3252,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotting-annotations-over-the-reference" class="md-nav__link">
+  <a href="#plotting-annotations-over-the-template" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Plotting Annotations over the Reference
+        Plotting Annotations over the Template
       </span>
     </span>
   </a>
@@ -3422,16 +3422,16 @@
 
 
 <h1 id="atlases">Atlases<a class="headerlink" href="#atlases" title="Permanent link">&para;</a></h1>
-<p>A brain atlas ties every voxel of a reference volume to a named region. In ConfUSIus an
+<p>A brain atlas ties every voxel of a template volume to a named region. In ConfUSIus an
 atlas is a plain <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a> on a common <a href="../voxeldata/#the-voxeldata-model">VoxelData
 grid</a> (<code>k</code>/<code>j</code>/<code>i</code> voxel dims, derived world
 <code>z</code>/<code>y</code>/<code>x</code> coordinates), with three data variables
-(<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;reference&lt;/span&gt;
+(<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;template&lt;/span&gt;
 
 
   &lt;span class=&quot;doc doc-labels&quot;&gt;
       &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.reference"><code>reference</code></a>, the template volume;
+  &lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.template"><code>template</code></a>, the anatomical template volume;
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;annotation&lt;/span&gt;
 
 
@@ -3474,7 +3474,7 @@ works, covering mouse, rat, human, zebrafish, and more, at several resolutions.<
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="go">  * y            (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 7.9 7.9 7.9 7.9</span>
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="go">  * x            (k, j, i) float64 10MB 0.0 0.1 0.2 0.3 ... 11.0 11.1 11.2 11.3</span>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="go">Data variables:</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">    reference    (k, j, i) float32 5MB 0.0 0.0 0.0 0.0 0.0 ... 1.0 1.0 1.0 1.0</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="go">    template     (k, j, i) float32 5MB 0.0 0.0 0.0 0.0 0.0 ... 1.0 1.0 1.0 1.0</span>
 </span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="go">    annotation   (k, j, i) int32 5MB 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0</span>
 </span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="go">    hemispheres  (k, j, i) int8 1MB 2 2 2 2 2 2 2 2 2 2 ... 1 1 1 1 1 1 1 1 1 1</span>
 </span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="go">Indexes:</span>
@@ -3499,7 +3499,7 @@ atlas and then loaded with the same <code>fetch_brainglobe_atlas</code> call. Br
 <a href="https://brainglobe.info/documentation/brainglobe-atlasapi/adding-a-new-atlas.html">Adding a new atlas</a>
 guide and the <code>atlas_scripts</code> in the
 <a href="https://github.com/brainglobe/brainglobe-atlasapi">brainglobe-atlasapi</a> repository
-walk through packaging a reference stack, an annotation stack, and a structure
+walk through packaging a template stack, an annotation stack, and a structure
 hierarchy into a distributable atlas.</p>
 </div>
 <h2 id="exploring-the-structure-hierarchy">Exploring the Structure Hierarchy<a class="headerlink" href="#exploring-the-structure-hierarchy" title="Permanent link">&para;</a></h2>
@@ -3580,19 +3580,19 @@ pinning down a single area without its layer subdivisions:</p>
 functions in <code>confusius.atlas</code> that take the Dataset as their first argument, so
 <code>cf.atlas.search_atlas(atlas, "visual")</code> is equivalent to <code>atlas.atlas.search("visual")</code>. Both
 forms validate the Dataset as an atlas before running.</p>
-<h2 id="plotting-annotations-over-the-reference">Plotting Annotations over the Reference<a class="headerlink" href="#plotting-annotations-over-the-reference" title="Permanent link">&para;</a></h2>
-<p>The reference and annotation volumes plot with the ordinary
+<h2 id="plotting-annotations-over-the-template">Plotting Annotations over the Template<a class="headerlink" href="#plotting-annotations-over-the-template" title="Permanent link">&para;</a></h2>
+<p>The template and annotation volumes plot with the ordinary
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> tools. Overlaying the region boundaries on
-a reference slice with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a>
+a template slice with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_contours"><code>add_contours</code></a>
 gives the familiar atlas view; contour colors come from each region's atlas color
 automatically:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_volume</span><span class="p">(</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">False</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">)</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">atlas</span><span class="o">.</span><span class="n">atlas</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 </span></code></pre></div>
-<p><a class="glightbox" data-gallery="light" data-title="Coronal reference slice with Allen region annotation contours" data-type="image" href="../../images/atlas/atlas-annotation-light.png#only-light"><img alt="Coronal reference slice with Allen region annotation contours" src="../../images/atlas/atlas-annotation-light.png#only-light" /></a>
-<a class="glightbox" data-gallery="dark" data-title="Coronal reference slice with Allen region annotation contours" data-type="image" href="../../images/atlas/atlas-annotation-dark.png#only-dark"><img alt="Coronal reference slice with Allen region annotation contours" src="../../images/atlas/atlas-annotation-dark.png#only-dark" /></a></p>
+<p><a class="glightbox" data-gallery="light" data-title="Coronal template slice with Allen region annotation contours" data-type="image" href="../../images/atlas/atlas-annotation-light.png#only-light"><img alt="Coronal template slice with Allen region annotation contours" src="../../images/atlas/atlas-annotation-light.png#only-light" /></a>
+<a class="glightbox" data-gallery="dark" data-title="Coronal template slice with Allen region annotation contours" data-type="image" href="../../images/atlas/atlas-annotation-dark.png#only-dark"><img alt="Coronal template slice with Allen region annotation contours" src="../../images/atlas/atlas-annotation-dark.png#only-dark" /></a></p>
 <h2 id="region-surface-meshes">Region Surface Meshes<a class="headerlink" href="#region-surface-meshes" title="Permanent link">&para;</a></h2>
 <p>Many BrainGlobe atlases bundle a triangular surface mesh per region.
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_meshes&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.get_meshes"><code>get_meshes</code></a> takes one or more regions and returns
@@ -3652,7 +3652,7 @@ seed connectivity maps</a> for more.</p>
 <h2 id="aligning-an-atlas-to-a-recording">Aligning an Atlas to a Recording<a class="headerlink" href="#aligning-an-atlas-to-a-recording" title="Permanent link">&para;</a></h2>
 <p>An atlas is only useful once it shares a grid with your data. After registering a
 recording to the atlas template (see <a href="../registration/">Registration</a>),
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.resample_like"><code>resample_like</code></a> warps the reference,
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;resample_like&lt;/span&gt;" href="../../api/atlas/#confusius.atlas.AtlasAccessor.resample_like"><code>resample_like</code></a> warps the template,
 annotation, hemisphere map, and region meshes onto the recording's grid in one call,
 using an affine, B-spline, or displacement-field transform from
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a>:</p>
