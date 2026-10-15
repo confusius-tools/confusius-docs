@@ -501,7 +501,7 @@ try:
     from confusius.datasets import fetch_brainglobe_atlas
 
     _ATLAS_NAME = "allen_mouse_100um"
-    atlas_ds = fetch_brainglobe_atlas(_ATLAS_NAME, check_latest=False).compute()
+    atlas_ds = fetch_brainglobe_atlas(_ATLAS_NAME, check_latest=False)
 
     viewer1b = napari.Viewer(show=False)
     widget1b = ConfUSIusWidget(viewer1b)
@@ -511,8 +511,7 @@ try:
     atlas_panel._atlases_listed = True
     atlas_panel._atlas_combo.clear()
     atlas_panel._atlas_combo.addItem(f"{_ATLAS_NAME} (downloaded)", _ATLAS_NAME)
-    atlas_panel._atlas_name = _ATLAS_NAME
-    atlas_panel._on_atlas_returned(atlas_ds)
+    atlas_panel._on_atlas_returned(atlas_ds, _ATLAS_NAME)
     atlas_panel._add_atlas_layers(_ATLAS_NAME)
     atlas_panel._toggle_masks(_ATLAS_NAME)
     atlas_panel._search_edit.setText("visual")

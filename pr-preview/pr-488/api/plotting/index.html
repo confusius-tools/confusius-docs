@@ -1713,10 +1713,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#confusius.plotting.labels_from_layer" class="md-nav__link">
+  <a href="#confusius.plotting.extract_labels_from_layer" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;labels_from_layer
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;extract_labels_from_layer
       </span>
     </span>
   </a>
@@ -3325,10 +3325,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#confusius.plotting.labels_from_layer" class="md-nav__link">
+  <a href="#confusius.plotting.extract_labels_from_layer" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;labels_from_layer
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;extract_labels_from_layer
       </span>
     </span>
   </a>
@@ -3652,7 +3652,7 @@
             </div>
           </li>
           <li class="doc-section-item field-body">
-            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt; (&lt;code&gt;confusius.plotting.labels_from_layer&lt;/code&gt;)" href="./#confusius.plotting.labels_from_layer">labels_from_layer</a></code></b>
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt; (&lt;code&gt;confusius.plotting.extract_labels_from_layer&lt;/code&gt;)" href="./#confusius.plotting.extract_labels_from_layer">extract_labels_from_layer</a></code></b>
             –
             <div class="doc-md-description">
               <p>Convert a napari Labels layer to an integer label map DataArray.</p>
@@ -5353,7 +5353,7 @@ match <code>data</code>.</p>
         <p>Open a napari viewer to interactively paint integer labels over <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data.</p>
 <p>Displays the data as an image layer and adds an empty Labels layer on top. The user
 can paint integer labels directly on the image using napari's brush tool. After
-painting, call <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="./#confusius.plotting.labels_from_layer"><code>labels_from_layer</code></a> with the
+painting, call <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="./#confusius.plotting.extract_labels_from_layer"><code>extract_labels_from_layer</code></a> with the
 returned Labels layer and the original data to obtain an integer label map as a
 DataArray with the same spatial coordinates.</p>
 
@@ -5417,7 +5417,7 @@ is created via <a class="autorefs autorefs-internal" title="&lt;span class=&quot
           <div class="doc-md-description">
             <p>The empty Labels layer initialised to zeros. After the user paints
 labels in the viewer, pass this layer to
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="./#confusius.plotting.labels_from_layer"><code>labels_from_layer</code></a> to obtain
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="./#confusius.plotting.extract_labels_from_layer"><code>extract_labels_from_layer</code></a> to obtain
 an integer label map.</p>
           </div>
         </li>
@@ -5429,6 +5429,13 @@ an integer label map.</p>
   <p>The Labels layer is initialised with the same <code>scale</code> and <code>translate</code>
 parameters as the image layer so that the napari canvas shows a consistent
 world coordinate frame regardless of voxel spacing or data origin.</p>
+<p>Oblique or sheared input is interpolated onto an axis-aligned grid for display;
+extraction then uses nearest-neighbor interpolation to return painted labels
+to the original grid. Thin regions and boundaries can change in this round trip.
+Prefer drawing in an existing axis-aligned acquisition/scanner frame when
+available. A known world-space transform can be applied with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> without
+resampling voxels; labels must be transformed consistently when changing frames.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -5438,7 +5445,7 @@ world coordinate frame regardless of voxel spacing or data origin.</p>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layer</span> <span class="o">=</span> <span class="n">draw_napari_labels</span><span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># … paint labels in the viewer …</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert painted labels to an integer label map DataArray.</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">extract_labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
 </span></code></pre></div>
 
 
@@ -5449,13 +5456,13 @@ world coordinate frame regardless of voxel spacing or data origin.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="confusius.plotting.labels_from_layer" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">labels_from_layer</span>
+<h3 id="confusius.plotting.extract_labels_from_layer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">extract_labels_from_layer</span>
 
 
-<a href="#confusius.plotting.labels_from_layer" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">labels_from_layer</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels_layer&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.labels_from_layer(labels_layer)&lt;/code&gt;)" href="./#confusius.plotting.labels_from_layer(labels_layer)">labels_layer</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.labels_from_layer(data)&lt;/code&gt;)" href="./#confusius.plotting.labels_from_layer(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+<a href="#confusius.plotting.extract_labels_from_layer" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">extract_labels_from_layer</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels_layer&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.extract_labels_from_layer(labels_layer)&lt;/code&gt;)" href="./#confusius.plotting.extract_labels_from_layer(labels_layer)">labels_layer</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.extract_labels_from_layer(data)&lt;/code&gt;)" href="./#confusius.plotting.extract_labels_from_layer(data)">data</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
@@ -5472,8 +5479,8 @@ with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-o
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<h4 id="confusius.plotting.labels_from_layer(labels_layer)" class="doc doc-heading doc-heading-parameter">              <b><code>labels_layer</code></b>
-<a href="#confusius.plotting.labels_from_layer(labels_layer)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></code>)
+<h4 id="confusius.plotting.extract_labels_from_layer(labels_layer)" class="doc doc-heading doc-heading-parameter">              <b><code>labels_layer</code></b>
+<a href="#confusius.plotting.extract_labels_from_layer(labels_layer)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></code>)
           –
           <div class="doc-md-description">
             <p>A Labels layer populated by the user (e.g. via
@@ -5483,8 +5490,8 @@ downstream analyses.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.plotting.labels_from_layer(data)" class="doc doc-heading doc-heading-parameter">              <b><code>data</code></b>
-<a href="#confusius.plotting.labels_from_layer(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
+<h4 id="confusius.plotting.extract_labels_from_layer(data)" class="doc doc-heading doc-heading-parameter">              <b><code>data</code></b>
+<a href="#confusius.plotting.extract_labels_from_layer(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
             <p>Reference data array. Its spatial dimensions and coordinates define the shape
@@ -5526,7 +5533,8 @@ The <code>attrs</code> dict carries:</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>labels_layer</code> does not contain any non-zero labels.</p>
+            <p>If the layer shape does not match its voxel grid, or no non-zero labels
+remain on the reference grid.</p>
           </div>
         </li>
     </ul>
@@ -5534,8 +5542,12 @@ The <code>attrs</code> dict carries:</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>The label array is taken directly from <code>labels_layer.data</code>. No
-rasterisation is performed: this is a direct read of the painted values.</p>
+  <p>Painted labels are read on the display grid stored in the layer's <code>xarray</code>
+metadata, then resampled onto <code>data</code>'s grid with nearest-neighbor interpolation
+and zero background when the grids differ. Without that metadata, the layer
+is assumed to use <code>data</code>'s grid. Nearest-neighbor interpolation preserves label
+IDs but can change boundaries or remove thin regions. Prefer drawing on an
+existing axis-aligned grid to avoid this interpolation round trip.</p>
 <p>Per-label colors are read from <code>labels_layer.get_color(label)</code>, which works for both
 the default cyclic colormap and any <code>DirectLabelColormap</code> set on the layer.</p>
 </details>
@@ -5546,7 +5558,7 @@ the default cyclic colormap and any <code>DirectLabelColormap</code> set on the 
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;output.zarr&quot;</span><span class="p">)[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layer</span> <span class="o">=</span> <span class="n">draw_napari_labels</span><span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># … paint labels in the viewer …</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">extract_labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span><span class="o">.</span><span class="n">dims</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">(&#39;mask&#39;, &#39;k&#39;, &#39;j&#39;, &#39;i&#39;)</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Slice a single label for display alongside a seed map.</span>

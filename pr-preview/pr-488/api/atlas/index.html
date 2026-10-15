@@ -3494,7 +3494,7 @@ pipelines).</p>
 <a href="#confusius.atlas.AtlasAccessor(ds)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.Dataset&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset">Dataset</a></code>)
           –
           <div class="doc-md-description">
-            <p>Atlas Dataset with <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> data variables as
+            <p>Atlas Dataset with <code>template</code>, <code>annotation</code>, and <code>hemispheres</code> data variables as
 VoxelData arrays on a common <code>k</code>/<code>j</code>/<code>i</code> grid, and the atlas
 metadata in <code>attrs</code>.</p>
           </div>
@@ -3636,19 +3636,6 @@ metadata in <code>attrs</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-          <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;reference&lt;/span&gt;
-
-
-  &lt;span class=&quot;doc doc-labels&quot;&gt;
-      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
-  &lt;/span&gt; (&lt;code&gt;confusius.atlas.AtlasAccessor.reference&lt;/code&gt;)" href="./#confusius.atlas.AtlasAccessor.reference">reference</a></code></b>
-              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
-          –
-          <div class="doc-md-description">
-            <p>Reference template VoxelData array.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;structures&lt;/span&gt;
 
 
@@ -3659,6 +3646,19 @@ metadata in <code>attrs</code>.</p>
           –
           <div class="doc-md-description">
             <p>BrainGlobe structure dictionary held in <code>Dataset.attrs["structures"]</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;template&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt; (&lt;code&gt;confusius.atlas.AtlasAccessor.template&lt;/code&gt;)" href="./#confusius.atlas.AtlasAccessor.template">template</a></code></b>
+              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Anatomical template VoxelData array.</p>
           </div>
         </li>
     </ul>
@@ -3861,42 +3861,6 @@ construction.</p>
 
 
 
-<h4 id="confusius.atlas.AtlasAccessor.reference" class="doc doc-heading">
-            <span class="doc doc-object-name doc-attribute-name">reference</span>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
-  </span>
-
-<a href="#confusius.atlas.AtlasAccessor.reference" class="headerlink" title="Permanent link">&para;</a></h4>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">reference</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Reference template VoxelData array.</p>
-
-
-<p><span class="doc-section-title">Returns:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-              <code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>
-          –
-          <div class="doc-md-description">
-            <p>The reference template VoxelData array.</p>
-          </div>
-        </li>
-    </ul>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
 <h4 id="confusius.atlas.AtlasAccessor.structures" class="doc doc-heading">
             <span class="doc doc-object-name doc-attribute-name">structures</span>
 
@@ -3934,6 +3898,42 @@ construction.</p>
           <div class="doc-md-description">
             <p>If <code>Dataset.attrs</code> has no <code>structures</code> entry (e.g. after an xarray op that
 dropped <code>attrs</code>; wrap the pipeline in <code>xarray.set_options(keep_attrs=True)</code>).</p>
+          </div>
+        </li>
+    </ul>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="confusius.atlas.AtlasAccessor.template" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">template</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#confusius.atlas.AtlasAccessor.template" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">template</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Anatomical template VoxelData array.</p>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>
+          –
+          <div class="doc-md-description">
+            <p>The anatomical template VoxelData array.</p>
           </div>
         </li>
     </ul>
@@ -4158,7 +4158,7 @@ arbitrary resample.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to clip each mesh to the current reference grid. Unclipped meshes
+            <p>Whether to clip each mesh to the current template grid. Unclipped meshes
 are still transformed to the current world space but may extend past the
 grid's bounding box.</p>
           </div>
@@ -4177,7 +4177,7 @@ acronym, suffixed with <code>_L</code>/<code>_R</code> when the corresponding <c
 <code>"left"</code>/<code>"right"</code> (left/right requests for the same region would otherwise
 share a key). <code>vertices</code> holds coordinates in the current world space
 (millimetres); after a nonlinear resample, vertices warped outside the
-reference grid are dropped. <code>faces</code> holds zero-indexed triangle indices
+template grid are dropped. <code>faces</code> holds zero-indexed triangle indices
 (int32).</p>
           </div>
         </li>
@@ -4259,7 +4259,7 @@ file.</p>
     <div class="doc doc-contents ">
 
         <p>Resample the atlas onto an explicit output grid.</p>
-<p>The atlas reference volume is resampled with <code>interpolation</code>; <code>annotation</code> and
+<p>The atlas template volume is resampled with <code>interpolation</code>; <code>annotation</code> and
 <code>hemispheres</code> are always resampled with nearest-neighbor interpolation to
 preserve integer labels. The returned Dataset stores the composed pull transform
 from its new world space back to the atlas base space in <code>attrs["world_to_base"]</code>.</p>
@@ -4315,7 +4315,7 @@ coordinates.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Interpolation used for the atlas reference volume.</p>
+            <p>Interpolation used for the atlas template volume.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4400,7 +4400,7 @@ coordinates.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Interpolation used for the atlas reference volume.</p>
+            <p>Interpolation used for the atlas template volume.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4761,7 +4761,7 @@ resample.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to clip each mesh to the reference grid. Unclipped meshes are still
+            <p>Whether to clip each mesh to the template grid. Unclipped meshes are still
 transformed to the atlas's world space but may extend past the grid's bounding
 box.</p>
           </div>
@@ -4779,7 +4779,7 @@ box.</p>
 suffixed with <code>_L</code>/<code>_R</code> when the corresponding <code>side</code> is <code>"left"</code>/<code>"right"</code>
 (left/right requests for the same region would otherwise share a key). <code>vertices</code>
 holds coordinates in the atlas's world space (millimetres); after a nonlinear
-resample, vertices warped outside the reference grid are dropped. <code>faces</code> holds
+resample, vertices warped outside the template grid are dropped. <code>faces</code> holds
 zero-indexed triangle indices (int32).</p>
           </div>
         </li>

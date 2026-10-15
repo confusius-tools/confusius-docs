@@ -6717,7 +6717,7 @@ ultrasound imaging data, with specialized support for napari visualization.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
-            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt; (&lt;code&gt;confusius.xarray.FUSIPlotAccessor.labels_from_layer&lt;/code&gt;)" href="./#confusius.xarray.FUSIPlotAccessor.labels_from_layer">labels_from_layer</a></code></b>
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt; (&lt;code&gt;confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer&lt;/code&gt;)" href="./#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer">extract_labels_from_layer</a></code></b>
             –
             <div class="doc-md-description">
               <p>Convert a napari Labels layer to an integer label map DataArray.</p>
@@ -7633,9 +7633,12 @@ into. If not provided, new axes are created inside <code>figure</code>.</p>
 <p>Displays the data as an image layer and adds an empty Labels layer on
 top. The user paints integer labels directly on the image using
 napari's brush tool. After painting, pass the returned Labels layer to
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="./#confusius.xarray.FUSIPlotAccessor.labels_from_layer"><code>labels_from_layer</code></a>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="./#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer"><code>extract_labels_from_layer</code></a>
 to obtain an integer label map in the same spatial coordinates as the
-data.</p>
+data. Oblique or sheared input requires interpolation for display and
+nearest-neighbor interpolation back to the original grid; boundaries and
+thin regions can change. Prefer an existing axis-aligned scanner frame
+when available.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7688,7 +7691,7 @@ viewer is created.</p>
           <div class="doc-md-description">
             <p>The empty Labels layer initialised to zeros. After painting labels
 in the viewer, pass it to
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="./#confusius.xarray.FUSIPlotAccessor.labels_from_layer"><code>labels_from_layer</code></a>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="./#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer"><code>extract_labels_from_layer</code></a>
 to convert the paintings to an integer label map.</p>
           </div>
         </li>
@@ -7703,7 +7706,7 @@ to convert the paintings to an integer label map.</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">draw_napari_labels</span><span class="p">()</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># … paint labels in the viewer …</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert painted labels to an integer label map.</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">extract_labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">)</span>
 </span></code></pre></div>
 
 
@@ -7714,27 +7717,30 @@ to convert the paintings to an integer label map.</p>
 <div class="doc doc-object doc-function">
 
 
-<h4 id="confusius.xarray.FUSIPlotAccessor.labels_from_layer" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">labels_from_layer</span>
+<h4 id="confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">extract_labels_from_layer</span>
 
 
-<a href="#confusius.xarray.FUSIPlotAccessor.labels_from_layer" class="headerlink" title="Permanent link">&para;</a></h4>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">labels_from_layer</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels_layer&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.xarray.FUSIPlotAccessor.labels_from_layer(labels_layer)&lt;/code&gt;)" href="./#confusius.xarray.FUSIPlotAccessor.labels_from_layer(labels_layer)">labels_layer</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+<a href="#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">extract_labels_from_layer</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;labels_layer&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer(labels_layer)&lt;/code&gt;)" href="./#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer(labels_layer)">labels_layer</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>Convert a napari Labels layer to an integer label map DataArray.</p>
-<p>Reads the integer array painted in <code>labels_layer</code> and wraps it in an
-<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray"><code>xarray.DataArray</code></a> whose spatial dimensions and
-coordinates match those of the data.</p>
+<p>Extracts painted labels onto the data's original voxel grid, using
+nearest-neighbor resampling when the display grid differs. Label IDs are
+preserved, but boundaries and thin regions can change. Drawing on an
+existing axis-aligned grid avoids this interpolation round trip.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<h5 id="confusius.xarray.FUSIPlotAccessor.labels_from_layer(labels_layer)" class="doc doc-heading doc-heading-parameter">              <b><code>labels_layer</code></b>
-<a href="#confusius.xarray.FUSIPlotAccessor.labels_from_layer(labels_layer)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.plotting.FUSIPlotAccessor.napari.layers.Labels">Labels</span></code>)
+<h5 id="confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer(labels_layer)" class="doc doc-heading doc-heading-parameter">              <b><code>labels_layer</code></b>
+<a href="#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer(labels_layer)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><span title="confusius.xarray.plotting.FUSIPlotAccessor.napari.layers.Labels">Labels</span></code>)
           –
           <div class="doc-md-description">
             <p>A Labels layer populated by the user (e.g. via
@@ -7764,7 +7770,7 @@ as the data. Zero values indicate background (unlabelled) voxels.</p>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">pwd</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_zarr</span><span class="p">(</span><span class="s2">&quot;output.zarr&quot;</span><span class="p">)[</span><span class="s2">&quot;power_doppler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">draw_napari_labels</span><span class="p">()</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># … paint labels in the viewer …</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">label_map</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">extract_labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">)</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use the label map for region-based analysis.</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.extract</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_with_labels</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">extract_with_labels</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="n">label_map</span><span class="p">)</span>

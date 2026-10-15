@@ -3899,15 +3899,15 @@ falls back to BrainGlobe's cached list, or to the downloaded atlases alone.</p>
 <ol>
 <li>Pick an atlas and click <strong>Load atlas</strong>. The first load of an atlas downloads it
    into the BrainGlobe cache (shared with other BrainGlobe tools) while the progress
-   bar animates; later loads read from the cache. The atlas is held in memory and
+   bar animates; later loads read from the cache. The atlas stays on disk and
    appears as a row under <strong>Loaded atlases</strong>. An atlas can be loaded once; the button
    is disabled while the selected atlas is already in the list.</li>
 <li>Each row has four buttons:<ul>
-<li><strong>Volumes</strong> adds three layers, <code>&lt;atlas&gt; reference</code> (Image), <code>&lt;atlas&gt; annotation</code>
-  (Labels, coloured with the atlas palette) and <code>&lt;atlas&gt; hemispheres</code> (Labels).</li>
+<li><strong>Volumes</strong> adds three layers, <code>&lt;atlas&gt; template</code> (Image), <code>&lt;atlas&gt; annotation</code>
+  (Labels, colored with the atlas palette) and <code>&lt;atlas&gt; hemispheres</code> (Labels).</li>
 <li><strong>Tree</strong> opens the structure hierarchy in a right dock named
   <code>Atlas structures: &lt;atlas&gt;</code>, with one row per region showing its acronym, name,
-  id and colour. Click again to hide it. The tree is for browsing only.</li>
+  id and color. Click again to hide it. The tree is for browsing only.</li>
 <li><strong>Masks</strong> opens the <strong>Region masks</strong> group below for that atlas. Click again to
   hide it.</li>
 <li><strong>✕</strong> removes the atlas from the list, closes its tree, and frees its memory.
@@ -3915,17 +3915,19 @@ falls back to BrainGlobe's cached list, or to the downloaded atlases alone.</p>
 </ul>
 </li>
 </ol>
-<p>The three volumes share one voxel grid in millimetres, so they line up with any <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
+<p>The three volumes share one voxel grid in millimeters, so they line up with any <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 layer loaded through the Data I/O Panel once the recording is registered to the atlas
 space.</p>
 <div class="admonition warning">
 <p class="admonition-title">Memory</p>
-<p>Loading an atlas reads its full reference and annotation volumes into memory.
-High-resolution atlases such as <code>allen_mouse_10um</code> need several gigabytes; prefer
-the 25 µm or 50 µm versions for interactive use.</p>
+<p>Loading an atlas reads no voxels, and the layers added by <strong>Volumes</strong> read only
+the slices on screen. <strong>Load masks</strong> reads the whole annotation and hemispheres
+volumes into memory the first time, which needs several gigabytes for
+high-resolution atlases such as <code>allen_mouse_10um</code>; prefer the 25 µm or 50 µm
+versions when building masks.</p>
 </div>
 <h3 id="region-masks">Region masks<a class="headerlink" href="#region-masks" title="Permanent link">&para;</a></h3>
-<p>The <strong>Region masks</strong> group is titled with the atlas it searches.</p>
+<p>The <strong>Region masks</strong> group shows which atlas it is linked to right in the title.</p>
 <ol>
 <li>Type in <strong>Search</strong> to filter the structures. The pattern is a case-insensitive
    regular expression matched against both the acronym and the name, exactly like
@@ -3942,9 +3944,20 @@ the 25 µm or 50 µm versions for interactive use.</p>
 </ol>
 <h3 id="fusi-templates"><abbr title="Functional Ultrasound Imaging">fUSI</abbr> templates<a class="headerlink" href="#fusi-templates" title="Permanent link">&para;</a></h3>
 <p>The <strong>Template</strong> dropdown lists the templates shipped in
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets"><code>confusius.datasets</code></a>; the line beneath it names the reference
-atlas each template is aligned to. Click <strong>Load template</strong> to download it on first use
-(it is cached afterwards) and add it as an Image layer named after the template.</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets"><code>confusius.datasets</code></a> by the name of their fetcher
+(<code>huang_2025</code> for <code>fetch_template_huang_2025</code>, ...); the line beneath it names the
+reference atlas each template is aligned to. Click <strong>Load template</strong> to download it on
+first use (it is cached afterwards) and add it as an Image layer named after the
+template.</p>
+<div class="admonition tip">
+<p class="admonition-title">Launch with atlases or templates from the CLI</p>
+<p><code>--atlas</code> and <code>--template</code> take one or more names and open the plugin with them
+loaded: atlases with their three volume layers, templates as Image layers.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>--atlas<span class="w"> </span>allen_mouse_25um<span class="w"> </span>whs_sd_rat_39um<span class="w"> </span>--template<span class="w"> </span>huang_2025
+</span></code></pre></div>
+Put data files before these options, since each takes every name that follows
+it.</p>
+</div>
 <h2 id="video-panel">Video Panel<a class="headerlink" href="#video-panel" title="Permanent link">&para;</a></h2>
 <p>The Video Panel loads one or more videos (<code>.mp4</code>, <code>.mov</code>, <code>.avi</code>) and
 overlays them beside a <abbr title="Functional Ultrasound Imaging">fUSI</abbr> scan in a synchronized grid. Each video becomes its own
@@ -3968,7 +3981,7 @@ the frame centered on the scan.</p>
 <div class="admonition tip">
 <p class="admonition-title">Launch with a video from the CLI</p>
 <p>Pass both a data file and <code>--video</code> to open them together:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>path/to/scan.nii.gz<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>confusius<span class="w"> </span>path/to/scan.nii.gz<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
 </span></code></pre></div></p>
 </div>
 <p><a class="glightbox" data-title="ConfUSIus Video panel — playback" data-type="image" href="../../images/gui/plugin-video.gif"><img alt="ConfUSIus Video panel — playback" src="../../images/gui/plugin-video.gif" /></a></p>
@@ -4136,11 +4149,11 @@ out as a <abbr title="Brain Imaging Data Structure">BIDS</abbr> events <code>.ts
 with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_events&lt;/span&gt;" href="../../api/bids/#confusius.bids.load_events">load_events</a> and fed directly to either
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;make_first_level_design_matrix&lt;/span&gt;" href="../../api/glm/#confusius.glm.make_first_level_design_matrix">make_first_level_design_matrix</a> or
 the <code>fit</code> method of a <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FirstLevelModel&lt;/span&gt;" href="../../api/glm/#confusius.glm.FirstLevelModel">FirstLevelModel</a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.bids</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_events</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.glm</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirstLevelModel</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">events</span> <span class="o">=</span> <span class="n">load_events</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_events.tsv&quot;</span><span class="p">)</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">hrf_model</span><span class="o">=</span><span class="s2">&quot;glover&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fusi_scan</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.bids</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_events</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.glm</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirstLevelModel</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">events</span> <span class="o">=</span> <span class="n">load_events</span><span class="p">(</span><span class="s2">&quot;sub-01_task-rest_events.tsv&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">FirstLevelModel</span><span class="p">(</span><span class="n">hrf_model</span><span class="o">=</span><span class="s2">&quot;glover&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fusi_scan</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <h3 id="display-options_1">Display options<a class="headerlink" href="#display-options_1" title="Permanent link">&para;</a></h3>

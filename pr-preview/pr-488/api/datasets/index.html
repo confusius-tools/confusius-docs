@@ -3673,11 +3673,15 @@
 on first call, caching it in BrainGlobe's own atlas cache (shared with other
 BrainGlobe tools), then builds a self-describing atlas
 <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset"><code>xarray.Dataset</code></a>.</p>
-<p>The first fetch of an atlas also downloads every region surface mesh, in one batched
-call rather than BrainGlobe's one-at-a-time lazy download, so
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_meshes&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_meshes"><code>get_meshes</code></a> works offline afterwards.
-If the BrainGlobe bucket is unreachable, meshes fall back to that lazy download on
-first use.</p>
+<p>The first fetch of an atlas also downloads every available region surface mesh,
+in one batched call rather than BrainGlobe's one-at-a-time lazy download, so
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_meshes&lt;/span&gt;" href="../atlas/#confusius.atlas.AtlasAccessor.get_meshes"><code>get_meshes</code></a> works offline afterwards
+for those regions. Regions with no upstream mesh are recorded in
+<code>.confusius-unavailable-meshes.json</code> in the versioned BrainGlobe mesh directory;
+later fetches skip them silently without network access. Delete this record to
+recheck availability if upstream meshes change without a version bump.
+If the BrainGlobe bucket is unreachable, uncached meshes fall back to that lazy
+download on first use.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3722,7 +3726,7 @@ atlases load without a network round-trip.</p>
               <code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.Dataset&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset">Dataset</a></code>
           –
           <div class="doc-md-description">
-            <p>Atlas Dataset with data variables <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code>
+            <p>Atlas Dataset with data variables <code>template</code>, <code>annotation</code>, and <code>hemispheres</code>
 on a common voxel-to-world <code>(k, j, i)</code> grid with world <code>z</code>/<code>y</code>/<code>x</code> coordinates
 in millimetres, and the <code>.atlas</code> accessor for structure queries, masks, and
 meshes.</p>
