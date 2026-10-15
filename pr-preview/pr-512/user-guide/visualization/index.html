@@ -4235,13 +4235,9 @@ into a stacked integer DataArray compatible with
 Extraction maps the painted labels back onto <code>mean_vol</code>'s original voxel grid using
 nearest-neighbor interpolation, with zero background outside the display grid.
 Label IDs are preserved, but boundaries can change and thin regions can disappear.</p>
-<p>Prefer drawing in an existing axis-aligned acquisition/scanner frame when available.
-For example, draw on the Pepe–Mariani template as fetched, before applying its
-<code>world_to_sform</code> transform. A known transform can be applied afterward to both the
-image and extracted labels using
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a>, without resampling
-voxel values. This changes the world frame, not the voxel grid; do not discard or
-replace the affine arbitrarily just to make the data axis-aligned.</p>
+<p>Prefer drawing in an existing axis-aligned acquisition/scanner frame when available. A
+known transform can be applied afterward to both the image and extracted labels using
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> without resampling.</p>
 <h2 id="static-volume-plots">Static Volume Plots<a class="headerlink" href="#static-volume-plots" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> generates a static Matplotlib grid of 2D
 slices—one panel per coordinate along the chosen slicing dimension. It is the standard
