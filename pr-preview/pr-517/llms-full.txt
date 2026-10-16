@@ -3522,19 +3522,19 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 >>> from confusius.datasets import list_datasets
 >>>
 >>> list_datasets()
-                   Available Datasets
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
-┃ Fetch function                   ┃     Size ┃ On disk ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✗    │
-│ fetch_pereira_2025               │ 29.96 GB │    ✗    │
-│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✗    │
-│ fetch_pepe_mariani_2026          │ 37.56 GB │    ✗    │
-│ fetch_landemard_2026             │ 42.04 GB │    ✗    │
-│ fetch_khallaf_2026               │ 24.02 GB │    ✗    │
-│ fetch_template_brunner_2021      │ 16.34 MB │    ✗    │
-│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✗    │
-└──────────────────────────────────┴──────────┴─────────┘
+                     Available Datasets
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃ Fetch function                      ┃     Size ┃ On disk ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│ fetch_nunez_elizalde_2022           │ 6.983 GB │    ✗    │
+│ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
+│ fetch_cybis_pereira_2026            │ 12.88 GB │    ✗    │
+│ fetch_pepe_mariani_2026             │ 37.56 GB │    ✗    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_khallaf_2026                  │ 24.02 GB │    ✗    │
+│ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
+│ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✗    │
+└─────────────────────────────────────┴──────────┴─────────┘
 ```
 
 The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
@@ -3759,14 +3759,17 @@ Versions are immutable and use separate cache directories. Refreshing an unchang
 
 ## Available Templates
 
-A vascular mouse fUSI template from Brunner et al. (2021)[^/pr-preview/pr-517/user-guide/datasets/#brunner2021], sourced from the Macé and Montaldo Zenodo dataset[^/pr-preview/pr-517/user-guide/datasets/#brunner_dataset] and distributed as a NIfTI with its JSON sidecar in the S3 collection under **CC BY 4.0**. Total size: **\~16.3 MB**.
+A vascular mouse fUSI template from Brunner, Grillet et al. (2021)[^/pr-preview/pr-517/user-guide/datasets/#brunner2021], sourced from the Macé and Montaldo Zenodo dataset[^/pr-preview/pr-517/user-guide/datasets/#brunner_dataset] and distributed as a NIfTI with its JSON sidecar in the S3 collection under **CC BY 4.0**. Total size: **\~16.3 MB**.
 
-Use `fetch_template_brunner_2021` to download and load the template directly. Its axes are reordered onto the Allen 50 µm grid, whose affine is explicitly assigned without changing vascular voxel values:
+Use `fetch_template_brunner_grillet_2021` to download and load the template directly. Its axes are reordered onto the Allen 50 µm grid, whose affine is explicitly assigned without changing vascular voxel values:
 
 ```python
-from confusius.datasets import fetch_brainglobe_atlas, fetch_template_brunner_2021
+from confusius.datasets import (
+    fetch_brainglobe_atlas,
+    fetch_template_brunner_grillet_2021,
+)
 
-template = fetch_template_brunner_2021()
+template = fetch_template_brunner_grillet_2021()
 atlas = fetch_brainglobe_atlas("allen_mouse_50um")
 ```
 
@@ -3812,7 +3815,7 @@ See the `confusius.datasets` API reference for the full list of parameters and r
 
 [^/pr-preview/pr-517/user-guide/datasets/#khallaf2026]: Khallaf, M. A. et al. (2026). A queen odour mediates reproductive suppression in a eusocial mammal. *Nature*. [https://doi.org/10.1038/s41586-026-10772-5](<https://doi.org/10.1038/s41586-026-10772-5>)
 
-[^/pr-preview/pr-517/user-guide/datasets/#brunner2021]: Brunner, C. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+[^/pr-preview/pr-517/user-guide/datasets/#brunner2021]: Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
 
 [^/pr-preview/pr-517/user-guide/datasets/#brunner_dataset]: Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). *Zenodo*. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
 
@@ -6873,9 +6876,9 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
-- **`fetch_template_brunner_2021`** –
+- **`fetch_template_brunner_grillet_2021`** –
 
-  Fetch the Brunner et al. (2021) mouse vascular fUSI template.
+  Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 - **`fetch_template_pepe_mariani_2026`** –
 
   Fetch the Pepe, Mariani et al. (2026) mouse fUSI template.
@@ -7428,17 +7431,17 @@ Returns:
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
-### fetch\_template\_brunner\_2021
+### fetch\_template\_brunner\_grillet\_2021
 
 ```python
-fetch_template_brunner_2021(
+fetch_template_brunner_grillet_2021(
     data_dir: str | Path | None = None,
     refresh: bool = False,
     print_citation: bool = True,
 ) -> DataArray
 ```
 
-Fetch the Brunner et al. (2021) mouse vascular fUSI template.
+Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 
 Downloads the template from the ConfUSIus dataset collection, caches it locally, and returns the loaded NIfTI as a VoxelData array.
 
@@ -7468,7 +7471,7 @@ Returns:
 
 **References**
 
-1. Brunner, C. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+1. Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
 2. Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). Zenodo. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
 3. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 4. Template license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
@@ -24478,7 +24481,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_46852/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46977/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24695,7 +24698,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f690d7c97b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa569b997b0>
     ```
 - [ ] Attributes: (27)
 
@@ -25103,7 +25106,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 16.0 s
+**Total running time:** 15.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25172,7 +25175,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_52423/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_52548/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25440,7 +25443,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc648554170>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2b44d941d0>
     ```
   - region
 
@@ -25563,7 +25566,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7fc648610830\>
+  \<matplotlib.colors.Normalize object at 0x7f2b44e10830\>
 
 ## Plot the seed maps
 
@@ -25603,7 +25606,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 16.2 s
+**Total running time:** 16.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -25947,7 +25950,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7b24b8b250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3df5d3f250>
     ```
 - [ ] Attributes: (21)
 
@@ -26344,7 +26347,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7b18d25010>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3df0141d30>
     ```
 - [ ] Attributes: (23)
 
@@ -26513,7 +26516,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 85.5 s
+**Total running time:** 86.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26861,7 +26864,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8077dfe0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcf0a5fe0d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27233,7 +27236,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 281.5 s
+**Total running time:** 282.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27575,7 +27578,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb21f3b20d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fddf54d20d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27975,7 +27978,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 300.7 s
+**Total running time:** 297.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28323,7 +28326,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f87230f60d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9efcba20d0>
     ```
 - [ ] Attributes: (25)
 
@@ -29058,7 +29061,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fe261608eb0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fcc3f8dc250>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29073,7 +29076,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...b0\>, beta=6.7) |
+|  | hrf\_model | functools.par...50\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29092,7 +29095,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7fe26051f4d0\>, \<confusius.gl...x7fe2605375c0\>, \<confusius.gl...x7fe260606570\>, \<confusius.gl...x7fe26059b350\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fcc3d7139d0\>, \<confusius.gl...x7fcc3d73f230\>, \<confusius.gl...x7fcc3da6e690\>, \<confusius.gl...x7fcc3d7baf10\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29207,7 +29210,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 107.2 s
+**Total running time:** 113.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/glm/first_level.ipynb>)
 
@@ -29575,7 +29578,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6172eb20d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f29ec1f60d0>
     ```
 - [ ] Attributes: (21)
 
@@ -29812,7 +29815,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 24.4 s
+**Total running time:** 25.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30080,7 +30083,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3a1411a3c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffb723823c0>
     ```
 - [ ] Attributes: (25)
 
@@ -30506,7 +30509,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3a4030d950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffb9e515950>
     ```
 - [ ] Attributes: (25)
 
@@ -30866,7 +30869,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3a132a56d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffb713116d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31213,7 +31216,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.9 s
+**Total running time:** 10.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31556,7 +31559,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2403d7b100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5eeb373100>
     ```
   - time
 
@@ -31837,7 +31840,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f23fc0acc50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5edc54b410>
     ```
 - [ ] Attributes: (6)
 
@@ -31910,7 +31913,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 55.7 s
+**Total running time:** 56.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -31946,19 +31949,19 @@ cf.datasets.list_datasets()
 ```
 
 ```
-                   Available Datasets                    
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
-┃ Fetch function                   ┃     Size ┃ On disk ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✓    │
-│ fetch_pereira_2025               │ 29.96 GB │    ✗    │
-│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✓    │
-│ fetch_pepe_mariani_2026          │ 37.56 GB │    ✓    │
-│ fetch_landemard_2026             │ 42.04 GB │    ✗    │
-│ fetch_khallaf_2026               │ 24.02 GB │    ✓    │
-│ fetch_template_brunner_2021      │ 16.34 MB │    ✗    │
-│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✓    │
-└──────────────────────────────────┴──────────┴─────────┘
+                     Available Datasets                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃ Fetch function                      ┃     Size ┃ On disk ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│ fetch_nunez_elizalde_2022           │ 6.983 GB │    ✓    │
+│ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
+│ fetch_cybis_pereira_2026            │ 12.88 GB │    ✓    │
+│ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
+│ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
+│ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
+└─────────────────────────────────────┴──────────┴─────────┘
 ```
 
 ## Data formats
@@ -32035,7 +32038,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.9 s
+**Total running time:** 7.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32467,7 +32470,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8744a31490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7cac9054f0>
     ```
 - [ ] Attributes: (25)
 
@@ -32586,7 +32589,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.5 s
+**Total running time:** 13.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32869,7 +32872,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f634bde0770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3130094770>
     ```
 - [ ] Attributes: (27)
 
@@ -33085,7 +33088,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 144.0 s
+**Total running time:** 145.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33333,7 +33336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f750590fbb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f753a8f3bb0>
     ```
 - [ ] Attributes: (23)
 
@@ -33614,7 +33617,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7507ea2650>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f753d04f350>
     ```
 - [ ] Attributes: (23)
 
@@ -33819,49 +33822,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-2.65e-13 3.568e-14 6.473e-14 -1.559e-13 ... -1.188e+03 -151.9 -16.65
+  1.284e-10 8.423e-13 1.67e-13 -2.803e-13 ... -2.367e+03 -148.7 -31.17
 
   ```
-  array([[[[-2.65015881e-13,  3.56762105e-14,  6.47255830e-14, ...,
-            -8.76818950e-13, -7.11397473e-14, -5.10827656e-15],
-           [-7.10211434e-14, -2.39290086e-15, -2.66719548e-15, ...,
-            -2.87016214e-13, -2.73168807e-14,  4.54495528e-15],
-           [-8.51051815e-13, -9.85097755e-14, -1.03519267e-13, ...,
-            -8.37979542e-14,  3.41269310e-14,  3.12130002e-14],
+  array([[[[ 1.28407090e-10,  8.42294983e-13,  1.66978326e-13, ...,
+            -4.08105980e-13, -1.18316582e-13, -3.21747246e-14],
+           [ 6.95596278e-13,  1.07569377e-13,  2.00672494e-14, ...,
+            -1.99678510e-13, -4.61731545e-14,  2.94752294e-14],
+           [-2.06425527e-13, -1.06713561e-13, -1.36049236e-13, ...,
+            -1.04755621e-13,  3.96508398e-14,  3.43046622e-14],
            ...,
-           [-4.11240592e-13,  1.24561634e-14,  2.78399409e-13, ...,
-             1.79627908e-13,  7.59189105e-14,  1.07028300e-14],
-           [ 9.17170143e-14,  7.10519774e-14,  2.03736528e-13, ...,
-             1.08230587e-13,  5.62247377e-14,  2.48092357e-14],
-           [ 1.80410213e-13,  1.17054934e-13,  3.37112668e-13, ...,
-             2.67679873e-13,  2.26889484e-13,  1.00056351e-13]],
+           [-3.95425794e-13, -1.60958811e-14,  3.46631292e-13, ...,
+             2.01644279e-13,  1.14235221e-13,  2.96615567e-14],
+           [ 2.79921762e-13,  1.32776664e-13,  2.82683849e-13, ...,
+             2.21517212e-13,  7.46411323e-14,  6.06808778e-15],
+           [ 1.52345164e-11,  2.19952647e-12,  1.15382208e-12, ...,
+             5.89565538e-13,  8.92574158e-13,  7.43115661e-14]],
 
-          [[-3.10550058e-16,  4.18059823e-17,  7.58465245e-17, ...,
-            -1.02747116e-15, -8.33627500e-17, -5.98596421e-18],
-           [-8.32237679e-17, -2.80404139e-18, -3.12546443e-18, ...,
-            -3.36330417e-16, -3.20103793e-17,  5.32585489e-18],
-           [-9.97276802e-16, -1.15435408e-16, -1.21305614e-16, ...,
-            -9.81958493e-17,  3.99905105e-17,  3.65759176e-17],
+          [[ 1.50469583e-13,  9.87015400e-16,  1.95668005e-16, ...,
+            -4.78225437e-16, -1.38645357e-16, -3.77028824e-17],
+           [ 8.15111395e-16,  1.26051601e-16,  2.35151397e-17, ...,
+            -2.33986630e-16, -5.41064774e-17,  3.45395686e-17],
+           [-2.41892897e-16, -1.25048742e-16, -1.59424778e-16, ...,
+            -1.22754395e-16,  4.64635197e-17,  4.01987790e-17],
   ...
-            -7.78946159e-02, -5.66358749e-02, -1.26975415e-02],
-           [ 1.71479085e-01,  1.06351556e-01,  1.01499846e-01, ...,
-            -9.37980952e-02, -4.18445459e-02, -6.29041785e-03],
-           [ 2.57286674e+01,  1.06035428e+00,  1.02119688e-01, ...,
-            -1.39159048e+00, -1.77956517e-01, -1.95076829e-02]],
+            -8.30659601e-02, -2.00896539e-01, -5.29539439e-02],
+           [ 6.07702083e-01,  5.54975871e-02,  1.26625641e-01, ...,
+            -2.10618133e-01, -6.22130608e-02, -1.75789572e-02],
+           [-2.40192949e+01,  3.87443757e-01, -3.75517856e-01, ...,
+            -2.77327858e+00, -1.74266178e-01, -3.65308274e-02]],
 
-          [[ 1.70291087e+05, -2.82545408e+03, -8.21467630e+02, ...,
-            -3.68240012e+03, -2.92450746e+02, -2.97626463e+02],
-           [-1.06198833e+03, -6.56277434e+01, -8.00913147e+01, ...,
-            -9.82806614e+01,  2.57366930e+01,  3.73163384e+01],
-           [-7.55741532e+02,  7.28870667e+01,  3.06058778e+01, ...,
-            -8.51689049e+01,  1.29509323e+01,  5.64995421e+00],
+          [[ 3.51205873e+03,  3.83908237e+02, -3.82448030e+02, ...,
+            -9.38042190e+02,  7.98983170e+00,  6.47554030e+01],
+           [ 1.83519761e+02,  4.34494251e+01, -1.02131872e+02, ...,
+            -8.52067154e+01,  1.62072498e+01,  1.82437951e+01],
+           [-1.07957640e+03,  1.15309673e+02,  5.18323204e+01, ...,
+            -9.05922430e+01,  1.46445285e+01,  6.84619250e+00],
            ...,
-           [-8.94607887e+01,  6.52535848e+01,  1.89326223e+02, ...,
-            -6.64733744e+01, -4.83316809e+01, -1.08357740e+01],
-           [ 1.46336092e+02,  9.07578366e+01,  8.66175047e+01, ...,
-            -8.00450176e+01, -3.57091198e+01, -5.36808995e+00],
-           [ 2.19562309e+04,  9.04880585e+02,  8.71464633e+01, ...,
-            -1.18754954e+03, -1.51863771e+02, -1.66473823e+01]]]],
+           [-6.63137119e+02,  9.02106200e+01,  1.98798331e+02, ...,
+            -7.08864740e+01, -1.71440230e+02, -4.51896125e+01],
+           [ 5.18598207e+02,  4.73602938e+01,  1.08059249e+02, ...,
+            -1.79736402e+02, -5.30911160e+01, -1.50014553e+01],
+           [-2.04974794e+04,  3.30635103e+02, -3.20457824e+02, ...,
+            -2.36664867e+03, -1.48714526e+02, -3.11745205e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34016,7 +34019,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f74dd6d46b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f751dd3c9b0>
     ```
 - [x] Attributes: (4)
 
@@ -34047,7 +34050,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8903
+Rigid + B-spline final metric: -0.8944
 ```
 
 ```python
@@ -34136,7 +34139,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 47.9 s
+**Total running time:** 66.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34502,7 +34505,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe6db3ba350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f38ffefe350>
     ```
 - [ ] Attributes: (21)
 
@@ -34712,7 +34715,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 42.6 s
+**Total running time:** 42.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/brunner-2021-template?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-517/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34730,6 +34733,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
@@ -35465,9 +35469,9 @@ License: **[CC0 1.0](<https://creativecommons.org/publicdomain/zero/1.0/>)**.
 
 ## Templates
 
-### Brunner et al. (2021)
+### Brunner, Grillet et al. (2021)
 
-The `fetch_template_brunner_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
+The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
 
 > Brunner, C., Grillet, M., Urban, A., Roska, B., Montaldo, G., &amp; Macé, E. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. https://doi.org/10.1038/s41596-021-00548-8
 >

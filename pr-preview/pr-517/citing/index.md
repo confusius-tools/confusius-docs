@@ -264,9 +264,9 @@ License: **[CC0 1.0](<https://creativecommons.org/publicdomain/zero/1.0/>)**.
 
 ## Templates
 
-### Brunner et al. (2021)
+### Brunner, Grillet et al. (2021)
 
-The `fetch_template_brunner_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
+The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
 
 > Brunner, C., Grillet, M., Urban, A., Roska, B., Montaldo, G., &amp; Macé, E. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. https://doi.org/10.1038/s41596-021-00548-8
 >

@@ -27,9 +27,9 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
-- **`fetch_template_brunner_2021`** –
+- **`fetch_template_brunner_grillet_2021`** –
 
-  Fetch the Brunner et al. (2021) mouse vascular fUSI template.
+  Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 - **`fetch_template_pepe_mariani_2026`** –
 
   Fetch the Pepe, Mariani et al. (2026) mouse fUSI template.
@@ -582,17 +582,17 @@ Returns:
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
-### fetch\_template\_brunner\_2021
+### fetch\_template\_brunner\_grillet\_2021
 
 ```python
-fetch_template_brunner_2021(
+fetch_template_brunner_grillet_2021(
     data_dir: str | Path | None = None,
     refresh: bool = False,
     print_citation: bool = True,
 ) -> DataArray
 ```
 
-Fetch the Brunner et al. (2021) mouse vascular fUSI template.
+Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 
 Downloads the template from the ConfUSIus dataset collection, caches it locally, and returns the loaded NIfTI as a VoxelData array.
 
@@ -622,7 +622,7 @@ Returns:
 
 **References**
 
-1. Brunner, C. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+1. Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
 2. Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). Zenodo. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
 3. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 4. Template license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
