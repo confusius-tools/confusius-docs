@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_26384/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_23705/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5816383bd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d707d3bd0>
     ```
 - [ ] Attributes: (27)
 
@@ -686,7 +686,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 15.6 s
+**Total running time:** 15.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
