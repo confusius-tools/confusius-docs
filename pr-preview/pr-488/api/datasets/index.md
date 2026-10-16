@@ -27,15 +27,21 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
-- **`fetch_template_huang_2025`** –
+- **`fetch_template_brunner_grillet_2021`** –
 
-  Fetch the Huang et al. (2025) mouse vascular fUSI template.
+  Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 - **`fetch_template_pepe_mariani_2026`** –
 
   Fetch the Pepe, Mariani et al. (2026) mouse fUSI template.
 - **`get_datasets_dir`** –
 
   Return the confusius data directory.
+- **`is_brainglobe_atlas_cached`** –
+
+  Whether a BrainGlobe atlas can be fetched without downloading its volumes.
+- **`is_dataset_cached`** –
+
+  Whether a dataset or template is in the local cache.
 - **`list_datasets`** –
 
   Print a table of available datasets.
@@ -582,17 +588,17 @@ Returns:
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
-### fetch\_template\_huang\_2025
+### fetch\_template\_brunner\_grillet\_2021
 
 ```python
-fetch_template_huang_2025(
+fetch_template_brunner_grillet_2021(
     data_dir: str | Path | None = None,
     refresh: bool = False,
     print_citation: bool = True,
 ) -> DataArray
 ```
 
-Fetch the Huang et al. (2025) mouse vascular fUSI template.
+Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 
 Downloads the template from the ConfUSIus dataset collection, caches it locally, and returns the loaded NIfTI as a VoxelData array.
 
@@ -622,9 +628,10 @@ Returns:
 
 **References**
 
-1. Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. [https://doi.org/10.1101/2025.09.16.676515](<https://doi.org/10.1101/2025.09.16.676515>)
-2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
-3. Template license (CC BY-NC-SA 4.0): [https://creativecommons.org/licenses/by-nc-sa/4.0/](<https://creativecommons.org/licenses/by-nc-sa/4.0/>)
+1. Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+2. Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). Zenodo. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
+3. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+4. Template license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
 ### fetch\_template\_pepe\_mariani\_2026
 
@@ -699,6 +706,81 @@ Returns:
 - `Path` –
 
   Resolved data directory (created if it does not exist).
+
+### is\_brainglobe\_atlas\_cached
+
+```python
+is_brainglobe_atlas_cached(atlas_name: str) -> bool
+```
+
+Whether a BrainGlobe atlas can be fetched without downloading its volumes.
+
+True when the atlas metadata and every volume `fetch_brainglobe_atlas` reads (`template`, `annotation` and, for asymmetric atlases, `hemispheres`) are in BrainGlobe's default cache (`~/.brainglobe`). Region meshes are not checked. Never touches the network.
+
+Parameters:
+
+- #### **`atlas_name`**
+
+  (`str`) –
+
+  BrainGlobe atlas name, e.g. `"allen_mouse_25um"`.
+
+Returns:
+
+- `bool` –
+
+  Whether the next fetch of `atlas_name` reads everything from the cache.
+
+Examples:
+
+```pycon
+>>> is_brainglobe_atlas_cached("allen_mouse_100um")
+True
+```
+
+### is\_dataset\_cached
+
+```python
+is_dataset_cached(
+    fetcher_name: str, data_dir: str | Path | None = None
+) -> bool
+```
+
+Whether a dataset or template is in the local cache.
+
+True once the fetcher named `fetcher_name` has recorded a complete release in the cache, so calling it again reads from disk without downloading (unless it is called with `refresh=True`).
+
+Parameters:
+
+- #### **`fetcher_name`**
+
+  (`str`) –
+
+  Name of a `confusius.datasets` fetcher, e.g. `"fetch_template_pepe_mariani_2026"`.
+- #### **`data_dir`**
+
+  (`str or Path`, default: `None` ) –
+
+  Cache directory. Defaults to the directory resolved by `get_datasets_dir`.
+
+Returns:
+
+- `bool` –
+
+  Whether the fetcher's release inventory is on disk.
+
+Raises:
+
+- `KeyError` –
+
+  If `fetcher_name` is not a registered fetcher.
+
+Examples:
+
+```pycon
+>>> is_dataset_cached("fetch_template_pepe_mariani_2026")
+False
+```
 
 ### list\_datasets
 

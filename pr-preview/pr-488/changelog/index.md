@@ -6,9 +6,14 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+
+### ✨ Enhancements
+
+- New `is_brainglobe_atlas_cached` and `is_dataset_cached` tell whether a BrainGlobe atlas, or a ConfUSIus dataset or template, can be fetched without downloading ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 
 ### ⚡ Performance
 
@@ -26,9 +31,9 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
-- New **Atlas** tab: load any BrainGlobe atlas (downloaded ones listed first) and for each one add its template, annotation and hemispheres layers, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. Atlases stay on disk until a volume is displayed or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`huang_2025`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The `confusius` launcher takes `--atlas NAME [NAME ...]` and `--template NAME [NAME ...]` to open the plugin with BrainGlobe atlases (with their volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- New **Atlas** tab: load a BrainGlobe atlas (downloaded ones listed first), add its template, annotation and hemispheres layers one at a time, read from disk or into memory, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. The atlas stays on disk until a volume is displayed or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
 ## 0.8.0

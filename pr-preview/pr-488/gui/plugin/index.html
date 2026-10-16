@@ -3898,41 +3898,50 @@ writing any Python. It has two pages, switched with the buttons at its top:
 <h3 id="atlases">Atlases<a class="headerlink" href="#atlases" title="Permanent link">&para;</a></h3>
 <p>The <strong>Atlas</strong> dropdown lists every atlas known to
 <a href="https://brainglobe.info/documentation/brainglobe-atlasapi/index.html">BrainGlobe</a>,
-with the ones already in your BrainGlobe cache first and marked <code>(downloaded)</code>. The
-list is fetched the first time you open the panel; without a network connection it
-falls back to BrainGlobe's cached list, or to the downloaded atlases alone.</p>
+with the ones already in your BrainGlobe cache first and marked <code>(downloaded)</code>, or
+<code>(downloaded, update available)</code> when BrainGlobe has published a newer version than
+the cached one. Loading always uses the cached version; to update an atlas, run
+<code>brainglobe update -a &lt;atlas&gt;</code> in a terminal. The list is fetched the first time you
+open the panel; without a network connection it falls back to BrainGlobe's cached
+list, or to the downloaded atlases alone.</p>
 <ol>
 <li>Pick an atlas and click <strong>Load atlas</strong>. The first load of an atlas downloads it
-   into the BrainGlobe cache (shared with other BrainGlobe tools) while the progress
-   bar animates; later loads read from the cache. The atlas stays on disk and
-   appears as a row under <strong>Loaded atlases</strong>. An atlas can be loaded once; the button
-   is disabled while the selected atlas is already in the list.</li>
-<li>Each row has four buttons:<ul>
-<li><strong>Volumes</strong> adds three layers, <code>&lt;atlas&gt; template</code> (Image), <code>&lt;atlas&gt; annotation</code>
-  (Labels, colored with the atlas palette) and <code>&lt;atlas&gt; hemispheres</code> (Labels).</li>
-<li><strong>Tree</strong> opens the structure hierarchy in a right dock named
-  <code>Atlas structures: &lt;atlas&gt;</code>, with one row per region showing its acronym, name,
-  id and color. Click again to hide it. The tree is for browsing only.</li>
-<li><strong>Masks</strong> opens the <strong>Region masks</strong> group below for that atlas. Click again to
-  hide it.</li>
-<li><strong>✕</strong> removes the atlas from the list, closes its tree, and frees its memory.
-  Layers already added stay in the viewer.</li>
-</ul>
-</li>
+   into the BrainGlobe cache (shared with other BrainGlobe tools): a note under the
+   dropdown says so for as long as the download runs, which can take several minutes
+   for fine atlases such as <code>allen_mouse_10um</code>; the atlas then joins the downloaded
+   group of the dropdown. Later loads read from the cache in a second or two. The
+   atlas stays on disk. One atlas is loaded at a time: the dropdown
+   and <strong>Load atlas</strong> lock until <strong>✕</strong> removes it, and the buttons below become
+   active.</li>
+<li><strong>Template</strong>, <strong>Annotation</strong> and <strong>Hemispheres</strong> each add that volume as a layer:
+   <code>&lt;atlas&gt; template</code> (Image), <code>&lt;atlas&gt; annotation</code> (Labels, colored with the atlas
+   palette) or <code>&lt;atlas&gt; hemispheres</code> (Labels). Clicking a button again adds the layer
+   again under a numbered name. With <strong>Make layers lazily</strong> checked, the default, the
+   layer reads the displayed slices from disk, which keeps memory low for fine
+   atlases. Uncheck it to read the clicked volume once in the background instead (a
+   few hundred megabytes for a 25 µm mouse atlas): its layer then scrubs smoothly,
+   and the region masks reuse the volume.</li>
+<li><strong>Structure tree</strong> opens the structure hierarchy in a right dock named
+   <code>Atlas structures: &lt;atlas&gt;</code>, with one row per region showing its acronym, name, id
+   and color. Click again to hide it. The tree is for browsing only.</li>
+<li><strong>✕</strong> removes the atlas, closes its tree, empties the <strong>Region masks</strong> group below
+   and frees its memory. Layers already added stay in the viewer.</li>
 </ol>
 <p>The three volumes share one voxel grid in millimeters, so they line up with any <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 layer loaded through the Data I/O Panel once the recording is registered to the atlas
 space.</p>
 <div class="admonition warning">
 <p class="admonition-title">Memory</p>
-<p>Loading an atlas reads no voxels, and the layers added by <strong>Volumes</strong> read only
-the slices on screen. <strong>Load masks</strong> reads the whole annotation and hemispheres
-volumes into memory the first time, which needs several gigabytes for
-high-resolution atlases such as <code>allen_mouse_10um</code>; prefer the 25 µm or 50 µm
-versions when building masks.</p>
+<p>Loading an atlas reads no voxels, and the volume layers read only the slices on
+screen while <strong>Make layers lazily</strong> is checked. <strong>Load masks</strong> reads the whole
+annotation and hemispheres volumes into
+memory the first time, which needs several gigabytes for high-resolution atlases
+such as <code>allen_mouse_10um</code>; prefer the 25 µm or 50 µm versions when building
+masks.</p>
 </div>
 <h3 id="region-masks">Region masks<a class="headerlink" href="#region-masks" title="Permanent link">&para;</a></h3>
-<p>The <strong>Region masks</strong> group shows which atlas it is linked to right in the title.</p>
+<p>The <strong>Region masks</strong> group is greyed out until an atlas is loaded, then lists its
+structures.</p>
 <ol>
 <li>Type in <strong>Search</strong> to filter the structures. The pattern is a case-insensitive
    regular expression matched against both the acronym and the name, exactly like
@@ -3950,18 +3959,21 @@ versions when building masks.</p>
 <h3 id="fusi-templates"><abbr title="Functional Ultrasound Imaging">fUSI</abbr> templates<a class="headerlink" href="#fusi-templates" title="Permanent link">&para;</a></h3>
 <p>The <strong>Template</strong> dropdown lists the templates shipped in
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;datasets&lt;/span&gt;" href="../../api/datasets/#confusius.datasets"><code>confusius.datasets</code></a> by the name of their fetcher
-(<code>huang_2025</code> for <code>fetch_template_huang_2025</code>, ...); the line beneath it names the
+(<code>brunner_grillet_2021</code> for <code>fetch_template_brunner_grillet_2021</code>, ...); the line beneath it names the
 reference atlas each template is aligned to. Click <strong>Load template</strong> to download it on
-first use (it is cached afterwards) and add it as an Image layer named after the
-template.</p>
+first use (a note under the dropdown says so; it is cached afterwards) and add it as
+an Image layer named after the template. The voxels are read into memory once, a
+few tens of megabytes; check
+<strong>Load lazily</strong> to leave them on disk and let napari read each displayed slice
+instead, which browses slower for these gzip-compressed files.</p>
 <div class="admonition tip">
-<p class="admonition-title">Launch with atlases or templates from the CLI</p>
-<p><code>--atlas</code> and <code>--template</code> take one or more names and open the plugin with them
-loaded: atlases with their three volume layers, templates as Image layers.
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>--atlas<span class="w"> </span>allen_mouse_25um<span class="w"> </span>whs_sd_rat_39um<span class="w"> </span>--template<span class="w"> </span>huang_2025
+<p class="admonition-title">Launch with an atlas or templates from the CLI</p>
+<p><code>--atlas</code> takes one atlas name and <code>--template</code> one or more template names; the
+plugin opens with them loaded, the atlas with its three volume layers and the
+templates as Image layers.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>--atlas<span class="w"> </span>allen_mouse_25um<span class="w"> </span>--template<span class="w"> </span>brunner_grillet_2021
 </span></code></pre></div>
-Put data files before these options, since each takes every name that follows
-it.</p>
+Put data files before <code>--template</code>, since it takes every name that follows it.</p>
 </div>
 <h2 id="video-panel">Video Panel<a class="headerlink" href="#video-panel" title="Permanent link">&para;</a></h2>
 <p>The Video Panel loads one or more videos (<code>.mp4</code>, <code>.mov</code>, <code>.avi</code>) and

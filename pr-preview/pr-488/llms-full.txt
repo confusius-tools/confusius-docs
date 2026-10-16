@@ -3522,19 +3522,19 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 >>> from confusius.datasets import list_datasets
 >>>
 >>> list_datasets()
-                   Available Datasets
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
-┃ Fetch function                   ┃     Size ┃ On disk ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✗    │
-│ fetch_pereira_2025               │ 29.96 GB │    ✗    │
-│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✗    │
-│ fetch_pepe_mariani_2026          │ 37.56 GB │    ✗    │
-│ fetch_landemard_2026             │ 42.04 GB │    ✗    │
-│ fetch_khallaf_2026               │ 24.02 GB │    ✗    │
-│ fetch_template_huang_2025        │ 16.34 MB │    ✗    │
-│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✗    │
-└──────────────────────────────────┴──────────┴─────────┘
+                     Available Datasets
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃ Fetch function                      ┃     Size ┃ On disk ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│ fetch_nunez_elizalde_2022           │ 6.983 GB │    ✗    │
+│ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
+│ fetch_cybis_pereira_2026            │ 12.88 GB │    ✗    │
+│ fetch_pepe_mariani_2026             │ 37.56 GB │    ✗    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_khallaf_2026                  │ 24.02 GB │    ✗    │
+│ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
+│ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✗    │
+└─────────────────────────────────────┴──────────┴─────────┘
 ```
 
 The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
@@ -3759,14 +3759,17 @@ Versions are immutable and use separate cache directories. Refreshing an unchang
 
 ## Available Templates
 
-A vascular mouse fUSI template derived from Huang et al. (2025)[^/pr-preview/pr-488/user-guide/datasets/#huang2025] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~16.3 MB**.
+A vascular mouse fUSI template from Brunner, Grillet et al. (2021)[^/pr-preview/pr-488/user-guide/datasets/#brunner2021], sourced from the Macé and Montaldo Zenodo dataset[^/pr-preview/pr-488/user-guide/datasets/#brunner_dataset] and distributed as a NIfTI with its JSON sidecar in the S3 collection under **CC BY 4.0**. Total size: **\~16.3 MB**.
 
-Use `fetch_template_huang_2025` to download and load the template directly. The Huang 2025 template is already resampled to the Allen space:
+Use `fetch_template_brunner_grillet_2021` to download and load the template directly. Its axes are reordered onto the Allen 50 µm grid, whose affine is explicitly assigned without changing vascular voxel values:
 
 ```python
-from confusius.datasets import fetch_brainglobe_atlas, fetch_template_huang_2025
+from confusius.datasets import (
+    fetch_brainglobe_atlas,
+    fetch_template_brunner_grillet_2021,
+)
 
-template = fetch_template_huang_2025()
+template = fetch_template_brunner_grillet_2021()
 atlas = fetch_brainglobe_atlas("allen_mouse_50um")
 ```
 
@@ -3812,7 +3815,9 @@ See the `confusius.datasets` API reference for the full list of parameters and r
 
 [^/pr-preview/pr-488/user-guide/datasets/#khallaf2026]: Khallaf, M. A. et al. (2026). A queen odour mediates reproductive suppression in a eusocial mammal. *Nature*. [https://doi.org/10.1038/s41586-026-10772-5](<https://doi.org/10.1038/s41586-026-10772-5>)
 
-[^/pr-preview/pr-488/user-guide/datasets/#huang2025]: Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. [https://doi.org/10.1101/2025.09.16.676515](<https://doi.org/10.1101/2025.09.16.676515>)
+[^/pr-preview/pr-488/user-guide/datasets/#brunner2021]: Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+
+[^/pr-preview/pr-488/user-guide/datasets/#brunner_dataset]: Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). *Zenodo*. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
 
 [^/pr-preview/pr-488/user-guide/datasets/#pepe_mariani2026]: Pepe, C. et al. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). [https://doi.org/10.64898/2026.02.05.704055](<https://doi.org/10.64898/2026.02.05.704055>)
 
@@ -4142,15 +4147,12 @@ The Atlas Panel brings brain atlases and fUSI templates into the viewer without 
 
 ### Atlases
 
-The **Atlas** dropdown lists every atlas known to [BrainGlobe](<https://brainglobe.info/documentation/brainglobe-atlasapi/index.html>), with the ones already in your BrainGlobe cache first and marked `(downloaded)`. The list is fetched the first time you open the panel; without a network connection it falls back to BrainGlobe's cached list, or to the downloaded atlases alone.
+The **Atlas** dropdown lists every atlas known to [BrainGlobe](<https://brainglobe.info/documentation/brainglobe-atlasapi/index.html>), with the ones already in your BrainGlobe cache first and marked `(downloaded)`, or `(downloaded, update available)` when BrainGlobe has published a newer version than the cached one. Loading always uses the cached version; to update an atlas, run `brainglobe update -a <atlas>` in a terminal. The list is fetched the first time you open the panel; without a network connection it falls back to BrainGlobe's cached list, or to the downloaded atlases alone.
 
-1. Pick an atlas and click **Load atlas**. The first load of an atlas downloads it into the BrainGlobe cache (shared with other BrainGlobe tools) while the progress bar animates; later loads read from the cache. The atlas stays on disk and appears as a row under **Loaded atlases**. An atlas can be loaded once; the button is disabled while the selected atlas is already in the list.
-2. Each row has four buttons:
-
-   - **Volumes** adds three layers, `<atlas> template` (Image), `<atlas> annotation` (Labels, colored with the atlas palette) and `<atlas> hemispheres` (Labels).
-   - **Tree** opens the structure hierarchy in a right dock named `Atlas structures: <atlas>`, with one row per region showing its acronym, name, id and color. Click again to hide it. The tree is for browsing only.
-   - **Masks** opens the **Region masks** group below for that atlas. Click again to hide it.
-   - **✕** removes the atlas from the list, closes its tree, and frees its memory. Layers already added stay in the viewer.
+1. Pick an atlas and click **Load atlas**. The first load of an atlas downloads it into the BrainGlobe cache (shared with other BrainGlobe tools): a note under the dropdown says so for as long as the download runs, which can take several minutes for fine atlases such as `allen_mouse_10um`; the atlas then joins the downloaded group of the dropdown. Later loads read from the cache in a second or two. The atlas stays on disk. One atlas is loaded at a time: the dropdown and **Load atlas** lock until **✕** removes it, and the buttons below become active.
+2. **Template**, **Annotation** and **Hemispheres** each add that volume as a layer: `<atlas> template` (Image), `<atlas> annotation` (Labels, colored with the atlas palette) or `<atlas> hemispheres` (Labels). Clicking a button again adds the layer again under a numbered name. With **Make layers lazily** checked, the default, the layer reads the displayed slices from disk, which keeps memory low for fine atlases. Uncheck it to read the clicked volume once in the background instead (a few hundred megabytes for a 25 µm mouse atlas): its layer then scrubs smoothly, and the region masks reuse the volume.
+3. **Structure tree** opens the structure hierarchy in a right dock named `Atlas structures: <atlas>`, with one row per region showing its acronym, name, id and color. Click again to hide it. The tree is for browsing only.
+4. **✕** removes the atlas, closes its tree, empties the **Region masks** group below and frees its memory. Layers already added stay in the viewer.
 
 The three volumes share one voxel grid in millimeters, so they line up with any fUSI layer loaded through the Data I/O Panel once the recording is registered to the atlas space.
 
@@ -4158,11 +4160,11 @@ The three volumes share one voxel grid in millimeters, so they line up with any 
 >
 > **Memory**
 >
-> Loading an atlas reads no voxels, and the layers added by **Volumes** read only the slices on screen. **Load masks** reads the whole annotation and hemispheres volumes into memory the first time, which needs several gigabytes for high-resolution atlases such as `allen_mouse_10um`; prefer the 25 µm or 50 µm versions when building masks.
+> Loading an atlas reads no voxels, and the volume layers read only the slices on screen while **Make layers lazily** is checked. **Load masks** reads the whole annotation and hemispheres volumes into memory the first time, which needs several gigabytes for high-resolution atlases such as `allen_mouse_10um`; prefer the 25 µm or 50 µm versions when building masks.
 
 ### Region masks
 
-The **Region masks** group shows which atlas it is linked to right in the title.
+The **Region masks** group is greyed out until an atlas is loaded, then lists its structures.
 
 1. Type in **Search** to filter the structures. The pattern is a case-insensitive regular expression matched against both the acronym and the name, exactly like `search`. Use anchors for an exact acronym, e.g. `^VISp$`. An empty field lists every structure.
 2. Select one or more rows and click **▼ Add**, or double-click a row, to move it to the lower table. **▲ Remove** or a double-click takes it back. A region can only be added once.
@@ -4171,19 +4173,19 @@ The **Region masks** group shows which atlas it is linked to right in the title.
 
 ### fUSI templates
 
-The **Template** dropdown lists the templates shipped in `confusius.datasets` by the name of their fetcher (`huang_2025` for `fetch_template_huang_2025`, ...); the line beneath it names the reference atlas each template is aligned to. Click **Load template** to download it on first use (it is cached afterwards) and add it as an Image layer named after the template.
+The **Template** dropdown lists the templates shipped in `confusius.datasets` by the name of their fetcher (`brunner_grillet_2021` for `fetch_template_brunner_grillet_2021`, ...); the line beneath it names the reference atlas each template is aligned to. Click **Load template** to download it on first use (a note under the dropdown says so; it is cached afterwards) and add it as an Image layer named after the template. The voxels are read into memory once, a few tens of megabytes; check **Load lazily** to leave them on disk and let napari read each displayed slice instead, which browses slower for these gzip-compressed files.
 
 > [!TIP]
 >
-> **Launch with atlases or templates from the CLI**
+> **Launch with an atlas or templates from the CLI**
 >
-> `--atlas` and `--template` take one or more names and open the plugin with them loaded: atlases with their three volume layers, templates as Image layers.
+> `--atlas` takes one atlas name and `--template` one or more template names; the plugin opens with them loaded, the atlas with its three volume layers and the templates as Image layers.
 >
 > ```bash
-> confusius --atlas allen_mouse_25um whs_sd_rat_39um --template huang_2025
+> confusius --atlas allen_mouse_25um --template brunner_grillet_2021
 > ```
 >
-> Put data files before these options, since each takes every name that follows it.
+> Put data files before `--template`, since it takes every name that follows it.
 
 ## Video Panel
 
@@ -6921,15 +6923,21 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
-- **`fetch_template_huang_2025`** –
+- **`fetch_template_brunner_grillet_2021`** –
 
-  Fetch the Huang et al. (2025) mouse vascular fUSI template.
+  Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 - **`fetch_template_pepe_mariani_2026`** –
 
   Fetch the Pepe, Mariani et al. (2026) mouse fUSI template.
 - **`get_datasets_dir`** –
 
   Return the confusius data directory.
+- **`is_brainglobe_atlas_cached`** –
+
+  Whether a BrainGlobe atlas can be fetched without downloading its volumes.
+- **`is_dataset_cached`** –
+
+  Whether a dataset or template is in the local cache.
 - **`list_datasets`** –
 
   Print a table of available datasets.
@@ -7476,17 +7484,17 @@ Returns:
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
-### fetch\_template\_huang\_2025
+### fetch\_template\_brunner\_grillet\_2021
 
 ```python
-fetch_template_huang_2025(
+fetch_template_brunner_grillet_2021(
     data_dir: str | Path | None = None,
     refresh: bool = False,
     print_citation: bool = True,
 ) -> DataArray
 ```
 
-Fetch the Huang et al. (2025) mouse vascular fUSI template.
+Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
 
 Downloads the template from the ConfUSIus dataset collection, caches it locally, and returns the loaded NIfTI as a VoxelData array.
 
@@ -7516,9 +7524,10 @@ Returns:
 
 **References**
 
-1. Huang, Y.-A. et al. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. [https://doi.org/10.1101/2025.09.16.676515](<https://doi.org/10.1101/2025.09.16.676515>)
-2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
-3. Template license (CC BY-NC-SA 4.0): [https://creativecommons.org/licenses/by-nc-sa/4.0/](<https://creativecommons.org/licenses/by-nc-sa/4.0/>)
+1. Brunner, C., Grillet, M. et al. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. Nature Protocols, 16, 3547–3571. [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>)
+2. Macé, E. and Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). Zenodo. [https://doi.org/10.5281/zenodo.4905862](<https://doi.org/10.5281/zenodo.4905862>)
+3. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+4. Template license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
 
 ### fetch\_template\_pepe\_mariani\_2026
 
@@ -7593,6 +7602,81 @@ Returns:
 - `Path` –
 
   Resolved data directory (created if it does not exist).
+
+### is\_brainglobe\_atlas\_cached
+
+```python
+is_brainglobe_atlas_cached(atlas_name: str) -> bool
+```
+
+Whether a BrainGlobe atlas can be fetched without downloading its volumes.
+
+True when the atlas metadata and every volume `fetch_brainglobe_atlas` reads (`template`, `annotation` and, for asymmetric atlases, `hemispheres`) are in BrainGlobe's default cache (`~/.brainglobe`). Region meshes are not checked. Never touches the network.
+
+Parameters:
+
+- #### **`atlas_name`**
+
+  (`str`) –
+
+  BrainGlobe atlas name, e.g. `"allen_mouse_25um"`.
+
+Returns:
+
+- `bool` –
+
+  Whether the next fetch of `atlas_name` reads everything from the cache.
+
+Examples:
+
+```pycon
+>>> is_brainglobe_atlas_cached("allen_mouse_100um")
+True
+```
+
+### is\_dataset\_cached
+
+```python
+is_dataset_cached(
+    fetcher_name: str, data_dir: str | Path | None = None
+) -> bool
+```
+
+Whether a dataset or template is in the local cache.
+
+True once the fetcher named `fetcher_name` has recorded a complete release in the cache, so calling it again reads from disk without downloading (unless it is called with `refresh=True`).
+
+Parameters:
+
+- #### **`fetcher_name`**
+
+  (`str`) –
+
+  Name of a `confusius.datasets` fetcher, e.g. `"fetch_template_pepe_mariani_2026"`.
+- #### **`data_dir`**
+
+  (`str or Path`, default: `None` ) –
+
+  Cache directory. Defaults to the directory resolved by `get_datasets_dir`.
+
+Returns:
+
+- `bool` –
+
+  Whether the fetcher's release inventory is on disk.
+
+Raises:
+
+- `KeyError` –
+
+  If `fetcher_name` is not a registered fetcher.
+
+Examples:
+
+```pycon
+>>> is_dataset_cached("fetch_template_pepe_mariani_2026")
+False
+```
 
 ### list\_datasets
 
@@ -24525,7 +24609,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_46958/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46581/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24742,7 +24826,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3ec01697b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff9f7e816a0>
     ```
 - [ ] Attributes: (27)
 
@@ -25150,7 +25234,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.2 s
+**Total running time:** 11.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25219,7 +25303,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_52532/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_52152/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25487,7 +25571,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f13f8cfc110>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f76bfd60590>
     ```
   - region
 
@@ -25610,7 +25694,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f13f8db4830\>
+  \<matplotlib.colors.Normalize object at 0x7f76bfe046e0\>
 
 ## Plot the seed maps
 
@@ -25650,7 +25734,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 11.9 s
+**Total running time:** 12.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -25994,7 +26078,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe933abb250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fded4187250>
     ```
 - [ ] Attributes: (21)
 
@@ -26391,7 +26475,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe926c3c3d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdec832f070>
     ```
 - [ ] Attributes: (23)
 
@@ -26560,7 +26644,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 48.0 s
+**Total running time:** 49.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26908,7 +26992,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f39093e20d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f48b641e0d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27280,7 +27364,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 171.6 s
+**Total running time:** 180.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27622,7 +27706,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5d405a60d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8b6751e0d0>
     ```
 - [ ] Attributes: (25)
 
@@ -28022,7 +28106,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 184.6 s
+**Total running time:** 191.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28370,7 +28454,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f56aa0ea0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe5681960d0>
     ```
 - [ ] Attributes: (25)
 
@@ -28764,7 +28848,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 174.9 s
+**Total running time:** 179.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29105,7 +29189,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f3e839c2c40>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fe388766090>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29120,7 +29204,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...40\>, beta=6.7) |
+|  | hrf\_model | functools.par...90\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29139,7 +29223,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f3e8088e990\>, \<confusius.gl...x7f3e80886d70\>, \<confusius.gl...x7f3e907f0290\>, \<confusius.gl...x7f3e808f7240\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fe388d37110\>, \<confusius.gl...x7fe37c6fba80\>, \<confusius.gl...x7fe37c641d90\>, \<confusius.gl...x7fe390967df0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29254,7 +29338,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 84.1 s
+**Total running time:** 83.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/glm/first_level.ipynb>)
 
@@ -29622,7 +29706,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fefb4fde0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0fd6ed20d0>
     ```
 - [ ] Attributes: (21)
 
@@ -29859,7 +29943,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 17.6 s
+**Total running time:** 18.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30127,7 +30211,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9bef4123c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3450e32270>
     ```
 - [ ] Attributes: (25)
 
@@ -30553,7 +30637,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9c285d9950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3488fd5950>
     ```
 - [ ] Attributes: (25)
 
@@ -30913,7 +30997,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9bee5a16d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f344fdb56d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31260,7 +31344,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 7.8 s
+**Total running time:** 7.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31603,7 +31687,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f12814a3100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fadd853b100>
     ```
   - time
 
@@ -31884,7 +31968,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f12786bb6b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fadd0753770>
     ```
 - [ ] Attributes: (6)
 
@@ -31957,7 +32041,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 37.1 s
+**Total running time:** 37.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -31993,19 +32077,19 @@ cf.datasets.list_datasets()
 ```
 
 ```
-                   Available Datasets                    
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
-┃ Fetch function                   ┃     Size ┃ On disk ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ fetch_nunez_elizalde_2022        │ 6.983 GB │    ✓    │
-│ fetch_pereira_2025               │ 29.96 GB │    ✗    │
-│ fetch_cybis_pereira_2026         │ 12.88 GB │    ✓    │
-│ fetch_pepe_mariani_2026          │ 37.56 GB │    ✓    │
-│ fetch_landemard_2026             │ 42.04 GB │    ✗    │
-│ fetch_khallaf_2026               │ 24.02 GB │    ✓    │
-│ fetch_template_huang_2025        │ 16.34 MB │    ✗    │
-│ fetch_template_pepe_mariani_2026 │ 5.508 MB │    ✓    │
-└──────────────────────────────────┴──────────┴─────────┘
+                     Available Datasets                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃ Fetch function                      ┃     Size ┃ On disk ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│ fetch_nunez_elizalde_2022           │ 6.983 GB │    ✓    │
+│ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
+│ fetch_cybis_pereira_2026            │ 12.88 GB │    ✓    │
+│ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
+│ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
+│ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
+└─────────────────────────────────────┴──────────┴─────────┘
 ```
 
 ## Data formats
@@ -32082,7 +32166,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.8 s
+**Total running time:** 5.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32514,7 +32598,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2ef4f85430>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc0bca658b0>
     ```
 - [ ] Attributes: (25)
 
@@ -32633,7 +32717,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 9.8 s
+**Total running time:** 9.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32916,7 +33000,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f60ad988770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cc4dbc770>
     ```
 - [ ] Attributes: (27)
 
@@ -33132,7 +33216,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 85.0 s
+**Total running time:** 85.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33380,7 +33464,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4dcf4efbb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcb9c43fe10>
     ```
 - [ ] Attributes: (23)
 
@@ -33661,7 +33745,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4dd1c33350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcba0e37350>
     ```
 - [ ] Attributes: (23)
 
@@ -33866,49 +33950,49 @@ xarray.DataArray
 
 - [ ]
 
-  4.189e-13 8.015e-13 1.87e-13 -1.272e-12 ... -574.0 -202.4 -16.54
+  \-1.835e-12 6.389e-14 2.192e-14 -8.894e-13 ... -513.8 -229.8 -81.54
 
   ```
-  array([[[[ 4.18944848e-13,  8.01464267e-13,  1.87047593e-13, ...,
-            -9.41558341e-12, -2.88105528e-13,  5.00472324e-16],
-           [-1.49222388e-14,  2.01507835e-14, -6.22825534e-15, ...,
-            -1.30195043e-12, -6.43871248e-14,  1.10643969e-14],
-           [-4.03660572e-13, -1.64924226e-13, -2.10554230e-13, ...,
-            -1.72866639e-13,  4.54681503e-14,  2.95249969e-14],
+  array([[[[-1.83511283e-12,  6.38866648e-14,  2.19214123e-14, ...,
+            -1.95720319e-12, -5.59332043e-13, -1.38127191e-14],
+           [-7.75103185e-14, -5.80543453e-15, -1.60790657e-14, ...,
+            -3.69888151e-13, -5.22822963e-14,  5.45720483e-15],
+           [-7.57259796e-13, -1.73745095e-13, -1.96315636e-13, ...,
+            -1.76006310e-13,  4.05695871e-14,  3.11639843e-14],
            ...,
-           [-1.94828545e-13,  3.00421750e-15,  4.88568909e-13, ...,
-             2.30825440e-13,  9.35400226e-13,  5.39121010e-13],
-           [ 3.25461521e-13,  1.58126476e-13,  3.09514474e-13, ...,
-             1.66253287e-13,  8.33569257e-14,  2.12330863e-14],
-           [ 6.62095165e-12,  8.36026853e-13,  3.41699122e-13, ...,
-             4.00719147e-13,  2.52290582e-13,  6.55958925e-14]],
+           [-1.77474310e-13, -9.44681670e-15,  5.02616047e-13, ...,
+             2.27490371e-13,  1.74291967e-13,  6.19069189e-14],
+           [ 6.61308466e-13,  1.67796640e-13,  2.68500960e-13, ...,
+             1.68373223e-13,  1.90685129e-13,  6.39325354e-14],
+           [ 2.58437866e-11,  1.26853917e-12,  4.02738281e-13, ...,
+             5.57872526e-13,  9.83586844e-13,  1.21772123e-11]],
 
-          [[ 4.90926603e-16,  9.39169281e-16,  2.19185509e-16, ...,
-            -1.10333387e-14, -3.37606894e-16,  5.86461869e-19],
-           [-1.74861299e-17,  2.36130263e-17, -7.29837414e-18, ...,
-            -1.52564736e-15, -7.54499136e-17,  1.29654460e-17],
-           [-4.73016233e-16, -1.93260977e-16, -2.46730981e-16, ...,
-            -2.02568029e-16,  5.32803417e-17,  3.45978869e-17],
+          [[-2.15041601e-15,  7.48634662e-17,  2.56878789e-17, ...,
+            -2.29348355e-15, -6.55434677e-16, -1.61859761e-17],
+           [-9.08278923e-17, -6.80290563e-18, -1.88417191e-17, ...,
+            -4.33441145e-16, -6.12652724e-17,  6.39484423e-18],
+           [-8.87369740e-16, -2.03597419e-16, -2.30045957e-16, ...,
+            -2.06247149e-16,  4.75401232e-17,  3.65184800e-17],
   ...
-            -9.34178541e-02, -9.94178653e-02, -1.16071565e-02],
-           [ 7.90613330e-02,  5.61920866e-02,  1.29485522e-01, ...,
-            -1.66082711e-01, -8.24966558e-02, -9.12257960e-03],
-           [ 1.97946992e-01,  2.01846331e-01,  3.96904112e-02, ...,
-            -6.72629493e-01, -2.37188500e-01, -1.93866709e-02]],
+            -9.57917438e-02, -6.91474552e-02, -4.74592287e-03],
+           [ 4.16513956e-02,  6.81092523e-02,  1.56547048e-01, ...,
+            -1.49194856e-01, -9.34390749e-02, -1.82250173e-02],
+           [ 3.51872984e-01,  2.60352802e-01,  8.15455104e-02, ...,
+            -6.02051799e-01, -2.69274244e-01, -9.55553296e-02]],
 
-          [[ 7.43658468e+03,  4.43377074e+02, -6.56007892e+02, ...,
-            -1.27518119e+03, -8.91665756e+02,  1.12030666e+05],
-           [ 6.37087210e+01,  3.97756188e+01, -1.23505294e+02, ...,
-            -1.47350808e+02,  1.19845282e+02,  9.19346838e+02],
-           [-1.09966158e+03,  1.24719234e+02,  7.56616914e+01, ...,
-            -9.01217058e+01,  2.94472657e+01,  1.51227406e+01],
+          [[ 3.90151084e+04,  5.78871186e+02, -1.33067143e+03, ...,
+            -4.40915524e+03, -4.20375893e+02,  1.31556340e+05],
+           [-2.22501684e+03,  5.06064827e+01, -7.39038533e+01, ...,
+            -1.05535151e+02,  1.06110314e+02,  2.93812287e+02],
+           [-4.67839595e+02,  1.61585548e+02,  6.27162117e+01, ...,
+            -9.12147734e+01,  2.65261525e+01,  1.64508779e+01],
            ...,
-           [-4.20803640e+02,  9.19526257e+01,  2.91742197e+02, ...,
-            -7.97205290e+01, -8.48407931e+01, -9.90526566e+00],
-           [ 6.74690231e+01,  4.79529627e+01,  1.10499801e+02, ...,
-            -1.41730954e+02, -7.04006436e+01, -7.78498794e+00],
-           [ 1.68923150e+02,  1.72250758e+02,  3.38708336e+01, ...,
-            -5.74005678e+02, -2.02410910e+02, -1.65441141e+01]]]],
+           [-2.24380050e+01,  7.22237651e+01,  2.24795781e+02, ...,
+            -8.17463489e+01, -5.90087599e+01, -4.05005537e+00],
+           [ 3.55442895e+01,  5.81227826e+01,  1.33593451e+02, ...,
+            -1.27319269e+02, -7.97386383e+01, -1.55527875e+01],
+           [ 3.00279871e+02,  2.22178761e+02,  6.95889590e+01, ...,
+            -5.13776389e+02, -2.29792101e+02, -8.15445971e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34063,7 +34147,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4dad0a4d70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcb81ab5310>
     ```
 - [x] Attributes: (4)
 
@@ -34094,7 +34178,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8949
+Rigid + B-spline final metric: -0.8956
 ```
 
 ```python
@@ -34183,7 +34267,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 41.5 s
+**Total running time:** 51.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34549,7 +34633,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4a9eea2350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f82880e6350>
     ```
 - [ ] Attributes: (21)
 
@@ -34759,7 +34843,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 28.9 s
+**Total running time:** 28.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34777,9 +34861,14 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+
+### ✨ Enhancements
+
+- New `is_brainglobe_atlas_cached` and `is_dataset_cached` tell whether a BrainGlobe atlas, or a ConfUSIus dataset or template, can be fetched without downloading ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 
 ### ⚡ Performance
 
@@ -34797,9 +34886,9 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
-- New **Atlas** tab: load any BrainGlobe atlas (downloaded ones listed first) and for each one add its template, annotation and hemispheres layers, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. Atlases stay on disk until a volume is displayed or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`huang_2025`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The `confusius` launcher takes `--atlas NAME [NAME ...]` and `--template NAME [NAME ...]` to open the plugin with BrainGlobe atlases (with their volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- New **Atlas** tab: load a BrainGlobe atlas (downloaded ones listed first), add its template, annotation and hemispheres layers one at a time, read from disk or into memory, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. The atlas stays on disk until a volume is displayed or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
 ## 0.8.0
@@ -35516,32 +35605,42 @@ License: **[CC0 1.0](<https://creativecommons.org/publicdomain/zero/1.0/>)**.
 
 ## Templates
 
-### Huang et al. (2025)
+### Brunner, Grillet et al. (2021)
 
-The `fetch_template_huang_2025` function provides a vascular mouse template derived from OpenfUSAnalyzer. If you use this template in your research, please cite:
+The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
 
-> Huang, Y.-A., Lambert, T., Verbeyst, D., Fitzgerald, N. E., Grillet, M., Brunner, C., Montaldo, G., Vanduffel, W., &amp; Urban, A. (2025). OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and visualization of functional ultrasound imaging data across animal models. *bioRxiv*. https://doi.org/10.1101/2025.09.16.676515
+> Brunner, C., Grillet, M., Urban, A., Roska, B., Montaldo, G., &amp; Macé, E. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. https://doi.org/10.1038/s41596-021-00548-8
+>
+> Macé, E., &amp; Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). *Zenodo*. https://doi.org/10.5281/zenodo.4905862
 
 Or in BibTeX format:
 
 ```bibtex
-@misc{huang_ofusa:_2025,
-  title = {OfUSA: OpenfUS Analyzer, a versatile open-source framework for the analysis and
-           visualization of functional ultrasound imaging data across animal models},
-  copyright = {http://creativecommons.org/licenses/by-nc/4.0/},
-  shorttitle = {OfUSA},
-  url = {http://biorxiv.org/lookup/doi/10.1101/2025.09.16.676515},
-  doi = {10.1101/2025.09.16.676515},
-  language = {en},
-  author = {Huang, Yun-An and Lambert, Théo and Verbeyst, Damon and Fitzgerald, Nora Eilis and
-            Grillet, Micheline and Brunner, Clément and Montaldo, Gabriel and
-            Vanduffel, Wim and Urban, Alan},
-  month = sep,
-  year = {2025},
+@article{brunner2021,
+  title = {Whole-brain functional ultrasound imaging in awake head-fixed mice},
+  author = {Brunner, Clément and Grillet, Micheline and Urban, Alan and Roska, Botond and
+            Montaldo, Gabriel and Macé, Emilie},
+  journal = {Nature Protocols},
+  volume = {16},
+  number = {7},
+  pages = {3547--3571},
+  year = {2021},
+  doi = {10.1038/s41596-021-00548-8},
+}
+
+@dataset{mace_montaldo2020,
+  title = {Whole-brain visually evoked activity maps in head-fixed awake mice},
+  author = {Macé, Emilie and Montaldo, Gabriel},
+  publisher = {Zenodo},
+  year = {2020},
+  note = {June 2021 metadata update},
+  doi = {10.5281/zenodo.4905862},
 }
 ```
 
-License: **[CC BY-NC-SA 4.0](<https://creativecommons.org/licenses/by-nc-sa/4.0/>)**.
+The template conversion reorders axes and assigns the Allen 50 µm coordinate grid without changing vascular voxel values. Also cite Wang et al. (2020) for the Allen CCF reference framework: [https://doi.org/10.1016/j.cell.2020.04.007](<https://doi.org/10.1016/j.cell.2020.04.007>).
+
+License: **[CC BY 4.0](<https://creativecommons.org/licenses/by/4.0/>)**.
 
 ### Pepe, Mariani et al. (2026)
 
