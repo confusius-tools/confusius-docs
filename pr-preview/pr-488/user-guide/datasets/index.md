@@ -110,7 +110,13 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 └─────────────────────────────────────┴──────────┴─────────┘
 ```
 
-The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
+The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below). To check a single fetcher from code, for example before deciding whether a download is affordable right now, `is_dataset_cached` returns whether the fetcher already has a complete release in the cache:
+
+```python
+from confusius.datasets import is_dataset_cached
+
+is_dataset_cached("fetch_template_pepe_mariani_2026")
+```
 
 The same table is available from the command line:
 
