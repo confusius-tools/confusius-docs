@@ -18,7 +18,6 @@ Current development version for the next ConfUSIus release.
 ### ⚡ Performance
 
 - `plot_napari` opens labels data carrying an `rgb_lookup` attribute, such as atlas annotations, faster by building the colormap from the lookup instead of scanning the whole volume ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
-- `plot_napari` hands Dask-backed labels to napari lazily, so only the displayed slices are read ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 
 ### 🐛 Fixes
 
@@ -31,7 +30,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
-- New **Atlas** tab: load a BrainGlobe atlas (downloaded ones listed first), add its template, annotation and hemispheres layers one at a time, read from disk or into memory, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. The atlas stays on disk until a volume is displayed or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
+- New **Atlas** tab: load a BrainGlobe atlas (downloaded ones listed first), add its template, annotation and hemispheres layers one at a time, read from disk or into memory, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. The atlas stays on disk until a volume is read into memory or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
