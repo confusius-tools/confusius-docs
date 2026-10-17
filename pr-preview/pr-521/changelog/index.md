@@ -11,10 +11,6 @@ Current development version for the next ConfUSIus release.
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
-### ✨ Enhancements
-
-- New `is_brainglobe_atlas_cached` and `is_dataset_cached` tell whether a BrainGlobe atlas, or a ConfUSIus dataset or template, can be fetched without downloading ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-
 ### ⚡ Performance
 
 - `plot_napari` opens labels data carrying an `rgb_lookup` attribute, such as atlas annotations, faster by building the colormap from the lookup instead of scanning the whole volume ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
@@ -30,11 +26,8 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
-- New **Atlas** tab: load a BrainGlobe atlas (downloaded ones listed first), add its template, annotation and hemispheres layers one at a time, read from disk or into memory, browse its structure hierarchy in a read-only dock, search its regions to load one Labels layer per region mask with a hemisphere selector, or remove it to free memory. The atlas stays on disk until a volume is read into memory or a mask requested ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
-- The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
-- Videos play in their own viewer, docked between the main canvas and the sidebar, and follow the fUSI time in both directions without changing how the fUSI layers are displayed. They load from the **Videos** page of the **Data I/O** tab, which replaces the **Video** tab and lists them in napari's layer list with frame step, transpose, grid and delete controls. napari's Home button resets both viewers ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- Videos play in their own viewer, docked between the main canvas and the sidebar, and follow the fUSI time in both directions without changing how the fUSI layers are displayed. The **Video** tab lists them in napari's layer list with frame step, transpose, grid and delete controls. The signal and QC plot cursors follow the video time while the video viewer plays, and video messages show on the video viewer. napari's Home button resets both viewers ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 
 ## 0.8.0
@@ -317,7 +310,7 @@ Released 2026-07-07.
 ### 📚 Documentation
 
 - Add an [NMF example](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording/index.md>) to the gallery, demonstrating the z-score + absolute-value standardization that makes signed fUSI signals NMF-compatible.
-- Add an [atlas-based region correlation matrix example](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix/index.md>) to the gallery, demonstrating registration to the Pepe, Mariani *et al.* (2026) template, resampling the Allen Mouse Brain Atlas onto a recording's native grid, and plotting a region correlation matrix with `plot_matrix`'s `groups` annotation ([\#243](<https://github.com/confusius-tools/confusius/pull/243>)).
+- Add an [atlas-based region correlation matrix example](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix/index.md>) to the gallery, demonstrating registration to the Pepe-Mariani 2026 template, resampling the Allen Mouse Brain Atlas onto a recording's native grid, and plotting a region correlation matrix with `plot_matrix`'s `groups` annotation ([\#243](<https://github.com/confusius-tools/confusius/pull/243>)).
 
 ### 🔧 Maintenance
 

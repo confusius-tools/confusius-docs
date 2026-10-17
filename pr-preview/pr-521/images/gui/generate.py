@@ -19,15 +19,12 @@ Run from the project root::
 Outputs (all saved to docs/images/gui/):
 
 - `plugin-data-io.png` — Data I/O panel with a scan loaded.
-- `plugin-atlas.png` — Atlas panel with the Allen 100 µm atlas loaded and its
-  region masks filtered.
 - `plugin-signals.png` — Signals panel in hover mode.
 - `plugin-signals-points.png` — Signals panel in points mode.
 - `plugin-signals-labels.png` — Signals panel in labels mode.
 - `plugin-events-create.gif` — GIF of creating events with the Start/End workflow.
 - `plugin-qc.png` — QC panel with DVARS, carpet, and CV computed.
-- `plugin-video.gif` — Videos page of the Data I/O panel, with a video synced to
-  the fUSI acquisition.
+- `plugin-video.gif` — Video panel with video synced to the fUSI acquisition.
 - `plugin-registration.gif` — Registration panel during a rigid between-session angiography run.
 - `plugin-registration-volumewise.gif` — Registration panel during within-scan motion correction.
 
@@ -493,36 +490,6 @@ try:
     _ok("Saved plugin-data-io.png")
 except Exception as exc:
     _warn(f"plugin-data-io.png failed: {exc}")
-
-# ---------------------------------------------------------------------------
-# 1b. Atlas panel — Allen 100 µm atlas loaded, region masks filtered
-# ---------------------------------------------------------------------------
-
-try:
-    from confusius.datasets import fetch_brainglobe_atlas
-
-    _ATLAS_NAME = "allen_mouse_100um"
-    atlas_ds = fetch_brainglobe_atlas(_ATLAS_NAME, check_latest=False)
-
-    viewer1b = napari.Viewer(show=False)
-    widget1b = ConfUSIusWidget(viewer1b)
-    viewer1b.window.add_dock_widget(widget1b, name="ConfUSIus", area="right")
-    atlas_panel = _open_accordion_panel(widget1b, "Atlas")
-    # Skip the BrainGlobe listing worker: the screenshot only needs this one atlas.
-    atlas_panel._atlases_listed = True
-    atlas_panel._atlas_combo.clear()
-    atlas_panel._atlas_combo.addItem(f"{_ATLAS_NAME} (downloaded)", _ATLAS_NAME)
-    atlas_panel._on_atlas_returned(atlas_ds, _ATLAS_NAME)
-    for volume in ("template", "annotation", "hemispheres"):
-        atlas_panel._add_layer(volume)
-    atlas_panel._search_edit.setText("visual")
-    _qt_sleep(200)
-
-    _napari_screenshot(viewer1b, str(HERE / "plugin-atlas.png"))
-    viewer1b.close()
-    _ok("Saved plugin-atlas.png")
-except Exception as exc:
-    _warn(f"plugin-atlas.png failed: {exc}")
 
 # ---------------------------------------------------------------------------
 # 2. Signals panel — hover mode, voxel time series at spatial centre
@@ -1082,7 +1049,7 @@ except Exception as exc:
     _warn(f"plugin-registration-volumewise.gif failed: {exc}")
 
 # ---------------------------------------------------------------------------
-# 8. Videos page — time-scrubbing GIF via the plugin
+# 8. Video panel — time-scrubbing GIF via the plugin
 # ---------------------------------------------------------------------------
 
 try:
@@ -1114,10 +1081,9 @@ try:
     fusi_layer.contrast_limits = VIDEO_DISPLAY_CONTRAST
     _qt_sleep(100)
 
-    # Open the video from the Videos page of the Data I/O panel; it plays in the
-    # video viewer docked beside the main canvas.
-    data_io6 = _open_accordion_panel(widget6, "Data I/O")
-    data_io6._videos_page_btn.click()
+    # Open the video from the Video panel; it plays in the video viewer docked
+    # beside the main canvas.
+    _open_accordion_panel(widget6, "Video")
     video_panel = widget6.findChild(VideoPanel)
     if video_panel is None:
         raise RuntimeError("VideoPanel not found in ConfUSIusWidget")

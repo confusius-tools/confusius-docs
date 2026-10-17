@@ -2,8 +2,8 @@
 
 The ConfUSIus sidebar contains six collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
 
-- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN), and play [videos](<#videos>) in sync with them.
-- [**Atlas**](<#atlas-panel>) — load brain atlases and fUSI templates, browse the structure tree, and get ROI masks.
+- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN).
+- [**Video**](<#video-panel>) — load videos side-by-side, temporally synced with the fUSI acquisition.
 - [**Signals**](<#signals-panel>) — plot voxel, point, or label-region signals in a bottom dock.
 - [**Events**](<#events-panel>) — annotate periods of time (BIDS events) and shade them on the signal plot.
 - [**QC**](<#qc-panel>) — compute DVARS, carpet, CV, tSNR for a selected layer.
@@ -11,7 +11,7 @@ The ConfUSIus sidebar contains six collapsible panels. Each panel operates indep
 
 ## Data I/O Panel
 
-The Data I/O Panel loads and saves fUSI files without leaving the viewer, and plays videos beside them. It has two pages, switched with the buttons at its top: **fUSI recordings** for [loading](<#loading-data>) and [saving](<#saving-data>) data, and [**Videos**](<#videos>).
+The Data I/O Panel handles both loading and saving fUSI files without leaving the viewer.
 
 ### Loading data
 
@@ -46,14 +46,29 @@ Three save modes are applied automatically depending on what is available:
 | **Template** | A template layer is selected. Coordinates are borrowed from the template DataArray. |
 | **Reconstruct** | No template and no DataArray in metadata (e.g. a freshly drawn labels layer). Coordinates are reconstructed from the napari layer state (`scale`, `translate`, `axis_labels`). |
 
-### Videos
+## Video Panel
 
-The **Videos** page opens videos (`.mp4`, `.mov`, `.avi`) in a second napari viewer, the video viewer, docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time in seconds, so the video plays in sync with the recording.
+The Video Panel opens videos (`.mp4`, `.mov`, `.avi`) in a second napari viewer, the video viewer, docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time in seconds, so the video plays in sync with the recording.
+
+### Loading a video
 
 1. Type a path in **Video file** and click **Add video** (or press <kbd class="key-enter">Enter</kbd>), or click **Browse** to pick a file and add it right away.
 2. The video viewer opens with the video as a new layer. The bottom-left corner of its canvas shows the current video time.
 
 Repeat to add more videos: the video viewer shows them side by side in its grid. Frame `n` of a video is shown at `n / fps` seconds, so a video lines up with a recording whose time coordinate starts at the first video frame.
+
+> [!TIP]
+>
+> **Launch with a video from the CLI**
+>
+> Pass `--video` to open a video at launch, with or without data files:
+>
+> ```bash
+> confusius path/to/scan.nii.gz --video path/to/camera.mp4
+> confusius --video path/to/camera.mp4
+> ```
+
+### Loaded videos
 
 The **Loaded videos** group lists the video layers with napari's layer list: select, rename, reorder or hide them as you would in the main viewer. Right-click a video for a short menu with **Toggle visibility**, **Show all videos**, **Hide other videos** and **Remove selected videos**. The row above the list holds the video controls:
 
@@ -71,63 +86,6 @@ napari's **Home** button and <kbd class="key-control">Ctrl</kbd>\+<kbd class="ke
 > **Napari playback performance**
 >
 > Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher depending on user hardware and operating system). Use **Frame step** to reduce the effective frame rate if playback is choppy or buffering.
-
-> [!TIP]
->
-> **Launch with a video from the CLI**
->
-> Pass `--video` to open a video at launch, with or without data files:
->
-> ```bash
-> confusius path/to/scan.nii.gz --video path/to/camera.mp4
-> confusius --video path/to/camera.mp4
-> ```
-
-## Atlas Panel
-
-The Atlas Panel brings brain atlases and fUSI templates into the viewer without writing any Python. It has two pages, switched with the buttons at its top: **Atlases** and **fUSI templates**.
-
-### Atlases
-
-The **Atlas** dropdown lists every atlas known to [BrainGlobe](<https://brainglobe.info/documentation/brainglobe-atlasapi/index.html>), with the ones already in your BrainGlobe cache first and marked `(downloaded)`, or `(downloaded, update available)` when BrainGlobe has published a newer version than the cached one. Loading always uses the cached version; to update an atlas, run `brainglobe update -a <atlas>` in a terminal. The list is fetched the first time you open the panel; without a network connection it falls back to BrainGlobe's cached list, or to the downloaded atlases alone.
-
-1. Pick an atlas and click **Load atlas**. The first load of an atlas downloads it into the BrainGlobe cache (shared with other BrainGlobe tools): a note under the dropdown says if the download is running, which can take several minutes for bigger atlases such as `allen_mouse_10um`. Later loads read from the cache in a second or two. The atlas stays on disk. One atlas is loaded at a time: the dropdown and **Load atlas** lock until **✕** removes it, and the buttons below become active.
-2. **Template**, **Annotation** and **Hemispheres** each add that volume as a layer: `<atlas> template` (Image), `<atlas> annotation` (Labels, colored with the atlas palette) or `<atlas> hemispheres` (Labels). With **Make layers lazily** checked (the default), the layer reads the displayed slices from disk, which keeps memory low for bigger atlases. Uncheck it to read the clicked volume once in the background instead before creating the napari layer.
-3. **Structure tree** opens the structure hierarchy in a right dock named `Atlas structures: <atlas>`, with one row per region showing its acronym, name, id and color. Click again to hide it. The tree is for browsing only.
-4. **✕** removes the atlas, closes its tree, empties the **Region masks** group below and frees its memory. Layers already added stay in the viewer.
-
-The three volumes share one voxel grid in millimeters, so they line up with any fUSI layer loaded through the Data I/O Panel once the recording is registered to the atlas space.
-
-> [!WARNING]
->
-> **Memory**
->
-> Loading an atlas reads no voxels, and the volume layers read only the slices on screen while **Make layers lazily** is checked. **Load masks** reads the whole annotation and hemispheres volumes into memory the first time, which needs several gigabytes for high-resolution atlases such as `allen_mouse_10um`; prefer the 25 µm or 50 µm versions when building masks.
-
-### Region masks
-
-The **Region masks** group is greyed out until an atlas is loaded, then lists its structures.
-
-1. Type in **Search** to filter the structures. The pattern is a case-insensitive regular expression matched against both the acronym and the name, exactly like `search`. Use anchors for an exact acronym, e.g. `^VISp$`. An empty field lists every structure.
-2. Select one or more rows and click **▼ Add**, or double-click a row, to move it to the lower table. **▲ Remove** or a double-click takes it back. A region can only be added once.
-3. Choose a **Side**: `both`, `left` or `right`. It applies to every selected region.
-4. Click **Load masks**. One Labels layer is added per region, named by its acronym with an `_L` or `_R` suffix for single-hemisphere masks, holding the region id in every voxel of the region and its descendants, as `get_masks` does.
-
-### fUSI templates
-
-The **Template** dropdown lists the templates shipped in `confusius.datasets` by the name of their fetcher (`brunner_grillet_2021` for `fetch_template_brunner_grillet_2021`, ...); the line beneath it names the reference atlas each template is aligned to. Click **Load template** to download it on first use and add it as an Image layer named after the template. The voxels are read into memory if **Load lazily** is unchecked (the default); check this box to leave them on disk and let napari read each displayed slice instead.
-
-> [!TIP]
->
-> **Launch with an atlas or templates from the CLI**
->
-> `--atlas` takes one atlas name and `--template` one or more template names; the plugin opens with them loaded, the atlas with its three volume layers and the templates as Image layers.
->
-> ```bash
-> confusius --atlas allen_mouse_25um --template brunner_grillet_2021
-> ```
->
-> Put data files before `--template`, since it takes every name that follows it.
 
 ## Signals Panel
 

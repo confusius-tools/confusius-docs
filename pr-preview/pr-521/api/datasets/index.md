@@ -36,12 +36,6 @@ Functions:
 - **`get_datasets_dir`** –
 
   Return the confusius data directory.
-- **`is_brainglobe_atlas_cached`** –
-
-  Whether a BrainGlobe atlas can be fetched without downloading its volumes.
-- **`is_dataset_cached`** –
-
-  Whether a dataset or template is in the local cache.
 - **`list_datasets`** –
 
   Print a table of available datasets.
@@ -706,81 +700,6 @@ Returns:
 - `Path` –
 
   Resolved data directory (created if it does not exist).
-
-### is\_brainglobe\_atlas\_cached
-
-```python
-is_brainglobe_atlas_cached(atlas_name: str) -> bool
-```
-
-Whether a BrainGlobe atlas can be fetched without downloading its volumes.
-
-True when the atlas metadata and every volume `fetch_brainglobe_atlas` reads (`template`, `annotation` and, for asymmetric atlases, `hemispheres`) are in BrainGlobe's default cache (`~/.brainglobe`). Region meshes are not checked. Never touches the network.
-
-Parameters:
-
-- #### **`atlas_name`**
-
-  (`str`) –
-
-  BrainGlobe atlas name, e.g. `"allen_mouse_25um"`.
-
-Returns:
-
-- `bool` –
-
-  Whether the next fetch of `atlas_name` reads everything from the cache.
-
-Examples:
-
-```pycon
->>> is_brainglobe_atlas_cached("allen_mouse_100um")
-True
-```
-
-### is\_dataset\_cached
-
-```python
-is_dataset_cached(
-    fetcher_name: str, data_dir: str | Path | None = None
-) -> bool
-```
-
-Whether a dataset or template is in the local cache.
-
-True once the fetcher named `fetcher_name` has recorded a complete release in the cache, so calling it again reads from disk without downloading (unless it is called with `refresh=True`).
-
-Parameters:
-
-- #### **`fetcher_name`**
-
-  (`str`) –
-
-  Name of a `confusius.datasets` fetcher, e.g. `"fetch_template_pepe_mariani_2026"`.
-- #### **`data_dir`**
-
-  (`str or Path`, default: `None` ) –
-
-  Cache directory. Defaults to the directory resolved by `get_datasets_dir`.
-
-Returns:
-
-- `bool` –
-
-  Whether the fetcher's release inventory is on disk.
-
-Raises:
-
-- `KeyError` –
-
-  If `fetcher_name` is not a registered fetcher.
-
-Examples:
-
-```pycon
->>> is_dataset_cached("fetch_template_pepe_mariani_2026")
-False
-```
 
 ### list\_datasets
 
