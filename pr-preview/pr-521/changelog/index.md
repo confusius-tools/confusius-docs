@@ -34,6 +34,8 @@ Current development version for the next ConfUSIus release.
 - The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+- Videos play in their own viewer, docked between the main canvas and the sidebar, and follow the fUSI time in both directions without changing how the fUSI layers are displayed. They load from the **Videos** page of the **Data I/O** tab, which replaces the **Video** tab and lists them in napari's layer list with frame step, transpose, grid and delete controls. napari's Home button resets both viewers ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 
 ## 0.8.0
 

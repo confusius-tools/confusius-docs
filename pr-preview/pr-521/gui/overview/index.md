@@ -28,7 +28,7 @@ With `uvx`, no prior installation is needed:
 uvx -p 3.13 confusius
 ```
 
-The ConfUSIus sidebar contains seven collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Atlas](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#atlas-panel>), [Video](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
+The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Atlas](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#atlas-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
 
 > [!TIP]
 >

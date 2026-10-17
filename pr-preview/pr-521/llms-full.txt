@@ -4028,7 +4028,7 @@ With `uvx`, no prior installation is needed:
 uvx -p 3.13 confusius
 ```
 
-The ConfUSIus sidebar contains seven collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Atlas](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#atlas-panel>), [Video](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
+The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Atlas](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#atlas-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
 
 > [!TIP]
 >
@@ -4094,11 +4094,10 @@ ConfUSIus also registers native napari writers for NIfTI and Zarr files. These l
 
 # Using the Plugin
 
-The ConfUSIus sidebar contains seven collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
+The ConfUSIus sidebar contains six collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
 
-- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN).
+- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN), and play [videos](<#videos>) in sync with them.
 - [**Atlas**](<#atlas-panel>) — load brain atlases and fUSI templates, browse the structure tree, and get ROI masks.
-- [**Video**](<#video-panel>) — load videos side-by-side, temporally synced with the fUSI acquisition.
 - [**Signals**](<#signals-panel>) — plot voxel, point, or label-region signals in a bottom dock.
 - [**Events**](<#events-panel>) — annotate periods of time (BIDS events) and shade them on the signal plot.
 - [**QC**](<#qc-panel>) — compute DVARS, carpet, CV, tSNR for a selected layer.
@@ -4106,7 +4105,7 @@ The ConfUSIus sidebar contains seven collapsible panels. Each panel operates ind
 
 ## Data I/O Panel
 
-The Data I/O Panel handles both loading and saving fUSI files without leaving the viewer.
+The Data I/O Panel loads and saves fUSI files without leaving the viewer, and plays videos beside them. It has two pages, switched with the buttons at its top: **fUSI recordings** for [loading](<#loading-data>) and [saving](<#saving-data>) data, and [**Videos**](<#videos>).
 
 ### Loading data
 
@@ -4140,6 +4139,43 @@ Three save modes are applied automatically depending on what is available:
 | **Direct** | The layer was loaded via ConfUSIus (DataArray in metadata). Saved verbatim, all coordinates and attributes preserved. |
 | **Template** | A template layer is selected. Coordinates are borrowed from the template DataArray. |
 | **Reconstruct** | No template and no DataArray in metadata (e.g. a freshly drawn labels layer). Coordinates are reconstructed from the napari layer state (`scale`, `translate`, `axis_labels`). |
+
+### Videos
+
+The **Videos** page opens videos (`.mp4`, `.mov`, `.avi`) in a second napari viewer, the video viewer, docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time in seconds, so the video plays in sync with the recording.
+
+1. Type a path in **Video file** and click **Add video** (or press <kbd class="key-enter">Enter</kbd>), or click **Browse** to pick a file and add it right away.
+2. The video viewer opens with the video as a new layer. The bottom-left corner of its canvas shows the current video time.
+
+Repeat to add more videos: the video viewer shows them side by side in its grid. Frame `n` of a video is shown at `n / fps` seconds, so a video lines up with a recording whose time coordinate starts at the first video frame.
+
+The **Loaded videos** group lists the video layers with napari's layer list: select, rename, reorder or hide them as you would in the main viewer. Right-click a video for a short menu with **Toggle visibility**, **Show all videos**, **Hide other videos** and **Remove selected videos**. The row above the list holds the video controls:
+
+| Control | Description |
+| --- | --- |
+| **Frame step** | Show every *N*-th frame of the videos. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes `fps / N`, and the time slider still reports time in seconds. |
+| **Transpose** | Swap the two displayed axes of the video viewer. |
+| **Grid** | Toggle the grid of the video viewer. Without it, the videos are drawn on top of each other. Right-click the button to set the grid stride, width, height and spacing. |
+| **Delete** | Remove the selected videos. |
+
+napari's **Home** button and <kbd class="key-control">Ctrl</kbd>\+<kbd class="key-r">R</kbd> reset the view of both viewers. Removing the last video hides the video viewer and gives its width back to the main canvas.
+
+> [!TIP]
+>
+> **Napari playback performance**
+>
+> Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher depending on user hardware and operating system). Use **Frame step** to reduce the effective frame rate if playback is choppy or buffering.
+
+> [!TIP]
+>
+> **Launch with a video from the CLI**
+>
+> Pass `--video` to open a video at launch, with or without data files:
+>
+> ```bash
+> confusius path/to/scan.nii.gz --video path/to/camera.mp4
+> confusius --video path/to/camera.mp4
+> ```
 
 ## Atlas Panel
 
@@ -4186,48 +4222,6 @@ The **Template** dropdown lists the templates shipped in `confusius.datasets` by
 > ```
 >
 > Put data files before `--template`, since it takes every name that follows it.
-
-## Video Panel
-
-The Video Panel loads one or more videos (`.mp4`, `.mov`, `.avi`) and overlays them beside a fUSI scan in a synchronized grid. Each video becomes its own napari Image layer whose time axis is locked to the reference scan, so scrubbing the time slider plays every video in lockstep with the fUSI recording.
-
-### Loading a video
-
-1. Pick the fUSI image layer to synchronize against in the **Reference layer** dropdown. The reference must have ConfUSIus coordinate metadata, so load it through the [Data I/O Panel](<#data-io-panel>) or the [`confusius` CLI](<https://confusius.tools/pr-preview/pr-521/gui/overview/#recommended-data-panel-and-cli>) command.
-2. Insert a path or click **Browse** to pick a video file.
-3. Click **Add video**. The video appears as a new Image layer, grid mode is enabled with a single-row layout, and the viewer shows the reference scan and the video side by side.
-
-Repeat to add more videos (each will get its own cell). All videos share the reference layer's axis labels, time index, and dimensionality; their spatial scale is chosen so the video height matches the fUSI height, with isotropic pixels and the frame centered on the scan.
-
-> [!TIP]
->
-> **Launch with a video from the CLI**
->
-> Pass both a data file and `--video` to open them together:
->
-> ```bash
-> confusius path/to/scan.nii.gz --video path/to/camera.mp4
-> ```
-
-### Playback
-
-| Option | Description |
-| --- | --- |
-| **Frame step** | Show every *N*-th frame of the video. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes `fps / N`. Changes apply to every loaded video. |
-
-> [!TIP]
->
-> **Napari playback performance**
->
-> Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher depending on user hardware and operating system). Use **Frame step** to reduce the effective frame rate if playback is choppy or buffering.
-
-The time scale of each video layer is `frame_step / fps` seconds, so the napari time slider and the time overlay continue to report time in seconds regardless of the chosen step.
-
-> [!NOTE]
->
-> **Time axis is kept out of the displayed dims**
->
-> The panel installs a guard that prevents napari from ever placing the time axis in the 2D display. If you reorder dimensions such that time would become a display dimension, the order is silently corrected.
 
 ## Signals Panel
 
@@ -24609,7 +24603,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_46872/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46757/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24626,19 +24620,19 @@ xarray.DataArray
   \-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28
 
   ```
-  array([[[-18.687918, -18.569138, -18.501253, ..., -17.95731 ,
+  array([[[-18.687918, -18.569138, -18.501255, ..., -17.95731 ,
            -17.939037, -17.964108],
           [-18.535534, -18.445446, -18.356527, ..., -17.885906,
            -17.885307, -17.89217 ],
           [-18.489779, -18.407112, -18.328487, ..., -17.793518,
            -17.804783, -17.829914],
           ...,
-          [-12.315687, -13.394131, -13.825215, ..., -13.536497,
-           -13.521714, -13.627705],
-          [-12.319635, -13.353613, -13.749181, ..., -13.457007,
-           -13.386364, -13.444546],
+          [-12.315687, -13.394132, -13.825216, ..., -13.536499,
+           -13.521715, -13.627706],
+          [-12.319636, -13.353613, -13.749182, ..., -13.457008,
+           -13.386365, -13.444547],
           [-12.376516, -13.219033, -13.602533, ..., -13.36433 ,
-           -13.333444, -13.279077]]], shape=(1, 125, 80), dtype=float32)
+           -13.333445, -13.279077]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -24826,7 +24820,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb81d3716a0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9daa86d6a0>
     ```
 - [ ] Attributes: (27)
 
@@ -25234,7 +25228,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 15.9 s
+**Total running time:** 12.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25303,7 +25297,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_52443/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_52405/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25571,7 +25565,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f43cc16c4d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f99a759c650>
     ```
   - region
 
@@ -25694,7 +25688,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f43cc2246e0\>
+  \<matplotlib.colors.Normalize object at 0x7f99a76186e0\>
 
 ## Plot the seed maps
 
@@ -25734,7 +25728,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 16.5 s
+**Total running time:** 13.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26078,7 +26072,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1fe6263250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2fc0953110>
     ```
 - [ ] Attributes: (21)
 
@@ -26475,7 +26469,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1fe04cc910>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2fb4cfa190>
     ```
 - [ ] Attributes: (23)
 
@@ -26644,7 +26638,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 84.5 s
+**Total running time:** 70.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26992,7 +26986,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3d130f20d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2056bc9f90>
     ```
 - [ ] Attributes: (25)
 
@@ -27135,22 +27129,22 @@ xarray.DataArray
 
 - [ ]
 
-  1.705 0.4722 0.6064 0.5975 0.3297 ... 0.2545 1.129 0.08549 -0.1394
+  1.705 0.4722 0.6067 0.5974 0.3297 ... 0.2544 1.129 0.08552 -0.1393
 
   ```
-  array([[ 1.7054038 ,  0.47218907,  0.6064326 , ...,  0.90661407,
-           0.8411919 , -1.3073498 ],
-         [ 3.314502  ,  1.4946285 ,  0.28877422, ...,  0.22849068,
-           0.29297888,  0.74503154],
-         [ 3.6042025 ,  0.43766832,  0.08901776, ..., -0.78946877,
-           0.82339287,  0.83835304],
+  array([[ 1.7053471 ,  0.47218508,  0.60667574, ...,  0.9067501 ,
+           0.8413501 , -1.3073945 ],
+         [ 3.3142476 ,  1.4946027 ,  0.289191  , ...,  0.22860953,
+           0.29316697,  0.7450524 ],
+         [ 3.6038916 ,  0.4376343 ,  0.08941008, ..., -0.78943026,
+           0.82355165,  0.8383995 ],
          ...,
-         [ 0.19027728,  0.06551931,  1.6410432 , ...,  0.31593418,
-           1.4230698 ,  0.11517171],
-         [ 0.18749171,  1.7544034 ,  2.287215  , ...,  1.4634942 ,
-           0.67545384,  0.908817  ],
-         [ 0.6320407 ,  0.7464211 ,  1.4051484 , ...,  1.12944   ,
-           0.08549026, -0.1394371 ]], shape=(751, 10), dtype=float32)
+         [ 0.19005749,  0.06548941,  1.6409812 , ...,  0.31566784,
+           1.4230514 ,  0.11540988],
+         [ 0.18706222,  1.7543579 ,  2.2873359 , ...,  1.463107  ,
+           0.6754403 ,  0.90918803],
+         [ 0.6318028 ,  0.74639934,  1.4053494 , ...,  1.1292399 ,
+           0.08552428, -0.13928768]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27257,22 +27251,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-519.2 -3.525e+03 1.596e+03 -784.8 ... 1.026e+03 2.485e+03 1.667e+03
+  \-520.3 3.505e+03 1.6e+03 -779.5 ... 1.028e+03 2.523e+03 -1.685e+03
 
   ```
-  array([[ -519.1568  , -3524.992   ,  1596.1387  , ...,   668.32086 ,
-           1224.2369  ,  1221.0983  ],
-         [ 1309.4406  , -2365.1877  ,   315.39682 , ...,   -10.108643,
-           1006.35046 , -1100.6206  ],
-         [  344.98694 , -2330.7832  ,   614.9462  , ...,   272.7893  ,
-           1223.0826  , -1656.1445  ],
+  array([[ -520.2989 ,  3504.755  ,  1599.7559 , ...,   669.60266,
+           1261.5713 , -1242.1854 ],
+         [ 1308.4633 ,  2354.9707 ,   317.7082 , ...,    -9.72171,
+           1024.7684 ,  1084.4003 ],
+         [  343.88522,  2318.199  ,   617.4685 , ...,   272.92017,
+           1235.4524 ,  1638.7083 ],
          ...,
-         [-1045.5885  , -2484.69    ,  3381.5269  , ...,   948.50446 ,
-           1858.6206  ,  1249.6975  ],
-         [  468.08606 , -2381.7354  ,  2844.24    , ...,   688.9029  ,
-           2480.0574  ,  1800.4146  ],
-         [ -451.43054 , -2493.9385  ,  1233.4158  , ...,  1026.327   ,
-           2484.9666  ,  1666.9863  ]], shape=(751, 10), dtype=float32)
+         [-1046.7009 ,  2457.6367 ,  3385.7192 , ...,   949.4414 ,
+           1884.1799 , -1266.8386 ],
+         [  466.82806,  2348.8738 ,  2849.441  , ...,   690.0863 ,
+           2512.9348 , -1817.8994 ],
+         [ -452.74954,  2462.4834 ,  1238.6765 , ...,  1027.5919 ,
+           2522.82   , -1685.204  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27364,7 +27358,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 281.3 s
+**Total running time:** 179.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27706,7 +27700,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd4a9fb60d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe744911f90>
     ```
 - [ ] Attributes: (25)
 
@@ -27855,22 +27849,22 @@ xarray.DataArray
 
 - [ ]
 
-  0.1625 0.013 0.0 0.1839 0.0006829 ... 0.04623 0.0 0.3544 0.0 0.06981
+  0.1626 0.013 0.0 0.1839 0.0006832 ... 0.04623 0.0 0.3545 0.0 0.06981
 
   ```
-  array([[0.16254492, 0.01299528, 0.        , ..., 0.17457072, 0.5560084 ,
+  array([[0.16255698, 0.01299934, 0.        , ..., 0.17457205, 0.55600464,
           0.        ],
-         [0.08055529, 0.        , 0.        , ..., 0.05789686, 0.51770246,
+         [0.08055934, 0.        , 0.        , ..., 0.05789696, 0.51770186,
           0.        ],
-         [0.0236888 , 0.        , 0.02398688, ..., 0.01567485, 0.35746264,
+         [0.02368935, 0.        , 0.023984  , ..., 0.0156738 , 0.35746408,
           0.        ],
          ...,
-         [0.09452122, 0.01986888, 0.        , ..., 0.0882831 , 0.2666772 ,
+         [0.09453033, 0.01987509, 0.        , ..., 0.0882846 , 0.26667225,
           0.        ],
-         [0.20229632, 0.01958919, 0.        , ..., 0.10854644, 0.13272034,
+         [0.20231232, 0.01959528, 0.        , ..., 0.10854763, 0.13271652,
           0.        ],
-         [0.18282148, 0.01474581, 0.        , ..., 0.3544487 , 0.        ,
-          0.06980908]], shape=(751, 10), dtype=float32)
+         [0.18283577, 0.01475037, 0.        , ..., 0.35445145, 0.        ,
+          0.06981277]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27928,8 +27922,8 @@ print(f"n_iter_: {nmf_t.n_iter_}")
 ```
 
 ```text
-reconstruction_err_: 1911.470
-n_iter_: 664
+reconstruction_err_: 1911.557
+n_iter_: 663
 ```
 
 ## Spatial maps and time courses
@@ -27996,22 +27990,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-48.81 -107.2 23.77 475.0 275.0 ... 34.6 -75.95 839.3 361.2 -68.61
+  \-48.81 -107.2 23.77 475.0 274.9 ... 34.6 -75.95 839.4 361.2 -68.61
 
   ```
-  array([[ -48.810886, -107.219315,   23.76653 , ..., 1357.0415  ,
-           305.827   ,  -81.77564 ],
-         [ -46.597748, -101.35974 ,   89.079384, ..., 1052.7065  ,
-           200.54016 , -314.65317 ],
-         [ -48.1858  ,  -88.04905 ,   50.88931 , ...,  991.12646 ,
-            59.3195  , -347.92407 ],
+  array([[ -48.810776 , -107.21934  ,   23.766613 , ..., 1357.0479   ,
+           305.8229   ,  -81.77524  ],
+         [ -46.59765  , -101.35976  ,   89.079865 , ..., 1052.711    ,
+           200.53772  , -314.652    ],
+         [ -48.18569  ,  -88.049095 ,   50.88957  , ...,  991.1305   ,
+            59.319008 , -347.92282  ],
          ...,
-         [ -52.892544, -145.73178 ,    5.839569, ..., 1228.5282  ,
-           263.20367 , -264.38132 ],
-         [ -48.556408, -139.85194 ,   34.902218, ..., 1233.0979  ,
-           494.41037 , -215.83047 ],
-         [ -40.80987 , -106.20432 ,  -33.665436, ...,  839.34906 ,
-           361.19934 ,  -68.610725]], shape=(751, 10), dtype=float32)
+         [ -52.89242  , -145.73181  ,    5.8395586, ..., 1228.5333   ,
+           263.19995  , -264.38028  ],
+         [ -48.556282 , -139.85196  ,   34.902374 , ..., 1233.1041   ,
+           494.40372  , -215.82959  ],
+         [ -40.809776 , -106.204285 ,  -33.665638 , ...,  839.35266  ,
+           361.19443  ,  -68.61046  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28106,7 +28100,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 297.6 s
+**Total running time:** 189.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28454,7 +28448,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa5664ae0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f33b3b11f90>
     ```
 - [ ] Attributes: (25)
 
@@ -28595,22 +28589,22 @@ xarray.DataArray
 
 - [ ]
 
-  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.2969 2.585e-05
+  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.297 1.711e-05
 
   ```
-  array([[ 7.3066635e+01, -8.3605871e+00, -4.0763474e+00, ...,
-           1.0820087e+00,  1.6663245e+00,  4.5841425e-06],
-         [ 5.2037041e+01,  2.2309393e+01, -1.4225260e+01, ...,
-           8.1314236e-01, -4.4685099e-01, -5.7125599e-06],
-         [ 4.5891487e+01,  2.2932837e+01, -2.1960238e+01, ...,
-          -7.2199710e-02, -7.4381337e-02,  1.8829988e-07],
+  array([[ 7.3066635e+01, -8.3605938e+00, -4.0763493e+00, ...,
+           1.0819744e+00,  1.6663108e+00,  4.4641160e-06],
+         [ 5.2037067e+01,  2.2309378e+01, -1.4225268e+01, ...,
+           8.1317788e-01, -4.4685724e-01, -5.8623887e-06],
+         [ 4.5891502e+01,  2.2932816e+01, -2.1960232e+01, ...,
+          -7.2219506e-02, -7.4409738e-02,  8.7668259e-06],
          ...,
-         [ 7.4077148e+01, -5.9905901e+00,  4.1795812e+00, ...,
-           1.2390802e+00,  8.1381299e-02,  8.2125753e-06],
-         [ 7.5606850e+01, -6.2057152e+00,  1.7687132e+01, ...,
-          -1.1357043e+00, -4.9657997e-01,  5.2099913e-06],
-         [ 5.1808723e+01, -1.8981842e+01,  1.5910512e+01, ...,
-          -8.9847302e-01, -2.9692146e-01,  2.5848100e-05]],
+         [ 7.4077156e+01, -5.9905930e+00,  4.1795883e+00, ...,
+           1.2390769e+00,  8.1436560e-02,  5.4601655e-06],
+         [ 7.5606865e+01, -6.2057152e+00,  1.7687122e+01, ...,
+          -1.1357114e+00, -4.9661902e-01, -5.1508582e-06],
+         [ 5.1808727e+01, -1.8981846e+01,  1.5910517e+01, ...,
+          -8.9845270e-01, -2.9696307e-01,  1.7107752e-05]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28742,22 +28736,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.222 39.7 15.21 -0.0009351
+  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.22 39.7 15.21 0.0007041
 
   ```
-  array([[-3.18660137e+04, -1.54776685e+03,  8.83627747e+02, ...,
-          -4.14212151e+01, -7.76363373e+01, -7.46693288e-04],
-         [-7.83757812e+03, -7.99474463e+03,  1.94659033e+03, ...,
-          -3.73594131e+01,  1.92134819e+01, -8.50242039e-04],
-         [-7.64179932e+03, -1.13111875e+04,  3.10128125e+03, ...,
-           7.67992020e+00,  5.17666149e+00, -9.07336478e-04],
+  array([[-3.1866018e+04, -1.5477708e+03,  8.8362970e+02, ...,
+          -4.1422390e+01, -7.7635834e+01, -1.7511325e-04],
+         [-7.8375811e+03, -7.9947441e+03,  1.9465931e+03, ...,
+          -3.7357880e+01,  1.9214939e+01, -5.8000605e-04],
+         [-7.6417998e+03, -1.1311187e+04,  3.1012839e+03, ...,
+           7.6817799e+00,  5.1758451e+00, -2.5194747e-04],
          ...,
-         [-3.34484570e+04,  1.15906836e+03,  5.94009717e+03, ...,
-          -5.00937042e+01, -3.77178717e+00, -1.44857180e-03],
-         [-3.14558066e+04,  6.79484033e+03,  4.77665283e+03, ...,
-           4.78399200e+01,  2.48789673e+01, -7.70006678e-04],
-         [-2.85970098e+04,  7.54298926e+03,  2.42949936e+02, ...,
-           3.97029877e+01,  1.52076645e+01, -9.35096759e-04]],
+         [-3.3448461e+04,  1.1590634e+03,  5.9401001e+03, ...,
+          -5.0094185e+01, -3.7692327e+00, -5.7497656e-04],
+         [-3.1455812e+04,  6.7948394e+03,  4.7766562e+03, ...,
+           4.7841347e+01,  2.4876919e+01, -2.5275841e-04],
+         [-2.8597014e+04,  7.5429858e+03,  2.4295175e+02, ...,
+           3.9704731e+01,  1.5206790e+01,  7.0413668e-04]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28848,7 +28842,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 278.7 s
+**Total running time:** 180.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29189,7 +29183,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f78786c9170>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fe6738b19b0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29204,7 +29198,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...70\>, beta=6.7) |
+|  | hrf\_model | functools.par...b0\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29223,7 +29217,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f786d89df90\>, \<confusius.gl...x7f786d873100\>, \<confusius.gl...x7f78808e8290\>, \<confusius.gl...x7f786d8e7020\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fe66884b390\>, \<confusius.gl...x7fe6689ff820\>, \<confusius.gl...x7fe66891e570\>, \<confusius.gl...x7fe6688b2e00\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29338,7 +29332,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 109.9 s
+**Total running time:** 116.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.ipynb>)
 
@@ -29706,7 +29700,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0a953d60d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f98981e1f90>
     ```
 - [ ] Attributes: (21)
 
@@ -29943,7 +29937,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.3 s
+**Total running time:** 25.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30211,7 +30205,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cece8e270>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffa70b5e270>
     ```
 - [ ] Attributes: (25)
 
@@ -30637,7 +30631,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2d24fe9950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffab00e1810>
     ```
 - [ ] Attributes: (25)
 
@@ -30997,7 +30991,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cebe0d6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffa6fde9590>
     ```
 - [ ] Attributes: (25)
 
@@ -31344,7 +31338,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.7 s
+**Total running time:** 8.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31687,7 +31681,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f25e60ab100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f22f46a7230>
     ```
   - time
 
@@ -31968,7 +31962,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f25d827ad50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f22ec90ae70>
     ```
 - [ ] Attributes: (6)
 
@@ -32041,7 +32035,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 56.1 s
+**Total running time:** 39.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32166,7 +32160,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.7 s
+**Total running time:** 4.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32598,7 +32592,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa14d039850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faf48e15850>
     ```
 - [ ] Attributes: (25)
 
@@ -32717,7 +32711,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.5 s
+**Total running time:** 11.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32803,16 +32797,16 @@ xarray.DataArray
   array([[[-18.687603 , -18.568825 , -18.500853 , ..., -17.956799 ,
            -17.938179 , -17.963793 ],
           [-18.534925 , -18.445103 , -18.356045 , ..., -17.885395 ,
-           -17.88491  , -17.891798 ],
+           -17.88491  , -17.8918   ],
           [-18.489155 , -18.406622 , -18.328014 , ..., -17.79321  ,
-           -17.804344 , -17.829521 ],
+           -17.804344 , -17.82952  ],
           ...,
-          [-12.314958 , -13.393738 , -13.82475  , ..., -13.536392 ,
-           -13.5213375, -13.627226 ],
-          [-12.319061 , -13.352966 , -13.748854 , ..., -13.4567585,
-           -13.385921 , -13.444569 ],
-          [-12.375978 , -13.218855 , -13.602357 , ..., -13.363947 ,
-           -13.333372 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
+          [-12.314958 , -13.39374  , -13.824751 , ..., -13.536394 ,
+           -13.521338 , -13.627226 ],
+          [-12.319063 , -13.352967 , -13.748854 , ..., -13.456759 ,
+           -13.3859215, -13.444571 ],
+          [-12.375979 , -13.218855 , -13.602358 , ..., -13.363948 ,
+           -13.333373 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -33000,7 +32994,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbdc56c0770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0f0eae08a0>
     ```
 - [ ] Attributes: (27)
 
@@ -33216,7 +33210,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 149.1 s
+**Total running time:** 107.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33464,7 +33458,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3f607ffe10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f614c714050>
     ```
 - [ ] Attributes: (23)
 
@@ -33745,7 +33739,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3f62ba6950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f614ed7aa50>
     ```
 - [ ] Attributes: (23)
 
@@ -33878,9 +33872,9 @@ print(f"Rigid transform:\n{rigid_transform}")
 
 ```text
 Rigid transform:
-[[ 1.00000000e+00 -8.56493346e-21  8.59601164e-21  8.96755349e-20]
- [ 9.02544086e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
- [-8.11116013e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
+[[ 1.00000000e+00 -1.19034059e-20 -6.54108347e-21  1.24629613e-19]
+ [ 1.15250165e-20  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
+ [ 7.18685176e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
 ```
 
@@ -33950,49 +33944,49 @@ xarray.DataArray
 
 - [ ]
 
-  2.107e-10 6.946e-12 2.126e-13 -2.518e-13 ... -606.2 -302.7 -494.6
+  2.306e-11 1.717e-12 4.036e-13 ... -1.76e+03 -2.425e+03 1.609e+04
 
   ```
-  array([[[[ 2.10674849e-10,  6.94590871e-12,  2.12588672e-13, ...,
-            -4.07791009e-12, -1.49886177e-13, -1.73201189e-14],
-           [ 1.44582127e-12,  1.32492501e-13,  2.71951949e-14, ...,
-            -1.28525919e-12, -5.58596346e-14,  3.66999782e-15],
-           [-1.93763432e-13, -9.77915967e-14, -1.36181060e-13, ...,
-            -1.79903156e-13,  3.72616852e-14,  4.56118727e-14],
+  array([[[[ 2.30568239e-11,  1.71664881e-12,  4.03633412e-13, ...,
+            -3.47053087e-12, -1.35375399e-12,  1.10727114e-13],
+           [ 5.05632074e-13,  7.36532056e-14,  1.01384122e-14, ...,
+            -5.37714592e-13, -1.17339692e-13,  5.79845756e-14],
+           [-3.17289033e-12, -3.32428912e-13, -2.65891020e-13, ...,
+            -2.23950341e-13,  7.19346460e-14,  7.13562782e-14],
            ...,
-           [-2.02144293e-13, -4.91010861e-15,  4.09672594e-13, ...,
-             1.93236740e-13,  1.23390344e-13,  3.63911365e-14],
-           [ 5.38122854e-13,  1.03169534e-13,  4.70698772e-13, ...,
-             1.51780911e-13,  4.08877151e-13,  1.56735871e-13],
-           [ 3.60363344e-12,  5.71446765e-13,  1.42891328e-12, ...,
-             9.58948328e-13,  2.43047781e-12,  1.33098965e-09]],
+           [-3.61286397e-13,  6.06364708e-15,  6.43224010e-13, ...,
+             3.05786103e-13,  2.21907831e-13,  3.32756107e-14],
+           [ 4.13876196e-13,  1.37539189e-13,  4.03426741e-13, ...,
+             2.11437082e-13,  1.28561183e-13,  3.58359572e-14],
+           [ 7.04578488e-13,  2.01444675e-13,  6.13366645e-13, ...,
+             8.00607057e-13,  6.16605709e-13,  4.18680550e-13]],
 
-          [[ 2.46872325e-13,  8.13933242e-15,  2.49114974e-16, ...,
-            -4.77856350e-15, -1.75639138e-16, -2.02960060e-17],
-           [ 1.69423763e-15,  1.55256936e-16,  3.18677859e-17, ...,
-            -1.50608830e-15, -6.54572574e-17,  4.30056505e-18],
-           [-2.27055242e-16, -1.14593834e-16, -1.59579252e-16, ...,
-            -2.10813537e-16,  4.36638682e-17,  5.34487581e-17],
+          [[ 2.70183734e-14,  2.01159789e-15,  4.72984407e-16, ...,
+            -4.06682633e-15, -1.58635164e-15,  1.29751890e-16],
+           [ 5.92508152e-16,  8.63080626e-17,  1.18803616e-17, ...,
+            -6.30102984e-16, -1.37500621e-16,  6.79472990e-17],
+           [-3.71804614e-15, -3.89545779e-16, -3.11575561e-16, ...,
+            -2.62428769e-16,  8.42942257e-17,  8.36164846e-17],
   ...
-            -9.87536302e-02, -7.40086224e-02, -6.46924324e-03],
-           [ 7.27714396e-02,  5.64201594e-02,  1.29528364e-01, ...,
-            -1.29099263e-01, -1.20578369e-01, -2.66216705e-02],
-           [ 8.18288718e-02,  1.10194129e-01,  8.52082885e-02, ...,
-            -7.10413059e-01, -3.54695940e-01, -5.79530297e-01]],
+            -3.19537667e-02, -3.81674375e-01, -1.73881136e-01],
+           [ 8.74561345e-02,  6.74926731e-02,  1.63200741e-01, ...,
+            -1.59235109e-01, -3.68557935e-01, -1.42795449e+01],
+           [-1.09648855e-02,  2.18512276e-01,  5.09548230e-02, ...,
+            -2.06258429e+00, -2.84108350e+00,  1.88528230e+01]],
 
-          [[ 1.60635419e+04,  1.81062493e+01, -4.65930716e+02, ...,
-            -3.55349236e+03, -9.74160406e+02,  3.72048240e+03],
-           [-3.59572158e+02, -9.37900016e+00, -1.19371596e+02, ...,
-            -8.16095895e+01,  5.75441069e+01,  7.55819336e+02],
-           [-1.37282308e+03,  2.02423491e+02,  4.52083303e+01, ...,
-            -9.62658279e+01,  3.01012675e+01,  1.83102954e+01],
+          [[ 4.62195580e+03,  3.29183798e+02, -7.52905999e+02, ...,
+            -7.48881089e+02,  3.21353312e+01,  3.94622217e+02],
+           [ 2.57341614e+02,  5.30869911e+01, -1.25559022e+02, ...,
+            -6.64742779e+01,  3.21172422e+01,  3.37237222e+01],
+           [-1.14298545e+03,  1.20455490e+02,  7.97306564e+01, ...,
+            -9.40779591e+01,  2.61938611e+01,  6.26089448e+00],
            ...,
-           [-1.42162343e+02,  1.20820311e+02,  2.94402607e+02, ...,
-            -8.42739508e+01, -6.31571619e+01, -5.52069505e+00],
-           [ 6.21013802e+01,  4.81475945e+01,  1.10536362e+02, ...,
-            -1.10170177e+02, -1.02898653e+02, -2.27182876e+01],
-           [ 6.98307713e+01,  9.40369941e+01,  7.27146850e+01, ...,
-            -6.06249256e+02, -3.02688904e+02, -4.94557171e+02]]]],
+           [-1.40463374e+02,  7.95967309e+01,  2.76530143e+02, ...,
+            -2.72685688e+01, -3.25711648e+02, -1.48385935e+02],
+           [ 7.46329412e+01,  5.75966089e+01,  1.39271551e+02, ...,
+            -1.35887377e+02, -3.14518396e+02, -1.21858189e+04],
+           [-9.35716891e+00,  1.86473071e+02,  4.34836090e+01, ...,
+            -1.76015939e+03, -2.42451172e+03,  1.60885417e+04]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34147,7 +34141,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3f404a4ef0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f612c695910>
     ```
 - [x] Attributes: (4)
 
@@ -34165,7 +34159,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, -8.56493345977435e-21, 8.59601164488132e-21, 8.967553493031774e-20\], \[9.025440856831084e-21, 0.9984816653136261, -0.05508506179108739, -0.17708957996670588\], \[-8.1111601333682e-21, 0.05508506179108739, 0.9984816653136261, 0.854466681629407\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, -1.1903405882410274e-20, -6.541083465249015e-21, 1.2462961252218086e-19\], \[1.1525016541509118e-20, 0.9984816653136261, -0.05508506179108768, -0.17708957996671354\], \[7.186851759894228e-21, 0.05508506179108768, 0.9984816653136261, 0.8544666816293937\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -34178,7 +34172,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8947
+Rigid + B-spline final metric: -0.8952
 ```
 
 ```python
@@ -34267,7 +34261,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 74.5 s
+**Total running time:** 65.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34633,7 +34627,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f23f520e350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4dedad6210>
     ```
 - [ ] Attributes: (21)
 
@@ -34746,10 +34740,10 @@ motion_df.head()
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
 | 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | \-4.441134e-21 | \-2.322813e-21 | \-0.000198 | 0.001800 | 0.000109 | \-4.650384e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | \-2.287485e-21 | 1.893490e-21 | 0.000507 | 0.023651 | \-0.020930 | \-2.396020e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | \-2.064631e-21 | \-1.442767e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.161240e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | \-3.812090e-21 | \-1.622439e-21 | 0.002614 | 0.032245 | \-0.045404 | \-3.986836e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.801400 | \-1.719862e-21 | \-1.379504e-21 | \-0.000198 | 0.001800 | 0.000109 | \-1.800995e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | 5.060800e-21 | 1.657826e-21 | 0.000507 | 0.023651 | \-0.020930 | 5.297817e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | \-3.202291e-21 | 3.400277e-22 | 0.002885 | 0.025834 | \-0.046818 | \-3.353837e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | \-5.642973e-21 | 3.699684e-22 | 0.002614 | 0.032245 | \-0.045404 | \-5.909230e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
@@ -34843,7 +34837,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 41.9 s
+**Total running time:** 28.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34889,6 +34883,8 @@ Current development version for the next ConfUSIus release.
 - The Atlas tab also loads the fUSI templates shipped in `confusius.datasets` (`brunner_grillet_2021`, `pepe_mariani_2026`) as Image layers ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - The `confusius` launcher takes `--atlas NAME` and `--template NAME [NAME ...]` to open the plugin with a BrainGlobe atlas (with its volume layers) and fUSI templates already loaded ([\#488](<https://github.com/confusius-tools/confusius/pull/488>)).
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+- Videos play in their own viewer, docked between the main canvas and the sidebar, and follow the fUSI time in both directions without changing how the fUSI layers are displayed. They load from the **Videos** page of the **Data I/O** tab, which replaces the **Video** tab and lists them in napari's layer list with frame step, transpose, grid and delete controls. napari's Home button resets both viewers ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 
 ## 0.8.0
 
