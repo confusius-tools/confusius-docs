@@ -4690,9 +4690,6 @@
   <code>rgb_lookup</code> attribute, such as atlas annotations, faster by building the
   colormap from the lookup instead of scanning the whole volume
   (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</li>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> hands Dask-backed labels to napari
-  lazily, so only the displayed slices are read
-  (<a href="https://github.com/confusius-tools/confusius/pull/488">#488</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4715,12 +4712,12 @@
 </ul>
 <h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
 <ul>
-<li>New <strong>Atlas</strong> tab: load a BrainGlobe atlas (downloaded ones listed first), add its
-  template, annotation and hemispheres layers one at a time, read from disk or into
-  memory, browse its structure
-  hierarchy in a read-only dock, search its regions to load one Labels layer per
-  region mask with a hemisphere selector, or remove it to free memory. The atlas
-  stays on disk until a volume is read into memory or a mask requested
+<li>New <strong>Atlas</strong> tab: pick a BrainGlobe atlas (downloaded ones listed first and loaded
+  on selection, the others behind a Download button), add its template, annotation
+  and hemispheres layers one at a time, read from disk or into memory, browse its
+  structure hierarchy in a read-only dock, or search its regions to load one Labels
+  layer per region mask with a hemisphere selector. The atlas stays on disk until a
+  volume is read into memory or a mask requested
   (<a href="https://github.com/confusius-tools/confusius/pull/488">#488</a>).</li>
 <li>The Atlas tab also loads the <abbr title="Functional Ultrasound Imaging">fUSI</abbr> templates shipped in <code>confusius.datasets</code>
   (<code>brunner_grillet_2021</code>, <code>pepe_mariani_2026</code>) as Image layers

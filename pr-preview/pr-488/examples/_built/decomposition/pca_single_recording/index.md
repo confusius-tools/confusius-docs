@@ -338,7 +338,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9dcc7de0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe5681960d0>
     ```
 - [ ] Attributes: (25)
 
@@ -732,7 +732,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 229.3 s
+**Total running time:** 179.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/487-napari-atlas-tab?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-488/examples/_built/decomposition/pca_single_recording.ipynb>)
 
