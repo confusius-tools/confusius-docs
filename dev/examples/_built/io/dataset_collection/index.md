@@ -115,6 +115,6 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.8 s
+**Total running time:** 4.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/dataset_collection.ipynb>)
