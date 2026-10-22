@@ -128,7 +128,7 @@ Parameters:
 
   (`dict`, default: `None` ) –
 
-  Extra keyword arguments for the internal resample call at each iteration. Supported keys are `interpolation`, `fill_value`, and `sitk_threads`.
+  Extra keyword arguments for the internal resample call at each iteration. Supported keys are `interpolation`, `fill_value`, and `itk_threads`.
 - #### **`max_composite_slices`**
 
   (`int or None`, default: `9` ) –
@@ -613,7 +613,7 @@ invert_displacement_field(
     *,
     max_iterations: int = 20,
     max_error_tolerance: float = 0.1,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> DataArray
 ```
 
@@ -636,11 +636,11 @@ Parameters:
   (`float`, default: `0.1` ) –
 
   Stopping threshold for the maximum world-space residual norm.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Legacy worker-count parameter, validated but unused by the SciPy solver.
+  Worker count, validated but unused by the single-threaded SciPy solver.
 
 Returns:
 
@@ -699,7 +699,7 @@ register_volume(
         "linear", "bspline"
     ] = ...,
     fill_value: float | None = ...,
-    sitk_threads: int = ...,
+    itk_threads: int = ...,
     show_progress: bool = ...,
     plot_metric: bool = ...,
     plot_composite: bool = ...,
@@ -747,7 +747,7 @@ register_volume(
         "linear", "bspline"
     ] = ...,
     fill_value: float | None = ...,
-    sitk_threads: int = ...,
+    itk_threads: int = ...,
     show_progress: bool = ...,
     plot_metric: bool = ...,
     plot_composite: bool = ...,
@@ -792,7 +792,7 @@ register_volume(
         "linear", "bspline"
     ] = ...,
     fill_value: float | None = ...,
-    sitk_threads: int = ...,
+    itk_threads: int = ...,
     show_progress: bool = ...,
     plot_metric: bool = ...,
     plot_composite: bool = ...,
@@ -844,7 +844,7 @@ register_volume(
         "linear", "bspline"
     ] = "linear",
     fill_value: float | None = None,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
     show_progress: bool = False,
     plot_metric: bool = True,
     plot_composite: bool = True,
@@ -992,11 +992,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Fill value for voxels that fall outside the moving image's field of view after resampling. Applied to both the final registered output (when `resample=True`) and the progress composite overlay (when `show_progress=True` and `plot_composite=True`). If not provided, defaults to the minimum value of `moving`, which renders out-of-FOV regions as background regardless of intensity scale (important for dB data where 0 is maximum intensity). Must be representable in `moving`'s dtype: to fill an integer volume with NaN, cast it to float first.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + sitk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
+  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + itk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
 - #### **`show_progress`**
 
   (`bool`, default: `False` ) –
@@ -1021,7 +1021,7 @@ Parameters:
 
   (`callable`, default: `None` ) –
 
-  Factory that builds the progress reporter, called inside `register_volume` as `progress_plotter(registration_method, fixed_img, moving_img, *, plot_metric, plot_composite, resample_kwargs, max_composite_slices)`. Here `resample_kwargs` carries `interpolation`, `fill_value`, and `sitk_threads`. The returned object must implement the `RegistrationProgress` protocol (`update()` / `close()`). If not provided, the default `MatplotlibRegistrationProgressPlotter` is used. Ignored when `show_progress=False`. Custom factories are expected to be safe to call from a non-GUI thread; GUI side effects must be marshalled via thread-safe primitives such as Qt signals.
+  Factory that builds the progress reporter, called inside `register_volume` as `progress_plotter(registration_method, fixed_img, moving_img, *, plot_metric, plot_composite, resample_kwargs, max_composite_slices)`. Here `resample_kwargs` carries `interpolation`, `fill_value`, and `itk_threads`. The returned object must implement the `RegistrationProgress` protocol (`update()` / `close()`). If not provided, the default `MatplotlibRegistrationProgressPlotter` is used. Ignored when `show_progress=False`. Custom factories are expected to be safe to call from a non-GUI thread; GUI side effects must be marshalled via thread-safe primitives such as Qt signals.
 - #### **`abort_event`**
 
   (`Event`, default: `None` ) –
@@ -1289,7 +1289,7 @@ resample_like(
     ] = "auto",
     fill_value: float | None = None,
     default_value: float | None = None,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> DataArray
 ```
 
@@ -1335,11 +1335,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Alias for `fill_value` kept for compatibility with older branch code. If both values are provided, `fill_value` takes precedence.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + sitk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
+  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + itk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
 
 Returns:
 
@@ -1372,7 +1372,7 @@ resample_volume(
         "auto", "linear", "nearest", "bspline"
     ] = "auto",
     fill_value: float | None = None,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> DataArray
 ```
 
@@ -1428,11 +1428,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Value assigned to voxels that fall outside the moving image's field of view after resampling. If not provided, defaults to `float(moving.min())`, which renders out-of-FOV voxels as background regardless of intensity scale (important for dB data where 0 is maximum intensity). Must be representable in `moving`'s dtype: to fill an integer volume with NaN, cast it to float first.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + sitk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
+  Number of threads ITK may use internally. Negative values resolve to `max(1, os.cpu_count() + 1 + itk_threads)`, so `-1` means all CPUs, `-2` means all minus one, and so on. You may want to set this to a lower value or `1` when running multiple registrations in parallel (e.g. with joblib) to avoid over-subscribing the CPU.
 
 Returns:
 
@@ -1457,7 +1457,7 @@ sample_displacement_field(
     spacing: Sequence[float],
     origin: Sequence[float],
     direction: ArrayLike | None = None,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> DataArray
 ```
 
@@ -1495,11 +1495,11 @@ Parameters:
   (`(3, 3) numpy.ndarray`, default: `None` ) –
 
   Output direction. If not provided, use the identity direction.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Number of ITK workers (legacy parameter name), with joblib semantics.
+  Number of ITK workers, with joblib semantics.
 
 Returns:
 
@@ -1520,7 +1520,7 @@ sample_displacement_field_like(
     transform: DataArray,
     reference: DataArray,
     *,
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> DataArray
 ```
 
@@ -1538,11 +1538,11 @@ Parameters:
   (`DataArray`) –
 
   VoxelData defining the output grid.
-- #### **`sitk_threads`**
+- #### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
-  Number of ITK workers (legacy parameter name), with joblib semantics.
+  Number of ITK workers, with joblib semantics.
 
 Returns:
 

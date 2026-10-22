@@ -3200,8 +3200,9 @@
 
 <h1 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">&para;</a></h1>
 <p>Registration and resampling use <a href="https://itk.org">ITK</a>'s Python bindings directly.
-The legacy <code>sitk_threads</code> parameter name is retained for compatibility; it now
-controls ITK workers with the same joblib-style thread-count convention.</p>
+The <code>itk_threads</code> parameter controls ITK workers with a joblib-style thread-count
+convention: positive values select a worker count, <code>-1</code> uses all CPUs, and <code>-2</code>
+uses all but one CPU.</p>
 <p>Transform matrices and displacement fields use a <strong>pull convention</strong>: fixed/output
 world points map to moving/input world points. VoxelData geometry and serialized
 B-spline coefficient grids are unchanged.</p>

@@ -352,7 +352,7 @@ resample(
     interpolation: Literal[
         "linear", "nearest", "bspline"
     ] = "linear",
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> Dataset
 ```
 
@@ -392,7 +392,7 @@ Parameters:
   (`(linear, nearest, bspline)`, default: `"linear"` ) –
 
   Interpolation used for the atlas template volume.
-- ##### **`sitk_threads`**
+- ##### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
@@ -414,7 +414,7 @@ resample_like(
     interpolation: Literal[
         "linear", "nearest", "bspline"
     ] = "linear",
-    sitk_threads: int = -1,
+    itk_threads: int = -1,
 ) -> Dataset
 ```
 
@@ -437,7 +437,7 @@ Parameters:
   (`(linear, nearest, bspline)`, default: `"linear"` ) –
 
   Interpolation used for the atlas template volume.
-- ##### **`sitk_threads`**
+- ##### **`itk_threads`**
 
   (`int`, default: `-1` ) –
 
