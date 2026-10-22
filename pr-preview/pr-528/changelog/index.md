@@ -6,7 +6,6 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Custom `progress_plotter` factories now receive ITK registration methods and images instead of SimpleITK objects. The legacy `sitk_threads` parameter remains supported and controls ITK workers ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
@@ -18,18 +17,12 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
-- Nearest-neighbor resampling preserves 64-bit integer labels exactly, including values beyond float64's exact integer range ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
-- Decibel-scaled registration keeps zero-power voxels finite in optimizer inputs, avoiding invalid gradients without changing the returned signal's scaling ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is remembered per annotation-set version; available meshes deleted locally are still downloaded again ([\#508](<https://github.com/confusius-tools/confusius/pull/508>)).
 
 ### 📚 Documentation
 
 - The documentation site publishes [`llms.txt`](<https://confusius.tools/latest/llms.txt>) and `llms-full.txt` for AI assistants, along with a Markdown copy of every page and a "Copy as Markdown" button in the page header ([\#513](<https://github.com/confusius-tools/confusius/pull/513>)).
-
-### 🔧 Maintenance
-
-- Registration and resampling now use ITK directly instead of SimpleITK, preparing for future methods such as SyN while retaining existing registration options and serialized transform formats. No new registration methods are added ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 
 ### 🖼 Napari plugin
 

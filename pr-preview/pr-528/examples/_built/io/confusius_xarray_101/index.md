@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe5bb23ea50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09e0752a50>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe5f4425f90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0a18935d10>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe5ba1aee90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09df6ced50>
     ```
 - [ ] Attributes: (25)
 
@@ -1393,7 +1393,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.0 s
+**Total running time:** 8.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/refactor/itk-migration?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-528/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-528/examples/_built/io/confusius_xarray_101.ipynb>)
 
