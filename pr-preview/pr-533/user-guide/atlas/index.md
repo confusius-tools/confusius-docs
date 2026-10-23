@@ -1,0 +1,213 @@
+# Atlases
+
+A brain atlas ties every voxel of a template volume to a named region. In ConfUSIus an atlas is a plain `xarray.Dataset` on a common [VoxelData grid](<https://confusius.tools/pr-preview/pr-533/user-guide/voxeldata/#the-voxeldata-model>) (`k`/`j`/`i` voxel dims, derived world `z`/`y`/`x` coordinates), with three data variables (`template`, the anatomical template volume; `annotation`, integer region labels; and `hemispheres`, 1 = left, 2 = right), plus an `.atlas` accessor that carries all atlas-aware operations. The structure hierarchy rides along in `Dataset.attrs["structures"]`, so a single object fully describes the atlas and its region tree.
+
+## BrainGlobe Atlases
+
+ConfUSIus does not ship its own atlases. It builds on the [BrainGlobe Atlas API](<https://brainglobe.info/documentation/brainglobe-atlasapi/index.html>), which packages dozens of community atlases behind one interface, and `fetch_brainglobe_atlas` fetches any of them by name:
+
+```python
+import confusius as cf
+
+atlas = cf.datasets.fetch_brainglobe_atlas("allen_mouse_100um")
+```
+
+The first call downloads the atlas through BrainGlobe and caches it in BrainGlobe's own cache (`~/.brainglobe`, shared with other BrainGlobe tools); later calls read from the cache. Any name from the [BrainGlobe atlas list](<https://brainglobe.info/documentation/brainglobe-atlasapi/usage/atlas-details.html>) works, covering mouse, rat, human, zebrafish, and more, at several resolutions.
+
+The returned object is the Dataset described above:
+
+```pycon
+>>> atlas
+<xarray.Dataset> Size: 40MB
+Dimensions:      (k: 132, j: 80, i: 114)
+Coordinates:
+  * k            (k) int64 1kB 0 1 2 3 4 5 6 7 ... 125 126 127 128 129 130 131
+  * j            (j) int64 640B 0 1 2 3 4 5 6 7 8 ... 71 72 73 74 75 76 77 78 79
+  * i            (i) int64 912B 0 1 2 3 4 5 6 7 ... 107 108 109 110 111 112 113
+  * z            (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 ... 13.1 13.1 13.1 13.1
+  * y            (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 7.9 7.9 7.9 7.9
+  * x            (k, j, i) float64 10MB 0.0 0.1 0.2 0.3 ... 11.0 11.1 11.2 11.3
+Data variables:
+    template     (k, j, i) float32 5MB 0.0 0.0 0.0 0.0 0.0 ... 1.0 1.0 1.0 1.0
+    annotation   (k, j, i) int32 5MB 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0
+    hemispheres  (k, j, i) int8 1MB 2 2 2 2 2 2 2 2 2 2 ... 1 1 1 1 1 1 1 1 1 1
+Indexes:
+  ┌ z        VoxelToWorldIndex
+  │ y
+  └ x
+Attributes:
+    name:           allen_mouse
+    citation:       Wang et al 2020, https://doi.org/10.1016/j.cell.2020.04.007
+    species:        Mus musculus
+    orientation:    asr
+    structures:     root (997)\n├── VS (73)\n│   ├── AQ (140)\n│   ├── V3 (12...
+    world_to_base:  [[1. 0. 0. 0.]\n [0. 1. 0. 0.]\n [0. 0. 1. 0.]\n [0. 0. 0...
+```
+
+Coordinates are in millimeters, so an atlas plots and registers against fUSI recordings directly.
+
+> [!TIP]
+>
+> **Building your own atlas**
+>
+> Because ConfUSIus leans on the BrainGlobe atlas format, a custom atlas (for example a coarse parcellation for functional connectivity) is best authored as a BrainGlobe atlas and then loaded with the same `fetch_brainglobe_atlas` call. BrainGlobe's [Adding a new atlas](<https://brainglobe.info/documentation/brainglobe-atlasapi/adding-a-new-atlas.html>) guide and the `atlas_scripts` in the [brainglobe-atlasapi](<https://github.com/brainglobe/brainglobe-atlasapi>) repository walk through packaging a template stack, an annotation stack, and a structure hierarchy into a distributable atlas.
+
+## Exploring the Structure Hierarchy
+
+Regions form a tree: `root` contains gray and white matter, which contain areas, which contain layers. `show_tree` prints the whole hierarchy, and its `nid` argument restricts the printout to one branch, which is handy since the full Allen tree has well over a thousand nodes:
+
+```pycon
+>>> # Print just the hippocampus (HIP, id 1080) subtree.
+>>> atlas.atlas.show_tree(nid=1080)
+HIP (1080)
+├── CA (375)
+│   ├── CA1 (382)
+│   ├── CA2 (423)
+│   └── CA3 (463)
+├── DG (726)
+│   ├── DG-mo (10703)
+│   ├── DG-po (10704)
+│   └── DG-sg (632)
+├── FC (982)
+└── IG (19)
+```
+
+Indexing `structures` by acronym (or integer id) returns the BrainGlobe record for a region, including its full path from the root:
+
+```pycon
+>>> atlas.structures["HIP"]
+{'acronym': 'HIP',
+ 'id': 1080,
+ 'name': 'Hippocampal region',
+ 'structure_id_path': [997, 8, 567, 688, 695, 1089, 1080],
+ 'rgb_triplet': [126, 208, 75],
+ 'mesh_filename': PosixPath('.../allen_mouse_100um_v1.2/meshes/1080.obj'),
+ 'mesh': None}
+```
+
+`ancestors` returns the same path as tree nodes, from the root down to (but excluding) the region:
+
+```pycon
+>>> [node.tag for node in atlas.atlas.ancestors("HIP")]
+['root (997)', 'grey (8)', 'CH (567)', 'CTX (688)', 'CTXpl (695)', 'HPF (1089)']
+```
+
+## Looking Up and Searching Regions
+
+`lookup` flattens the hierarchy into a `pandas.DataFrame` indexed by region id, with the acronym, full name, and RGB color of every structure:
+
+```pycon
+>>> atlas.atlas.lookup.head()
+       acronym                           name      rgb_triplet
+id
+997       root                           root  [255, 255, 255]
+8         grey  Basic cell groups and regions  [191, 218, 227]
+567         CH                       Cerebrum  [176, 240, 255]
+688        CTX                Cerebral cortex  [176, 255, 184]
+695      CTXpl                 Cortical plate  [112, 255, 112]
+```
+
+Region acronyms are terse, so `search` finds structures by substring or regex. By default it matches both the acronym and the name (case-insensitive):
+
+```pycon
+>>> atlas.atlas.search("visual").head()
+       acronym                                  name    rgb_triplet
+id
+669        VIS                          Visual areas  [8, 133, 140]
+402      VISal             Anterolateral visual area  [8, 133, 140]
+1074    VISal1    Anterolateral visual area, layer 1  [8, 133, 140]
+905   VISal2/3  Anterolateral visual area, layer 2/3  [8, 133, 140]
+1114    VISal4    Anterolateral visual area, layer 4  [8, 133, 140]
+```
+
+Pass `field="acronym"` (or `"name"`) to match one column exactly with a regex, useful for pinning down a single area without its layer subdivisions:
+
+```pycon
+>>> atlas.atlas.search("VISp", field="acronym")
+    acronym                 name    rgb_triplet
+id
+385    VISp  Primary visual area  [8, 133, 140]
+```
+
+`search`, `get_masks`, and `get_meshes` are also exposed as free functions in `confusius.atlas` that take the Dataset as their first argument, so `cf.atlas.search_atlas(atlas, "visual")` is equivalent to `atlas.atlas.search("visual")`. Both forms validate the Dataset as an atlas before running.
+
+## Plotting Annotations over the Template
+
+The template and annotation volumes plot with the ordinary `plot_volume` tools. Overlaying the region boundaries on a template slice with `add_contours` gives the familiar atlas view; contour colors come from each region's atlas color automatically:
+
+```python
+plotter = cf.plotting.plot_volume(
+    atlas.atlas.template.sel(z=slice(6, 6)), show_colorbar=False
+)
+plotter.add_contours(atlas.atlas.annotation.sel(z=slice(6, 6)))
+```
+
+## Region Surface Meshes
+
+Many BrainGlobe atlases bundle a triangular surface mesh per region. `get_meshes` takes one or more regions and returns a `(vertices, faces)` pair per region, keyed by acronym, in the atlas's world space (millimeters) and ready to hand to any 3D viewer:
+
+```pycon
+>>> atlas.atlas.get_meshes(["VISp", "AUDp"]).keys()
+dict_keys(['VISp', 'AUDp'])
+>>> vertices, faces = atlas.atlas.get_meshes("root")["root"]
+```
+
+napari's `add_surface` takes exactly that pair:
+
+```python
+import napari
+
+napari.Viewer(ndisplay=3).add_surface(atlas.atlas.get_meshes("root")["root"])
+```
+
+Pass `sides="left"` or `sides="right"` to clip to one hemisphere, or a list of sides to choose one per region; single-hemisphere meshes come back under `_L`/`_R`-suffixed keys. Because meshes come back in the atlas's current world space, they stay aligned with the volumes after a resample (see below). All region meshes are downloaded together the first time an atlas is fetched, so they are available offline afterwards.
+
+## Masks for Regional Analysis
+
+`get_masks` turns regions into integer voxel masks stacked along a `mask` dimension, automatically including every descendant in the hierarchy. Pass one region or many, and optionally restrict each to a hemisphere:
+
+```pycon
+>>> atlas.atlas.get_masks(["VISp", "AUDp", "MOp"])
+<xarray.DataArray 'annotation' (mask: 3, k: 132, j: 80, i: 114)> Size: 14MB
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+Coordinates:
+  * mask     (mask) <U4 48B 'VISp' 'AUDp' 'MOp'
+  * k        (k) int64 1kB 0 1 2 3 4 5 6 7 8 ... 124 125 126 127 128 129 130 131
+  * j        (j) int64 640B 0 1 2 3 4 5 6 7 8 9 ... 71 72 73 74 75 76 77 78 79
+  * i        (i) int64 912B 0 1 2 3 4 5 6 7 ... 106 107 108 109 110 111 112 113
+  * z        (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 13.1 13.1 13.1 13.1
+  * y        (k, j, i) float64 10MB 0.0 0.0 0.0 0.0 0.0 ... 7.9 7.9 7.9 7.9 7.9
+  * x        (k, j, i) float64 10MB 0.0 0.1 0.2 0.3 0.4 ... 11.0 11.1 11.2 11.3
+Indexes:
+  ┌ z        VoxelToWorldIndex
+  │ y
+  └ x
+Attributes:
+    rgb_lookup:  {997: [255, 255, 255], 8: [191, 218, 227], 567: [176, 240, 2...
+    roi_labels:  {997: 'root (root)', 8: 'Basic cell groups and regions (grey...
+    cmap:        <matplotlib.colors.ListedColormap object at 0x7fa5782537d0>
+    norm:        <matplotlib.colors.BoundaryNorm object at 0x7fa5782dbcb0>
+
+>>> left_hip = atlas.atlas.get_masks("HIP", sides="left")
+>>> left_hip.mask
+<xarray.DataArray 'mask' (mask: 1)> Size: 20B
+'HIP_L'
+Coordinates:
+  * mask     (mask) <U5 20B 'HIP_L'
+```
+
+These masks feed directly into signal extraction and connectivity; see the examples [Atlas-based region correlation matrix](<https://confusius.tools/pr-preview/pr-533/examples/_built/connectivity/atlas_correlation_matrix/index.md>) and [Atlas-based seed connectivity maps](<https://confusius.tools/pr-preview/pr-533/examples/_built/connectivity/atlas_seed_map/index.md>) for more.
+
+## Aligning an Atlas to a Recording
+
+An atlas is only useful once it shares a grid with your data. After registering a recording to the atlas template (see [Registration](<https://confusius.tools/pr-preview/pr-533/user-guide/registration/index.md>)), `resample_like` warps the template, annotation, hemisphere map, and region meshes onto the recording's grid in one call, using an affine, B-spline, or displacement-field transform from `register_volume`:
+
+```python
+resampled = atlas.atlas.resample_like(recording, transform)
+```
+
+Resampling can be costly, so it is worth doing once and caching the result. `save_atlas` / `load_atlas` write the whole atlas (arrays, structure hierarchy, and region meshes) to a Zarr store and read it back ready to use. The [Register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-533/examples/_built/registration/register_to_allen_fusi_template/index.md>) example walks through the full register → resample → save → reload workflow.
+
+## API Reference
+
+For full parameter documentation, see the [atlas API reference](<https://confusius.tools/pr-preview/pr-533/api/atlas/index.md>) and the [I/O API reference](<https://confusius.tools/pr-preview/pr-533/api/io/index.md>) for `save_atlas`/`load_atlas`.
