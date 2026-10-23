@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1d860882d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1be376c2d0>
     ```
 - [ ] Attributes: (21)
 
@@ -471,10 +471,10 @@ motion_df.head()
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
 | 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | 4.145041e-21 | 2.242500e-21 | \-0.000198 | 0.001800 | 0.000109 | 4.340356e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | \-3.038547e-21 | \-1.760030e-21 | 0.000507 | 0.023651 | \-0.020930 | \-3.180448e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | \-2.763044e-21 | \-3.794176e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.891771e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | 2.301753e-22 | 1.626222e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.405495e-21 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.801400 | 4.105391e-21 | 7.166801e-22 | \-0.000198 | 0.001800 | 0.000109 | 4.298526e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | \-1.161059e-21 | 3.856319e-22 | 0.000507 | 0.023651 | \-0.020930 | \-1.215843e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | 2.951251e-23 | \-8.604038e-22 | 0.002885 | 0.025834 | \-0.046818 | 3.349873e-22 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | 2.130584e-21 | 4.993309e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.229364e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
@@ -568,7 +568,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 46.1 s
+**Total running time:** 58.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/volumewise_motion_correction.ipynb>)
 

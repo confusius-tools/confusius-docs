@@ -15,6 +15,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- Register a recording with B-spline or SyN deformations using `register_volumewise`, including per-frame affine initialization, masks, and metric sampling. Estimate transforms without resampling with `resample=False`, and retain them explicitly with `keep_transforms=True`; nonlinear summaries do not fabricate rigid-motion or FD measurements ([\#531](<https://github.com/confusius-tools/confusius/pull/531>)).
 - Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`) ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
 
 ### ⚡ Performance
