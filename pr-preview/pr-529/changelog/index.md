@@ -13,10 +13,6 @@ Current development version for the next ConfUSIus release.
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
-### ✨ Enhancements
-
-- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`) ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
-
 ### ⚡ Performance
 
 - `plot_napari` opens labels data carrying an `rgb_lookup` attribute, such as atlas annotations, faster by building the colormap from the lookup instead of scanning the whole volume ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
