@@ -2671,7 +2671,7 @@ to_volume(
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
     metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
+    optimizer: RegistrationOptimizer = "auto",
     optimizer_seed: int = 0,
     number_of_histogram_bins: int = 50,
     metric_sampling_percentage: float | None = None,
@@ -2755,9 +2755,9 @@ Parameters:
   Similarity metric for registration.
 - ##### **`optimizer`**
 
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Parametric optimizer. SyN retains its own solver. See register\_volume for optimizer step-size, convergence, and weight semantics.
+  `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for optimizer step-size, convergence, and weight semantics.
 - ##### **`optimizer_seed`**
 
   (`int`, default: `0` ) –
@@ -2906,29 +2906,27 @@ Examples:
 ```python
 volumewise(
     *,
-    reference_time: int | None = None,
     fixed: DataArray | None = None,
-    n_jobs: int = -1,
+    fixed_mask: DataArray | None = None,
+    moving_mask: DataArray | None = None,
+    reference_time: int | None = None,
     transform: Literal[
         "translation", "rigid", "affine", "bspline", "syn"
     ] = "rigid",
-    metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
-    optimizer_seed: int = 0,
-    fixed_mask: DataArray | None = None,
-    moving_mask: DataArray | None = None,
-    mesh_size: tuple[int, int, int] = (10, 10, 10),
     correlation_radius: int = 3,
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
-    metric_sampling_percentage: float | None = None,
-    metric_sampling_seed: int | None = None,
+    metric: RegistrationMetric = "correlation",
+    optimizer: RegistrationOptimizer = "auto",
+    optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float
     | None = None,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
     number_of_histogram_bins: int = 50,
+    metric_sampling_percentage: float | None = None,
+    metric_sampling_seed: int | None = None,
     learning_rate: float | Literal["auto"] = 0.01,
     number_of_iterations: int = 100,
     convergence_minimum_value: float = 1e-06,
@@ -2939,6 +2937,7 @@ volumewise(
     | NDArray[floating]
     | None = "center_geometry",
     optimizer_weights: list[float] | None = None,
+    mesh_size: tuple[int, int, int] = (10, 10, 10),
     use_multi_resolution: bool = False,
     shrink_factors: Sequence[int] = (6, 2, 1),
     smoothing_sigmas: Sequence[int] = (6, 2, 1),
@@ -2947,6 +2946,7 @@ volumewise(
         "linear", "bspline"
     ] = "linear",
     fill_value: float | None = None,
+    n_jobs: int = -1,
     show_progress: bool = True,
     progress_reporter: VolumewiseProgressReporter
     | None = None,
@@ -2960,41 +2960,11 @@ Register all volumes to a reference time point or a reference volume.
 
 Parameters:
 
-- ##### **`reference_time`**
-
-  (`int`, default: `None` ) –
-
-  Index of the time point to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
 - ##### **`fixed`**
 
   (`DataArray`, default: `None` ) –
 
   Spatial-only VoxelData array on the same voxel grid to register every frame to, for example the mean of a few low-motion frames. Must have no `time` dimension. If not provided, the frame at `reference_time` is used. Cannot be combined with `reference_time`.
-- ##### **`n_jobs`**
-
-  (`int`, default: `-1` ) –
-
-  Number of parallel jobs. -1 uses all available CPUs. Use 1 for serial processing.
-- ##### **`transform`**
-
-  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
-
-  Transform model. Nonlinear methods report convergence summaries rather than rigid-motion parameters. SyN supports single-resolution only.
-- ##### **`metric`**
-
-  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
-
-  Similarity metric for registration.
-- ##### **`optimizer`**
-
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
-
-  Per-frame optimizer; SyN uses its own solver. See register\_volume for details.
-- ##### **`optimizer_seed`**
-
-  (`int`, default: `0` ) –
-
-  Reproducible 1+1 evolutionary seed passed to every frame.
 - ##### **`fixed_mask`**
 
   (`DataArray`, default: `None` ) –
@@ -3005,11 +2975,16 @@ Parameters:
   (`DataArray`, default: `None` ) –
 
   Spatial-only mask or a mask with matching input time coordinates.
-- ##### **`mesh_size`**
+- ##### **`reference_time`**
 
-  (`tuple of int`, default: `(10, 10, 10)` ) –
+  (`int`, default: `None` ) –
 
-  B-spline mesh size.
+  Index of the time point to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
+- ##### **`transform`**
+
+  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
+
+  Transform model. Nonlinear methods report convergence summaries rather than rigid-motion parameters. SyN supports single-resolution only.
 - ##### **`correlation_radius`**
 
   (`int`, default: `3` ) –
@@ -3025,16 +3000,21 @@ Parameters:
   (`float`, default: `1.0` ) –
 
   SyN accumulated-field smoothing variance in squared voxel units.
-- ##### **`metric_sampling_percentage`**
+- ##### **`metric`**
 
-  (`float`, default: `None` ) –
+  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
 
-  Fraction of voxels randomly sampled per frame.
-- ##### **`metric_sampling_seed`**
+  Similarity metric for registration.
+- ##### **`optimizer`**
 
-  (`int`, default: `None` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Seed passed to each frame's metric sampling.
+  Per-frame solver. `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for details.
+- ##### **`optimizer_seed`**
+
+  (`int`, default: `0` ) –
+
+  Reproducible 1+1 evolutionary seed passed to every frame.
 - ##### **`fixed_intensity_scaling`**
 
   (`(none, db, sqrt)`, default: `"none"` ) –
@@ -3050,6 +3030,16 @@ Parameters:
   (`int`, default: `50` ) –
 
   Number of histogram bins for `metric="mattes_mi"` or `"joint_mi"`.
+- ##### **`metric_sampling_percentage`**
+
+  (`float`, default: `None` ) –
+
+  Fraction of voxels randomly sampled per frame.
+- ##### **`metric_sampling_seed`**
+
+  (`int`, default: `None` ) –
+
+  Seed passed to each frame's metric sampling.
 - ##### **`learning_rate`**
 
   (`float or auto`, default: `0.01` ) –
@@ -3084,6 +3074,11 @@ Parameters:
   (`list of float`, default: `None` ) –
 
   Per-parameter weights applied on top of auto-estimated scales via `SetOptimizerWeights()`. If not provided, no additional weighting is applied. The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter, values in `(0, 1)` slow it down, `1` leaves it unchanged. For the 3D Euler transform the order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y use `[0, 0, 1, 1, 1, 1]`.
+- ##### **`mesh_size`**
+
+  (`tuple of int`, default: `(10, 10, 10)` ) –
+
+  B-spline mesh size.
 - ##### **`use_multi_resolution`**
 
   (`bool`, default: `False` ) –
@@ -3114,6 +3109,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Fill value for voxels outside each moving volume's field of view after resampling. If not provided, defaults to that volume's minimum value.
+- ##### **`n_jobs`**
+
+  (`int`, default: `-1` ) –
+
+  Number of parallel jobs. -1 uses all available CPUs. Use 1 for serial processing.
 - ##### **`show_progress`**
 
   (`bool`, default: `True` ) –

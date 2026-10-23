@@ -17263,12 +17263,12 @@ register_volume(
     transform_type: Literal[
         "translation", "rigid", "affine"
     ],
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -17316,12 +17316,12 @@ register_volume(
     fixed_mask: DataArray | None = ...,
     moving_mask: DataArray | None = ...,
     transform_type: Literal["bspline", "syn"],
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -17366,12 +17366,12 @@ register_volume(
     *,
     fixed_mask: DataArray | None = ...,
     moving_mask: DataArray | None = ...,
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -17425,7 +17425,7 @@ register_volume(
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
     metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
+    optimizer: RegistrationOptimizer = "auto",
     optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
@@ -17521,9 +17521,9 @@ Parameters:
   Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation, recommended for same-modality SyN. `"mean_squares"` minimizes squared intensity differences for similarly scaled images. `"joint_mi"` uses joint-histogram mutual information.
 - #### **`optimizer`**
 
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Solver for parametric transforms. L-BFGS uses a limited-memory quasi-Newton method and supports linear and B-spline transforms. 1+1 evolutionary search supports linear transforms only; its covariance storage is quadratic in parameter count. SyN retains its own solver and rejects non-default choices. Only gradient descent supports `optimizer_weights`.
+  Solver selection. `"auto"` uses gradient descent for parametric transforms and ITK's native SyN solver for `transform_type="syn"`. SyN uses its own gradient-based symmetric displacement updates, not a separate parametric optimizer, and accepts only `optimizer="auto"`. L-BFGS uses a limited-memory quasi-Newton method and supports linear and B-spline transforms. 1+1 evolutionary search supports linear transforms only; its covariance storage is quadratic in parameter count. Only gradient descent supports `optimizer_weights`.
 - #### **`optimizer_seed`**
 
   (`int`, default: `0` ) –
@@ -17716,29 +17716,27 @@ Raises:
 register_volumewise(
     data: DataArray,
     *,
-    reference_time: int | None = None,
     fixed: DataArray | None = None,
-    n_jobs: int = -1,
+    fixed_mask: DataArray | None = None,
+    moving_mask: DataArray | None = None,
+    reference_time: int | None = None,
     transform: Literal[
         "translation", "rigid", "affine", "bspline", "syn"
     ] = "rigid",
-    metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
-    optimizer_seed: int = 0,
-    fixed_mask: DataArray | None = None,
-    moving_mask: DataArray | None = None,
-    mesh_size: tuple[int, int, int] = (10, 10, 10),
     correlation_radius: int = 3,
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
-    metric_sampling_percentage: float | None = None,
-    metric_sampling_seed: int | None = None,
+    metric: RegistrationMetric = "correlation",
+    optimizer: RegistrationOptimizer = "auto",
+    optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float
     | None = None,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
     number_of_histogram_bins: int = 50,
+    metric_sampling_percentage: float | None = None,
+    metric_sampling_seed: int | None = None,
     learning_rate: float | Literal["auto"] = 0.01,
     number_of_iterations: int = 100,
     convergence_minimum_value: float = 1e-06,
@@ -17749,6 +17747,7 @@ register_volumewise(
     | NDArray[floating]
     | None = "center_geometry",
     optimizer_weights: list[float] | None = None,
+    mesh_size: tuple[int, int, int] = (10, 10, 10),
     use_multi_resolution: bool = False,
     shrink_factors: Sequence[int] = (6, 2, 1),
     smoothing_sigmas: Sequence[int] = (6, 2, 1),
@@ -17757,6 +17756,7 @@ register_volumewise(
         "linear", "bspline"
     ] = "linear",
     fill_value: float | None = None,
+    n_jobs: int = -1,
     show_progress: bool = True,
     progress_reporter: VolumewiseProgressReporter
     | None = None,
@@ -17775,41 +17775,11 @@ Parameters:
   (`DataArray`) –
 
   VoxelData array with a `time` dimension to register.
-- #### **`reference_time`**
-
-  (`int`, default: `None` ) –
-
-  Index of the time point of `data` to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
 - #### **`fixed`**
 
   (`DataArray`, default: `None` ) –
 
   Spatial-only VoxelData array to register every frame to, for example the mean of a few low-motion frames of `data`. Must share `data`'s voxel grid (same `k`/`j`/`i` coordinates and voxel-to-world affine) and have no `time` dimension. Its own `fixed_intensity_scaling` applies to it. If not provided, the frame at `reference_time` is used. Cannot be combined with `reference_time`.
-- #### **`n_jobs`**
-
-  (`int`, default: `-1` ) –
-
-  Number of parallel jobs. Negative values resolve to `max(1, os.cpu_count() + 1 + n_jobs)`, so `-1` means all CPUs, `-2` means all minus one, and so on. Use `1` for serial processing.
-- #### **`transform`**
-
-  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
-
-  Transform model to use during registration. `"translation"` allows only shifts. `"rigid"` adds rotation. `"affine"` adds scaling and shearing. `"bspline"` and `"syn"` estimate local deformations; SyN currently supports single-resolution registration only.
-- #### **`metric`**
-
-  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
-
-  Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation. `"mean_squares"` measures squared intensity differences; `"joint_mi"` uses joint-histogram MI.
-- #### **`optimizer`**
-
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
-
-  Per-frame optimizer for parametric transforms. SyN uses its own solver. See register\_volume for step-size, convergence, and weight restrictions for each optimizer.
-- #### **`optimizer_seed`**
-
-  (`int`, default: `0` ) –
-
-  Reproducible 1+1 evolutionary seed passed to each frame.
 - #### **`fixed_mask`**
 
   (`DataArray`, default: `None` ) –
@@ -17820,11 +17790,16 @@ Parameters:
   (`DataArray`, default: `None` ) –
 
   Boolean VoxelData mask on the input grid, either spatial-only or with matching time coordinates for a separate mask per frame.
-- #### **`mesh_size`**
+- #### **`reference_time`**
 
-  (`tuple of int`, default: `(10, 10, 10)` ) –
+  (`int`, default: `None` ) –
 
-  B-spline mesh size, passed to each volume registration.
+  Index of the time point of `data` to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
+- #### **`transform`**
+
+  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
+
+  Transform model to use during registration. `"translation"` allows only shifts. `"rigid"` adds rotation. `"affine"` adds scaling and shearing. `"bspline"` and `"syn"` estimate local deformations; SyN currently supports single-resolution registration only.
 - #### **`correlation_radius`**
 
   (`int`, default: `3` ) –
@@ -17840,16 +17815,21 @@ Parameters:
   (`float`, default: `1.0` ) –
 
   SyN accumulated-field smoothing variance in squared voxel units.
-- #### **`metric_sampling_percentage`**
+- #### **`metric`**
 
-  (`float`, default: `None` ) –
+  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
 
-  Fraction of voxels randomly sampled per frame. If not provided, use all voxels.
-- #### **`metric_sampling_seed`**
+  Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation. `"mean_squares"` measures squared intensity differences; `"joint_mi"` uses joint-histogram MI.
+- #### **`optimizer`**
 
-  (`int`, default: `None` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Random sampling seed passed to each frame. If not provided, use ITK's seed.
+  Per-frame solver. `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for step-size, convergence, and weight restrictions for each optimizer.
+- #### **`optimizer_seed`**
+
+  (`int`, default: `0` ) –
+
+  Reproducible 1+1 evolutionary seed passed to each frame.
 - #### **`fixed_intensity_scaling`**
 
   (`(none, db, sqrt)`, default: `"none"` ) –
@@ -17865,6 +17845,16 @@ Parameters:
   (`int`, default: `50` ) –
 
   Number of histogram bins for `metric="mattes_mi"` or `"joint_mi"`.
+- #### **`metric_sampling_percentage`**
+
+  (`float`, default: `None` ) –
+
+  Fraction of voxels randomly sampled per frame. If not provided, use all voxels.
+- #### **`metric_sampling_seed`**
+
+  (`int`, default: `None` ) –
+
+  Random sampling seed passed to each frame. If not provided, use ITK's seed.
 - #### **`learning_rate`**
 
   (`float or auto`, default: `0.01` ) –
@@ -17901,6 +17891,11 @@ Parameters:
   (`list of float`, default: `None` ) –
 
   Per-parameter weights applied on top of the auto-estimated world shift scales. If not provided, identity weights are used. A list is passed directly to ITK's `SetWeights`; its length must match the number of transform parameters (3 for 2D rigid, 6 for 3D rigid, 6 for 2D affine, 12 for 3D affine). The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
+- #### **`mesh_size`**
+
+  (`tuple of int`, default: `(10, 10, 10)` ) –
+
+  B-spline mesh size, passed to each volume registration.
 - #### **`use_multi_resolution`**
 
   (`bool`, default: `False` ) –
@@ -17931,6 +17926,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Fill value for voxels outside each moving volume's field of view after resampling. If not provided, defaults to that volume's minimum value.
+- #### **`n_jobs`**
+
+  (`int`, default: `-1` ) –
+
+  Number of parallel jobs. Negative values resolve to `max(1, os.cpu_count() + 1 + n_jobs)`, so `-1` means all CPUs, `-2` means all minus one, and so on. Use `1` for serial processing.
 - #### **`show_progress`**
 
   (`bool`, default: `True` ) –
@@ -23530,7 +23530,7 @@ to_volume(
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
     metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
+    optimizer: RegistrationOptimizer = "auto",
     optimizer_seed: int = 0,
     number_of_histogram_bins: int = 50,
     metric_sampling_percentage: float | None = None,
@@ -23614,9 +23614,9 @@ Parameters:
   Similarity metric for registration.
 - ##### **`optimizer`**
 
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Parametric optimizer. SyN retains its own solver. See register\_volume for optimizer step-size, convergence, and weight semantics.
+  `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for optimizer step-size, convergence, and weight semantics.
 - ##### **`optimizer_seed`**
 
   (`int`, default: `0` ) –
@@ -23765,29 +23765,27 @@ Examples:
 ```python
 volumewise(
     *,
-    reference_time: int | None = None,
     fixed: DataArray | None = None,
-    n_jobs: int = -1,
+    fixed_mask: DataArray | None = None,
+    moving_mask: DataArray | None = None,
+    reference_time: int | None = None,
     transform: Literal[
         "translation", "rigid", "affine", "bspline", "syn"
     ] = "rigid",
-    metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
-    optimizer_seed: int = 0,
-    fixed_mask: DataArray | None = None,
-    moving_mask: DataArray | None = None,
-    mesh_size: tuple[int, int, int] = (10, 10, 10),
     correlation_radius: int = 3,
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
-    metric_sampling_percentage: float | None = None,
-    metric_sampling_seed: int | None = None,
+    metric: RegistrationMetric = "correlation",
+    optimizer: RegistrationOptimizer = "auto",
+    optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float
     | None = None,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
     number_of_histogram_bins: int = 50,
+    metric_sampling_percentage: float | None = None,
+    metric_sampling_seed: int | None = None,
     learning_rate: float | Literal["auto"] = 0.01,
     number_of_iterations: int = 100,
     convergence_minimum_value: float = 1e-06,
@@ -23798,6 +23796,7 @@ volumewise(
     | NDArray[floating]
     | None = "center_geometry",
     optimizer_weights: list[float] | None = None,
+    mesh_size: tuple[int, int, int] = (10, 10, 10),
     use_multi_resolution: bool = False,
     shrink_factors: Sequence[int] = (6, 2, 1),
     smoothing_sigmas: Sequence[int] = (6, 2, 1),
@@ -23806,6 +23805,7 @@ volumewise(
         "linear", "bspline"
     ] = "linear",
     fill_value: float | None = None,
+    n_jobs: int = -1,
     show_progress: bool = True,
     progress_reporter: VolumewiseProgressReporter
     | None = None,
@@ -23819,41 +23819,11 @@ Register all volumes to a reference time point or a reference volume.
 
 Parameters:
 
-- ##### **`reference_time`**
-
-  (`int`, default: `None` ) –
-
-  Index of the time point to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
 - ##### **`fixed`**
 
   (`DataArray`, default: `None` ) –
 
   Spatial-only VoxelData array on the same voxel grid to register every frame to, for example the mean of a few low-motion frames. Must have no `time` dimension. If not provided, the frame at `reference_time` is used. Cannot be combined with `reference_time`.
-- ##### **`n_jobs`**
-
-  (`int`, default: `-1` ) –
-
-  Number of parallel jobs. -1 uses all available CPUs. Use 1 for serial processing.
-- ##### **`transform`**
-
-  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
-
-  Transform model. Nonlinear methods report convergence summaries rather than rigid-motion parameters. SyN supports single-resolution only.
-- ##### **`metric`**
-
-  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
-
-  Similarity metric for registration.
-- ##### **`optimizer`**
-
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
-
-  Per-frame optimizer; SyN uses its own solver. See register\_volume for details.
-- ##### **`optimizer_seed`**
-
-  (`int`, default: `0` ) –
-
-  Reproducible 1+1 evolutionary seed passed to every frame.
 - ##### **`fixed_mask`**
 
   (`DataArray`, default: `None` ) –
@@ -23864,11 +23834,16 @@ Parameters:
   (`DataArray`, default: `None` ) –
 
   Spatial-only mask or a mask with matching input time coordinates.
-- ##### **`mesh_size`**
+- ##### **`reference_time`**
 
-  (`tuple of int`, default: `(10, 10, 10)` ) –
+  (`int`, default: `None` ) –
 
-  B-spline mesh size.
+  Index of the time point to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
+- ##### **`transform`**
+
+  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
+
+  Transform model. Nonlinear methods report convergence summaries rather than rigid-motion parameters. SyN supports single-resolution only.
 - ##### **`correlation_radius`**
 
   (`int`, default: `3` ) –
@@ -23884,16 +23859,21 @@ Parameters:
   (`float`, default: `1.0` ) –
 
   SyN accumulated-field smoothing variance in squared voxel units.
-- ##### **`metric_sampling_percentage`**
+- ##### **`metric`**
 
-  (`float`, default: `None` ) –
+  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
 
-  Fraction of voxels randomly sampled per frame.
-- ##### **`metric_sampling_seed`**
+  Similarity metric for registration.
+- ##### **`optimizer`**
 
-  (`int`, default: `None` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Seed passed to each frame's metric sampling.
+  Per-frame solver. `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for details.
+- ##### **`optimizer_seed`**
+
+  (`int`, default: `0` ) –
+
+  Reproducible 1+1 evolutionary seed passed to every frame.
 - ##### **`fixed_intensity_scaling`**
 
   (`(none, db, sqrt)`, default: `"none"` ) –
@@ -23909,6 +23889,16 @@ Parameters:
   (`int`, default: `50` ) –
 
   Number of histogram bins for `metric="mattes_mi"` or `"joint_mi"`.
+- ##### **`metric_sampling_percentage`**
+
+  (`float`, default: `None` ) –
+
+  Fraction of voxels randomly sampled per frame.
+- ##### **`metric_sampling_seed`**
+
+  (`int`, default: `None` ) –
+
+  Seed passed to each frame's metric sampling.
 - ##### **`learning_rate`**
 
   (`float or auto`, default: `0.01` ) –
@@ -23943,6 +23933,11 @@ Parameters:
   (`list of float`, default: `None` ) –
 
   Per-parameter weights applied on top of auto-estimated scales via `SetOptimizerWeights()`. If not provided, no additional weighting is applied. The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter, values in `(0, 1)` slow it down, `1` leaves it unchanged. For the 3D Euler transform the order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y use `[0, 0, 1, 1, 1, 1]`.
+- ##### **`mesh_size`**
+
+  (`tuple of int`, default: `(10, 10, 10)` ) –
+
+  B-spline mesh size.
 - ##### **`use_multi_resolution`**
 
   (`bool`, default: `False` ) –
@@ -23973,6 +23968,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Fill value for voxels outside each moving volume's field of view after resampling. If not provided, defaults to that volume's minimum value.
+- ##### **`n_jobs`**
+
+  (`int`, default: `-1` ) –
+
+  Number of parallel jobs. -1 uses all available CPUs. Use 1 for serial processing.
 - ##### **`show_progress`**
 
   (`bool`, default: `True` ) –
@@ -24705,7 +24705,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_5294/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_4888/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24722,19 +24722,19 @@ xarray.DataArray
   \-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28
 
   ```
-  array([[[-18.687918, -18.569138, -18.501253, ..., -17.95731 ,
+  array([[[-18.687918, -18.569138, -18.501255, ..., -17.95731 ,
            -17.939037, -17.964108],
           [-18.535534, -18.445446, -18.356527, ..., -17.885906,
            -17.885307, -17.89217 ],
           [-18.489779, -18.407112, -18.328487, ..., -17.793518,
            -17.804783, -17.829914],
           ...,
-          [-12.315687, -13.394131, -13.825215, ..., -13.536497,
-           -13.521714, -13.627705],
-          [-12.319635, -13.353613, -13.749181, ..., -13.457007,
-           -13.386364, -13.444546],
+          [-12.315687, -13.394132, -13.825216, ..., -13.536499,
+           -13.521715, -13.627706],
+          [-12.319636, -13.353613, -13.749182, ..., -13.457008,
+           -13.386365, -13.444547],
           [-12.376516, -13.219033, -13.602533, ..., -13.36433 ,
-           -13.333444, -13.279077]]], shape=(1, 125, 80), dtype=float32)
+           -13.333445, -13.279077]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -24922,7 +24922,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4e4e936ad0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5458c0ead0>
     ```
 - [ ] Attributes: (27)
 
@@ -25330,7 +25330,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 24.6 s
+**Total running time:** 20.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25399,7 +25399,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_5391/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_4980/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25667,7 +25667,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe7be753fb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe940e40290>
     ```
   - region
 
@@ -25790,7 +25790,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7fe7be766510\>
+  \<matplotlib.colors.Normalize object at 0x7fe941f32660\>
 
 ## Plot the seed maps
 
@@ -25830,7 +25830,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 24.9 s
+**Total running time:** 20.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26174,7 +26174,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff00af43ed0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcaea93bed0>
     ```
 - [ ] Attributes: (21)
 
@@ -26571,7 +26571,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff0042bd2b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcaddc24bb0>
     ```
 - [ ] Attributes: (23)
 
@@ -26740,7 +26740,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 85.0 s
+**Total running time:** 65.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27088,7 +27088,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f41643f7c50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fef4cfbfc50>
     ```
 - [ ] Attributes: (25)
 
@@ -27231,22 +27231,22 @@ xarray.DataArray
 
 - [ ]
 
-  1.705 0.4722 0.6064 0.5975 0.3297 ... 0.2545 1.129 0.08549 -0.1394
+  1.705 0.4722 0.6067 0.5974 0.3297 ... 0.2544 1.129 0.08552 -0.1393
 
   ```
-  array([[ 1.7054038 ,  0.47218907,  0.6064326 , ...,  0.90661407,
-           0.8411919 , -1.3073498 ],
-         [ 3.314502  ,  1.4946285 ,  0.28877422, ...,  0.22849068,
-           0.29297888,  0.74503154],
-         [ 3.6042025 ,  0.43766832,  0.08901776, ..., -0.78946877,
-           0.82339287,  0.83835304],
+  array([[ 1.7053471 ,  0.47218508,  0.60667574, ...,  0.9067501 ,
+           0.8413501 , -1.3073945 ],
+         [ 3.3142476 ,  1.4946027 ,  0.289191  , ...,  0.22860953,
+           0.29316697,  0.7450524 ],
+         [ 3.6038916 ,  0.4376343 ,  0.08941008, ..., -0.78943026,
+           0.82355165,  0.8383995 ],
          ...,
-         [ 0.19027728,  0.06551931,  1.6410432 , ...,  0.31593418,
-           1.4230698 ,  0.11517171],
-         [ 0.18749171,  1.7544034 ,  2.287215  , ...,  1.4634942 ,
-           0.67545384,  0.908817  ],
-         [ 0.6320407 ,  0.7464211 ,  1.4051484 , ...,  1.12944   ,
-           0.08549026, -0.1394371 ]], shape=(751, 10), dtype=float32)
+         [ 0.19005749,  0.06548941,  1.6409812 , ...,  0.31566784,
+           1.4230514 ,  0.11540988],
+         [ 0.18706222,  1.7543579 ,  2.2873359 , ...,  1.463107  ,
+           0.6754403 ,  0.90918803],
+         [ 0.6318028 ,  0.74639934,  1.4053494 , ...,  1.1292399 ,
+           0.08552428, -0.13928768]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27353,22 +27353,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-519.2 -3.525e+03 1.596e+03 -784.8 ... 1.026e+03 2.485e+03 1.667e+03
+  \-520.3 3.505e+03 1.6e+03 -779.5 ... 1.028e+03 2.523e+03 -1.685e+03
 
   ```
-  array([[ -519.1568  , -3524.992   ,  1596.1387  , ...,   668.32086 ,
-           1224.2369  ,  1221.0983  ],
-         [ 1309.4406  , -2365.1877  ,   315.39682 , ...,   -10.108643,
-           1006.35046 , -1100.6206  ],
-         [  344.98694 , -2330.7832  ,   614.9462  , ...,   272.7893  ,
-           1223.0826  , -1656.1445  ],
+  array([[ -520.2989 ,  3504.755  ,  1599.7559 , ...,   669.60266,
+           1261.5713 , -1242.1854 ],
+         [ 1308.4633 ,  2354.9707 ,   317.7082 , ...,    -9.72171,
+           1024.7684 ,  1084.4003 ],
+         [  343.88522,  2318.199  ,   617.4685 , ...,   272.92017,
+           1235.4524 ,  1638.7083 ],
          ...,
-         [-1045.5885  , -2484.69    ,  3381.5269  , ...,   948.50446 ,
-           1858.6206  ,  1249.6975  ],
-         [  468.08606 , -2381.7354  ,  2844.24    , ...,   688.9029  ,
-           2480.0574  ,  1800.4146  ],
-         [ -451.43054 , -2493.9385  ,  1233.4158  , ...,  1026.327   ,
-           2484.9666  ,  1666.9863  ]], shape=(751, 10), dtype=float32)
+         [-1046.7009 ,  2457.6367 ,  3385.7192 , ...,   949.4414 ,
+           1884.1799 , -1266.8386 ],
+         [  466.82806,  2348.8738 ,  2849.441  , ...,   690.0863 ,
+           2512.9348 , -1817.8994 ],
+         [ -452.74954,  2462.4834 ,  1238.6765 , ...,  1027.5919 ,
+           2522.82   , -1685.204  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27460,7 +27460,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 292.3 s
+**Total running time:** 237.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27802,7 +27802,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5ac670fc50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb66f9a3c50>
     ```
 - [ ] Attributes: (25)
 
@@ -27951,22 +27951,22 @@ xarray.DataArray
 
 - [ ]
 
-  0.1625 0.013 0.0 0.1839 0.0006829 ... 0.04623 0.0 0.3544 0.0 0.06981
+  0.1626 0.013 0.0 0.1839 0.0006832 ... 0.04623 0.0 0.3545 0.0 0.06981
 
   ```
-  array([[0.16254492, 0.01299528, 0.        , ..., 0.17457072, 0.5560084 ,
+  array([[0.16255698, 0.01299934, 0.        , ..., 0.17457205, 0.55600464,
           0.        ],
-         [0.08055529, 0.        , 0.        , ..., 0.05789686, 0.51770246,
+         [0.08055934, 0.        , 0.        , ..., 0.05789696, 0.51770186,
           0.        ],
-         [0.0236888 , 0.        , 0.02398688, ..., 0.01567485, 0.35746264,
+         [0.02368935, 0.        , 0.023984  , ..., 0.0156738 , 0.35746408,
           0.        ],
          ...,
-         [0.09452122, 0.01986888, 0.        , ..., 0.0882831 , 0.2666772 ,
+         [0.09453033, 0.01987509, 0.        , ..., 0.0882846 , 0.26667225,
           0.        ],
-         [0.20229632, 0.01958919, 0.        , ..., 0.10854644, 0.13272034,
+         [0.20231232, 0.01959528, 0.        , ..., 0.10854763, 0.13271652,
           0.        ],
-         [0.18282148, 0.01474581, 0.        , ..., 0.3544487 , 0.        ,
-          0.06980908]], shape=(751, 10), dtype=float32)
+         [0.18283577, 0.01475037, 0.        , ..., 0.35445145, 0.        ,
+          0.06981277]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28024,8 +28024,8 @@ print(f"n_iter_: {nmf_t.n_iter_}")
 ```
 
 ```text
-reconstruction_err_: 1911.470
-n_iter_: 664
+reconstruction_err_: 1911.557
+n_iter_: 663
 ```
 
 ## Spatial maps and time courses
@@ -28092,22 +28092,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-48.81 -107.2 23.77 475.0 275.0 ... 34.6 -75.95 839.3 361.2 -68.61
+  \-48.81 -107.2 23.77 475.0 274.9 ... 34.6 -75.95 839.4 361.2 -68.61
 
   ```
-  array([[ -48.810886, -107.219315,   23.76653 , ..., 1357.0415  ,
-           305.827   ,  -81.77564 ],
-         [ -46.597748, -101.35974 ,   89.079384, ..., 1052.7065  ,
-           200.54016 , -314.65317 ],
-         [ -48.1858  ,  -88.04905 ,   50.88931 , ...,  991.12646 ,
-            59.3195  , -347.92407 ],
+  array([[ -48.810776 , -107.21934  ,   23.766613 , ..., 1357.0479   ,
+           305.8229   ,  -81.77524  ],
+         [ -46.59765  , -101.35976  ,   89.079865 , ..., 1052.711    ,
+           200.53772  , -314.652    ],
+         [ -48.18569  ,  -88.049095 ,   50.88957  , ...,  991.1305   ,
+            59.319008 , -347.92282  ],
          ...,
-         [ -52.892544, -145.73178 ,    5.839569, ..., 1228.5282  ,
-           263.20367 , -264.38132 ],
-         [ -48.556408, -139.85194 ,   34.902218, ..., 1233.0979  ,
-           494.41037 , -215.83047 ],
-         [ -40.80987 , -106.20432 ,  -33.665436, ...,  839.34906 ,
-           361.19934 ,  -68.610725]], shape=(751, 10), dtype=float32)
+         [ -52.89242  , -145.73181  ,    5.8395586, ..., 1228.5333   ,
+           263.19995  , -264.38028  ],
+         [ -48.556282 , -139.85196  ,   34.902374 , ..., 1233.1041   ,
+           494.40372  , -215.82959  ],
+         [ -40.809776 , -106.204285 ,  -33.665638 , ...,  839.35266  ,
+           361.19443  ,  -68.61046  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28202,7 +28202,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 307.2 s
+**Total running time:** 249.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28550,7 +28550,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4a95cf3c50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7e1b8d7c50>
     ```
 - [ ] Attributes: (25)
 
@@ -28691,22 +28691,22 @@ xarray.DataArray
 
 - [ ]
 
-  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.2969 2.585e-05
+  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.297 1.711e-05
 
   ```
-  array([[ 7.3066635e+01, -8.3605871e+00, -4.0763474e+00, ...,
-           1.0820087e+00,  1.6663245e+00,  4.5841425e-06],
-         [ 5.2037041e+01,  2.2309393e+01, -1.4225260e+01, ...,
-           8.1314236e-01, -4.4685099e-01, -5.7125599e-06],
-         [ 4.5891487e+01,  2.2932837e+01, -2.1960238e+01, ...,
-          -7.2199710e-02, -7.4381337e-02,  1.8829988e-07],
+  array([[ 7.3066635e+01, -8.3605938e+00, -4.0763493e+00, ...,
+           1.0819744e+00,  1.6663108e+00,  4.4641160e-06],
+         [ 5.2037067e+01,  2.2309378e+01, -1.4225268e+01, ...,
+           8.1317788e-01, -4.4685724e-01, -5.8623887e-06],
+         [ 4.5891502e+01,  2.2932816e+01, -2.1960232e+01, ...,
+          -7.2219506e-02, -7.4409738e-02,  8.7668259e-06],
          ...,
-         [ 7.4077148e+01, -5.9905901e+00,  4.1795812e+00, ...,
-           1.2390802e+00,  8.1381299e-02,  8.2125753e-06],
-         [ 7.5606850e+01, -6.2057152e+00,  1.7687132e+01, ...,
-          -1.1357043e+00, -4.9657997e-01,  5.2099913e-06],
-         [ 5.1808723e+01, -1.8981842e+01,  1.5910512e+01, ...,
-          -8.9847302e-01, -2.9692146e-01,  2.5848100e-05]],
+         [ 7.4077156e+01, -5.9905930e+00,  4.1795883e+00, ...,
+           1.2390769e+00,  8.1436560e-02,  5.4601655e-06],
+         [ 7.5606865e+01, -6.2057152e+00,  1.7687122e+01, ...,
+          -1.1357114e+00, -4.9661902e-01, -5.1508582e-06],
+         [ 5.1808727e+01, -1.8981846e+01,  1.5910517e+01, ...,
+          -8.9845270e-01, -2.9696307e-01,  1.7107752e-05]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28838,22 +28838,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.222 39.7 15.21 -0.0009351
+  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.22 39.7 15.21 0.0007041
 
   ```
-  array([[-3.18660137e+04, -1.54776685e+03,  8.83627747e+02, ...,
-          -4.14212151e+01, -7.76363373e+01, -7.46693288e-04],
-         [-7.83757812e+03, -7.99474463e+03,  1.94659033e+03, ...,
-          -3.73594131e+01,  1.92134819e+01, -8.50242039e-04],
-         [-7.64179932e+03, -1.13111875e+04,  3.10128125e+03, ...,
-           7.67992020e+00,  5.17666149e+00, -9.07336478e-04],
+  array([[-3.1866018e+04, -1.5477708e+03,  8.8362970e+02, ...,
+          -4.1422390e+01, -7.7635834e+01, -1.7511325e-04],
+         [-7.8375811e+03, -7.9947441e+03,  1.9465931e+03, ...,
+          -3.7357880e+01,  1.9214939e+01, -5.8000605e-04],
+         [-7.6417998e+03, -1.1311187e+04,  3.1012839e+03, ...,
+           7.6817799e+00,  5.1758451e+00, -2.5194747e-04],
          ...,
-         [-3.34484570e+04,  1.15906836e+03,  5.94009717e+03, ...,
-          -5.00937042e+01, -3.77178717e+00, -1.44857180e-03],
-         [-3.14558066e+04,  6.79484033e+03,  4.77665283e+03, ...,
-           4.78399200e+01,  2.48789673e+01, -7.70006678e-04],
-         [-2.85970098e+04,  7.54298926e+03,  2.42949936e+02, ...,
-           3.97029877e+01,  1.52076645e+01, -9.35096759e-04]],
+         [-3.3448461e+04,  1.1590634e+03,  5.9401001e+03, ...,
+          -5.0094185e+01, -3.7692327e+00, -5.7497656e-04],
+         [-3.1455812e+04,  6.7948394e+03,  4.7766562e+03, ...,
+           4.7841347e+01,  2.4876919e+01, -2.5275841e-04],
+         [-2.8597014e+04,  7.5429858e+03,  2.4295175e+02, ...,
+           3.9704731e+01,  1.5206790e+01,  7.0413668e-04]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28944,7 +28944,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 292.2 s
+**Total running time:** 235.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29285,7 +29285,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f1f5d7ee2a0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f26c36e9a60>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29300,7 +29300,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...a0\>, beta=6.7) |
+|  | hrf\_model | functools.par...60\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29319,7 +29319,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f1f546cf750\>, \<confusius.gl...x7f1f54549220\>, \<confusius.gl...x7f1f54dc7890\>, \<confusius.gl...x7f1f546eb8a0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f26b1416710\>, \<confusius.gl...x7f26b1441a70\>, \<confusius.gl...x7f26b1b27890\>, \<confusius.gl...x7f26c02afdf0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29434,7 +29434,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 129.9 s
+**Total running time:** 110.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level.ipynb>)
 
@@ -29802,7 +29802,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f64aebdfc50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f25005bfc50>
     ```
 - [ ] Attributes: (21)
 
@@ -30039,7 +30039,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.5 s
+**Total running time:** 20.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30307,7 +30307,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2e2375eba0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcb24bf2ba0>
     ```
 - [ ] Attributes: (25)
 
@@ -30733,7 +30733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2e4fcd1f90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcb5cbf1f90>
     ```
 - [ ] Attributes: (25)
 
@@ -31093,7 +31093,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2e229b7250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcb23b1f250>
     ```
 - [ ] Attributes: (25)
 
@@ -31440,7 +31440,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.0 s
+**Total running time:** 7.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31783,7 +31783,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7facb5c5f360>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f81cfa7b360>
     ```
   - time
 
@@ -32064,7 +32064,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faca4e7cd70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f81c0c6d610>
     ```
 - [ ] Attributes: (6)
 
@@ -32137,7 +32137,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 71.7 s
+**Total running time:** 57.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32262,7 +32262,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.7 s
+**Total running time:** 4.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32694,7 +32694,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f42dac366f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f24e85ca810>
     ```
 - [ ] Attributes: (25)
 
@@ -32813,7 +32813,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 15.4 s
+**Total running time:** 12.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32899,16 +32899,16 @@ xarray.DataArray
   array([[[-18.687603 , -18.568825 , -18.500853 , ..., -17.956799 ,
            -17.938179 , -17.963793 ],
           [-18.534925 , -18.445103 , -18.356045 , ..., -17.885395 ,
-           -17.88491  , -17.891798 ],
+           -17.88491  , -17.8918   ],
           [-18.489155 , -18.406622 , -18.328014 , ..., -17.79321  ,
-           -17.804344 , -17.829521 ],
+           -17.804344 , -17.82952  ],
           ...,
-          [-12.314958 , -13.393738 , -13.82475  , ..., -13.536392 ,
-           -13.5213375, -13.627226 ],
-          [-12.319061 , -13.352966 , -13.748854 , ..., -13.4567585,
-           -13.385921 , -13.444569 ],
-          [-12.375978 , -13.218855 , -13.602357 , ..., -13.363947 ,
-           -13.333372 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
+          [-12.314958 , -13.39374  , -13.824751 , ..., -13.536394 ,
+           -13.521338 , -13.627226 ],
+          [-12.319063 , -13.352967 , -13.748854 , ..., -13.456759 ,
+           -13.3859215, -13.444571 ],
+          [-12.375979 , -13.218855 , -13.602358 , ..., -13.363948 ,
+           -13.333373 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -33096,7 +33096,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb37ccd55b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9edcc015b0>
     ```
 - [ ] Attributes: (27)
 
@@ -33312,7 +33312,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 154.0 s
+**Total running time:** 114.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33560,7 +33560,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f180d75cb00>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f794ca54b00>
     ```
 - [ ] Attributes: (23)
 
@@ -33841,7 +33841,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f181223fd50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f79b0ca4350>
     ```
 - [ ] Attributes: (23)
 
@@ -33974,9 +33974,9 @@ print(f"Rigid transform:\n{rigid_transform}")
 
 ```text
 Rigid transform:
-[[ 1.00000000e+00  7.99976465e-21  3.31523974e-21 -8.37581759e-20]
- [-7.80499814e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
- [-3.75087363e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
+[[ 1.00000000e+00  2.16539966e-21  3.32977527e-21 -2.26719084e-20]
+ [-1.97869098e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
+ [-3.44400073e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
 ```
 
@@ -34046,49 +34046,49 @@ xarray.DataArray
 
 - [ ]
 
-  2.25e-12 9.548e-13 8.797e-13 ... -2.043e+03 -6.986e+03 -3.411e+04
+  1.868e-11 2.071e-12 6.149e-13 -1.013e-12 ... -1.165e+03 -577.1 -58.62
 
   ```
-  array([[[[ 2.24957400e-12,  9.54801475e-13,  8.79666896e-13, ...,
-            -6.70735540e-12, -1.23201346e-12,  8.00604989e-13],
-           [ 2.20016861e-15,  8.68172827e-14,  1.00940783e-13, ...,
-            -1.24773542e-12, -2.30268231e-13,  6.13432617e-14],
-           [-3.07535277e-12, -6.35394962e-13, -5.18145905e-13, ...,
-            -4.86901524e-13,  1.03053325e-13,  9.84239357e-14],
+  array([[[[ 1.86797475e-11,  2.07134950e-12,  6.14893245e-13, ...,
+            -2.35646808e-12, -1.80368797e-13, -9.73535991e-15],
+           [ 4.72277430e-13,  6.86040300e-14,  1.92906041e-14, ...,
+            -3.61558790e-13, -5.49008927e-14,  5.97286393e-15],
+           [-6.50604333e-13, -2.56393532e-13, -1.81351228e-13, ...,
+            -1.51186339e-13,  4.95484737e-14,  3.73120804e-14],
            ...,
-           [-4.53935275e-13,  2.17557677e-14,  1.02896326e-12, ...,
-             9.73225063e-13,  6.01053234e-13,  5.65675769e-13],
-           [ 5.32879150e-13,  2.60061688e-13,  8.54103962e-13, ...,
-             3.57105457e-13,  1.75809452e-13,  2.39909235e-14],
-           [ 5.71387754e-12,  8.49810794e-13,  2.61825558e-12, ...,
-             1.04607810e-12,  3.91527675e-13,  5.88498467e-14]],
+           [-1.71888201e-13,  9.55653579e-16,  5.56756959e-13, ...,
+             2.22953830e-13,  1.27025994e-13,  2.04896481e-14],
+           [ 2.88928799e-13,  1.72980958e-13,  3.49481551e-13, ...,
+             2.39490582e-13,  1.03868902e-13,  1.06039675e-13],
+           [ 6.49656963e-12,  2.56513251e-13,  4.01212381e-13, ...,
+             4.68118036e-12,  1.14210958e-12,  1.38749176e-12]],
 
-          [[ 2.63608857e-15,  1.11885240e-15,  1.03080843e-15, ...,
-            -7.85979164e-15, -1.44369405e-15,  9.38162365e-16],
-           [ 2.57819451e-18,  1.01733949e-16,  1.18284103e-16, ...,
-            -1.46211731e-15, -2.69832178e-16,  7.18830638e-17],
-           [-3.60375000e-15, -7.44566482e-16, -6.07172069e-16, ...,
-            -5.70559379e-16,  1.20759616e-16,  1.15334820e-16],
+          [[ 2.18892418e-14,  2.42724211e-15,  7.20542226e-16, ...,
+            -2.76134885e-15, -2.11359184e-16, -1.14080581e-17],
+           [ 5.53422620e-16,  8.03913539e-17,  2.26050536e-17, ...,
+            -4.23680659e-16, -6.43337876e-17,  6.99910221e-18],
+           [-7.62389078e-16, -3.00446244e-16, -2.12510413e-16, ...,
+            -1.77162690e-16,  5.80617331e-17,  4.37229221e-17],
   ...
-            -2.54264537e-02, -1.69210521e-01, -6.15612147e-02],
-           [-3.58846476e-04,  5.94147498e-03,  1.29727983e-01, ...,
-            -1.75842588e-01, -3.43183531e-01, -4.82865509e-01],
-           [-6.81333420e-02,  6.54493600e-02, -2.36511544e-01, ...,
-            -2.39439485e+00, -8.18600453e+00, -3.99698802e+01]],
+            -8.43395370e-02, -1.84188646e-01, -1.83783287e-02],
+           [ 2.41460315e-02,  4.32552469e-02,  1.39897143e-01, ...,
+            -1.58513733e-01, -9.05454004e-02, -1.05251192e-02],
+           [ 1.73254621e-02,  7.50247743e-02,  1.11223828e-02, ...,
+            -1.36537987e+00, -6.76269022e-01, -6.86950922e-02]],
 
-          [[ 3.49324774e+03,  6.56766190e+02, -1.51521100e+03, ...,
-            -1.49855745e+03, -9.51345642e+02,  1.31582640e+02],
-           [ 3.55829644e+02,  8.24798231e+01, -1.35622200e+02, ...,
-            -1.72256058e+02,  8.27224008e+01,  1.98536229e+02],
-           [-2.17337261e+03,  3.30617646e+02,  3.74058971e+01, ...,
-            -8.07238467e+01,  9.71140243e+01,  2.10676690e+01],
+          [[ 2.42022074e+03,  3.78322593e+02, -1.50125128e+03, ...,
+            -1.42659598e+02, -3.58826124e-01,  1.92923612e+01],
+           [ 2.19156545e+02,  7.33379485e+01, -8.50896434e+01, ...,
+            -6.03393528e+01,  1.15778067e+01,  1.54958094e+01],
+           [-9.37047856e+02,  1.04220074e+02,  6.87295025e+01, ...,
+            -1.13352932e+02,  1.05837666e+01,  4.26860089e+00],
            ...,
-           [-5.19471623e+02,  3.85982622e+01,  3.36544332e+02, ...,
-            -2.16983184e+01, -1.44400151e+02, -5.25348469e+01],
-           [-3.06230872e-01,  5.07031054e+00,  1.10706711e+02, ...,
-            -1.50059796e+02, -2.92864495e+02, -4.12065715e+02],
-           [-5.81433418e+01,  5.58528949e+01, -2.01833211e+02, ...,
-            -2.04331842e+03, -6.98573721e+03, -3.41093111e+04]]]],
+           [-5.81323483e+01,  7.26761916e+01,  2.75269014e+02, ...,
+            -7.19733136e+01, -1.57182119e+02, -1.56836195e+01],
+           [ 2.06056373e+01,  3.69129778e+01,  1.19384826e+02, ...,
+            -1.35271772e+02, -7.72692468e+01, -8.98188123e+00],
+           [ 1.47851288e+01,  6.40243211e+01,  9.49157153e+00, ...,
+            -1.16518204e+03, -5.77111560e+02, -5.86227280e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34243,7 +34243,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f17b3d14cb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f78f2f44650>
     ```
 - [x] Attributes: (4)
 
@@ -34261,7 +34261,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, 7.999764645666681e-21, 3.3152397443366126e-21, -8.3758175935314e-20\], \[-7.80499813935329e-21, 0.9984816653136261, -0.05508506179108655, -0.17708957996671817\], \[-3.75087363065984e-21, 0.05508506179108655, 0.9984816653136261, 0.8544666816294444\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, 2.1653996569207865e-21, 3.32977527287354e-21, -2.2671908413827757e-20\], \[-1.9786909788551497e-21, 0.9984816653136261, -0.05508506179108686, -0.1770895799667164\], \[-3.444000733482786e-21, 0.05508506179108686, 0.9984816653136261, 0.85446668162943\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -34274,7 +34274,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8952
+Rigid + B-spline final metric: -0.8951
 ```
 
 ```python
@@ -34363,7 +34363,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 160.8 s
+**Total running time:** 69.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34729,7 +34729,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6597707750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f15f661b750>
     ```
 - [ ] Attributes: (21)
 
@@ -34842,10 +34842,10 @@ motion_df.head()
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
 | 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | 4.105391e-21 | 7.166801e-22 | \-0.000198 | 0.001800 | 0.000109 | 4.298526e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | \-1.161059e-21 | 3.856319e-22 | 0.000507 | 0.023651 | \-0.020930 | \-1.215843e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | 2.951251e-23 | \-8.604038e-22 | 0.002885 | 0.025834 | \-0.046818 | 3.349873e-22 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | 2.130584e-21 | 4.993309e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.229364e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.801400 | 4.145041e-21 | 2.242500e-21 | \-0.000198 | 0.001800 | 0.000109 | 4.340356e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | \-3.038547e-21 | \-1.760030e-21 | 0.000507 | 0.023651 | \-0.020930 | \-3.180448e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | \-2.763044e-21 | \-3.794176e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.891771e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | 2.301753e-22 | 1.626222e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.405495e-21 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
@@ -34939,7 +34939,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 58.0 s
+**Total running time:** 46.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34966,7 +34966,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
-- Choose L-BFGS (`optimizer="lbfgs"`) or seeded 1+1 evolutionary search (`optimizer="one_plus_one"`) for registration, including volumewise registration and xarray accessors. Add mean squares (`metric="mean_squares"`) and joint-histogram mutual information (`metric="joint_mi"`). Evolutionary search supports linear transforms only; SyN retains its own solver ([\#532](<https://github.com/confusius-tools/confusius/pull/532>)).
+- Choose L-BFGS (`optimizer="lbfgs"`) or seeded 1+1 evolutionary search (`optimizer="one_plus_one"`) for registration, including volumewise registration and xarray accessors. Add mean squares (`metric="mean_squares"`) and joint-histogram mutual information (`metric="joint_mi"`). The default `optimizer="auto"` selects gradient descent for parametric models or the native SyN solver. Evolutionary search supports linear transforms only ([\#532](<https://github.com/confusius-tools/confusius/pull/532>)).
 - Register a recording with B-spline or SyN deformations using `register_volumewise`, including per-frame affine initialization, masks, and metric sampling. Estimate transforms without resampling with `resample=False`, and retain them explicitly with `keep_transforms=True`; nonlinear summaries do not fabricate rigid-motion or FD measurements ([\#531](<https://github.com/confusius-tools/confusius/pull/531>)).
 - Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`) ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
 

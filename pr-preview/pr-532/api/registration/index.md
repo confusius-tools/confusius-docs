@@ -672,12 +672,12 @@ register_volume(
     transform_type: Literal[
         "translation", "rigid", "affine"
     ],
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -725,12 +725,12 @@ register_volume(
     fixed_mask: DataArray | None = ...,
     moving_mask: DataArray | None = ...,
     transform_type: Literal["bspline", "syn"],
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -775,12 +775,12 @@ register_volume(
     *,
     fixed_mask: DataArray | None = ...,
     moving_mask: DataArray | None = ...,
-    optimizer: RegistrationOptimizer = ...,
-    optimizer_seed: int = ...,
     correlation_radius: int = ...,
     update_field_variance: float = ...,
     total_field_variance: float = ...,
     metric: RegistrationMetric = ...,
+    optimizer: RegistrationOptimizer = ...,
+    optimizer_seed: int = ...,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = ...,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
@@ -834,7 +834,7 @@ register_volume(
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
     metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
+    optimizer: RegistrationOptimizer = "auto",
     optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
@@ -930,9 +930,9 @@ Parameters:
   Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation, recommended for same-modality SyN. `"mean_squares"` minimizes squared intensity differences for similarly scaled images. `"joint_mi"` uses joint-histogram mutual information.
 - #### **`optimizer`**
 
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Solver for parametric transforms. L-BFGS uses a limited-memory quasi-Newton method and supports linear and B-spline transforms. 1+1 evolutionary search supports linear transforms only; its covariance storage is quadratic in parameter count. SyN retains its own solver and rejects non-default choices. Only gradient descent supports `optimizer_weights`.
+  Solver selection. `"auto"` uses gradient descent for parametric transforms and ITK's native SyN solver for `transform_type="syn"`. SyN uses its own gradient-based symmetric displacement updates, not a separate parametric optimizer, and accepts only `optimizer="auto"`. L-BFGS uses a limited-memory quasi-Newton method and supports linear and B-spline transforms. 1+1 evolutionary search supports linear transforms only; its covariance storage is quadratic in parameter count. Only gradient descent supports `optimizer_weights`.
 - #### **`optimizer_seed`**
 
   (`int`, default: `0` ) –
@@ -1125,29 +1125,27 @@ Raises:
 register_volumewise(
     data: DataArray,
     *,
-    reference_time: int | None = None,
     fixed: DataArray | None = None,
-    n_jobs: int = -1,
+    fixed_mask: DataArray | None = None,
+    moving_mask: DataArray | None = None,
+    reference_time: int | None = None,
     transform: Literal[
         "translation", "rigid", "affine", "bspline", "syn"
     ] = "rigid",
-    metric: RegistrationMetric = "correlation",
-    optimizer: RegistrationOptimizer = "gradient_descent",
-    optimizer_seed: int = 0,
-    fixed_mask: DataArray | None = None,
-    moving_mask: DataArray | None = None,
-    mesh_size: tuple[int, int, int] = (10, 10, 10),
     correlation_radius: int = 3,
     update_field_variance: float = 3.0,
     total_field_variance: float = 1.0,
-    metric_sampling_percentage: float | None = None,
-    metric_sampling_seed: int | None = None,
+    metric: RegistrationMetric = "correlation",
+    optimizer: RegistrationOptimizer = "auto",
+    optimizer_seed: int = 0,
     fixed_intensity_scaling: Literal["none", "db", "sqrt"]
     | float
     | None = None,
     moving_intensity_scaling: Literal["none", "db", "sqrt"]
     | float = "none",
     number_of_histogram_bins: int = 50,
+    metric_sampling_percentage: float | None = None,
+    metric_sampling_seed: int | None = None,
     learning_rate: float | Literal["auto"] = 0.01,
     number_of_iterations: int = 100,
     convergence_minimum_value: float = 1e-06,
@@ -1158,6 +1156,7 @@ register_volumewise(
     | NDArray[floating]
     | None = "center_geometry",
     optimizer_weights: list[float] | None = None,
+    mesh_size: tuple[int, int, int] = (10, 10, 10),
     use_multi_resolution: bool = False,
     shrink_factors: Sequence[int] = (6, 2, 1),
     smoothing_sigmas: Sequence[int] = (6, 2, 1),
@@ -1166,6 +1165,7 @@ register_volumewise(
         "linear", "bspline"
     ] = "linear",
     fill_value: float | None = None,
+    n_jobs: int = -1,
     show_progress: bool = True,
     progress_reporter: VolumewiseProgressReporter
     | None = None,
@@ -1184,41 +1184,11 @@ Parameters:
   (`DataArray`) –
 
   VoxelData array with a `time` dimension to register.
-- #### **`reference_time`**
-
-  (`int`, default: `None` ) –
-
-  Index of the time point of `data` to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
 - #### **`fixed`**
 
   (`DataArray`, default: `None` ) –
 
   Spatial-only VoxelData array to register every frame to, for example the mean of a few low-motion frames of `data`. Must share `data`'s voxel grid (same `k`/`j`/`i` coordinates and voxel-to-world affine) and have no `time` dimension. Its own `fixed_intensity_scaling` applies to it. If not provided, the frame at `reference_time` is used. Cannot be combined with `reference_time`.
-- #### **`n_jobs`**
-
-  (`int`, default: `-1` ) –
-
-  Number of parallel jobs. Negative values resolve to `max(1, os.cpu_count() + 1 + n_jobs)`, so `-1` means all CPUs, `-2` means all minus one, and so on. Use `1` for serial processing.
-- #### **`transform`**
-
-  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
-
-  Transform model to use during registration. `"translation"` allows only shifts. `"rigid"` adds rotation. `"affine"` adds scaling and shearing. `"bspline"` and `"syn"` estimate local deformations; SyN currently supports single-resolution registration only.
-- #### **`metric`**
-
-  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
-
-  Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation. `"mean_squares"` measures squared intensity differences; `"joint_mi"` uses joint-histogram MI.
-- #### **`optimizer`**
-
-  (`(gradient_descent, lbfgs, one_plus_one)`, default: `"gradient_descent"` ) –
-
-  Per-frame optimizer for parametric transforms. SyN uses its own solver. See register\_volume for step-size, convergence, and weight restrictions for each optimizer.
-- #### **`optimizer_seed`**
-
-  (`int`, default: `0` ) –
-
-  Reproducible 1+1 evolutionary seed passed to each frame.
 - #### **`fixed_mask`**
 
   (`DataArray`, default: `None` ) –
@@ -1229,11 +1199,16 @@ Parameters:
   (`DataArray`, default: `None` ) –
 
   Boolean VoxelData mask on the input grid, either spatial-only or with matching time coordinates for a separate mask per frame.
-- #### **`mesh_size`**
+- #### **`reference_time`**
 
-  (`tuple of int`, default: `(10, 10, 10)` ) –
+  (`int`, default: `None` ) –
 
-  B-spline mesh size, passed to each volume registration.
+  Index of the time point of `data` to use as registration target. If not provided, and `fixed` is not provided either, the first time point (`0`) is used. Cannot be combined with `fixed`.
+- #### **`transform`**
+
+  (`(translation, rigid, affine, bspline, syn)`, default: `"translation"` ) –
+
+  Transform model to use during registration. `"translation"` allows only shifts. `"rigid"` adds rotation. `"affine"` adds scaling and shearing. `"bspline"` and `"syn"` estimate local deformations; SyN currently supports single-resolution registration only.
 - #### **`correlation_radius`**
 
   (`int`, default: `3` ) –
@@ -1249,16 +1224,21 @@ Parameters:
   (`float`, default: `1.0` ) –
 
   SyN accumulated-field smoothing variance in squared voxel units.
-- #### **`metric_sampling_percentage`**
+- #### **`metric`**
 
-  (`float`, default: `None` ) –
+  (`(correlation, mattes_mi, ants_cc, mean_squares, joint_mi)`, default: `"correlation"` ) –
 
-  Fraction of voxels randomly sampled per frame. If not provided, use all voxels.
-- #### **`metric_sampling_seed`**
+  Similarity metric. `"correlation"` (normalized cross-correlation) is appropriate for same-modality registration. `"mattes_mi"` (Mattes mutual information) is better suited for multi-modal registration or when the intensity relationship between images is non-linear. `"ants_cc"` uses ANTs neighborhood correlation. `"mean_squares"` measures squared intensity differences; `"joint_mi"` uses joint-histogram MI.
+- #### **`optimizer`**
 
-  (`int`, default: `None` ) –
+  (`(auto, gradient_descent, lbfgs, one_plus_one)`, default: `"auto"` ) –
 
-  Random sampling seed passed to each frame. If not provided, use ITK's seed.
+  Per-frame solver. `"auto"` selects gradient descent for parametric transforms or ITK's native SyN solver. SyN requires `optimizer="auto"`. See register\_volume for step-size, convergence, and weight restrictions for each optimizer.
+- #### **`optimizer_seed`**
+
+  (`int`, default: `0` ) –
+
+  Reproducible 1+1 evolutionary seed passed to each frame.
 - #### **`fixed_intensity_scaling`**
 
   (`(none, db, sqrt)`, default: `"none"` ) –
@@ -1274,6 +1254,16 @@ Parameters:
   (`int`, default: `50` ) –
 
   Number of histogram bins for `metric="mattes_mi"` or `"joint_mi"`.
+- #### **`metric_sampling_percentage`**
+
+  (`float`, default: `None` ) –
+
+  Fraction of voxels randomly sampled per frame. If not provided, use all voxels.
+- #### **`metric_sampling_seed`**
+
+  (`int`, default: `None` ) –
+
+  Random sampling seed passed to each frame. If not provided, use ITK's seed.
 - #### **`learning_rate`**
 
   (`float or auto`, default: `0.01` ) –
@@ -1310,6 +1300,11 @@ Parameters:
   (`list of float`, default: `None` ) –
 
   Per-parameter weights applied on top of the auto-estimated world shift scales. If not provided, identity weights are used. A list is passed directly to ITK's `SetWeights`; its length must match the number of transform parameters (3 for 2D rigid, 6 for 3D rigid, 6 for 2D affine, 12 for 3D affine). The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
+- #### **`mesh_size`**
+
+  (`tuple of int`, default: `(10, 10, 10)` ) –
+
+  B-spline mesh size, passed to each volume registration.
 - #### **`use_multi_resolution`**
 
   (`bool`, default: `False` ) –
@@ -1340,6 +1335,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Fill value for voxels outside each moving volume's field of view after resampling. If not provided, defaults to that volume's minimum value.
+- #### **`n_jobs`**
+
+  (`int`, default: `-1` ) –
+
+  Number of parallel jobs. Negative values resolve to `max(1, os.cpu_count() + 1 + n_jobs)`, so `-1` means all CPUs, `-2` means all minus one, and so on. Use `1` for serial processing.
 - #### **`show_progress`**
 
   (`bool`, default: `True` ) –
