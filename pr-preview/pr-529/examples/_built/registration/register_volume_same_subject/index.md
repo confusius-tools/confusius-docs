@@ -240,7 +240,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f46f128c8a0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a59c6c8a0>
     ```
 - [ ] Attributes: (23)
 
@@ -521,7 +521,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f46f5d57d50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a5e763d50>
     ```
 - [ ] Attributes: (23)
 
@@ -923,7 +923,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f469790da30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a00486e10>
     ```
 - [x] Attributes: (4)
 
@@ -941,7 +941,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, -1.0148612354970272e-33, -5.3347572657196834e-33, 1.0625679840170134e-32\], \[7.060053184226745e-34, 0.9983409293552667, -0.057579412762395456, -0.12252668429564115\], \[5.384341640518588e-33, 0.057579412762395456, 0.9983409293552667, 0.7850731300652523\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, -1.0148612354952603e-33, -5.3347572657213084e-33, 1.0625679840151635e-32\], \[7.060053184207965e-34, 0.9983409293552665, -0.057579412762399286, -0.12252668429566779\], \[5.3843416405201116e-33, 0.057579412762399286, 0.9983409293552665, 0.7850731300652612\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -954,7 +954,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.7729
-Rigid + B-spline final metric: -0.8872
+Rigid + B-spline final metric: -0.8853
 ```
 
 ```python
@@ -1043,7 +1043,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 30.3 s
+**Total running time:** 44.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/syn-registration?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-529/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-529/examples/_built/registration/register_volume_same_subject.ipynb>)
 
