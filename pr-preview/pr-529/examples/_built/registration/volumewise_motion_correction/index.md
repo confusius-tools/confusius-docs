@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f00c74a8050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f65a1474190>
     ```
 - [ ] Attributes: (21)
 
@@ -448,7 +448,7 @@ xarray.DataArray
 
 ## Register every frame to the first frame
 
-Volumewise registration can be applied using `register_volumewise`. By default, each volume (or frame in this case) is registered to the first acquired volume. You may choose any other reference timepoint using the `reference_time`. Alternatively, pass any spatial-only volume on the same grid as `fixed`, for example the mean of a few low-motion frames. Here, we're trying to correct for rigid motion, that is, translation and rotations. The default learning rate is conservative; for this recording, `1.0` recovers the inter-frame shifts better. Depending on the recording, the dynamic range of the data can be quite large, here we use decibel scaling to help the optimizer find the correct alignment.
+Volumewise registration can be applied using `register_volumewise`. By default, each volume (or frame in this case) is registered to the first acquired volume. You may choose any other reference timepoint using the `reference_time`. Alternatively, pass any spatial-only volume on the same grid as `fixed`, for example the mean of a few low-motion frames. Here, we're trying to correct for rigid motion, that is, translation and rotations. This single-slice recording uses native-grid central-difference gradients; `learning_rate=0.1` recovers the inter-frame shifts without the overshoot seen with `1.0`. Learning rates tuned for Gaussian gradients may need adjustment for thin inputs. The dynamic range of the data can be quite large, so we use decibel scaling to help the optimizer find the correct alignment.
 
 ```python
 registered = cf.registration.register_volumewise(
@@ -456,7 +456,7 @@ registered = cf.registration.register_volumewise(
     transform="rigid",
     moving_intensity_scaling="db",
     metric="correlation",
-    learning_rate=1.0,
+    learning_rate=0.1,
 )
 ```
 
@@ -470,11 +470,11 @@ motion_df.head()
 |  | rot\_x | rot\_y | rot\_z | trans\_x | trans\_y | trans\_z | mean\_fd | max\_fd | rms\_fd | final\_metric\_value | n\_iterations | status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
-| 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | 4.105391e-21 | 7.166801e-22 | \-0.000198 | 0.001800 | 0.000109 | 4.298526e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | \-1.161059e-21 | 3.856319e-22 | 0.000507 | 0.023651 | \-0.020930 | \-1.215843e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | 2.951251e-23 | \-8.604038e-22 | 0.002885 | 0.025834 | \-0.046818 | 3.349873e-22 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | 2.130584e-21 | 4.993309e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.229364e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.401400 | 0.0 | \-0.0 | 0.000000 | 0.000000 | 0.000000 | 0.0 | 0.001037 | 0.001381 | 0.001048 | \-1.000000 | 31 | completed |
+| 88.801400 | 0.0 | \-0.0 | \-0.000040 | \-0.000140 | 0.000863 | 0.0 | 0.039412 | 0.049663 | 0.039646 | \-0.950656 | 31 | completed |
+| 89.201400 | 0.0 | \-0.0 | 0.001165 | 0.017177 | \-0.024376 | 0.0 | 0.034322 | 0.048150 | 0.034825 | \-0.973433 | 31 | completed |
+| 89.601425 | 0.0 | \-0.0 | 0.002797 | 0.024716 | \-0.047477 | 0.0 | 0.005104 | 0.007361 | 0.005213 | \-0.971816 | 31 | completed |
+| 90.001425 | 0.0 | \-0.0 | 0.003135 | 0.026043 | \-0.048129 | 0.0 | 0.006360 | 0.007918 | 0.006407 | \-0.969521 | 33 | completed |
 
 ## Plot the motion diagnostics
 
@@ -568,7 +568,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 56.9 s
+**Total running time:** 28.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/syn-registration?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-529/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-529/examples/_built/registration/volumewise_motion_correction.ipynb>)
 

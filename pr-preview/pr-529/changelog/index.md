@@ -13,12 +13,17 @@ Current development version for the next ConfUSIus release.
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
+### ✨ Enhancements
+
+- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`). Thin inputs retain SyN's interpolated internal grids because its field smoothing fixes boundary voxels. Final resampling uses the original signal, and returned displacement fields use the original fixed grid ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
+
 ### ⚡ Performance
 
 - `plot_napari` opens labels data carrying an `rgb_lookup` attribute, such as atlas annotations, faster by building the colormap from the lookup instead of scanning the whole volume ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
 ### 🐛 Fixes
 
+- Parametric registration preserves the original image and mask grids for single-slice and thin-volume inputs instead of expanding them. Inputs with fewer than four voxels on any spatial axis use central-difference gradients; nonzero Gaussian pyramid smoothing is disabled with a warning. Existing learning-rate tuning may need adjustment, and transforms remain three-dimensional ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Nearest-neighbor resampling preserves 64-bit integer labels exactly, including values beyond float64's exact integer range ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Decibel-scaled registration keeps zero-power voxels finite in optimizer inputs, avoiding invalid gradients without changing the returned signal's scaling ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).

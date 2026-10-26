@@ -2824,7 +2824,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`.
+  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`. Disabled with a warning for inputs with fewer than four voxels along any spatial axis; parametric transforms retain native grids and use central-difference gradients. SyN instead retains expanded internal grids for its displacement-field smoothing.
 - ##### **`resample`**
 
   (`bool`, default: `False` ) –
@@ -3027,7 +3027,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`.
+  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`. Disabled with one warning per call for inputs with fewer than four voxels along any spatial axis; those inputs retain their native grids and use central-difference gradients.
 - ##### **`resample_interpolation`**
 
   (`(linear, bspline)`, default: `"linear"` ) –

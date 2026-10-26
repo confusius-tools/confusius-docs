@@ -978,25 +978,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-images" viewBox="0 0 24 24"><path d="m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"/><path d="M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"/><circle cx="13" cy="7" r="1" fill="currentColor"/><rect width="14" height="14" x="8" y="2" rx="2"/></svg>
-  
-  <span class="md-ellipsis">
-    
-  
-  Registration
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="././" class="md-nav__link md-nav__link--active">
         
   
@@ -1014,37 +995,6 @@
   
 
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#syn-volume-registration" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        SyN volume registration
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -3118,11 +3068,6 @@
                       
                     
                     
-                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-                      <div class="md-sidebar-button__wrapper">
-                        <label class="md-sidebar-button" for="__toc"></label>
-                      </div>
-                    
                   
                   <div class="md-sidebar__inner">
                     
@@ -3134,25 +3079,6 @@
   
     
   
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#syn-volume-registration" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        SyN volume registration
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -3298,50 +3224,6 @@ for motion correction and spatial alignment:</p>
 <p>Please refer to the <a href="../../api/registration/">API Reference</a>
 for more information.</p>
 </div>
-<h2 id="syn-volume-registration">SyN volume registration<a class="headerlink" href="#syn-volume-registration" title="Permanent link">&para;</a></h2>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="../../api/registration/#confusius.registration.register_volume"><code>register_volume</code></a> supports symmetric
-normalization (SyN) with <code>transform_type="syn"</code>. Use <code>metric="ants_cc"</code> for ANTs
-neighborhood correlation in same-modality registration. Both inputs must be
-spatial-only VoxelData arrays.</p>
-<p>For large global misalignment, estimate a rigid or affine initialization first:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.registration</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_volume</span><span class="p">,</span> <span class="n">resample_like</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">_</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">register_volume</span><span class="p">(</span><span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">transform_type</span><span class="o">=</span><span class="s2">&quot;rigid&quot;</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">registered</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">diagnostics</span> <span class="o">=</span> <span class="n">register_volume</span><span class="p">(</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">moving</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">fixed</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">transform_type</span><span class="o">=</span><span class="s2">&quot;syn&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;ants_cc&quot;</span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">initialization</span><span class="o">=</span><span class="n">affine</span><span class="p">,</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">update_field_variance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">total_field_variance</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">reapplied</span> <span class="o">=</span> <span class="n">resample_like</span><span class="p">(</span><span class="n">moving</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
-</span></code></pre></div>
-<p>The returned <code>field</code> is a VoxelData displacement field on the original fixed grid.
-It maps fixed-world points to moving-world points (the same pull convention as
-other registration methods), and already includes affine initialization. Do not
-apply the affine a second time. The original moving signal is resampled only
-once; intensity scaling affects optimizer inputs, not the returned signal.</p>
-<p><code>correlation_radius</code> controls the neighborhood radius in voxels. Gaussian
-update/total-field variances are in squared voxel units, not squared world units.
-For SyN, <code>learning_rate="auto"</code> selects a fixed maximum update length of <code>0.1</code>
-voxels. Progress reporters and cooperative cancellation are supported.</p>
-<p>Single-slice inputs use the existing 3D thin-axis expansion. Smoothing acts on
-that expanded grid, so settings are not interchangeable with a native 2D SyN
-pipeline. As with other discretized deformable methods, inspect the estimated
-field and Jacobians rather than assuming global invertibility from the algorithm's
-name alone.</p>
-<p>This first implementation supports <strong>single-resolution volume registration</strong>.
-<code>use_multi_resolution=True</code> raises because the ITK wheels do not expose the
-required displacement-field parameter adaptors. Optimizer weights are also
-unsupported. The xarray equivalent is
-<code>moving.fusi.register.to_volume(fixed, transform="syn", metric="ants_cc")</code>.
-Volumewise SyN and napari method-selection/transform-file UI support are not yet
-available.</p>
 
 
 

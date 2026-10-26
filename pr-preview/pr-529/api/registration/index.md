@@ -1009,7 +1009,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`.
+  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`. Disabled with a warning if either input has fewer than four voxels along any spatial axis.
 - #### **`resample`**
 
   (`bool`, default: `True` ) –
@@ -1108,6 +1108,22 @@ Raises:
 - `ValueError` –
 
   If `fixed_mask` shape does not match `fixed` or `moving_mask` shape does not match `moving`.
+
+Warns:
+
+- `UserWarning` –
+
+  When nonzero pyramid smoothing is overridden for a thin input.
+
+> [!NOTE]
+>
+> **Notes**
+>
+> For parametric transforms, inputs with fewer than four voxels along any spatial axis, including single slices, retain their original image and mask grids. Gaussian gradient filters are disabled in favor of on-demand central differences, and pyramid smoothing sigmas are set to zero. Downsampling still follows `shrink_factors`, without Gaussian antialiasing. Gradient estimates and convergence can differ from those for thicker volumes, so learning rates may need adjustment.
+>
+> SyN retains interpolated internal image and mask grids with at least four voxels per spatial axis: its displacement-field smoothing fixes boundary voxels, which would zero every update on a single-slice grid. SyN's Gaussian gradient filters remain enabled. The original signal is resampled only after registration, and the returned displacement field uses the original fixed grid.
+>
+> Transforms remain three-dimensional: this policy does not constrain motion to the image plane. In particular, through-plane motion in single-slice data is not identifiable and can drift, including for oblique planes.
 
 ### register\_volumewise
 
@@ -1251,7 +1267,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`.
+  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`. Disabled with one warning per call if either input has fewer than four voxels along any spatial axis.
 - #### **`resample_interpolation`**
 
   (`(linear, bspline)`, default: `"linear"` ) –
@@ -1298,9 +1314,17 @@ Raises:
 
   If `n_jobs != 1` and `data` is backed by an h5py dataset. See Notes.
 
+Warns:
+
+- `UserWarning` –
+
+  When nonzero pyramid smoothing is overridden for thin inputs.
+
 > [!NOTE]
 >
 > **Notes**
+>
+> Thin inputs retain their original image grids and use central-difference gradients without Gaussian pyramid smoothing, as described in register\_volume. Downsampling remains enabled when requested; motion is not constrained to the image plane.
 >
 > SCAN files are HDF5 files loaded lazily via h5py. h5py datasets cannot be pickled, so they cannot be passed to joblib workers for parallel processing. Materialize the data before calling this function:
 >
