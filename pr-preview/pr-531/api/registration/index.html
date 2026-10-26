@@ -5780,7 +5780,8 @@ the same length as <code>smoothing_sigmas</code>. Only used when
           <div class="doc-md-description">
             <p>Gaussian smoothing sigma (in voxels) applied at each pyramid level, from
 coarsest to finest. Must have the same length as <code>shrink_factors</code>. Only used
-when <code>use_multi_resolution=True</code>.</p>
+when <code>use_multi_resolution=True</code>. Disabled with a warning if either input
+has fewer than four voxels along any spatial axis.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6067,6 +6068,36 @@ not match <code>moving</code>.</p>
         </li>
     </ul>
 
+
+<p><span class="doc-section-title">Warns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>When nonzero pyramid smoothing is overridden for a thin input.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>For parametric transforms, inputs with fewer than four voxels along any spatial
+axis, including single slices, retain their original image and mask grids. Gaussian gradient filters
+are disabled in favor of on-demand central differences, and pyramid smoothing
+sigmas are set to zero. Downsampling still follows <code>shrink_factors</code>, without
+Gaussian antialiasing. Gradient estimates and convergence can differ from those
+for thicker volumes, so learning rates may need adjustment.</p>
+<p>SyN retains interpolated internal image and mask grids with at least four
+voxels per spatial axis: its displacement-field smoothing fixes boundary
+voxels, which would zero every update on a single-slice grid. SyN's Gaussian
+gradient filters remain enabled. The original signal is resampled only after
+registration, and the returned displacement field uses the original fixed grid.</p>
+<p>Transforms remain three-dimensional: this policy does not constrain motion to
+the image plane. In particular, through-plane motion in single-slice data is
+not identifiable and can drift, including for oblique planes.</p>
+</details>
 
     </div>
 
@@ -6450,7 +6481,9 @@ Must have the same length as <code>smoothing_sigmas</code>. Only used when
           <div class="doc-md-description">
             <p>Gaussian smoothing sigma (in voxels) applied at each pyramid level,
 from coarsest to finest. Must have the same length as
-<code>shrink_factors</code>. Only used when <code>use_multi_resolution=True</code>.</p>
+<code>shrink_factors</code>. Only used when <code>use_multi_resolution=True</code>. Disabled with
+one warning per call if either input has fewer than four voxels along any
+spatial axis. SyN requires single-resolution registration.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6612,9 +6645,27 @@ VoxelData array, or does not share <code>data</code>'s voxel grid.</p>
     </ul>
 
 
+<p><span class="doc-section-title">Warns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#UserWarning">UserWarning</a></code>
+            –
+          <div class="doc-md-description">
+            <p>When nonzero pyramid smoothing is overridden for thin inputs.</p>
+          </div>
+        </li>
+    </ul>
+
+
 <details class="note" open>
   <summary>Notes</summary>
-  <p>SCAN files are HDF5 files loaded lazily via h5py. h5py datasets cannot be pickled,
+  <p>Thin parametric inputs retain their original image grids and use
+central-difference gradients without Gaussian pyramid smoothing. SyN instead
+retains expanded internal grids for its displacement-field smoothing, as
+described in <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volume&lt;/span&gt;" href="./#confusius.registration.register_volume">register_volume</a>.
+Downsampling remains enabled when requested for parametric transforms; motion
+is not constrained to the image plane.</p>
+<p>SCAN files are HDF5 files loaded lazily via h5py. h5py datasets cannot be pickled,
 so they cannot be passed to joblib workers for parallel processing. Materialize the
 data before calling this function:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
