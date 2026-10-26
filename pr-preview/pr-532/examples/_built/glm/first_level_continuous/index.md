@@ -360,7 +360,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f376e61fd90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f64aebdfc50>
     ```
 - [ ] Attributes: (21)
 
@@ -597,7 +597,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 24.2 s
+**Total running time:** 25.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/registration-optimizers-metrics?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-532/examples/_built/glm/first_level_continuous.ipynb>)
 
