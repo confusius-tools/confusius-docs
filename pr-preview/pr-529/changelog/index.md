@@ -15,7 +15,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
-- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`). Thin inputs retain SyN's interpolated internal grids because its field smoothing fixes boundary voxels. Final resampling uses the original signal, and returned displacement fields use the original fixed grid ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
+- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`) ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
 
 ### ⚡ Performance
 
@@ -23,7 +23,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
-- Parametric registration preserves the original image and mask grids for single-slice and thin-volume inputs instead of expanding them. Inputs with fewer than four voxels on any spatial axis use central-difference gradients; nonzero Gaussian pyramid smoothing is disabled with a warning. Existing learning-rate tuning may need adjustment, and transforms remain three-dimensional ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
+- Matrix-initialized linear registration now pivots around the fixed image's physical center without changing the supplied initial mapping, improving optimizer conditioning for data away from the world origin ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Nearest-neighbor resampling preserves 64-bit integer labels exactly, including values beyond float64's exact integer range ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Decibel-scaled registration keeps zero-power voxels finite in optimizer inputs, avoiding invalid gradients without changing the returned signal's scaling ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
