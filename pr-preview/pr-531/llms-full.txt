@@ -17572,7 +17572,7 @@ Parameters:
 
   - `"center_geometry"`: aligns image centers.
   - `"center_moments"`: aligns centers of mass.
-  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform.
+  - `(N+1, N+1)` homogeneous affine matrix: preserves the supplied world mapping and, for linear registration, uses the fixed image's physical center as the optimizer pivot.
   - `None`: uses the identity transform.
 
   For `transform_type="bspline"`, centering modes are ignored but affine initialization is supported.
@@ -17600,7 +17600,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`. Disabled with a warning if either input has fewer than four voxels along any spatial axis.
+  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`.
 - #### **`resample`**
 
   (`bool`, default: `True` ) –
@@ -17699,22 +17699,6 @@ Raises:
 - `ValueError` –
 
   If `fixed_mask` shape does not match `fixed` or `moving_mask` shape does not match `moving`.
-
-Warns:
-
-- `UserWarning` –
-
-  When nonzero pyramid smoothing is overridden for a thin input.
-
-> [!NOTE]
->
-> **Notes**
->
-> For parametric transforms, inputs with fewer than four voxels along any spatial axis, including single slices, retain their original image and mask grids. Gaussian gradient filters are disabled in favor of on-demand central differences, and pyramid smoothing sigmas are set to zero. Downsampling still follows `shrink_factors`, without Gaussian antialiasing. Gradient estimates and convergence can differ from those for thicker volumes, so learning rates may need adjustment.
->
-> SyN retains interpolated internal image and mask grids with at least four voxels per spatial axis: its displacement-field smoothing fixes boundary voxels, which would zero every update on a single-slice grid. SyN's Gaussian gradient filters remain enabled. The original signal is resampled only after registration, and the returned displacement field uses the original fixed grid.
->
-> Transforms remain three-dimensional: this policy does not constrain motion to the image plane. In particular, through-plane motion in single-slice data is not identifiable and can drift, including for oblique planes.
 
 ### register\_volumewise
 
@@ -17911,7 +17895,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`. Disabled with one warning per call if either input has fewer than four voxels along any spatial axis. SyN requires single-resolution registration.
+  Gaussian smoothing sigma (in voxels) applied at each pyramid level, from coarsest to finest. Must have the same length as `shrink_factors`. Only used when `use_multi_resolution=True`.
 - #### **`resample`**
 
   (`bool`, default: `True` ) –
@@ -17968,17 +17952,9 @@ Raises:
 
   If `n_jobs != 1` and `data` is backed by an h5py dataset. See Notes.
 
-Warns:
-
-- `UserWarning` –
-
-  When nonzero pyramid smoothing is overridden for thin inputs.
-
 > [!NOTE]
 >
 > **Notes**
->
-> Thin parametric inputs retain their original image grids and use central-difference gradients without Gaussian pyramid smoothing. SyN instead retains expanded internal grids for its displacement-field smoothing, as described in register\_volume. Downsampling remains enabled when requested for parametric transforms; motion is not constrained to the image plane.
 >
 > SCAN files are HDF5 files loaded lazily via h5py. h5py datasets cannot be pickled, so they cannot be passed to joblib workers for parallel processing. Materialize the data before calling this function:
 >
@@ -23687,7 +23663,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`. Disabled with a warning for inputs with fewer than four voxels along any spatial axis; parametric transforms retain native grids and use central-difference gradients. SyN instead retains expanded internal grids for its displacement-field smoothing.
+  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`.
 - ##### **`resample`**
 
   (`bool`, default: `False` ) –
@@ -23941,7 +23917,7 @@ Parameters:
 
   (`sequence of int`, default: `(6, 2, 1)` ) –
 
-  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`. Disabled with one warning per call for inputs with fewer than four voxels along any spatial axis; parametric transforms retain native grids and use central-difference gradients. SyN instead retains expanded internal grids for its displacement-field smoothing.
+  Gaussian smoothing sigma (in voxels) at each pyramid level, from coarsest to finest. Only used when `use_multi_resolution=True`.
 - ##### **`resample`**
 
   (`bool`, default: `True` ) –
@@ -24689,7 +24665,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_4897/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_4813/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24706,19 +24682,19 @@ xarray.DataArray
   \-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28
 
   ```
-  array([[[-18.687918, -18.569138, -18.501253, ..., -17.95731 ,
+  array([[[-18.687918, -18.569138, -18.501255, ..., -17.95731 ,
            -17.939037, -17.964108],
           [-18.535534, -18.445446, -18.356527, ..., -17.885906,
            -17.885307, -17.89217 ],
           [-18.489779, -18.407112, -18.328487, ..., -17.793518,
            -17.804783, -17.829914],
           ...,
-          [-12.315687, -13.394131, -13.825215, ..., -13.536497,
-           -13.521714, -13.627705],
-          [-12.319635, -13.353613, -13.749181, ..., -13.457007,
-           -13.386364, -13.444546],
+          [-12.315687, -13.394132, -13.825216, ..., -13.536499,
+           -13.521715, -13.627706],
+          [-12.319636, -13.353613, -13.749182, ..., -13.457008,
+           -13.386365, -13.444547],
           [-12.376516, -13.219033, -13.602533, ..., -13.36433 ,
-           -13.333444, -13.279077]]], shape=(1, 125, 80), dtype=float32)
+           -13.333445, -13.279077]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -24906,7 +24882,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f842723abe0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc0d6b26be0>
     ```
 - [ ] Attributes: (27)
 
@@ -25314,7 +25290,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 21.0 s
+**Total running time:** 18.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25383,7 +25359,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_4991/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_4906/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25651,7 +25627,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9fbc4a80b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff001b2ff50>
     ```
   - region
 
@@ -25774,7 +25750,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f9fbc629fd0\>
+  \<matplotlib.colors.Normalize object at 0x7ff001b41fd0\>
 
 ## Plot the seed maps
 
@@ -25814,7 +25790,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 22.2 s
+**Total running time:** 18.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26158,7 +26134,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f845ee10410>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f713d763ed0>
     ```
 - [ ] Attributes: (21)
 
@@ -26555,7 +26531,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f84582a35b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7130a626d0>
     ```
 - [ ] Attributes: (23)
 
@@ -26724,7 +26700,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 83.9 s
+**Total running time:** 66.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27072,7 +27048,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7ef69e3ed0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2bd6bd3ed0>
     ```
 - [ ] Attributes: (25)
 
@@ -27215,22 +27191,22 @@ xarray.DataArray
 
 - [ ]
 
-  1.932 -0.2638 0.005444 -0.4957 -0.959 ... 0.045 1.726 0.01903 0.5131
+  1.705 0.4722 0.6067 0.5974 0.3297 ... 0.2544 1.129 0.08552 -0.1393
 
   ```
-  array([[ 1.9316806 , -0.26383513,  0.00544374, ...,  0.527973  ,
-           0.817387  ,  1.339133  ],
-         [ 2.8578315 ,  0.38857126, -0.94969743, ..., -1.9157984 ,
-           0.1936127 , -0.872859  ],
-         [ 3.6357727 , -0.01326291, -0.17779846, ..., -1.2189994 ,
-           0.6999992 , -0.9837729 ],
+  array([[ 1.7053471 ,  0.47218508,  0.60667574, ...,  0.9067501 ,
+           0.8413501 , -1.3073945 ],
+         [ 3.3142476 ,  1.4946027 ,  0.289191  , ...,  0.22860953,
+           0.29316697,  0.7450524 ],
+         [ 3.6038916 ,  0.4376343 ,  0.08941008, ..., -0.78943026,
+           0.82355165,  0.8383995 ],
          ...,
-         [ 0.5698662 , -0.40160796, -1.5274562 , ...,  2.4349198 ,
-           1.1462724 ,  0.02098865],
-         [ 0.29025996, -0.5515462 , -2.5356061 , ...,  1.7208838 ,
-           0.55897605, -0.5699583 ],
-         [ 0.9358821 , -0.99940157, -1.0979198 , ...,  1.726309  ,
-           0.01903114,  0.51311654]], shape=(751, 10), dtype=float32)
+         [ 0.19005749,  0.06548941,  1.6409812 , ...,  0.31566784,
+           1.4230514 ,  0.11540988],
+         [ 0.18706222,  1.7543579 ,  2.2873359 , ...,  1.463107  ,
+           0.6754403 ,  0.90918803],
+         [ 0.6318028 ,  0.74639934,  1.4053494 , ...,  1.1292399 ,
+           0.08552428, -0.13928768]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27337,22 +27313,22 @@ xarray.DataArray
 
 - [ ]
 
-  3.289e+03 -773.7 1.585e+03 1.377e+03 ... 1.158e+03 1.266e+03 -966.4
+  \-520.3 3.505e+03 1.6e+03 -779.5 ... 1.028e+03 2.523e+03 -1.685e+03
 
   ```
-  array([[ 3288.7505   ,  -773.7349   ,  1585.3069   , ...,   502.56827  ,
-            776.07855  , -1765.3243   ],
-         [ 2455.95     ,    77.89163  ,   404.14908  , ...,  -372.6571   ,
-             53.40827  , -1251.5475   ],
-         [ 2801.265    ,  -715.69025  ,   590.95605  , ...,    -4.9935913,
-            -32.06122  ,  -988.65674  ],
+  array([[ -520.2989 ,  3504.755  ,  1599.7559 , ...,   669.60266,
+           1261.5713 , -1242.1854 ],
+         [ 1308.4633 ,  2354.9707 ,   317.7082 , ...,    -9.72171,
+           1024.7684 ,  1084.4003 ],
+         [  343.88522,  2318.199  ,   617.4685 , ...,   272.92017,
+           1235.4524 ,  1638.7083 ],
          ...,
-         [ 3057.5278   ,   118.59585  ,  3337.0537   , ...,   841.42126  ,
-            217.93845  ,  -670.9265   ],
-         [ 3093.8347   ,   993.0402   ,  2817.3855   , ...,   735.95825  ,
-            768.85254  ,  -709.829    ],
-         [ 3116.5664   ,   291.5774   ,  1093.7002   , ...,  1157.6362   ,
-           1265.5287   ,  -966.371    ]], shape=(751, 10), dtype=float32)
+         [-1046.7009 ,  2457.6367 ,  3385.7192 , ...,   949.4414 ,
+           1884.1799 , -1266.8386 ],
+         [  466.82806,  2348.8738 ,  2849.441  , ...,   690.0863 ,
+           2512.9348 , -1817.8994 ],
+         [ -452.74954,  2462.4834 ,  1238.6765 , ...,  1027.5919 ,
+           2522.82   , -1685.204  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27444,7 +27420,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 74.4 s
+**Total running time:** 240.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27786,7 +27762,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7eff473b3ed0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb0110d3ed0>
     ```
 - [ ] Attributes: (25)
 
@@ -27935,22 +27911,22 @@ xarray.DataArray
 
 - [ ]
 
-  0.03154 0.004883 0.1225 0.0 0.1425 0.01346 ... 0.0 0.0 0.3566 0.0 0.0
+  0.1626 0.013 0.0 0.1839 0.0006832 ... 0.04623 0.0 0.3545 0.0 0.06981
 
   ```
-  array([[0.03154429, 0.00488285, 0.12245374, ..., 0.24168631, 0.0624888 ,
+  array([[0.16255698, 0.01299934, 0.        , ..., 0.17457205, 0.55600464,
           0.        ],
-         [0.10910813, 0.00493816, 0.        , ..., 0.00151684, 0.43352088,
+         [0.08055934, 0.        , 0.        , ..., 0.05789696, 0.51770186,
           0.        ],
-         [0.02433274, 0.00508235, 0.        , ..., 0.05376722, 0.73823875,
+         [0.02368935, 0.        , 0.023984  , ..., 0.0156738 , 0.35746408,
           0.        ],
          ...,
-         [0.00395372, 0.00419095, 0.156894  , ..., 0.        , 0.2045162 ,
+         [0.09453033, 0.01987509, 0.        , ..., 0.0882846 , 0.26667225,
           0.        ],
-         [0.13266647, 0.00394173, 0.1804468 , ..., 0.        , 0.        ,
+         [0.20231232, 0.01959528, 0.        , ..., 0.10854763, 0.13271652,
           0.        ],
-         [0.13233198, 0.00348593, 0.13280028, ..., 0.3565654 , 0.        ,
-          0.        ]], shape=(751, 10), dtype=float32)
+         [0.18283577, 0.01475037, 0.        , ..., 0.35445145, 0.        ,
+          0.06981277]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28008,8 +27984,8 @@ print(f"n_iter_: {nmf_t.n_iter_}")
 ```
 
 ```text
-reconstruction_err_: 1907.405
-n_iter_: 458
+reconstruction_err_: 1911.557
+n_iter_: 663
 ```
 
 ## Spatial maps and time courses
@@ -28076,22 +28052,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-35.32 -123.1 19.23 520.4 420.7 ... 7.133 37.23 231.0 404.6 -506.7
+  \-48.81 -107.2 23.77 475.0 274.9 ... 34.6 -75.95 839.4 361.2 -68.61
 
   ```
-  array([[ -35.322876 , -123.07492  ,   19.231998 , ...,  891.15173  ,
-           394.76505  , -550.6629   ],
-         [ -38.118603 , -125.07266  ,   83.25701  , ...,  578.0298   ,
-           282.8272   , -568.5466   ],
-         [ -28.338076 , -132.2683   ,   44.180283 , ...,  421.78778  ,
-           156.75887  , -521.11066  ],
+  array([[ -48.810776 , -107.21934  ,   23.766613 , ..., 1357.0479   ,
+           305.8229   ,  -81.77524  ],
+         [ -46.59765  , -101.35976  ,   89.079865 , ..., 1052.711    ,
+           200.53772  , -314.652    ],
+         [ -48.18569  ,  -88.049095 ,   50.88957  , ...,  991.1305   ,
+            59.319008 , -347.92282  ],
          ...,
-         [ -48.678505 , -153.54408  ,   -2.7702084, ...,  689.688    ,
-           362.64902  , -536.60114  ],
-         [ -46.694084 , -137.23833  ,   28.336552 , ...,  625.4557   ,
-           612.72455  , -510.7291   ],
-         [ -36.50513  , -104.339615 ,  -34.3794   , ...,  230.9626   ,
-           404.6431   , -506.66122  ]], shape=(751, 10), dtype=float32)
+         [ -52.89242  , -145.73181  ,    5.8395586, ..., 1228.5333   ,
+           263.19995  , -264.38028  ],
+         [ -48.556282 , -139.85196  ,   34.902374 , ..., 1233.1041   ,
+           494.40372  , -215.82959  ],
+         [ -40.809776 , -106.204285 ,  -33.665638 , ...,  839.35266  ,
+           361.19443  ,  -68.61046  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28186,7 +28162,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 87.0 s
+**Total running time:** 247.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28534,7 +28510,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f04bd4b3ed0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd1d6e8fed0>
     ```
 - [ ] Attributes: (25)
 
@@ -28675,22 +28651,22 @@ xarray.DataArray
 
 - [ ]
 
-  72.66 -9.549 -4.514 11.54 12.28 ... 0.2946 -0.745 0.2914 -3.208e-05
+  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.297 1.711e-05
 
   ```
-  array([[ 7.2658417e+01, -9.5488310e+00, -4.5138350e+00, ...,
-           7.4604088e-01, -1.2725370e+00, -4.9131922e-06],
-         [ 5.3508621e+01,  2.2821320e+01, -1.4926135e+01, ...,
-           3.6002312e-02,  8.9256722e-01,  2.0307486e-06],
-         [ 4.6018204e+01,  2.2311920e+01, -2.2729881e+01, ...,
-          -7.0615637e-01,  6.3270551e-01,  1.2204517e-05],
+  array([[ 7.3066635e+01, -8.3605938e+00, -4.0763493e+00, ...,
+           1.0819744e+00,  1.6663108e+00,  4.4641160e-06],
+         [ 5.2037067e+01,  2.2309378e+01, -1.4225268e+01, ...,
+           8.1317788e-01, -4.4685724e-01, -5.8623887e-06],
+         [ 4.5891502e+01,  2.2932816e+01, -2.1960232e+01, ...,
+          -7.2219506e-02, -7.4409738e-02,  8.7668259e-06],
          ...,
-         [ 7.4096123e+01, -5.9602995e+00,  4.7541814e+00, ...,
-           1.3250663e+00, -3.7481940e-01, -1.4870893e-05],
-         [ 7.6419693e+01, -5.6146283e+00,  1.8104921e+01, ...,
-          -1.0390481e+00,  4.2057988e-01,  2.0875593e-06],
-         [ 5.1441517e+01, -1.9641245e+01,  1.6258463e+01, ...,
-          -7.4504554e-01,  2.9141834e-01, -3.2078009e-05]],
+         [ 7.4077156e+01, -5.9905930e+00,  4.1795883e+00, ...,
+           1.2390769e+00,  8.1436560e-02,  5.4601655e-06],
+         [ 7.5606865e+01, -6.2057152e+00,  1.7687122e+01, ...,
+          -1.1357114e+00, -4.9661902e-01, -5.1508582e-06],
+         [ 5.1808727e+01, -1.8981846e+01,  1.5910517e+01, ...,
+          -8.9845270e-01, -2.9696307e-01,  1.7107752e-05]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28822,22 +28798,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-3.197e+04 -1.625e+03 175.3 -3.83e+03 ... -32.51 -16.07 -0.001308
+  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.22 39.7 15.21 0.0007041
 
   ```
-  array([[-3.1966814e+04, -1.6252539e+03,  1.7533063e+02, ...,
-           2.2444984e+01,  5.9114491e+01, -1.4777931e-03],
-         [-7.9874653e+03, -8.1278804e+03,  2.2673687e+03, ...,
-           8.8280020e+00, -3.9864357e+01, -1.4237014e-03],
-         [-7.5542026e+03, -1.1349812e+04,  2.8572729e+03, ...,
-          -3.8416252e+01, -3.5067696e+01, -1.0770350e-03],
+  array([[-3.1866018e+04, -1.5477708e+03,  8.8362970e+02, ...,
+          -4.1422390e+01, -7.7635834e+01, -1.7511325e-04],
+         [-7.8375811e+03, -7.9947441e+03,  1.9465931e+03, ...,
+          -3.7357880e+01,  1.9214939e+01, -5.8000605e-04],
+         [-7.6417998e+03, -1.1311187e+04,  3.1012839e+03, ...,
+           7.6817799e+00,  5.1758451e+00, -2.5194747e-04],
          ...,
-         [-3.3354328e+04,  1.4636711e+03,  5.7442285e+03, ...,
-           4.5731869e+01,  1.7639767e+01, -1.3123216e-03],
-         [-3.1629254e+04,  7.0068164e+03,  4.6265771e+03, ...,
-          -3.9600014e+01, -2.2719248e+01, -1.6886818e-03],
-         [-2.8743879e+04,  7.6929380e+03, -6.5779181e+02, ...,
-          -3.2514236e+01, -1.6074520e+01, -1.3079809e-03]],
+         [-3.3448461e+04,  1.1590634e+03,  5.9401001e+03, ...,
+          -5.0094185e+01, -3.7692327e+00, -5.7497656e-04],
+         [-3.1455812e+04,  6.7948394e+03,  4.7766562e+03, ...,
+           4.7841347e+01,  2.4876919e+01, -2.5275841e-04],
+         [-2.8597014e+04,  7.5429858e+03,  2.4295175e+02, ...,
+           3.9704731e+01,  1.5206790e+01,  7.0413668e-04]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28928,7 +28904,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 71.8 s
+**Total running time:** 233.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29269,7 +29245,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fa00efdbab0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f56045d22a0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29284,7 +29260,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...b0\>, beta=6.7) |
+|  | hrf\_model | functools.par...a0\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29303,7 +29279,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7fa00ef7b4d0\>, \<confusius.gl...x7f9ffce395b0\>, \<confusius.gl...x7fa00c6af890\>, \<confusius.gl...x7f9ffcfcf790\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f55fc773d90\>, \<confusius.gl...x7f55fc661220\>, \<confusius.gl...x7f55fcedf9b0\>, \<confusius.gl...x7f55fc68f020\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29418,7 +29394,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 120.9 s
+**Total running time:** 109.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/glm/first_level.ipynb>)
 
@@ -29786,7 +29762,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f681c29bed0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb141fbfed0>
     ```
 - [ ] Attributes: (21)
 
@@ -30023,7 +29999,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.1 s
+**Total running time:** 21.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30291,7 +30267,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff807e76660>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6685dbe510>
     ```
 - [ ] Attributes: (25)
 
@@ -30717,7 +30693,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff834409f90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f66b1ef9e50>
     ```
 - [ ] Attributes: (25)
 
@@ -31077,7 +31053,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff80728f750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6684ccb4d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31424,7 +31400,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.0 s
+**Total running time:** 7.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31767,7 +31743,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9daa263100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb88bda7230>
     ```
   - time
 
@@ -31876,22 +31852,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-7.14 -7.319 -7.32 -7.224 -7.351 ... 8.156 8.19 8.043 7.189 6.185
+  \-3.894 -3.584 -3.501 -3.76 -3.985 ... -8.179 -10.94 -13.72 -12.56
 
   ```
-  array([[[-7.13992769, -7.31949955, -7.32012378, ..., -1.65099253,
-            1.16141022,  3.33864224],
-          [-6.01411545, -6.14865774, -6.20726458, ..., -0.70358413,
-            1.60865532,  3.37769352],
-          [-4.09960946, -4.24384931, -4.48758518, ...,  0.44093759,
-            2.21137723,  3.49419103],
+  array([[[ -3.89375359,  -3.58374338,  -3.50061794, ...,  -8.74608039,
+            -7.79345128,  -6.99100112],
+          [ -1.51661279,  -1.08157274,  -0.89801282, ...,  -7.08660521,
+            -5.8910446 ,  -4.75516962],
+          [  2.85558525,   3.98647844,   3.8977053 , ...,  -4.53545883,
+            -4.30102864,  -3.78234777],
           ...,
-          [ 8.36879726, 10.24344474, 11.49110649, ...,  8.16139348,
-            6.74770644,  5.80993904],
-          [ 8.79652265, 10.69943907, 11.62082617, ...,  7.92220211,
-            6.93204064,  5.98055104],
-          [ 8.28750498, 10.37152868, 11.04275905, ...,  8.04299499,
-            7.18888032,  6.18543156]]], shape=(1, 97, 128))
+          [  1.85772519,   3.81928748,   6.30792831, ...,  -9.40418385,
+           -12.4964889 , -12.27100534],
+          [  1.8068629 ,   3.91858836,   5.82987122, ..., -10.92740772,
+           -13.19299566, -12.42946494],
+          [  1.52253314,   3.68687344,   4.26127091, ..., -10.94084976,
+           -13.72436883, -12.56125771]]], shape=(1, 97, 128))
   ```
 - [x] Coordinates: (6)
 
@@ -32048,7 +32024,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9d9c564ef0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb8840f58b0>
     ```
 - [ ] Attributes: (6)
 
@@ -32066,7 +32042,7 @@ xarray.DataArray
 
   **motion\_params :**
 
-  rot\_x rot\_y rot\_z trans\_x trans\_y trans\_z mean\_fd \\ time 0.000 0.0 -0.0 0.000000 0.000000 0.000000 0.0 1.635219 1.614 0.0 -0.0 -0.014303 1.100137 1.416322 0.0 0.300024 3.228 0.0 -0.0 -0.011379 0.805212 1.232919 0.0 0.027612 4.842 0.0 -0.0 -0.012768 0.827515 1.258335 0.0 0.093291 6.456 0.0 -0.0 -0.012276 0.903431 1.294574 0.0 0.041159 ... ... ... ... ... ... ... ... 427.710 0.0 -0.0 0.001780 0.015189 -0.717762 0.0 0.101489 429.324 0.0 -0.0 0.001633 0.110393 -0.675494 0.0 1.458907 430.938 0.0 -0.0 -0.013120 1.249074 0.510777 0.0 1.838508 432.552 0.0 -0.0 0.004556 -0.194171 -0.964813 0.0 0.892170 434.166 0.0 -0.0 0.003295 -0.228354 -0.074754 0.0 0.000000 max\_fd rms\_fd final\_metric\_value n\_iterations status time 0.000 1.938132 1.641443 -1.000000 31 completed 1.614 0.356293 0.300953 -0.001823 9 completed 3.228 0.054951 0.030985 -0.001948 9 completed 4.842 0.101411 0.093350 -0.001770 9 completed 6.456 0.046230 0.041214 -0.001581 9 completed ... ... ... ... ... ... 427.710 0.103989 0.101494 -0.207446 9 completed 429.324 1.767725 1.465737 -0.030617 9 completed 430.938 2.207871 1.846176 -0.658041 9 completed 432.552 0.917047 0.892279 -0.010726 11 completed 434.166 0.000000 0.000000 -0.536480 9 completed \[270 rows x 12 columns\]
+  rot\_x rot\_y rot\_z trans\_x trans\_y \\ time 0.000 0.000000e+00 -0.000000e+00 0.000000 0.000000 0.000000 1.614 -2.385743e-20 -1.537921e-21 -0.000113 0.018049 -0.035453 3.228 1.587875e-20 2.536183e-21 0.000429 0.013651 -0.029464 4.842 -1.246469e-20 1.004451e-20 -0.002249 0.057678 -0.034945 6.456 -3.078363e-20 4.139844e-21 -0.000514 0.018776 -0.026100 ... ... ... ... ... ... 427.710 1.354237e-20 6.209528e-21 -0.002377 0.481931 -0.201410 429.324 7.081140e-21 -1.168633e-22 -0.002686 0.494626 -0.206359 430.938 1.402747e-20 -4.711797e-21 -0.002658 0.489819 -0.202756 432.552 7.098228e-21 5.861992e-21 -0.002656 0.486414 -0.201453 434.166 1.627462e-20 -1.658643e-21 -0.002366 0.479012 -0.197452 trans\_z mean\_fd max\_fd rms\_fd final\_metric\_value \\ time 0.000 0.000000e+00 0.038819 0.041227 0.038837 -1.000000 1.614 -4.776291e-19 0.010275 0.020129 0.011103 -0.955446 3.228 3.178707e-19 0.032327 0.067029 0.035230 -0.965001 4.842 -2.490902e-19 0.021443 0.047030 0.023788 -0.925374 6.456 -6.162456e-19 0.029920 0.043512 0.030456 -0.959677 ... ... ... ... ... ... 427.710 2.714131e-19 0.008720 0.014461 0.009051 -0.722658 429.324 1.417576e-19 0.005579 0.006129 0.005584 -0.722090 430.938 2.805783e-19 0.003594 0.003639 0.003594 -0.724732 432.552 1.424177e-19 0.004982 0.010523 0.005636 -0.736636 434.166 3.257384e-19 0.000000 0.000000 0.000000 -0.743093 n\_iterations status time 0.000 31 completed 1.614 14 completed 3.228 32 completed 4.842 46 completed 6.456 20 completed ... ... ... 427.710 12 completed 429.324 12 completed 430.938 13 completed 432.552 13 completed 434.166 12 completed \[270 rows x 12 columns\]
 
   **long\_name :**
 
@@ -32121,7 +32097,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 44.0 s
+**Total running time:** 57.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32246,7 +32222,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.8 s
+**Total running time:** 4.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32678,7 +32654,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff74af56690>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9dac2b25d0>
     ```
 - [ ] Attributes: (25)
 
@@ -32797,7 +32773,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 15.5 s
+**Total running time:** 12.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32883,16 +32859,16 @@ xarray.DataArray
   array([[[-18.687603 , -18.568825 , -18.500853 , ..., -17.956799 ,
            -17.938179 , -17.963793 ],
           [-18.534925 , -18.445103 , -18.356045 , ..., -17.885395 ,
-           -17.88491  , -17.891798 ],
+           -17.88491  , -17.8918   ],
           [-18.489155 , -18.406622 , -18.328014 , ..., -17.79321  ,
-           -17.804344 , -17.829521 ],
+           -17.804344 , -17.82952  ],
           ...,
-          [-12.314958 , -13.393738 , -13.82475  , ..., -13.536392 ,
-           -13.5213375, -13.627226 ],
-          [-12.319061 , -13.352966 , -13.748854 , ..., -13.4567585,
-           -13.385921 , -13.444569 ],
-          [-12.375978 , -13.218855 , -13.602357 , ..., -13.363947 ,
-           -13.333372 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
+          [-12.314958 , -13.39374  , -13.824751 , ..., -13.536394 ,
+           -13.521338 , -13.627226 ],
+          [-12.319063 , -13.352967 , -13.748854 , ..., -13.456759 ,
+           -13.3859215, -13.444571 ],
+          [-12.375979 , -13.218855 , -13.602358 , ..., -13.363948 ,
+           -13.333373 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -33080,7 +33056,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd5dade5350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f25553ed480>
     ```
 - [ ] Attributes: (27)
 
@@ -33296,7 +33272,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 51.0 s
+**Total running time:** 58.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33544,7 +33520,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd96c0988a0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd8f88849d0>
     ```
 - [ ] Attributes: (23)
 
@@ -33825,7 +33801,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd9a455c650>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd95caa8350>
     ```
 - [ ] Attributes: (23)
 
@@ -33958,9 +33934,9 @@ print(f"Rigid transform:\n{rigid_transform}")
 
 ```text
 Rigid transform:
-[[ 1.00000000e+00 -1.01486124e-33 -5.33475727e-33  1.06256798e-32]
- [ 7.06005318e-34  9.98340929e-01 -5.75794128e-02 -1.22526684e-01]
- [ 5.38434164e-33  5.75794128e-02  9.98340929e-01  7.85073130e-01]
+[[ 1.00000000e+00  2.16539966e-21  3.32977527e-21 -2.26719084e-20]
+ [-1.97869098e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
+ [-3.44400073e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
 ```
 
@@ -34030,50 +34006,50 @@ xarray.DataArray
 
 - [ ]
 
-  0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+  \-1.557e-12 3.768e-13 7.061e-14 -1.6e-13 ... -538.5 -190.2 -91.81
 
   ```
-  array([[[[0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
+  array([[[[-1.55677821e-12,  3.76840553e-13,  7.06112516e-14, ...,
+            -2.29118134e-11, -3.31140888e-11,  1.98356026e-11],
+           [-3.42836080e-14,  1.89168563e-14, -2.16727777e-15, ...,
+            -4.56188850e-13, -1.56243149e-13,  4.19160597e-14],
+           [-3.21818247e-13, -1.29176293e-13, -1.32579234e-13, ...,
+            -1.49036279e-13,  3.27384104e-14,  2.05411905e-14],
            ...,
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.]],
+           [-1.39906753e-13, -8.71410242e-15,  2.97382955e-13, ...,
+             1.74988767e-13,  1.00025348e-13,  1.08217054e-14],
+           [ 3.31832812e-13,  8.14051269e-14,  3.76709115e-13, ...,
+             1.24688122e-13,  1.14303109e-13,  8.33989850e-15],
+           [ 8.64365598e-13,  1.73988243e-13,  7.40666978e-13, ...,
+             2.93444051e-13,  6.49084798e-13,  9.35101189e-13]],
 
-          [[0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           ...,
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.]],
-
-          [[0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           ...,
+          [[-1.82425884e-15,  4.41588086e-16,  8.27434498e-17, ...,
+            -2.68484475e-14, -3.88036451e-14,  2.32436925e-14],
+           [-4.01741073e-17,  2.21670898e-17, -2.53965246e-18, ...,
+            -5.34569752e-16, -1.83088344e-16,  4.91179424e-17],
+           [-3.77112024e-16, -1.51370948e-16, -1.55358572e-16, ...,
+            -1.74643213e-16,  3.83634189e-17,  2.40705118e-17],
   ...
-           ...,
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.]],
+            -1.02908978e-01, -8.13048011e-02, -8.22941473e-03],
+           [ 9.14017760e-02,  6.18186929e-02,  1.56849893e-01, ...,
+            -1.08065915e-01, -7.11609211e-02, -1.54348945e-02],
+           [ 2.33932987e-01,  3.07672349e-01,  1.96265296e-01, ...,
+            -6.31063381e-01, -2.22841509e-01, -1.07581230e-01]],
 
-          [[0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
+          [[ 6.38682466e+04, -3.88201051e+02, -7.37074906e+02, ...,
+            -2.61346308e+02, -7.83563826e+00,  1.57540880e+03],
+           [-1.58785325e+03, -4.26826682e+01, -1.09746714e+02, ...,
+            -6.36385742e+01,  1.50184489e+01,  1.91379764e+02],
+           [-8.22573694e+02,  1.46541914e+02,  7.50864123e+01, ...,
+            -1.06736480e+02,  6.39356836e+00,  5.45507410e+00],
            ...,
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.]],
-
-          [[0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           ...,
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.],
-           [0., 0., 0., ..., 0., 0., 0.]]]], shape=(3, 9, 9, 9))
+           [-5.29321134e+01,  7.41829465e+01,  2.06526046e+02, ...,
+            -8.78200236e+01, -6.93835437e+01, -7.02278275e+00],
+           [ 7.80000569e+01,  5.27545720e+01,  1.33851892e+02, ...,
+            -9.22208286e+01, -6.07270027e+01, -1.31717643e+01],
+           [ 1.99632735e+02,  2.62560112e+02,  1.67488042e+02, ...,
+            -5.38534172e+02, -1.90167534e+02, -9.18072069e+01]]]],
+        shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
 
@@ -34135,7 +34111,7 @@ xarray.DataArray
 
     float64
 
-    \-0.3333 -0.3333 ... 0.3333 0.3333
+    \-0.2833 -0.2833 ... 0.2833 0.2833
 
     ☐ ☐
 
@@ -34227,7 +34203,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd912835f70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd89ed443b0>
     ```
 - [x] Attributes: (4)
 
@@ -34245,7 +34221,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, -1.0148612354952603e-33, -5.3347572657213084e-33, 1.0625679840151635e-32\], \[7.060053184207965e-34, 0.9983409293552665, -0.057579412762399286, -0.12252668429566779\], \[5.3843416405201116e-33, 0.057579412762399286, 0.9983409293552665, 0.7850731300652612\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, 2.1653996569207865e-21, 3.32977527287354e-21, -2.2671908413827757e-20\], \[-1.9786909788551497e-21, 0.9984816653136261, -0.05508506179108686, -0.1770895799667164\], \[-3.444000733482786e-21, 0.05508506179108686, 0.9984816653136261, 0.85446668162943\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -34257,8 +34233,8 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 ```
 
 ```text
-Rigid final metric: -0.7729
-Rigid + B-spline final metric: -0.8872
+Rigid final metric: -0.8197
+Rigid + B-spline final metric: -0.8938
 ```
 
 ```python
@@ -34347,7 +34323,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 60.4 s
+**Total running time:** 64.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34713,7 +34689,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcf36a60410>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff37f9a0190>
     ```
 - [ ] Attributes: (21)
 
@@ -34803,7 +34779,7 @@ xarray.DataArray
 
 ## Register every frame to the first frame
 
-Volumewise registration can be applied using `register_volumewise`. By default, each volume (or frame in this case) is registered to the first acquired volume. You may choose any other reference timepoint using the `reference_time`. Alternatively, pass any spatial-only volume on the same grid as `fixed`, for example the mean of a few low-motion frames. Here, we're trying to correct for rigid motion, that is, translation and rotations. This single-slice recording uses native-grid central-difference gradients; `learning_rate=0.1` recovers the inter-frame shifts without the overshoot seen with `1.0`. Learning rates tuned for Gaussian gradients may need adjustment for thin inputs. The dynamic range of the data can be quite large, so we use decibel scaling to help the optimizer find the correct alignment.
+Volumewise registration can be applied using `register_volumewise`. By default, each volume (or frame in this case) is registered to the first acquired volume. You may choose any other reference timepoint using the `reference_time`. Alternatively, pass any spatial-only volume on the same grid as `fixed`, for example the mean of a few low-motion frames. Here, we're trying to correct for rigid motion, that is, translation and rotations. The default learning rate is conservative; for this recording, `1.0` recovers the inter-frame shifts better. Depending on the recording, the dynamic range of the data can be quite large, here we use decibel scaling to help the optimizer find the correct alignment.
 
 ```python
 registered = cf.registration.register_volumewise(
@@ -34811,7 +34787,7 @@ registered = cf.registration.register_volumewise(
     transform="rigid",
     moving_intensity_scaling="db",
     metric="correlation",
-    learning_rate=0.1,
+    learning_rate=1.0,
 )
 ```
 
@@ -34825,11 +34801,11 @@ motion_df.head()
 |  | rot\_x | rot\_y | rot\_z | trans\_x | trans\_y | trans\_z | mean\_fd | max\_fd | rms\_fd | final\_metric\_value | n\_iterations | status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
-| 88.401400 | 0.0 | \-0.0 | 0.000000 | 0.000000 | 0.000000 | 0.0 | 0.001037 | 0.001381 | 0.001048 | \-1.000000 | 31 | completed |
-| 88.801400 | 0.0 | \-0.0 | \-0.000040 | \-0.000140 | 0.000863 | 0.0 | 0.039412 | 0.049663 | 0.039646 | \-0.950656 | 31 | completed |
-| 89.201400 | 0.0 | \-0.0 | 0.001165 | 0.017177 | \-0.024376 | 0.0 | 0.034322 | 0.048150 | 0.034825 | \-0.973433 | 31 | completed |
-| 89.601425 | 0.0 | \-0.0 | 0.002797 | 0.024716 | \-0.047477 | 0.0 | 0.005104 | 0.007361 | 0.005213 | \-0.971816 | 31 | completed |
-| 90.001425 | 0.0 | \-0.0 | 0.003135 | 0.026043 | \-0.048129 | 0.0 | 0.006360 | 0.007918 | 0.006407 | \-0.969521 | 33 | completed |
+| 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
+| 88.801400 | 4.145041e-21 | 2.242500e-21 | \-0.000198 | 0.001800 | 0.000109 | 4.340356e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | \-3.038547e-21 | \-1.760030e-21 | 0.000507 | 0.023651 | \-0.020930 | \-3.180448e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | \-2.763044e-21 | \-3.794176e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.891771e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | 2.301753e-22 | 1.626222e-22 | 0.002614 | 0.032245 | \-0.045404 | 2.405495e-21 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
@@ -34923,7 +34899,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 39.7 s
+**Total running time:** 46.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/volumewise-deformable?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-531/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34951,7 +34927,7 @@ Current development version for the next ConfUSIus release.
 ### ✨ Enhancements
 
 - Register a recording with B-spline or SyN deformations using `register_volumewise`, including per-frame affine initialization, masks, and metric sampling. Estimate transforms without resampling with `resample=False`, and retain them explicitly with `keep_transforms=True`; nonlinear summaries do not fabricate rigid-motion or FD measurements ([\#531](<https://github.com/confusius-tools/confusius/pull/531>)).
-- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`). Thin inputs retain SyN's interpolated internal grids because its field smoothing fixes boundary voxels. Final resampling uses the original signal, and returned displacement fields use the original fixed grid ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
+- Add `transform_type="syn"` to `register_volume` and its xarray accessor. Single-resolution SyN returns reusable fixed-grid displacement fields, supports affine initialization, live progress, and cancellation, and adds ANTs neighborhood correlation (`metric="ants_cc"`) ([\#529](<https://github.com/confusius-tools/confusius/pull/529>)).
 
 ### ⚡ Performance
 
@@ -34959,7 +34935,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
-- Parametric registration preserves the original image and mask grids for single-slice and thin-volume inputs instead of expanding them. Inputs with fewer than four voxels on any spatial axis use central-difference gradients; nonzero Gaussian pyramid smoothing is disabled with a warning. Existing learning-rate tuning may need adjustment, and transforms remain three-dimensional ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
+- Matrix-initialized linear registration now pivots around the fixed image's physical center without changing the supplied initial mapping, improving optimizer conditioning for data away from the world origin ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Nearest-neighbor resampling preserves 64-bit integer labels exactly, including values beyond float64's exact integer range ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Decibel-scaled registration keeps zero-power voxels finite in optimizer inputs, avoiding invalid gradients without changing the returned signal's scaling ([\#528](<https://github.com/confusius-tools/confusius/pull/528>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
