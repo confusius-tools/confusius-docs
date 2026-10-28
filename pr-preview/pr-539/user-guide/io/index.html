@@ -4065,19 +4065,20 @@ custom arrays with correct VoxelData dimensions, acquisition timing, and affine
 geometry. Install it from your Python environment without a separate download:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>list
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># Shared location for Pi, Codex, Cursor, and other compatible assistants.</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--scope<span class="w"> </span>global
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--scope<span class="w"> </span>project
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--global
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
 </span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1"># Claude Code uses its own discovery directory.</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--claude<span class="w"> </span>--scope<span class="w"> </span>global
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--claude<span class="w"> </span>--global
 </span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
 </span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1"># Optionally install a single named skill.</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>confusius-load-data<span class="w"> </span>--scope<span class="w"> </span>global
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>confusius-load-data
 </span></code></pre></div>
 <p><code>list</code> prints skill names and descriptions. <code>install</code> defaults to every bundled
 skill, checking all destinations for conflicts before copying anything.
-<code>--scope</code> is required. Project scope uses the <strong>current working directory</strong>;
-global scope uses the user's home. Installation defaults to <code>.agents/skills/</code>,
+Installation defaults to the <strong>current working directory</strong>, not an automatically
+detected repository root. Use <code>--global</code> to install in the user's home instead.
+The default directory is <code>.agents/skills/</code>,
 shared by Pi, Codex, Cursor, and other assistants that discover this directory.
 Use <code>--claude</code> to select <code>.claude/skills/</code> instead. Shared installation does not
 guarantee discovery by every agent. Existing destinations are never replaced

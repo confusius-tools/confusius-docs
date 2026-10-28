@@ -382,17 +382,17 @@ ConfUSIus includes an Agent Skill that teaches coding assistants how to import c
 ```sh
 confusius skills list
 # Shared location for Pi, Codex, Cursor, and other compatible assistants.
-confusius skills install --scope global
-confusius skills install --scope project
+confusius skills install
+confusius skills install --global
 
 # Claude Code uses its own discovery directory.
-confusius skills install --claude --scope global
+confusius skills install --claude --global
 
 # Optionally install a single named skill.
-confusius skills install confusius-load-data --scope global
+confusius skills install confusius-load-data
 ```
 
-`list` prints skill names and descriptions. `install` defaults to every bundled skill, checking all destinations for conflicts before copying anything. `--scope` is required. Project scope uses the **current working directory**; global scope uses the user's home. Installation defaults to `.agents/skills/`, shared by Pi, Codex, Cursor, and other assistants that discover this directory. Use `--claude` to select `.claude/skills/` instead. Shared installation does not guarantee discovery by every agent. Existing destinations are never replaced without `--force`; forced replacement discards local changes and removes stale files in that skill directory.
+`list` prints skill names and descriptions. `install` defaults to every bundled skill, checking all destinations for conflicts before copying anything. Installation defaults to the **current working directory**, not an automatically detected repository root. Use `--global` to install in the user's home instead. The default directory is `.agents/skills/`, shared by Pi, Codex, Cursor, and other assistants that discover this directory. Use `--claude` to select `.claude/skills/` instead. Shared installation does not guarantee discovery by every agent. Existing destinations are never replaced without `--force`; forced replacement discards local changes and removes stale files in that skill directory.
 
 Restart or reload skill discovery in your assistant if necessary, then ask it to use `confusius-load-data`. Each installation includes geometry references and a `scripts/examples.py` script with offline, synthetic-data checks. Run it with the Python environment containing ConfUSIus. Repository maintenance skills such as the release workflow are not distributed.
 
