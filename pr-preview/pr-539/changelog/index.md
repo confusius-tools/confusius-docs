@@ -11,6 +11,10 @@ Current development version for the next ConfUSIus release.
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
 
+### ✨ Enhancements
+
+- Install bundled Agent Skills for Pi, Codex, Claude Code, and Cursor with `confusius skills install --agent ... --scope global|project`. Installation defaults to all skills, supports selecting one by name, and protects existing skills unless `--force` is supplied. `confusius skills list` shows names and descriptions. The first skill, `confusius-load-data`, guides custom imports with VoxelData geometry references and runnable examples ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
+
 ### ⚡ Performance
 
 - `plot_napari` opens labels data carrying an `rgb_lookup` attribute, such as atlas annotations, faster by building the colormap from the lookup instead of scanning the whole volume ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).

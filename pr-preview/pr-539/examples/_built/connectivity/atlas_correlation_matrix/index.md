@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_46755/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_47000/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fadd3bcd7b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6e5b47d7b0>
     ```
 - [ ] Attributes: (27)
 
