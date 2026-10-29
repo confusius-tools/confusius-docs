@@ -3414,7 +3414,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt; (&lt;code&gt;confusius.qc.compute_dvars&lt;/code&gt;)" href="./#confusius.qc.compute_dvars">compute_dvars</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Compute raw or relative DVARS from temporal signal differences.</p>
+              <p>Compute the DVARS quality control metric.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3544,21 +3544,19 @@ ratio (see <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;signals&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(signals)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(signals)">signals</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variant&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variant)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variant)">variant</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Literal&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;relative&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relative&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;baseline_estimator&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(baseline_estimator)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(baseline_estimator)">baseline_estimator</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Literal&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;ar1&quot;</span><span class="p">,</span> <span class="s2">&quot;legacy&quot;</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalization_factor&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(normalization_factor)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(normalization_factor)">normalization_factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;remove_zero_variance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(remove_zero_variance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(remove_zero_variance)">remove_zero_variance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variance_tolerance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variance_tolerance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variance_tolerance)">variance_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;baseline_estimator&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(baseline_estimator)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(baseline_estimator)">baseline_estimator</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Literal&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;ar1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalization_factor&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(normalization_factor)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(normalization_factor)">normalization_factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;remove_zero_variance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(remove_zero_variance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(remove_zero_variance)">remove_zero_variance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variance_tolerance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variance_tolerance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variance_tolerance)">variance_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Compute raw or relative DVARS from temporal signal differences.</p>
-<p>DVARS measures the root mean square signal change between consecutive time
-points. Relative DVARS divides this trace by an estimated background baseline.
-The raw and legacy calculations were adapted from
+        <p>Compute the DVARS quality control metric.</p>
+<p>DVARS measures the root mean square signal change between consecutive time points.
+Relative DVARS divides this trace by an estimated background baseline.</p>
+<p>This function was originally adapted from
 <code>nipype.algorithms.confounds.compute_dvars</code>.</p>
 
 
@@ -3569,9 +3567,9 @@ The raw and legacy calculations were adapted from
 <a href="#confusius.qc.compute_dvars(signals)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Real, finite signals with a <code>time</code> dimension containing at least two
-samples. Any other dimensions are flattened into features, regardless of
-their names or ordering. A single time series is also supported.</p>
+            <p>Real, finite signals with a <code>time</code> dimension containing at least two samples.
+Any other dimensions are flattened into features, regardless of their names or
+ordering.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3581,24 +3579,22 @@ their names or ordering. A single time series is also supported.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to return raw RMS temporal differences or dimensionless Relative
-DVARS. Relative DVARS uses the selected <code>baseline_estimator</code>.</p>
+            <p>DVARS variant to compute. Raw DVARS is the root mean square of temporal
+differences, while relative DVARS divides raw DVARS by a recording-wide
+baseline, selected by <code>baseline_estimator</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.qc.compute_dvars(baseline_estimator)" class="doc doc-heading doc-heading-parameter">              <b><code>baseline_estimator</code></b>
-<a href="#confusius.qc.compute_dvars(baseline_estimator)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="median">median</span>, <span title="ar1">ar1</span>, <span title="legacy">legacy</span>)</code>, default:
+<a href="#confusius.qc.compute_dvars(baseline_estimator)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(<span title="median">median</span>, <span title="ar1">ar1</span>)</code>, default:
                   <code>&#34;median&#34;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Baseline for relative DVARS; ignored for raw DVARS. <code>"median"</code> uses the
-square root of median squared raw DVARS, excluding the artificial first
-sample. <code>"ar1"</code> uses the RMS of expected voxelwise difference standard
-deviations, estimated from robust temporal SDs and lag-1 autocorrelations.
-<code>"legacy"</code> uses their arithmetic mean instead, preserving the normalization
-used in ConfUSIus 0.8.0 and earlier. The legacy estimator is deprecated and
-will be removed in a future release.</p>
+            <p>Baseline for relative DVARS. <code>"median"</code> uses the square root of median squared
+raw DVARS, excluding the artificial first sample. <code>"ar1"</code> uses the RMS of
+expected voxelwise difference standard deviations, estimated from robust
+temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3644,9 +3640,8 @@ IQR divided by the standard normal IQR using lower interpolation.</p>
               <code>(time,) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p>DVARS with the input time coordinates. The first value is the minimum
-resulting DVARS, following the existing FSL convention. Relative DVARS
-has units <code>"1"</code>; raw DVARS has arbitrary intensity units (<code>"a.u."</code>).</p>
+            <p>DVARS with the input time coordinates. The first value is <code>NaN</code> because the
+first frame has no preceding frame.</p>
           </div>
         </li>
     </ul>
@@ -3673,18 +3668,6 @@ normalization or relative DVARS baseline is zero or nonfinite.</p>
     </ul>
 
 
-<p><span class="doc-section-title">Warns:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#DeprecationWarning">DeprecationWarning</a></code>
-            –
-          <div class="doc-md-description">
-            <p>When relative DVARS uses <code>baseline_estimator="legacy"</code>.</p>
-          </div>
-        </li>
-    </ul>
-
-
 <details class="see-also" open>
   <summary>See Also</summary>
   <p>confusius.qc.compute_cv : Compute voxelwise coefficients of variation.
@@ -3693,36 +3676,27 @@ confusius.qc.compute_tsnr : Compute temporal signal-to-noise ratios.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>For features indexed by i, raw DVARS is <code>sqrt(mean_i(diff(Y_i)**2))</code>.
-Relative DVARS divides raw DVARS by one of these recording-wide baselines:</p>
+  <p>Raw DVARS is <code>sqrt(mean_i(diff(Y_i)**2))</code>. Relative DVARS divides it by a
+recording-wide baseline estimated using either:</p>
 <ul>
 <li><code>median</code>: <code>sqrt(median_t(raw_dvars_t**2))</code>.</li>
 <li><code>ar1</code>: <code>sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))</code>.</li>
-<li><code>legacy</code>: <code>mean_i(sqrt(2 * (1 - rho_i)) * sigma_i)</code>.</li>
 </ul>
-<p>Here <code>sigma_i</code> is the robust temporal SD and <code>rho_i</code> is the Yule-Walker
-lag-1 autocorrelation estimate. The RMS baseline is at least as large as the
-legacy mean-SD baseline, with equality only for identical difference SDs.
-Lower-interpolated IQRs preserve the historical estimator but can change
-slightly under sign reversal; exact negative-scale invariance is guaranteed
-only for the median baseline when zero-variance selection is unchanged.</p>
-<p>Nichols originally called this normalization Standardized DVARS; Afyouni and
-Nichols (2018) subsequently used the name relative DVARS. Their empirical
-median-squared estimator avoids AR(1) fitting, but assumes the recording's
-background dominates the temporal distribution. Frequent artifacts or a
-nonstationary baseline can compromise it. The AR(1)-based estimators assume
-stationary variance and lag-1 covariance; their autocorrelation estimates
-are not robust to artifacts. Relative DVARS is not a Z-score or a calibrated
-cross-recording artifact probability, regardless of estimator.</p>
-<p><strong>Changed in 0.9.0:</strong> The default is median-based relative DVARS, rather than
-the legacy normalization used in 0.8.0 and earlier. Numerical results and
-suitable thresholds change. The <code>standardize</code> argument was removed: use
-<code>variant="raw"</code> for the former <code>standardize=False</code>, or explicitly select
-<code>baseline_estimator="legacy"</code> for the former <code>standardize=True</code>. All options
-are now keyword-only.</p>
-<p><strong>Laziness:</strong> Dask-backed inputs are accepted but computed eagerly. Robust
-SDs are computed only for zero-variance filtering or AR(1)-based baselines;
-AR(1) coefficients are computed only for relative <code>ar1</code> and <code>legacy</code>.</p>
+<p>Here <code>sigma_i</code> is the robust temporal SD and <code>rho_i</code> the Yule-Walker lag-1
+autocorrelation. Originally called <em>standardized DVARS</em> by Nichols (2013), the
+measure was renamed <em>relative DVARS</em> by Afyouni and Nichols (2018).</p>
+<p>The <code>median</code> estimator avoids AR(1) fitting but assumes most time points reflect
+baseline activity. The <code>ar1</code> estimator assumes stationarity and is sensitive to
+artifacts. Neither yields a z-score or calibrated artifact probability. Due to IQR
+interpolation, exact invariance to signal sign reversal is guaranteed only for
+<code>median</code> when feature selection is unchanged.</p>
+<p><strong>Precision:</strong> Float32/float64 inputs retain their precision during differencing;
+float16 and integer inputs are promoted to float32 and float64, respectively.
+Spatial sums accumulate in float64.</p>
+<p><strong>Laziness:</strong> Median-based relative DVARS is Dask-lazy, rechunking each spatial
+block along the full time axis before reducing to a DVARS trace. Spatial chunks must
+fit in memory, and data-dependent errors occur at compute time. Raw DVARS and <code>ar1</code>
+remain eager. Robust SDs are computed only when needed for filtering or <code>ar1</code>.</p>
 </details>
 
 <details class="references" open>

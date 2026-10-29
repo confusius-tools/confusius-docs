@@ -20,7 +20,7 @@ Functions:
   Compute the coefficient of variation (CV).
 - **`compute_dvars`** –
 
-  Compute raw or relative DVARS from temporal signal differences.
+  Compute the DVARS quality control metric.
 - **`compute_tsnr`** –
 
   Compute the temporal signal-to-noise ratio (tSNR).
@@ -90,18 +90,18 @@ compute_dvars(
     signals: DataArray,
     *,
     variant: Literal["raw", "relative"] = "relative",
-    baseline_estimator: Literal[
-        "median", "ar1", "legacy"
-    ] = "median",
+    baseline_estimator: Literal["median", "ar1"] = "median",
     normalization_factor: float | None = 1000,
     remove_zero_variance: bool = True,
     variance_tolerance: float = 0.0,
 ) -> DataArray
 ```
 
-Compute raw or relative DVARS from temporal signal differences.
+Compute the DVARS quality control metric.
 
-DVARS measures the root mean square signal change between consecutive time points. Relative DVARS divides this trace by an estimated background baseline. The raw and legacy calculations were adapted from `nipype.algorithms.confounds.compute_dvars`.
+DVARS measures the root mean square signal change between consecutive time points. Relative DVARS divides this trace by an estimated background baseline.
+
+This function was originally adapted from `nipype.algorithms.confounds.compute_dvars`.
 
 Parameters:
 
@@ -109,17 +109,17 @@ Parameters:
 
   (`(time, ...) xarray.DataArray`) –
 
-  Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering. A single time series is also supported.
+  Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering.
 - #### **`variant`**
 
   (`(raw, relative)`, default: `"raw"` ) –
 
-  Whether to return raw RMS temporal differences or dimensionless Relative DVARS. Relative DVARS uses the selected `baseline_estimator`.
+  DVARS variant to compute. Raw DVARS is the root mean square of temporal differences, while relative DVARS divides raw DVARS by a recording-wide baseline, selected by `baseline_estimator`.
 - #### **`baseline_estimator`**
 
-  (`(median, ar1, legacy)`, default: `"median"` ) –
+  (`(median, ar1)`, default: `"median"` ) –
 
-  Baseline for relative DVARS; ignored for raw DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. `"legacy"` uses their arithmetic mean instead, preserving the normalization used in ConfUSIus 0.8.0 and earlier. The legacy estimator is deprecated and will be removed in a future release.
+  Baseline for relative DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.
 - #### **`normalization_factor`**
 
   (`float or None`, default: `1000` ) –
@@ -140,7 +140,7 @@ Returns:
 
 - `(time,) xarray.DataArray` –
 
-  DVARS with the input time coordinates. The first value is the minimum resulting DVARS, following the existing FSL convention. Relative DVARS has units `"1"`; raw DVARS has arbitrary intensity units (`"a.u."`).
+  DVARS with the input time coordinates. The first value is `NaN` because the first frame has no preceding frame.
 
 Raises:
 
@@ -151,12 +151,6 @@ Raises:
 
   If time has fewer than two samples, features are empty or nonfinite, parameters are invalid, all features are removed, or a required intensity normalization or relative DVARS baseline is zero or nonfinite.
 
-Warns:
-
-- `DeprecationWarning` –
-
-  When relative DVARS uses `baseline_estimator="legacy"`.
-
 **See Also**
 
 confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusius.qc.compute\_tsnr : Compute temporal signal-to-noise ratios.
@@ -165,19 +159,18 @@ confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusiu
 >
 > **Notes**
 >
-> For features indexed by i, raw DVARS is `sqrt(mean_i(diff(Y_i)**2))`. Relative DVARS divides raw DVARS by one of these recording-wide baselines:
+> Raw DVARS is `sqrt(mean_i(diff(Y_i)**2))`. Relative DVARS divides it by a recording-wide baseline estimated using either:
 >
 > - `median`: `sqrt(median_t(raw_dvars_t**2))`.
 > - `ar1`: `sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))`.
-> - `legacy`: `mean_i(sqrt(2 * (1 - rho_i)) * sigma_i)`.
 >
-> Here `sigma_i` is the robust temporal SD and `rho_i` is the Yule-Walker lag-1 autocorrelation estimate. The RMS baseline is at least as large as the legacy mean-SD baseline, with equality only for identical difference SDs. Lower-interpolated IQRs preserve the historical estimator but can change slightly under sign reversal; exact negative-scale invariance is guaranteed only for the median baseline when zero-variance selection is unchanged.
+> Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> Nichols originally called this normalization Standardized DVARS; Afyouni and Nichols (2018) subsequently used the name relative DVARS. Their empirical median-squared estimator avoids AR(1) fitting, but assumes the recording's background dominates the temporal distribution. Frequent artifacts or a nonstationary baseline can compromise it. The AR(1)-based estimators assume stationary variance and lag-1 covariance; their autocorrelation estimates are not robust to artifacts. Relative DVARS is not a Z-score or a calibrated cross-recording artifact probability, regardless of estimator.
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability. Due to IQR interpolation, exact invariance to signal sign reversal is guaranteed only for `median` when feature selection is unchanged.
 >
-> **Changed in 0.9.0:** The default is median-based relative DVARS, rather than the legacy normalization used in 0.8.0 and earlier. Numerical results and suitable thresholds change. The `standardize` argument was removed: use `variant="raw"` for the former `standardize=False`, or explicitly select `baseline_estimator="legacy"` for the former `standardize=True`. All options are now keyword-only.
+> **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
 >
-> **Laziness:** Dask-backed inputs are accepted but computed eagerly. Robust SDs are computed only for zero-variance filtering or AR(1)-based baselines; AR(1) coefficients are computed only for relative `ar1` and `legacy`.
+> **Laziness:** Median-based relative DVARS is Dask-lazy, rechunking each spatial block along the full time axis before reducing to a DVARS trace. Spatial chunks must fit in memory, and data-dependent errors occur at compute time. Raw DVARS and `ar1` remain eager. Robust SDs are computed only when needed for filtering or `ar1`.
 
 **References**
 

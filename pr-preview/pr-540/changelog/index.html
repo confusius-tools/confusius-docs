@@ -4635,13 +4635,17 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt;" href="../api/qc/#confusius.qc.compute_dvars"><code>compute_dvars</code></a> now defaults to median-based
-  relative DVARS. Choose <code>baseline_estimator="ar1"</code> for the RMS-based model
-  baseline, or the deprecated <code>"legacy"</code> estimator for the normalization used in
-  0.8.0 and earlier. Existing thresholds need review. The <code>standardize</code> argument
-  was removed: use <code>variant="raw"</code> instead of <code>standardize=False</code>, or explicitly
-  select <code>baseline_estimator="legacy"</code> for the former <code>standardize=True</code> behavior.
-  All options are now keyword-only.</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt;" href="../api/qc/#confusius.qc.compute_dvars"><code>compute_dvars</code></a> now defaults to median-based relative
+  DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols
+  (2018). The median is less sensitive to unusually large DVARS values, and their
+  simulations found it reliable under heterogeneous voxel variances. The previous
+  mean-SD normalization used in 0.8.0 and earlier has been removed. Choose
+  <code>baseline_estimator="ar1"</code> for the alternative RMS-based model baseline. <strong>Existing
+  DVARS thresholds must be adjusted for the new normalization</strong>. The <code>standardize</code>
+  argument was removed: use <code>variant="raw"</code> instead of <code>standardize=False</code>. The first
+  output value is now <code>NaN</code> for all variants and estimators. Median-based relative DVARS
+  preserves Dask laziness, reducing spatial blocks before estimating the recording-wide
+  baseline (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher
