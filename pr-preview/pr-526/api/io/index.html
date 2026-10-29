@@ -6029,23 +6029,24 @@ attributes, in native header units: <code>probe_model</code>, <code>probe_center
 <code>imaging_depth</code> (mm start/end), <code>transmit_frequency</code> (MHz),
 <code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>svd_low_cutoff</code>, and
 <code>power_doppler_integration_duration</code> (s).</p>
-<p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are the probe space of the
-first pose (mm): <code>z</code> is elevation, <code>y</code> is depth (positive, increasing away from
-the probe surface), and <code>x</code> is lateral. For multi-pose files, <code>da</code>'s
-voxel-to-world geometry is itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack,
-one affine per <code>da.coords["pose"]</code> label, placing every pose relative to the first
-one); world selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
+<p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are <strong>ConfUSIus-ordered
+Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
+as the canonical world frame because it is the one frame that is physically
+meaningful across poses. For multi-pose files, <code>da</code>'s voxel-to-world geometry is
+itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per
+<code>da.coords["pose"]</code> label); world
+selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
 <code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
-<p>The probe position in the Iconeus lab frame (a fixed scanner frame) is stored as a
-<code>(4, 4)</code> <code>da.attrs["affines"]["world_to_lab"]</code> affine that maps world coordinates
-to <strong>ConfUSIus-ordered</strong> Iconeus lab coordinates <code>(z_lab, y_lab, x_lab)</code> in mm.
-<code>da.attrs["affines"]["world_to_probe"]</code> is the <code>(4, 4)</code> identity, since world
-space is the probe space; it lets <code>da.fusi.affine.apply("world_to_probe")</code>
-restore probe space after switching to another space, e.g. with
-<code>da.fusi.affine.apply("world_to_lab")</code>.</p>
+<p>Two named affines are stored in <code>da.attrs["affines"]</code>: <code>world_to_lab</code>, the
+identity, since lab space is the world space, and <code>world_to_probe</code>, mapping world
+coordinates to the first pose's probe space (<code>z</code> elevation, <code>y</code> depth, <code>x</code>
+lateral). <code>da.fusi.affine.apply("world_to_probe")</code> re-expresses the data in probe
+space, placing every pose relative to the first one, and
+<code>.apply("world_to_lab")</code> brings it back. The lab frame is the same for SCAN v1 and
+SCAN v2 files.</p>
 <p>If <code>bps_path</code> is provided, a <code>world_to_brain</code> affine is stored in
-<code>da.attrs["affines"]["world_to_brain"]</code> that maps ConfUSIus world coordinates to
-Iconeus' brain coordinates. Apply as
+<code>da.attrs["affines"]["world_to_brain"]</code> that maps ConfUSIus world coordinates
+(already lab space, as above) to Iconeus' brain coordinates. Apply as
 <code>da.attrs["affines"]["world_to_brain"] @ np.array([z, y, x, 1.0])</code>.</p>
 <p>Provenance attributes are stored in <code>da.attrs</code>: <abbr title="Brain Imaging Data Structure">BIDS</abbr>-compatible fields
 (<code>device_serial_number</code>, <code>software_version</code>) and Iconeus-specific fields

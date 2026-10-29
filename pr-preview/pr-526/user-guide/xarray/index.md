@@ -388,7 +388,7 @@ pwd = pwd.fusi.affine.set_voxel_to_world(new_voxel_to_world)
 
 #### Relating two DataArrays
 
-To compute the affine relating two DataArrays' world spaces through a named affine they both carry in `attrs["affines"]` (e.g. a shared `"world_to_lab"` key from two recordings made with the same setup), use `to`:
+To compute the affine relating two DataArrays' world spaces through a named affine they both carry in `attrs["affines"]` (e.g. a shared `"world_to_lab"` key from two poses of the same acquisition), use `to`:
 
 ```python
 moving_to_fixed = moving.fusi.affine.to(fixed, via="world_to_lab")

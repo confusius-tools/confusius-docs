@@ -335,7 +335,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb5d0f43100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f41f3867100>
     ```
   - time
 
@@ -616,7 +616,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb5c818a630>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f41e4b47a70>
     ```
 - [ ] Attributes: (6)
 
@@ -689,7 +689,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 55.1 s
+**Total running time:** 46.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-fix-scan-world-frame?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-526/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-526/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 

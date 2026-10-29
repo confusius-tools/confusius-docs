@@ -3817,15 +3817,15 @@ the appropriate loader.</p>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="go">  * k        (k) int64 32B 0 1 2 3</span>
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="go">  * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91</span>
 </span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="go">  * i        (i) int64 824B 0 1 2 3 4 5 6 7 8 ... 94 95 96 97 98 99 100 101 102</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="go">  * z        (pose, k, j, i) float64 1MB 0.0 0.0 0.0 0.0 ... 7.875 7.875 7.875</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="go">  * y        (pose, k, j, i) float64 1MB 1.0 1.0 1.0 1.0 ... 9.969 9.969 9.969</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="go">  * x        (pose, k, j, i) float64 1MB -5.61 -5.5 -5.39 ... 5.39 5.5 5.61</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="go">  * z        (pose, k, j, i) float64 1MB -0.19 -0.3 -0.41 ... -11.3 -11.41</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="go">  * y        (pose, k, j, i) float64 1MB 20.3 20.3 20.3 ... 29.27 29.27 29.27</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="go">  * x        (pose, k, j, i) float64 1MB -3.851 -3.851 -3.851 ... 4.024 4.024</span>
 </span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="go">Indexes:</span>
 </span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
 </span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="go">  │ y</span>
 </span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="go">  └ x</span>
 </span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="go">Attributes:</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="go">    affines:               {&#39;world_to_probe&#39;: array([[1., 0., 0., 0.],\n     ...</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="go">    affines:               {&#39;world_to_lab&#39;: array([[1., 0., 0., 0.],\n       ...</span>
 </span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="go">    device_serial_number:  XXXXXXXX</span>
 </span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="go">    software_version:      IcoScan version 1.0.0</span>
 </span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="go">    iconeus_scan_mode:     4Dscan</span>
@@ -3866,12 +3866,12 @@ SCAN data).</p>
 </div>
 <h4 id="scan-v2-binary-format">SCAN v2 (binary format)<a class="headerlink" href="#scan-v2-binary-format" title="Permanent link">&para;</a></h4>
 <p>SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData
-geometry. Metadata recovered into <code>da.attrs</code> include the <code>world_to_lab</code> affine,
-provenance (<code>iconeus_*</code> attrs), acquisition datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding
-acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</code>, <code>probe_aperture</code>,
-<code>transmit_frequency</code>, <code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>,
-<code>svd_low_cutoff</code>, …). For multi-pose recordings, see the
-<a href="../multipose/#scan-v2-binary">multi-pose user guide</a>.</p>
+geometry (world coordinates in ConfUSIus-ordered Iconeus lab space, as for SCAN v1).
+Metadata recovered into <code>da.attrs</code> include provenance (<code>iconeus_*</code> attrs), acquisition
+datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding acquisition settings (<code>probe_model</code>,
+<code>probe_center_frequency</code>, <code>probe_aperture</code>, <code>transmit_frequency</code>,
+<code>pulse_repetition_frequency</code>, <code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …). For
+multi-pose recordings, see the <a href="../multipose/#scan-v2-binary">multi-pose user guide</a>.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span>
@@ -3882,15 +3882,15 @@ acquisition settings (<code>probe_model</code>, <code>probe_center_frequency</co
 </span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="go">  * k        (k) int64 8B 0</span>
 </span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="go">  * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91</span>
 </span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="go">  * i        (i) int64 1kB 0 1 2 3 4 5 6 7 8 ... 120 121 122 123 124 125 126 127</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="go">  * z        (k, j, i) float64 94kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="go">  * z        (k, j, i) float64 94kB 9.585 9.475 9.365 ... -4.165 -4.275 -4.385</span>
 </span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="go">  * y        (k, j, i) float64 94kB 1.0 1.0 1.0 1.0 ... 9.969 9.969 9.969 9.969</span>
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="go">  * x        (k, j, i) float64 94kB -6.985 -6.875 -6.765 ... 6.765 6.875 6.985</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="go">  * x        (k, j, i) float64 94kB 0.7 0.7 0.7 0.7 0.7 ... 0.7 0.7 0.7 0.7 0.7</span>
 </span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="go">Indexes:</span>
 </span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="go">  ┌ z        VoxelToWorldIndex</span>
 </span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="go">  │ y</span>
 </span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="go">  └ x</span>
 </span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="go">Attributes: (12/26)</span>
-</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="go">    affines:                           {&#39;world_to_probe&#39;: array([[1., 0., 0.,...</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="go">    affines:                           {&#39;world_to_lab&#39;: array([[1., 0., 0.,...</span>
 </span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="go">    iconeus_scan_format:               v2</span>
 </span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="go">    iconeus_scan_mode:                 2Dscan</span>
 </span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="go">    iconeus_datetime:                  2026-07-14T05:00:00+00:00</span>
@@ -3910,20 +3910,17 @@ They contain an affine matrix that maps Iconeus brain coordinates <code>(x_brain
 z_brain, 1)</code> to Iconeus lab coordinates <code>(x_lab, y_lab, z_lab, 1)</code> in meters. The
 Iconeus lab frame is a fixed scanner space defined by Iconeus. ConfUSIus re-expresses
 this space as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in millimeters:
-that is the target space of the <code>world_to_lab</code> affine stored when loading SCAN files.</p>
+that is the world space used when loading SCAN files.</p>
 <p>The affine matrix in the BPS file can be loaded with
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../../api/io/#confusius.io.load_bps"><code>confusius.io.load_bps</code></a>. Compose its inverse with
-<code>world_to_lab</code> to map world coordinates to brain coordinates. It is generally a good
-idea to store the result in the <code>.attrs["affines"]</code> attribute of the DataArray:</p>
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../../api/io/#confusius.io.load_bps"><code>confusius.io.load_bps</code></a>. It is generally a good idea to store
+it in the <code>.attrs["affines"]</code> attribute of the DataArray:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">brain_to_lab</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load_bps</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">)</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_brain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">brain_to_lab</span><span class="p">)</span> <span class="o">@</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_lab&quot;</span><span class="p">]</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">brain_to_world</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load_bps</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_brain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">brain_to_world</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Passing the BPS file path using the <code>bps_path</code> argument when loading a SCAN file offers
 a convenient shortcut:</p>
@@ -3935,9 +3932,8 @@ a convenient shortcut:</p>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to register
-<abbr title="Functional Ultrasound Imaging">fUSI</abbr> data into atlas space directly. Like <code>world_to_lab</code>, it is a single <code>(4, 4)</code> affine,
-even for multi-pose files (<code>3Dscan</code>, <code>4Dscan</code>), since every pose shares the same world
-space.</p>
+<abbr title="Functional Ultrasound Imaging">fUSI</abbr> data into atlas space directly. It is a single <code>(4, 4)</code> affine, even for multi-pose
+files (<code>3Dscan</code>, <code>4Dscan</code>), since lab space is shared by every pose.</p>
 <h4 id="converting-scan-data-to-nifti">Converting SCAN Data to NIfTI<a class="headerlink" href="#converting-scan-data-to-nifti" title="Permanent link">&para;</a></h4>
 <p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> returns a VoxelData array, you can save it directly to
 NIfTI using <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>save</code></a> or the Xarray accessor.</p>

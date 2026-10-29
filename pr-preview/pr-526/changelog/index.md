@@ -6,11 +6,14 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- `load_scan` expresses SCAN world coordinates in the first probe pose's space (`z` elevation, `y` depth, `x` lateral). The Iconeus lab frame is stored as a single `(4, 4)` `attrs["affines"]["world_to_lab"]` affine, next to an identity `world_to_probe` affine, and a BPS `world_to_brain` affine is likewise a single `(4, 4)` matrix for multi-pose files ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+
+### ✨ Enhancements
+
+- `load_scan` stores `world_to_lab` (the identity, since lab space is the world space) and `world_to_probe` affines in `attrs["affines"]`, so `da.fusi.affine.apply("world_to_probe")` switches to the first pose's probe space (`z` elevation, `y` depth, `x` lateral) and `apply("world_to_lab")` returns to lab space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 
 ### ⚡ Performance
 
@@ -18,6 +21,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- SCAN v2 files negate the stored probe-pose Euler angles when loading, as Iconeus readers do, so their lab-space world coordinates match SCAN v1 for the same acquisition ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is remembered per annotation-set version; available meshes deleted locally are still downloaded again ([\#508](<https://github.com/confusius-tools/confusius/pull/508>)).
 

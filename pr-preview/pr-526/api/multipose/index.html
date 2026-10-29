@@ -3480,9 +3480,9 @@ operations.</p>
 <p>Per-<code>(pose, sweep_dim)</code> world positions are read directly from <code>da</code>'s own world
 coordinates, which requires <code>da</code>'s primary voxel-to-world geometry to itself be
 pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per pose).
-This is the case for SCAN data, where the first pose's probe space (a fixed frame
-shared by every pose) is the canonical world frame (see
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../io/#confusius.io.load_scan"><code>load_scan</code></a>), and for
+This is the case for SCAN data, where lab space (a fixed scanner frame shared by
+every pose) is the canonical world frame — see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../io/#confusius.io.load_scan"><code>load_scan</code></a> — and for
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses"><code>stack_poses</code></a> output. If <code>da</code>'s primary
 geometry is instead driven by a <em>secondary</em>, named affine in
 <code>da.attrs["affines"]</code> (e.g. a stack of NIfTI DataArrays with their

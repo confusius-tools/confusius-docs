@@ -211,7 +211,7 @@ A space counts as a "reference space" rather than *the* world space only because
 Several loaders populate `.attrs["affines"]` automatically:
 
 - **NIfTI**: The world space is whichever affine (`sform` or `qform`) was selected; its own entry (`"world_to_sform"` or `"world_to_qform"`) is the identity. When the other one is also valid, it is stored under the other key, so the world space can be switched between the two. `save_nifti` can write any named affine in `.attrs["affines"]` back to the header via its `qform=`/`sform=` arguments, defaulting to `"world_to_qform"`/`"world_to_sform"` when not specified.
-- **Iconeus SCAN**: `load_scan` stores a `"world_to_lab"` affine mapping ConfUSIus world coordinates to the Iconeus lab coordinate system, and a `"world_to_probe"` affine that is the identity, since the world space is the first pose's probe space. Both are single `(4, 4)` affines, even for multi-pose acquisitions (`3Dscan`, `4Dscan`), since every pose shares the same world space.
+- **Iconeus SCAN**: `load_scan` uses ConfUSIus-ordered Iconeus lab space as world space, so its `"world_to_lab"` entry is the identity. A `"world_to_probe"` entry maps world coordinates to the first pose's probe space (`z` elevation, `y` depth, `x` lateral), so the world space can be switched to the probe and back. Both are single `(4, 4)` affines, also for multi-pose acquisitions (`3Dscan`, `4Dscan`), as is the `"world_to_brain"` affine stored with `bps_path`.
 
 Registration transforms are handled separately from `.attrs["affines"]`. `register_volume` returns the estimated transform explicitly but does not store automatically in `.attrs["affines"]`.
 
