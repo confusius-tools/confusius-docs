@@ -170,7 +170,7 @@ confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusiu
 >
 > **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
 >
-> **Laziness:** Median-based relative DVARS is Dask-lazy, rechunking each spatial block along the full time axis before reducing to a DVARS trace. Spatial chunks must fit in memory, and data-dependent errors occur at compute time. Raw DVARS and `ar1` remain eager. Robust SDs are computed only when needed for filtering or `ar1`.
+> **Laziness:** Dask inputs remain lazy; data-dependent errors occur at compute time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose full time series must fit in memory. Intensity-normalized raw DVARS instead loads the full recording to compute the exact global intensity median.
 
 **References**
 

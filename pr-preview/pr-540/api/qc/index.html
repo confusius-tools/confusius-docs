@@ -3693,10 +3693,10 @@ interpolation, exact invariance to signal sign reversal is guaranteed only for
 <p><strong>Precision:</strong> Float32/float64 inputs retain their precision during differencing;
 float16 and integer inputs are promoted to float32 and float64, respectively.
 Spatial sums accumulate in float64.</p>
-<p><strong>Laziness:</strong> Median-based relative DVARS is Dask-lazy, rechunking each spatial
-block along the full time axis before reducing to a DVARS trace. Spatial chunks must
-fit in memory, and data-dependent errors occur at compute time. Raw DVARS and <code>ar1</code>
-remain eager. Robust SDs are computed only when needed for filtering or <code>ar1</code>.</p>
+<p><strong>Laziness:</strong> Dask inputs remain lazy; data-dependent errors occur at compute
+time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose
+full time series must fit in memory. Intensity-normalized raw DVARS instead
+loads the full recording to compute the exact global intensity median.</p>
 </details>
 
 <details class="references" open>

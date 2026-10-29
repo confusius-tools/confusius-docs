@@ -3660,8 +3660,10 @@ inflate the variance estimate:</p>
 sensitive to artifacts. Raw DVARS ignores <code>baseline_estimator</code> and scales intensities to
 a median of 1000 by default; set <code>normalization_factor=None</code> to retain native units.
 Both variants exclude zero-IQR features by default.</p>
-<p>Only median-based relative DVARS preserves Dask laziness. Each spatial chunk's full
-time series must fit in memory; data-dependent validation occurs at computation time.</p>
+<p>All variants preserve Dask laziness, with data-dependent validation at computation
+time. Relative DVARS and unnormalized raw DVARS process full-time spatial chunks;
+each chunk must fit in memory. Raw intensity normalization requires the exact global
+median and gathers the full recording into memory when computed.</p>
 <h3 id="sample-masks">Sample Masks<a class="headerlink" href="#sample-masks" title="Permanent link">&para;</a></h3>
 <p>Creating a boolean mask of good samples is straightforward: simply threshold the DVARS
 time series. The threshold below is illustrative: you should review the DVARS plot on

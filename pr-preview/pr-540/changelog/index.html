@@ -4643,9 +4643,10 @@
   <code>baseline_estimator="ar1"</code> for the alternative RMS-based model baseline. <strong>Existing
   DVARS thresholds must be adjusted for the new normalization</strong>. The <code>standardize</code>
   argument was removed: use <code>variant="raw"</code> instead of <code>standardize=False</code>. The first
-  output value is now <code>NaN</code> for all variants and estimators. Median-based relative DVARS
-  preserves Dask laziness, reducing spatial blocks before estimating the recording-wide
-  baseline (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
+  output value is now <code>NaN</code> for all variants and estimators. All variants preserve Dask
+  laziness. Relative DVARS and unnormalized raw DVARS reduce spatial blocks; raw
+  intensity normalization gathers the full recording at compute time to preserve the
+  exact global median (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher

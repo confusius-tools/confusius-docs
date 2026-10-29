@@ -105,7 +105,7 @@ For relative DVARS, `baseline_estimator` selects one of two denominators:
 
 The AR(1) estimator uses robust temporal SDs, but its autocorrelation estimates remain sensitive to artifacts. Raw DVARS ignores `baseline_estimator` and scales intensities to a median of 1000 by default; set `normalization_factor=None` to retain native units. Both variants exclude zero-IQR features by default.
 
-Only median-based relative DVARS preserves Dask laziness. Each spatial chunk's full time series must fit in memory; data-dependent validation occurs at computation time.
+All variants preserve Dask laziness, with data-dependent validation at computation time. Relative DVARS and unnormalized raw DVARS process full-time spatial chunks; each chunk must fit in memory. Raw intensity normalization requires the exact global median and gathers the full recording into memory when computed.
 
 ### Sample Masks
 
