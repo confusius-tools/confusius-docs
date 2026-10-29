@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/pr-preview/pr-539/user-guide/io/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../agents/">
       
       
         <link rel="next" href="../voxeldata/">
@@ -234,6 +234,8 @@
   
     
       
+      
+        
       
         
       
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -689,6 +693,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -892,17 +925,6 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Loading Other Formats
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#agent-skill-for-custom-imports" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Agent Skill for Custom Imports
       </span>
     </span>
   </a>
@@ -3452,17 +3474,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#agent-skill-for-custom-imports" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Agent Skill for Custom Imports
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -3561,6 +3572,8 @@
   
     
     
+      
+        
       
         
       
@@ -4059,36 +4072,6 @@ to attach dimensions, coordinates, and metadata:</p>
 <p>See the <a href="../../examples/_built/io/create_voxeldata_from_mat/">Create a VoxelData array from a MAT
 file</a> example for a complete
 walkthrough, from a real lab-specific MAT file to motion correction and a task <abbr title="General Linear Model">GLM</abbr>.</p>
-<h3 id="agent-skill-for-custom-imports">Agent Skill for Custom Imports<a class="headerlink" href="#agent-skill-for-custom-imports" title="Permanent link">&para;</a></h3>
-<p>ConfUSIus includes an Agent Skill that teaches coding assistants how to import
-custom arrays with correct VoxelData dimensions, acquisition timing, and affine
-geometry. Install it from your Python environment without a separate download:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>list
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># Shared location for Pi, Codex, Cursor, and other compatible assistants.</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--global
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1"># Claude Code uses its own discovery directory.</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>--claude<span class="w"> </span>--global
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1"># Optionally install a single named skill.</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>confusius-load-data
-</span></code></pre></div>
-<p><code>list</code> prints skill names and descriptions. <code>install</code> defaults to every bundled
-skill, checking all destinations for conflicts before copying anything.
-Installation defaults to the <strong>current working directory</strong>, not an automatically
-detected repository root. Use <code>--global</code> to install in the user's home instead.
-The default directory is <code>.agents/skills/</code>,
-shared by Pi, Codex, Cursor, and other assistants that discover this directory.
-Use <code>--claude</code> to select <code>.claude/skills/</code> instead. Shared installation does not
-guarantee discovery by every agent. Existing destinations are never replaced
-without <code>--force</code>; forced
-replacement discards local changes and removes stale files in that skill directory.</p>
-<p>Restart or reload skill discovery in your assistant if necessary, then ask it to
-use <code>confusius-load-data</code>. Each installation includes geometry references and a
-<code>scripts/examples.py</code> script with offline, synthetic-data checks. Run it with the
-Python environment containing ConfUSIus. Repository maintenance skills such as the
-release workflow are not distributed.</p>
 <h2 id="converting-beamformed-iq-data-to-zarr">Converting Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data to Zarr<a class="headerlink" href="#converting-beamformed-iq-data-to-zarr" title="Permanent link">&para;</a></h2>
 <p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> exports are often stored as large binary files together with acquisition
 metadata. The file structure from <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> and EchoFrame systems is documented, allowing
@@ -4110,18 +4093,18 @@ where each file contains multiple acquisition blocks.</p>
 ConfUSIus does not provide direct lazy loading for <abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> DAT acquisitions because
 they are split across multiple binary files, which makes practical Dask parallel
 processing difficult.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_autc_dats_to_zarr</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">convert_autc_dats_to_zarr</span><span class="p">(</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">dats_root</span><span class="o">=</span><span class="s2">&quot;path/to/data_folder&quot;</span><span class="p">,</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_iq.zarr&quot;</span><span class="p">,</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="c1"># Optional: specify block start times, transmit frequency, axis coordinates, and</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="c1"># other metadata via keyword arguments (see API for details).</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">block_times</span><span class="o">=</span><span class="n">block_times</span><span class="p">,</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">compound_sampling_frequency</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">transmit_frequency</span><span class="o">=</span><span class="mf">15.625e6</span><span class="p">,</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="n">beamforming_sound_velocity</span><span class="o">=</span><span class="mf">1510.0</span><span class="p">,</span>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_autc_dats_to_zarr</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">convert_autc_dats_to_zarr</span><span class="p">(</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">dats_root</span><span class="o">=</span><span class="s2">&quot;path/to/data_folder&quot;</span><span class="p">,</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_iq.zarr&quot;</span><span class="p">,</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="c1"># Optional: specify block start times, transmit frequency, axis coordinates, and</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="c1"># other metadata via keyword arguments (see API for details).</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">block_times</span><span class="o">=</span><span class="n">block_times</span><span class="p">,</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="n">compound_sampling_frequency</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="n">transmit_frequency</span><span class="o">=</span><span class="mf">15.625e6</span><span class="p">,</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="n">beamforming_sound_velocity</span><span class="o">=</span><span class="mf">1510.0</span><span class="p">,</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>This will create a Zarr group containing:</p>
 <ul>
@@ -4139,16 +4122,16 @@ processing difficult.</p>
 <p>To convert EchoFrame data to Zarr, use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_echoframe_dat_to_zarr&lt;/span&gt;" href="../../api/io/#confusius.io.convert_echoframe_dat_to_zarr"><code>convert_echoframe_dat_to_zarr</code></a>.
 Zarr is useful for long-term storage or repeated processing of the same recording.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_echoframe_dat_to_zarr</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">convert_echoframe_dat_to_zarr</span><span class="p">(</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">dat_path</span><span class="o">=</span><span class="s2">&quot;path/to/data.dat&quot;</span><span class="p">,</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">meta_path</span><span class="o">=</span><span class="s2">&quot;path/to/metadata.mat&quot;</span><span class="p">,</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_iq.zarr&quot;</span><span class="p">,</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="c1"># Optional: specify block start times. Other metadata (e.g., transmit frequency,</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>    <span class="c1"># axis coordinates) will be automatically extracted from the metadata file.</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="n">block_times</span><span class="o">=</span><span class="n">block_times</span><span class="p">,</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_echoframe_dat_to_zarr</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">convert_echoframe_dat_to_zarr</span><span class="p">(</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">dat_path</span><span class="o">=</span><span class="s2">&quot;path/to/data.dat&quot;</span><span class="p">,</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">meta_path</span><span class="o">=</span><span class="s2">&quot;path/to/metadata.mat&quot;</span><span class="p">,</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">output_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_iq.zarr&quot;</span><span class="p">,</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="c1"># Optional: specify block start times. Other metadata (e.g., transmit frequency,</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="c1"># axis coordinates) will be automatically extracted from the metadata file.</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">block_times</span><span class="o">=</span><span class="n">block_times</span><span class="p">,</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>This will create a Zarr group containing:</p>
 <ul>
@@ -4167,23 +4150,23 @@ Zarr is useful for long-term storage or repeated processing of the same recordin
 array with the tool appropriate for your file format, then wrap it as a VoxelData array
 with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>. Put <abbr title="In-phase and Quadrature">IQ</abbr>-specific metadata
 such as <code>transmit_frequency</code> and <code>beamforming_sound_velocity</code> in <code>attrs</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_voxeldata</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">raw_iq</span> <span class="o">=</span> <span class="n">load_my_iq_file</span><span class="p">(</span><span class="s2">&quot;path/to/iq.mat&quot;</span><span class="p">)</span>  <span class="c1"># complex array, (time, k, j, i)</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">raw_iq</span><span class="p">,</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>  <span class="c1"># world spacing in z/y/x order, in mm.</span>
-</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>    <span class="n">volume_acquisition_duration</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
-</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>        <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="mf">15.625e6</span><span class="p">,</span>
-</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>        <span class="s2">&quot;beamforming_sound_velocity&quot;</span><span class="p">:</span> <span class="mf">1540.0</span><span class="p">,</span>
-</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="p">},</span>
-</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="p">)</span>
-</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="n">validate_voxeldata</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_velocity_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_voxeldata</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">raw_iq</span> <span class="o">=</span> <span class="n">load_my_iq_file</span><span class="p">(</span><span class="s2">&quot;path/to/iq.mat&quot;</span><span class="p">)</span>  <span class="c1"># complex array, (time, k, j, i)</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">iq</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="n">raw_iq</span><span class="p">,</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>  <span class="c1"># world spacing in z/y/x order, in mm.</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>    <span class="n">volume_acquisition_duration</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>        <span class="s2">&quot;transmit_frequency&quot;</span><span class="p">:</span> <span class="mf">15.625e6</span><span class="p">,</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>        <span class="s2">&quot;beamforming_sound_velocity&quot;</span><span class="p">:</span> <span class="mf">1540.0</span><span class="p">,</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>    <span class="p">},</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="p">)</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="n">validate_voxeldata</span><span class="p">(</span><span class="n">iq</span><span class="p">,</span> <span class="n">require_velocity_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <p>See <a href="../beamformed-iq/#expected-data-structure">Processing Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data</a> for the
 required dimensions, metadata fields, and processing assumptions.</p>
@@ -4193,23 +4176,23 @@ required dimensions, metadata fields, and processing assumptions.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1"><code>confusius.save</code></label><label for="__tabbed_5_2">Xarray accessor</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Save to NIfTI with automatic fUSI-BIDS JSON sidecar creation.</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s2">&quot;output.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="c1"># Save to Zarr.</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s2">&quot;output.zarr&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1"># Save to NIfTI with automatic fUSI-BIDS JSON sidecar creation.</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s2">&quot;output.nii.gz&quot;</span><span class="p">)</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1"># Save to Zarr.</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s2">&quot;output.zarr&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="c1"># Save to NIfTI with automatic fUSI-BIDS JSON sidecar creation.</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">data_array</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;output.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>
-</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="c1"># Save to Zarr.</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="n">data_array</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;output.zarr&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Save to NIfTI with automatic fUSI-BIDS JSON sidecar creation.</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">data_array</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;output.nii.gz&quot;</span><span class="p">)</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="c1"># Save to Zarr.</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="n">data_array</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;output.zarr&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -4225,14 +4208,14 @@ cannot be written directly to a single NIfTI file; save it to Zarr, consolidate 
 first, or save one pose per file instead.</p>
 <p>If <code>data_array.attrs["affines"]</code> contains named world-to-reference affines, you can
 choose which ones are written into the NIfTI header:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="n">data_array</span><span class="p">,</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>    <span class="s2">&quot;output.nii.gz&quot;</span><span class="p">,</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>    <span class="n">qform</span><span class="o">=</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">,</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="n">sform</span><span class="o">=</span><span class="s2">&quot;world_to_template&quot;</span><span class="p">,</span>
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">data_array</span><span class="p">,</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    <span class="s2">&quot;output.nii.gz&quot;</span><span class="p">,</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="n">qform</span><span class="o">=</span><span class="s2">&quot;world_to_scanner&quot;</span><span class="p">,</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>    <span class="n">sform</span><span class="o">=</span><span class="s2">&quot;world_to_template&quot;</span><span class="p">,</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>When <code>qform</code> and/or <code>sform</code> are omitted, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>save</code></a> first looks for
 <code>"world_to_qform"</code> and <code>"world_to_sform"</code> in <code>attrs["affines"]</code>. If those keys are not
