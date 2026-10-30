@@ -112,12 +112,12 @@ Parameters:
   Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering.
 - #### **`variant`**
 
-  (`(raw, relative)`, default: `"raw"` ) –
+  (`('raw', 'relative')`, default: `"raw"` ) –
 
   DVARS variant to compute. Raw DVARS is the root mean square of temporal differences, while relative DVARS divides raw DVARS by a recording-wide baseline, selected by `baseline_estimator`.
 - #### **`baseline_estimator`**
 
-  (`(median, ar1)`, default: `"median"` ) –
+  (`('median', 'ar1')`, default: `"median"` ) –
 
   Baseline for relative DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.
 - #### **`normalization_factor`**
@@ -166,7 +166,7 @@ confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusiu
 >
 > Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability. Due to IQR interpolation, exact invariance to signal sign reversal is guaranteed only for `median` when feature selection is unchanged.
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability. The lower IQR interpolation follows Nipype's implementation (itself based on FSL). As a consequence, exact invariance to signal sign reversal is guaranteed only for `median` when feature selection is unchanged.
 >
 > **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
 >
