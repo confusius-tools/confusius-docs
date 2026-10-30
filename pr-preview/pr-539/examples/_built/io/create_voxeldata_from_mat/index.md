@@ -335,7 +335,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cd1933100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdf3f837100>
     ```
   - time
 
@@ -616,7 +616,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cc8cce630>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdf30b91e50>
     ```
 - [ ] Attributes: (6)
 

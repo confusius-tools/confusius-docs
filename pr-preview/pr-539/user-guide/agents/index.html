@@ -3374,26 +3374,21 @@
 
 
 <h1 id="agents">Agents<a class="headerlink" href="#agents" title="Permanent link">&para;</a></h1>
-<p>ConfUSIus bundles <a href="https://agentskills.io/">Agent Skills</a>: instructions and supporting
-references that coding assistants load when relevant to your task. They work with
-Pi, Codex, Claude Code, Cursor, and other compatible assistants.</p>
+<p>ConfUSIus includes <a href="https://agentskills.io/">Agent Skills</a>: task-specific instructions
+that help coding agents use ConfUSIus. Skills work with Pi, Codex, Claude Code, Cursor,
+and other compatible agents.</p>
 <h2 id="available-skills">Available Skills<a class="headerlink" href="#available-skills" title="Permanent link">&para;</a></h2>
-<p>Run this command to see the bundled skills and their descriptions:</p>
+<p>List the bundled skills:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>list
 </span></code></pre></div>
-<p>The first skill, <strong><code>confusius-load-data</code></strong>, helps assistants choose the right
-ConfUSIus loader or wrap custom arrays as VoxelData. It guides them through finding
-axis order, spatial calibration, acquisition timing, and affine conventions.
-It includes geometry references and runnable, offline examples.</p>
 <h2 id="install-skills">Install Skills<a class="headerlink" href="#install-skills" title="Permanent link">&para;</a></h2>
-<p>Install all bundled skills into the current project:</p>
+<p>Install all bundled skills in your project:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install
 </span></code></pre></div>
-<p>The default destination is <code>.agents/skills/</code> in the <strong>current working directory</strong>,
-not an automatically detected repository root. Pi, Codex, Cursor, and other
-assistants support this shared location; discovery depends on your assistant.</p>
-<p>Use <code>--global</code> to install in your home directory. Use <code>--target</code> to choose another
-skills directory, such as Claude Code's <code>.claude/skills/</code>:</p>
+<p>By default, skills are installed in <code>.agents/skills/</code> relative to your current working
+directory (not necessarily the repository root). This shared location is supported by
+Pi, Codex, Cursor, and other agents.</p>
+<p>You can also install skills globally or choose a different destination:</p>
 <table>
 <thead>
 <tr>
@@ -3420,33 +3415,30 @@ skills directory, such as Claude Code's <code>.claude/skills/</code>:</p>
 </tr>
 </tbody>
 </table>
-<p>Relative targets resolve against the current directory, or your home with
-<code>--global</code>. Absolute targets are used directly; a leading <code>~</code> is expanded.</p>
-<p>To install only one named skill:</p>
+<p>Relative paths resolve from the current directory, or your home directory with
+<code>--global</code>. Absolute paths and <code>~</code> are also supported.</p>
+<p>To install a specific skill:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>confusius-load-data
 </span></code></pre></div>
-<p>Existing destinations are refused unless you pass <code>--force</code>. Successful replacement
-discards local changes and stale files. The installer stages all resources and keeps
-originals as backups until every replacement succeeds. Filesystem errors trigger
-rollback; if restoration also fails, backups are retained and their location is
-reported for manual recovery.</p>
-<p>Installation includes all references and scripts and needs no separate download.
-Repository maintenance skills, such as the release workflow, are not distributed.</p>
 <h2 id="use-a-skill">Use a Skill<a class="headerlink" href="#use-a-skill" title="Permanent link">&para;</a></h2>
-<p>Reload your assistant's skill discovery if necessary, then ask it to use the skill,
-for example: “Use confusius-load-data to help me load my MATLAB recording.” Avoid
-installing duplicate copies in locations scanned by the same assistant.</p>
-<p>The installed <code>confusius-load-data/scripts/examples.py</code> runs with the Python
-environment containing ConfUSIus. It checks synthetic data and geometry conventions,
-not your scanner's physical calibration. For the underlying APIs and data model,
-see <a href="../io/">Input/Output</a> and <a href="../voxeldata/">The VoxelData Model</a>.</p>
+<p>After installation, reload your agent's skill discovery if needed. You can then ask it
+to use a skill directly, for example:</p>
+<blockquote>
+<p>Use confusius-load-data to help me load my MATLAB recording.</p>
+</blockquote>
+<p>Skill discovery varies between agents. Avoid installing duplicate copies in directories
+scanned by the same agent.</p>
 <h2 id="documentation-for-assistants">Documentation for Assistants<a class="headerlink" href="#documentation-for-assistants" title="Permanent link">&para;</a></h2>
-<p>You can give an assistant <a href="https://confusius.tools/latest/llms.txt">llms.txt</a>, an
-index linking to Markdown versions of the documentation. For the combined reference,
-use <a href="https://confusius.tools/latest/llms-full.txt">llms-full.txt</a>, which is much larger.
-These are documentation resources, not installable skills, and are useful even when
-your assistant does not support skills. The links above target the latest docs;
-choose the documentation version matching your installed ConfUSIus release.</p>
+<p>ConfUSIus also provides agent-friendly documentation:</p>
+<ul>
+<li><a href="https://confusius.tools/latest/llms.txt">llms.txt</a>: an index linking to Markdown
+  versions of the documentation.</li>
+<li><a href="https://confusius.tools/latest/llms-full.txt">llms-full.txt</a>: the complete
+  documentation in a single, much larger file.</li>
+</ul>
+<p>These resources can be used with any agent, even without skills support. The links above
+point to the latest documentation; use the version matching your installed ConfUSIus
+release.</p>
 
 
 
