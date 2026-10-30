@@ -3906,9 +3906,11 @@ Different loaders derive them in different ways:</p>
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_autc_dats_to_zarr&lt;/span&gt;" href="../../api/io/#confusius.io.convert_autc_dats_to_zarr"><code>convert_autc_dats_to_zarr</code></a>—<abbr title="Alan Urban Technology &amp; Consulting">AUTC</abbr> files carry
   no spacing metadata of their own. Origin is optional and defaults to a
   probe-centered, surface-referenced position when omitted.</li>
-<li><strong>Iconeus SCAN</strong>: Coordinates are derived from the <code>voxelsToProbe</code> affine embedded in
-  the SCAN file. The axial axis is flipped so that it is always positive and increases
-  with depth.</li>
+<li><strong>Iconeus SCAN</strong>: Coordinates are derived from the <code>voxelsToProbe</code> and <code>probeToLab</code>
+  affines embedded in the SCAN file, expressed in the Iconeus lab frame turned by a
+  constant +90 degrees about the axial axis to undo the standard IcoScan probe mount,
+  so that <code>z</code> is elevation, <code>y</code> depth and <code>x</code> lateral for a standard acquisition. The
+  axial axis is flipped so that it is always positive and increases with depth.</li>
 <li><strong>NIfTI</strong>: Coordinates are derived from the "best" affine transformation found in the
   file header, or from whichever one <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a>'s
   <code>coordinate_affine</code> argument selects explicitly.</li>
@@ -4020,8 +4022,9 @@ pose.</p>
   switched between the two. <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.save_nifti"><code>save_nifti</code></a> can write any
   named affine in <code>.attrs["affines"]</code> back to the header via its <code>qform=</code>/<code>sform=</code>
   arguments, defaulting to <code>"world_to_qform"</code>/<code>"world_to_sform"</code> when not specified.</li>
-<li><strong>Iconeus SCAN</strong>: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> uses ConfUSIus-ordered
-  Iconeus lab space as world space, so its <code>"world_to_lab"</code> entry is the identity. A
+<li><strong>Iconeus SCAN</strong>: <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../../api/io/#confusius.io.load_scan"><code>load_scan</code></a> uses the ConfUSIus
+  representation of the Iconeus lab frame (re-ordered and compensated for the standard
+  probe mount) as world space, so its <code>"world_to_lab"</code> entry is the identity. A
   <code>"world_to_probe"</code> entry maps world coordinates to the first pose's probe space
   (<code>z</code> elevation, <code>y</code> depth, <code>x</code> lateral), so the world space can be switched to the
   probe and back. Both are single <code>(4, 4)</code> affines, also for multi-pose acquisitions

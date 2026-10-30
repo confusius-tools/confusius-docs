@@ -3789,7 +3789,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt; (&lt;code&gt;confusius.io.load_bps&lt;/code&gt;)" href="./#confusius.io.load_bps">load_bps</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.</p>
+              <p>Load a BPS file and return its brain-to-lab affine, re-expressed for ConfUSIus.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5510,16 +5510,19 @@ displacement-field DataArray, <code>cmap</code>/<code>norm</code> restored on <c
 
     <div class="doc doc-contents ">
 
-        <p>Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.</p>
+        <p>Load a BPS file and return its brain-to-lab affine, re-expressed for ConfUSIus.</p>
 <p>BPS files are HDF5 sidecars produced by Iconeus' brain positioning system. They
 store a <code>BrainToLab</code> affine that maps Iconeus brain coordinates <code>(x_brain, y_brain,
 z_brain, 1)</code> to Iconeus lab coordinates <code>(x_lab, y_lab, z_lab, 1)</code> in meters.
 The Iconeus lab frame is a fixed scanner frame; <code>probeToLab</code> carries any rotation
 of the probe within it.</p>
 <p>To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab
-side as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in millimeters. The
-brain side is left in its original axis order (the brain coordinate units are not
-declared by the BPS format and are therefore not converted).</p>
+side in the ConfUSIus representation of the Iconeus lab frame: <strong>ConfUSIus-ordered</strong>
+<code>(z_lab, y_lab, x_lab)</code> in millimeters, turned by <code>ICONEUS_LAB_MOTOR_COMPENSATION</code>
+to undo the standard IcoScan probe mount, exactly as
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="./#confusius.io.load_scan"><code>load_scan</code></a> does for world coordinates. The brain side is
+left in its original axis order (the brain coordinate units are not declared by the
+BPS format and are therefore not converted).</p>
 <p>The change of basis from ConfUSIus-ordered millimeter lab coordinates to
 Iconeus-ordered meter lab coordinates is</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius_lab_to_iconeus_lab = mm_to_m @ WORLD_TO_PROBE_PERMUTATION
@@ -5527,7 +5530,9 @@ Iconeus-ordered meter lab coordinates is</p>
 <p><code>WORLD_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code> to
 probe / Iconeus-lab order <code>(x, y, z)</code>, and <code>mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)</code>
 rescales the translation column. The returned affine is then</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brain_to_lab = inv(confusius_lab_to_iconeus_lab) @ BrainToLab
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brain_to_lab = (
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    ICONEUS_LAB_MOTOR_COMPENSATION @ inv(confusius_lab_to_iconeus_lab) @ BrainToLab
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>)
 </span></code></pre></div>
 
 
@@ -5550,8 +5555,9 @@ rescales the translation column. The returned affine is then</p>
               <code>(4, 4) numpy.ndarray</code>
           –
           <div class="doc-md-description">
-            <p>Affine mapping Iconeus brain coordinates to ConfUSIus-ordered Iconeus lab
-coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
+            <p>Affine mapping Iconeus brain coordinates to the ConfUSIus representation of
+Iconeus lab coordinates <code>(z, y, x, 1)</code> in millimeters, the world space of
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="./#confusius.io.load_scan"><code>load_scan</code></a>.</p>
           </div>
         </li>
     </ul>
@@ -6029,14 +6035,17 @@ attributes, in native header units: <code>probe_model</code>, <code>probe_center
 <code>imaging_depth</code> (mm start/end), <code>transmit_frequency</code> (MHz),
 <code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>svd_low_cutoff</code>, and
 <code>power_doppler_integration_duration</code> (s).</p>
-<p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are <strong>ConfUSIus-ordered
-Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
-as the canonical world frame because it is the one frame that is physically
-meaningful across poses. For multi-pose files, <code>da</code>'s voxel-to-world geometry is
-itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per
-<code>da.coords["pose"]</code> label); world
-selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
-<code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
+<p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are the <strong>ConfUSIus
+representation of Iconeus lab coordinates</strong> (mm): the Iconeus lab frame, a fixed
+scanner frame shared by every pose and every scan of a session, re-ordered to
+<code>(z, y, x)</code> and turned by a constant +90 degrees about the axial axis
+(<code>ICONEUS_LAB_MOTOR_COMPENSATION</code>) to undo the standard IcoScan probe mount. A
+standard acquisition therefore has <code>z</code> elevation, <code>y</code> depth and <code>x</code> lateral; a probe
+mounted at another angle keeps its rotation in the loaded geometry. The frame is the
+same for SCAN v1 and SCAN v2 files. For multi-pose files, <code>da</code>'s voxel-to-world
+geometry is itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per
+<code>da.coords["pose"]</code> label); world selection therefore requires reducing <code>pose</code> to a
+scalar first, e.g. <code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
 <p>Two named affines are stored in <code>da.attrs["affines"]</code>: <code>world_to_lab</code>, the
 identity, since lab space is the world space, and <code>world_to_probe</code>, mapping world
 coordinates to the first pose's probe space (<code>z</code> elevation, <code>y</code> depth, <code>x</code>

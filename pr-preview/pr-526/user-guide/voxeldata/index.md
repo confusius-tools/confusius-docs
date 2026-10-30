@@ -160,7 +160,7 @@ World coordinates are set when attaching a `VoxelToWorldIndex` to the DataArray.
 
 - **EchoFrame**: Lateral and axial coordinates are read from the acquisition metadata file.
 - **AUTC**: Spacing must be supplied explicitly to `convert_autc_dats_to_zarr`—AUTC files carry no spacing metadata of their own. Origin is optional and defaults to a probe-centered, surface-referenced position when omitted.
-- **Iconeus SCAN**: Coordinates are derived from the `voxelsToProbe` affine embedded in the SCAN file. The axial axis is flipped so that it is always positive and increases with depth.
+- **Iconeus SCAN**: Coordinates are derived from the `voxelsToProbe` and `probeToLab` affines embedded in the SCAN file, expressed in the Iconeus lab frame turned by a constant +90 degrees about the axial axis to undo the standard IcoScan probe mount, so that `z` is elevation, `y` depth and `x` lateral for a standard acquisition. The axial axis is flipped so that it is always positive and increases with depth.
 - **NIfTI**: Coordinates are derived from the "best" affine transformation found in the file header, or from whichever one `load_nifti`'s `coordinate_affine` argument selects explicitly.
 
 > [!TIP]
@@ -211,7 +211,7 @@ A space counts as a "reference space" rather than *the* world space only because
 Several loaders populate `.attrs["affines"]` automatically:
 
 - **NIfTI**: The world space is whichever affine (`sform` or `qform`) was selected; its own entry (`"world_to_sform"` or `"world_to_qform"`) is the identity. When the other one is also valid, it is stored under the other key, so the world space can be switched between the two. `save_nifti` can write any named affine in `.attrs["affines"]` back to the header via its `qform=`/`sform=` arguments, defaulting to `"world_to_qform"`/`"world_to_sform"` when not specified.
-- **Iconeus SCAN**: `load_scan` uses ConfUSIus-ordered Iconeus lab space as world space, so its `"world_to_lab"` entry is the identity. A `"world_to_probe"` entry maps world coordinates to the first pose's probe space (`z` elevation, `y` depth, `x` lateral), so the world space can be switched to the probe and back. Both are single `(4, 4)` affines, also for multi-pose acquisitions (`3Dscan`, `4Dscan`), as is the `"world_to_brain"` affine stored with `bps_path`.
+- **Iconeus SCAN**: `load_scan` uses the ConfUSIus representation of the Iconeus lab frame (re-ordered and compensated for the standard probe mount) as world space, so its `"world_to_lab"` entry is the identity. A `"world_to_probe"` entry maps world coordinates to the first pose's probe space (`z` elevation, `y` depth, `x` lateral), so the world space can be switched to the probe and back. Both are single `(4, 4)` affines, also for multi-pose acquisitions (`3Dscan`, `4Dscan`), as is the `"world_to_brain"` affine stored with `bps_path`.
 
 Registration transforms are handled separately from `.attrs["affines"]`. `register_volume` returns the estimated transform explicitly but does not store automatically in `.attrs["affines"]`.
 
