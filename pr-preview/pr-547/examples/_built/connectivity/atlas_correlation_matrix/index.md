@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43444/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_43513/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -82,19 +82,19 @@ xarray.DataArray
   \-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28
 
   ```
-  array([[[-18.687918, -18.569138, -18.501253, ..., -17.95731 ,
+  array([[[-18.687918, -18.569138, -18.501255, ..., -17.95731 ,
            -17.939037, -17.964108],
           [-18.535534, -18.445446, -18.356527, ..., -17.885906,
            -17.885307, -17.89217 ],
           [-18.489779, -18.407112, -18.328487, ..., -17.793518,
            -17.804783, -17.829914],
           ...,
-          [-12.315687, -13.394131, -13.825215, ..., -13.536497,
-           -13.521714, -13.627705],
-          [-12.319635, -13.353613, -13.749181, ..., -13.457007,
-           -13.386364, -13.444546],
+          [-12.315687, -13.394132, -13.825216, ..., -13.536499,
+           -13.521715, -13.627706],
+          [-12.319636, -13.353613, -13.749182, ..., -13.457008,
+           -13.386365, -13.444547],
           [-12.376516, -13.219033, -13.602533, ..., -13.36433 ,
-           -13.333444, -13.279077]]], shape=(1, 125, 80), dtype=float32)
+           -13.333445, -13.279077]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fda9b5a57b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7efe0d6a17b0>
     ```
 - [ ] Attributes: (27)
 
@@ -690,7 +690,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 14.0 s
+**Total running time:** 11.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/544-initialization-transform-model?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-547/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-547/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 

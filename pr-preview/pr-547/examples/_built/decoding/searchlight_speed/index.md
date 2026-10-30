@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd121397750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1863d87750>
     ```
 - [ ] Attributes: (21)
 
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd114650bb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f185c0bc130>
     ```
 - [ ] Attributes: (23)
 
@@ -902,7 +902,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 86.9 s
+**Total running time:** 70.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/fix/544-initialization-transform-model?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-547/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-547/examples/_built/decoding/searchlight_speed.ipynb>)
 
