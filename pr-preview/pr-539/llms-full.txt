@@ -253,6 +253,10 @@ List the bundled skills:
 confusius skills list
 ```
 
+| Skill | Description |
+| --- | --- |
+| `confusius-load-data` | Load custom or supported ultrasound data into ConfUSIus. Use for file imports, VoxelData dimensions, acquisition timing, and voxel-to-world geometry. |
+
 ## Install Skills
 
 Install all bundled skills in your project:
@@ -272,7 +276,7 @@ You can also install skills globally or choose a different destination:
 | `confusius skills install --target .claude/skills` | `.claude/skills/` |
 | `confusius skills install --global --target .claude/skills` | `~/.claude/skills/` |
 
-Relative paths resolve from the current directory, or your home directory with `--global`. Absolute paths and `~` are also supported.
+Relative paths resolve from the current directory, or your home directory with `--global`. Absolute paths and `~` are also supported. Existing skills are preserved unless `--force` is specified, which replaces them and discards local changes.
 
 To install a specific skill:
 
@@ -24608,7 +24612,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43445/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_43859/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24825,7 +24829,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f149b2c57b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fec1776d7b0>
     ```
 - [ ] Attributes: (27)
 
@@ -25233,7 +25237,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 14.5 s
+**Total running time:** 13.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25302,7 +25306,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_46485/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46902/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25570,7 +25574,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6d2daf4110>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f52a87f01d0>
     ```
   - region
 
@@ -25693,7 +25697,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f6d2db04440\>
+  \<matplotlib.colors.Normalize object at 0x7f52a8804440\>
 
 ## Plot the seed maps
 
@@ -25733,7 +25737,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 15.1 s
+**Total running time:** 14.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26077,7 +26081,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb102e73750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fea61b7b750>
     ```
 - [ ] Attributes: (21)
 
@@ -26474,7 +26478,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb0fc13c4b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fea54e44130>
     ```
 - [ ] Attributes: (23)
 
@@ -26643,7 +26647,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 86.3 s
+**Total running time:** 84.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26991,7 +26995,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f48d97c65d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcf247a65d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27363,7 +27367,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 281.9 s
+**Total running time:** 279.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27705,7 +27709,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f80e3de65d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f437f2da5d0>
     ```
 - [ ] Attributes: (25)
 
@@ -28105,7 +28109,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 297.3 s
+**Total running time:** 295.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28453,7 +28457,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4e727fa5d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9fe1afe5d0>
     ```
 - [ ] Attributes: (25)
 
@@ -28847,7 +28851,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 278.5 s
+**Total running time:** 277.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29188,7 +29192,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f35f155a8d0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f6cb4ec4670>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29203,7 +29207,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...d0\>, beta=6.7) |
+|  | hrf\_model | functools.par...70\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29222,7 +29226,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f35ec15bc50\>, \<confusius.gl...x7f35ec187950\>, \<confusius.gl...x7f35ec262570\>, \<confusius.gl...x7f35ec1e7f00\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f6cb2cb2850\>, \<confusius.gl...x7f6cb2cab230\>, \<confusius.gl...x7f6cb4c58050\>, \<confusius.gl...x7f6cb2ce29c0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29337,7 +29341,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 108.3 s
+**Total running time:** 104.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/glm/first_level.ipynb>)
 
@@ -29705,7 +29709,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa7f64925d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5eea61a5d0>
     ```
 - [ ] Attributes: (21)
 
@@ -29942,7 +29946,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.9 s
+**Total running time:** 25.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30210,7 +30214,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16c083a120>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa01823e120>
     ```
 - [ ] Attributes: (25)
 
@@ -30636,7 +30640,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16f8921e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa0443f9e50>
     ```
 - [ ] Attributes: (25)
 
@@ -30996,7 +31000,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16bf955bd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa017391bd0>
     ```
 - [ ] Attributes: (25)
 
@@ -31686,7 +31690,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6c6e363100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cd1933100>
     ```
   - time
 
@@ -31967,7 +31971,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6c6065ffb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cc8cce630>
     ```
 - [ ] Attributes: (6)
 
@@ -32040,7 +32044,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 55.6 s
+**Total running time:** 55.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32165,7 +32169,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.9 s
+**Total running time:** 5.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32597,7 +32601,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff520880b30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f88fa410ad0>
     ```
 - [ ] Attributes: (25)
 
@@ -32716,7 +32720,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.9 s
+**Total running time:** 13.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32999,7 +33003,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3300aec770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff4cdcec770>
     ```
 - [ ] Attributes: (27)
 
@@ -33215,7 +33219,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 67.6 s
+**Total running time:** 66.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33463,7 +33467,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f232afcfbb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f95d3b33bb0>
     ```
 - [ ] Attributes: (23)
 
@@ -33744,7 +33748,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f237ced4350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f95d60d6950>
     ```
 - [ ] Attributes: (23)
 
@@ -33949,49 +33953,49 @@ xarray.DataArray
 
 - [ ]
 
-  2.297e-09 7.907e-14 -7.593e-14 -1.443e-13 ... -160.0 -154.3 -32.51
+  \-6.162e-13 3.306e-14 1.478e-14 ... -1.143e+03 -899.4 -4.183e+03
 
   ```
-  array([[[[ 2.29711443e-09,  7.90734987e-14, -7.59348635e-14, ...,
-            -2.16574452e-13, -8.88494803e-14, -7.27052721e-15],
-           [ 1.11715216e-12,  5.23933579e-14, -6.45296175e-15, ...,
-            -7.37072498e-14, -1.35920452e-14,  1.60265169e-15],
-           [-1.94362986e-13, -3.83091700e-14, -4.77208088e-14, ...,
-            -3.54528507e-14,  1.50532047e-14,  1.33554914e-14],
+  array([[[[-6.16190825e-13,  3.30619468e-14,  1.47785283e-14, ...,
+            -5.08687725e-13, -1.00211345e-13, -6.21930479e-15],
+           [-5.20493797e-14, -4.45380894e-15, -6.55656842e-15, ...,
+            -1.76536456e-13, -2.77962273e-14,  3.67310291e-15],
+           [-2.38524907e-13, -9.37065050e-14, -1.32110632e-13, ...,
+            -7.86852041e-14,  2.89865737e-14,  1.90639982e-14],
            ...,
-           [-2.53044354e-13, -1.20079531e-14,  1.40202782e-13, ...,
-             7.77554587e-14,  5.37031832e-14,  1.29575763e-14],
-           [ 2.20373555e-13,  1.01762425e-13,  1.26298379e-13, ...,
-             8.29063915e-14,  4.25995041e-14,  8.11875140e-15],
-           [ 7.89173332e-11,  1.83262007e-13,  1.46647704e-13, ...,
-             6.93982613e-13,  7.06405143e-13,  2.69785595e-13]],
+           [-2.14478414e-13, -1.95844290e-14,  3.02980713e-13, ...,
+             1.88533529e-13,  8.35429454e-14,  1.18904481e-14],
+           [ 4.41906994e-13,  9.93467038e-14,  2.80448879e-13, ...,
+             1.11919509e-13,  5.68388565e-14,  1.16118658e-14],
+           [ 9.74116391e-12,  1.74753053e-12,  1.91640671e-12, ...,
+             5.04686507e-13,  3.21368880e-13,  7.07845063e-14]],
 
-          [[ 2.69179727e-12,  9.26596530e-17, -8.89817477e-17, ...,
-            -2.53785578e-16, -1.04115312e-16, -8.51972582e-18],
-           [ 1.30909765e-15,  6.13954162e-17, -7.56168889e-18, ...,
-            -8.63713925e-17, -1.59273867e-17,  1.87801416e-18],
-           [-2.27757810e-16, -4.48913284e-17, -5.59200447e-17, ...,
-            -4.15442455e-17,  1.76395979e-17,  1.56501890e-17],
+          [[-7.22062751e-16,  3.87425442e-17,  1.73177276e-17, ...,
+            -5.96088814e-16, -1.17429336e-16, -7.28788575e-18],
+           [-6.09923368e-17, -5.21904808e-18, -7.68309693e-18, ...,
+            -2.06868382e-16, -3.25720857e-17,  4.30420365e-18],
+           [-2.79507490e-16, -1.09806855e-16, -1.54809456e-16, ...,
+            -9.22046429e-17,  3.39669536e-17,  2.23395131e-17],
   ...
-            -9.50665302e-02, -5.65983087e-02, -2.44142598e-03],
-           [ 8.84034355e-03,  3.25739834e-02,  1.42255320e-01, ...,
-            -3.49715176e-02, -2.67564659e-02, -1.96431904e-03],
-           [ 1.62552230e-02,  1.19920174e-01,  2.15450945e-01, ...,
-            -1.87483471e-01, -1.80774584e-01, -3.80956993e-02]],
+            -9.83518934e-02, -6.83363024e-02, -1.04063047e-02],
+           [ 3.57870255e-02,  4.63255380e-02,  1.57900791e-01, ...,
+            -1.46039718e-01, -1.26134742e-01, -1.83186075e-01],
+           [ 3.82004524e-02,  1.18947557e-01,  3.74585613e-01, ...,
+            -1.33883484e+00, -1.05389785e+00, -4.90225392e+00]],
 
-          [[ 1.31349220e+04,  1.69962449e+02, -7.18341962e+02, ...,
-            -1.04054348e+02, -3.53279208e+00,  2.32674361e+01],
-           [-8.25369702e+01,  9.46064367e+00, -9.96218326e+01, ...,
-            -6.03607196e+01, -1.70899707e+00,  5.26235716e+00],
-           [-2.36461145e+02,  4.69220487e+01,  3.07990413e+01, ...,
-            -1.08654394e+02, -2.63127631e+01,  1.13385579e+00],
+          [[ 8.61033733e+03,  3.11781339e+02, -6.29698454e+02, ...,
+            -2.81815968e+02, -1.40112200e+01,  1.55061217e+02],
+           [ 3.65238171e+01,  2.46738527e+01, -9.26259944e+01, ...,
+            -7.80798016e+01,  5.40913589e+00,  5.13803402e+01],
+           [-6.00237663e+02,  6.60373180e+01,  5.71934870e+01, ...,
+            -1.19767504e+02,  3.21658800e-01,  4.75729481e+00],
            ...,
-           [-3.33285254e+01,  6.97887655e+01,  1.14346307e+02, ...,
-            -8.11274692e+01, -4.82996228e+01, -2.08345368e+00],
-           [ 7.54413460e+00,  2.77978467e+01,  1.21397237e+02, ...,
-            -2.98438442e+01, -2.28333186e+01, -1.67630218e+00],
-           [ 1.38718126e+01,  1.02336965e+02,  1.83860607e+02, ...,
-            -1.59993841e+02, -1.54268641e+02, -3.25099446e+01]]]],
+           [-3.84906389e+01,  7.36921165e+01,  2.27915630e+02, ...,
+            -8.39311184e+01, -5.83165416e+01, -8.88048775e+00],
+           [ 3.05397789e+01,  3.95330896e+01,  1.34748702e+02, ...,
+            -1.24626750e+02, -1.07640327e+02, -1.56326547e+02],
+           [ 3.25993379e+01,  1.01506957e+02,  3.19662273e+02, ...,
+            -1.14252916e+03, -8.99370832e+02, -4.18346548e+03]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34146,7 +34150,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f230cd992b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f95b92dd370>
     ```
 - [x] Attributes: (4)
 
@@ -34177,7 +34181,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8884
+Rigid + B-spline final metric: -0.8927
 ```
 
 ```python
@@ -34266,7 +34270,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 51.2 s
+**Total running time:** 40.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34632,7 +34636,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb3d39da850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc8280c6850>
     ```
 - [ ] Attributes: (21)
 
@@ -34842,7 +34846,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 42.7 s
+**Total running time:** 42.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/agent-skills?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-539/examples/_built/registration/volumewise_motion_correction.ipynb>)
 

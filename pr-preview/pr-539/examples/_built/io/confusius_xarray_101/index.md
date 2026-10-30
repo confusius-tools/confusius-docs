@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16c083a120>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa01823e120>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16f8921e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa0443f9e50>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f16bf955bd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa017391bd0>
     ```
 - [ ] Attributes: (25)
 
