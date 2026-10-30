@@ -6,7 +6,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Matrix-initialized registration now keeps the affine seed fixed and optimizes only the requested refinement type, rather than always optimizing a full affine. In 3D, use 3 optimizer weights for translation, 6 for rigid, or 12 for affine; results may change. Scaling/shearing in the seed is retained with rigid refinement ([\#547](<https://github.com/confusius-tools/confusius/pull/547>)).
+- Fix matrix initialization incorrectly allowing full affine optimization for rigid/translation registration. Refinement now respects the requested transform; in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ ([\#547](<https://github.com/confusius-tools/confusius/pull/547>)).
 - Matrix-seeded rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
