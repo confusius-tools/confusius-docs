@@ -3037,41 +3037,75 @@ ConfUSIus provides three QC metrics, divided into two categories:
 
 > [!NOTE]
 >
-> **Example dataset setup (Nunez-Elizalde *et al.*, 2022)**
+> **Example dataset setup (Landemard *et al.*, 2026)**
 >
-> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/dev/user-guide/quality-control/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler and Allen atlas segmentation for one acquisition. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
+> The figures on this page are generated using the Landemard *et al.* (2026) dataset[^/dev/user-guide/quality-control/#landemard2026] obtained with `fetch_landemard_2026`. The code below loads the power Doppler and the per-session Allen region map for subject `ALD001`, acquisition `ref20`. The scans table maps the acquisition to the anatomy session key used by the region-map derivative. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
 >
 > ```python
+> import csv
+> from pathlib import Path
+>
+> import numpy as np
+>
 > import confusius as cf
-> from confusius.datasets import fetch_nunez_elizalde_2022
+> from confusius.datasets import fetch_landemard_2026
 >
-> bids_root = fetch_nunez_elizalde_2022(
->     subjects=["CR022"],
->     sessions=["20201011"],
->     tasks=["spontaneous"],
->     acqs=["slice03"],
+> subject, acq = "ALD001", "ref20"
+> bids_root = fetch_landemard_2026(
+>     datasets=["rawdata", "atlas_mapping"],
+>     subjects=subject,
+>     acqs=acq,
+>     datatypes=["fusi"],
 > )
 >
-> pwd = cf.load(
+> fusi_path = (
 >     bids_root
->     / "sub-CR022/ses-20201011/fusi"
->     / "sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz"
+>     / f"sub-{subject}/fusi"
+>     / f"sub-{subject}_task-awake_acq-{acq}_pwd.nii.gz"
 > )
-> atlas_labels = cf.load(
+> pwd = cf.load(fusi_path)
+>
+> scans_path = bids_root / f"sub-{subject}/sub-{subject}_scans.tsv"
+> with scans_path.open(newline="") as file:
+>     scan = next(
+>         row
+>         for row in csv.DictReader(file, delimiter="\t")
+>         if Path(row["filename"]).name == fusi_path.name
+>     )
+> session = f"{scan['acq_time'].split('T')[0]}_{int(scan['experiment_id'])}"
+>
+> region_matches_path = (
 >     bids_root
->     / "derivatives/allenccf_align/sub-CR022/ses-20201011/fusi"
->     / "sub-CR022_ses-20201011_space-fusi_desc-allenccf_dseg.nii.gz"
+>     / f"derivatives/atlas_mapping/sub-{subject}"
+>     / f"AnatomyRegionMatches_{subject}.npz"
 > )
-> atlas_labels = atlas_labels.sel(z=pwd["z"], method="nearest").assign_coords(z=pwd["z"])
-> brain_mask = atlas_labels > 0
+> with np.load(region_matches_path, allow_pickle=True) as region_matches:
+>     region_map = region_matches[session]
+> brain_mask = pwd.isel(time=0, drop=True).copy(data=(region_map != 0)[None])
 > signals = pwd.fusi.extract.with_mask(brain_mask)
 > ```
 
 ## DVARS
 
-DVARS (temporal **D**erivative of **VAR**iance**S**) measures how much the signal intensity changes between consecutive time points, averaged across all brain voxels[^/dev/user-guide/quality-control/#power2012]. A spike in DVARS typically indicates a motion event, a scanner artifact, or another transient disturbance that corrupted one or more volumes.
+DVARS (temporal **D**erivative of **VAR**iance**S**) quantifies changes in signal intensity between consecutive time points, computed as the root mean square of temporal differences across brain voxels[^/dev/user-guide/quality-control/#power2012]. Large DVARS values indicate abrupt signal changes, which may arise from motion, acquisition artifacts, or strong physiological fluctuations. DVARS is sensitive to both global and strong local changes, making it a useful metric for identifying potentially problematic time points that warrant further inspection or exclusion from further analysis.
 
-By default, ConfUSIus computes the **standardized** DVARS[^/dev/user-guide/quality-control/#nichols2017], which accounts for the temporal autocorrelation structure of the data and is therefore more comparable across acquisitions. Standardized DVARS is approximately 1 for a stationary recording; values significantly above 1 indicate outlier volumes.
+Mathematically, raw DVARS is defined as
+
+\\\[ \\mathrm{DVARS}\_t = \\sqrt{\\frac{1}{N} \\sum\_{i=1}^{N} (x\_{i,t} - x\_{i,t-1})^2}, \\\]
+
+where \\(x\_{i,t}\\) is the signal intensity at voxel \\(i\\) and time point \\(t\\), and \\(N\\) is the number of included voxels.
+
+For a recording with \\(T\\) time points, DVARS is defined for \\(T-1\\) consecutive pairs. Since there is no preceding frame for \\(t=0\\), its DVARS is undefined. ConfUSIus returns `NaN` at that position to preserve the input time coordinates and length.
+
+By default, ConfUSIus computes **relative DVARS**[^/dev/user-guide/quality-control/#afyouni2018]: raw DVARS divided by the square root of its median squared value. This empirical normalization puts the median near 1 and assumes background fluctuations dominate the recording; frequent artifacts or a changing baseline can compromise the estimate.
+
+Nichols originally called the measure *standardized DVARS*[^/dev/user-guide/quality-control/#nichols2017]; Afyouni and Nichols subsequently used the name *relative DVARS*.
+
+> [!WARNING]
+>
+> **DVARS normalization changed in ConfUSIus 0.9.0**
+>
+> ConfUSIus 0.8.0 and earlier used a mean-SD AR(1)-based normalization, which has been removed. The default is now median-based relative DVARS, following recommendations by Afyouni and Nichols[^/dev/user-guide/quality-control/#afyouni2018]. The median is less sensitive to unusually large DVARS values, and their simulations found it reliable under heterogeneous voxel variances. **Existing outlier thresholds must be adjusted for the new normalization**.
 
 ### Usage
 
@@ -3080,14 +3114,41 @@ DVARS is computed from any `(time, ...)` DataArray—spatial dimensions are flat
 ```python
 from confusius.qc import compute_dvars
 
-# Compute standardized DVARS (default).
+# Compute median-based relative DVARS (default).
 dvars = compute_dvars(signals)
-# dvars has dims (time,).
+# Alternative model-based baseline, using the mean expected difference variance.
+dvars_ar1 = compute_dvars(signals, baseline_estimator="ar1")
+# Raw DVARS in native intensity units.
+dvars_raw = compute_dvars(signals, variant="raw", normalization_factor=None)
+# Each result has dims (time,).
+```
+
+For relative DVARS, `baseline_estimator` selects one of two denominators:
+
+- `"median"` (default): square root of median squared raw DVARS. No AR(1) fit.
+- `"ar1"`: RMS of expected voxelwise difference SDs, `sqrt(mean(2 * (1 - rho) * sigma**2))`.
+
+The AR(1) estimator uses robust temporal SDs, but its autocorrelation estimates remain sensitive to artifacts. Raw DVARS ignores `baseline_estimator` and scales intensities to a median of 1000 by default; set `normalization_factor=None` to retain native units. Both variants exclude zero-IQR features by default, using lower quantile interpolation. This follows [Nipype's FSL-compatible convention](<https://github.com/nipy/nipype/blob/master/nipype/algorithms/confounds.py>), which [fMRIPrep also uses through Nipype](<https://github.com/nipreps/fmriprep/blob/master/fmriprep/workflows/bold/confounds.py>); it does not imply identical DVARS normalization across these tools. Mostly constant features with isolated transients can also have zero IQR; set `remove_zero_variance=False` to retain them.
+
+All variants preserve Dask laziness, with data-dependent validation at computation time. Relative DVARS and unnormalized raw DVARS process full-time spatial chunks; each chunk must fit in memory. Raw intensity normalization requires the exact global median and gathers the full recording into memory when computed.
+
+### Sample Masks
+
+Creating a boolean mask of good samples is straightforward: simply threshold the DVARS time series. The threshold below is illustrative: you should review the DVARS plot on your own dataset to determine an appropriate threshold for your paradigm.
+
+```python
+import confusius as cf
+
+threshold = 2.5
+# The first frame has no preceding frame, so its DVARS is NaN. Thresholding will produce
+# a False value for that frame.
+sample_mask = (dvars < threshold).compute()  # True means keep.
+cleaned = cf.signal.clean(signals, sample_mask=sample_mask)
 ```
 
 ### Visualizing and Thresholding
 
-DVARS is a time series and is best examined as a line plot. Flagged frames can be marked for quick visual inspection:
+DVARS is a time series and is best examined as a line plot. Flagged frames can be marked for quick visual inspection. The threshold below is illustrative, not calibrated for fUSI; changing the estimator requires reviewing the threshold:
 
 ```python
 import matplotlib.pyplot as plt
@@ -3097,7 +3158,7 @@ flagged = dvars > threshold
 flagged_dvars = dvars.where(flagged, drop=True)
 
 fig, ax = plt.subplots(figsize=(10, 3))
-dvars.plot(ax=ax, linewidth=0.8, label="Standardized DVARS")
+dvars.plot(ax=ax, linewidth=0.8, label="relative DVARS")
 if flagged_dvars.size > 0:
     ax.plot(
         flagged_dvars["time"].values,
@@ -3205,11 +3266,13 @@ For full parameter documentation, see the [QC API reference](<https://confusius.
 
 [^/dev/user-guide/quality-control/#power2012]: Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
 
+[^/dev/user-guide/quality-control/#afyouni2018]: Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS." NeuroImage, 172, 2018, pp. 291–312. [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
+
 [^/dev/user-guide/quality-control/#nichols2017]: Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
 
 [^/dev/user-guide/quality-control/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
 
-[^/dev/user-guide/quality-control/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+[^/dev/user-guide/quality-control/#landemard2026]: Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. "Brainwide blood volume reflects opposing neural populations." *Nature*, 2026. DOI.org (Crossref), [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 
 # Atlases
 
@@ -16353,7 +16416,7 @@ Functions:
   Compute the coefficient of variation (CV).
 - **`compute_dvars`** –
 
-  Compute the DVARS metric.
+  Compute the DVARS quality control metric.
 - **`compute_tsnr`** –
 
   Compute the temporal signal-to-noise ratio (tSNR).
@@ -16421,18 +16484,20 @@ Examples:
 ```python
 compute_dvars(
     signals: DataArray,
-    standardize: bool = True,
+    *,
+    variant: Literal["raw", "relative"] = "relative",
+    baseline_estimator: Literal["median", "ar1"] = "median",
     normalization_factor: float | None = 1000,
     remove_zero_variance: bool = True,
     variance_tolerance: float = 0.0,
 ) -> DataArray
 ```
 
-Compute the DVARS metric.
+Compute the DVARS quality control metric.
 
-DVARS (D referring to temporal derivative, VARS to RMS variance) measures how much the intensity at one time point changes relative to the previous time point. The standardized version accounts for the expected variance given the temporal autocorrelation structure of the data.
+DVARS measures the root mean square signal change between consecutive time points. Relative DVARS divides this trace by an estimated background baseline.
 
-This function was adapted from `nipype.algorithms.confounds.compute_dvars`.
+This function was originally adapted from `nipype.algorithms.confounds.compute_dvars`.
 
 Parameters:
 
@@ -16440,83 +16505,89 @@ Parameters:
 
   (`(time, ...) xarray.DataArray`) –
 
-  Signals to compute DVARS from. Must have a `time` dimension. Any additional dimensions (e.g., `pose`, `k`, `j`, `i`) are flattened to a single `space` dimension before computation.
-- #### **`standardize`**
+  Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering.
+- #### **`variant`**
 
-  (`bool`, default: `True` ) –
+  (`('raw', 'relative')`, default: `"raw"` ) –
 
-  Whether to computed the standardized DVARS. When `True`, the DVARS values are standardized by the expected standard deviation given the AR(1) structure of the data. When `False`, return non-standardized DVARS (raw RMS of temporal differences).
+  DVARS variant to compute. Raw DVARS is the root mean square of temporal differences, while relative DVARS divides raw DVARS by a recording-wide baseline, selected by `baseline_estimator`.
+- #### **`baseline_estimator`**
+
+  (`('median', 'ar1')`, default: `"median"` ) –
+
+  Baseline for relative DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.
 - #### **`normalization_factor`**
 
   (`float or None`, default: `1000` ) –
 
-  Normalization factor applied to the median signal intensity. If `None`, no normalization is performed. Note that standardized DVARS is invariant to intensity normalization.
+  Positive target median signal intensity for raw DVARS. If not provided, no intensity normalization is performed. Ignored for relative DVARS, which is invariant to positive global intensity scaling.
 - #### **`remove_zero_variance`**
 
   (`bool`, default: `True` ) –
 
-  Whether to exclude signals with near-zero variance. Zero-variance signals can artificially reduce the median during intensity normalization and should typically be removed.
+  Whether to exclude features whose robust temporal SD is less than or equal to `variance_tolerance`, before computing either variant. Mostly constant features with isolated transients can also have zero IQR.
 - #### **`variance_tolerance`**
 
   (`float`, default: `0.0` ) –
 
-  Tolerance for identifying zero-variance signals. Signals with robust standard deviation (`IQR/1.349`) less than or equal to this value are considered to have zero variance.
+  Finite, nonnegative threshold for robust temporal SD, estimated as IQR divided by the standard normal IQR using lower interpolation.
 
 Returns:
 
 - `(time,) xarray.DataArray` –
 
-  DVARS values with time coordinates matching input. When `standardized` is `True`, returns standardized DVARS. The first element is set to the minimum DVARS value (following FSL convention).
+  DVARS with the input time coordinates. The first value is `NaN` because the first frame has no preceding frame.
+
+Raises:
+
+- `TypeError` –
+
+  If signals are not real numeric data.
+- `ValueError` –
+
+  If time has fewer than two samples, features are empty or nonfinite, parameters are invalid, all features are removed, or a required intensity normalization or relative DVARS baseline is zero or nonfinite.
+
+**See Also**
+
+confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusius.qc.compute\_tsnr : Compute temporal signal-to-noise ratios.
 
 > [!NOTE]
 >
 > **Notes**
 >
-> **Laziness**: This function cannot preserve Dask laziness because it requires: (1) robust standard deviation via IQR (scipy function, not Dask-compatible), and (2) AR(1) coefficient estimation requiring full time series. The computation is executed immediately and returned as a DataArray with computed values.
+> Raw DVARS is `sqrt(mean_i(diff(Y_i)**2))`. Relative DVARS divides it by a recording-wide baseline estimated using either:
 >
-> The standardized DVARS metric was introduced by Nichols (2013) to provide a normalized measure of DVARS that accounts for the temporal autocorrelation in fMRI data.
+> - `median`: `sqrt(median_t(raw_dvars_t**2))`.
+> - `ar1`: `sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))`.
 >
-> The computation involves:
+> Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> 1. Robust standard deviation estimation using IQR (following FSL's "lower" interpolation method).
-> 2. Optional removal of zero-variance signals.
-> 3. Optional intensity normalization by median scaling.
-> 4. AR(1) coefficient estimation via Yule-Walker equations (standardized only).
-> 5. Computation of expected variance for temporal differences given AR(1) structure (standardized only).
-> 6. Standardization by dividing observed DVARS by expected DVARS (standardized only).
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability.
+>
+> **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
+>
+> **Laziness:** Dask inputs remain lazy; data-dependent errors occur at compute time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose full time series must fit in memory. Intensity-normalized raw DVARS instead loads the full recording to compute the exact global intensity median.
 
 **References**
 
-1. Smyser, Christopher D., et al. "Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain." NeuroImage, vol. 56, no. 3, June 2011, pp. 1437–52. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
-2. Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
-3. Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
-4. Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS." NeuroImage, vol. 172, May 2018, pp. 291–312. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
+1. Smyser, C. D., et al. (2011). Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain. NeuroImage, 56(3), 1437–1452. [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
+2. Power, J. D., et al. (2012). Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion. NeuroImage, 59(3), 2142–2154. [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
+3. Nichols, T. E. (2017). Notes on Creating a Standardized Version of DVARS. [https://doi.org/10.48550/arXiv.1704.01469](<https://doi.org/10.48550/arXiv.1704.01469>).
+4. Afyouni, S., and Nichols, T. E. (2018). Insight and Inference for DVARS. NeuroImage, 172, 291–312. [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
 
 Examples:
 
 ```pycon
->>> import numpy as np
->>> import xarray as xr
->>> from confusius.qc import compute_dvars
->>> # Generate synthetic 2D signals: 100 time points, 50 voxels
 >>> rng = np.random.default_rng(42)
->>> data = rng.standard_normal((100, 50))
->>> # Add AR(1) structure
->>> for t in range(1, 100):
-...     data[t] = 0.5 * data[t - 1] + 0.5 * data[t]
 >>> signals = xr.DataArray(
-...     data,
-...     dims=["time", "space"],
+...     100 + rng.standard_normal((100, 50)),
+...     dims=("time", "region"),
 ...     coords={"time": np.arange(100) * 0.1},
 ... )
->>> # Compute standardized DVARS (default)
->>> dvars_stdz = compute_dvars(signals)
->>> dvars_stdz.shape
-(100,)
->>> # Compute non-standardized DVARS
->>> dvars_nstd = compute_dvars(signals, standardize=False)
->>> dvars_nstd.shape
-(100,)
+>>> relative = compute_dvars(signals)
+>>> raw = compute_dvars(signals, variant="raw", normalization_factor=None)
+>>> relative.shape, raw.shape
+((100,), (100,))
 ```
 
 ### compute\_tsnr
@@ -24481,7 +24552,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43591/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_43581/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24698,7 +24769,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fce0a7717b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9fb3b997b0>
     ```
 - [ ] Attributes: (27)
 
@@ -25106,7 +25177,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 13.2 s
+**Total running time:** 13.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25175,7 +25246,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_46630/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46620/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25443,7 +25514,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1a2dd281d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09beea01d0>
     ```
   - region
 
@@ -25566,7 +25637,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f1a2dd38440\>
+  \<matplotlib.colors.Normalize object at 0x7f09bef4c440\>
 
 ## Plot the seed maps
 
@@ -25606,7 +25677,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 13.8 s
+**Total running time:** 14.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -25950,7 +26021,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6a0604b750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fda24e6b750>
     ```
 - [ ] Attributes: (21)
 
@@ -26347,7 +26418,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6a003e2190>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fda18112a50>
     ```
 - [ ] Attributes: (23)
 
@@ -26516,7 +26587,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 87.6 s
+**Total running time:** 85.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26864,7 +26935,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1bb29d65d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f879b4ae5d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27236,7 +27307,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 280.8 s
+**Total running time:** 291.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27578,7 +27649,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f02fcb025d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f98ab6a65d0>
     ```
 - [ ] Attributes: (25)
 
@@ -27978,7 +28049,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 296.8 s
+**Total running time:** 305.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28326,7 +28397,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff6f32c65d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7625ea5d0>
     ```
 - [ ] Attributes: (25)
 
@@ -28720,7 +28791,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 278.7 s
+**Total running time:** 290.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29061,7 +29132,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7efdfc5dc3b0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f79955d12d0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29076,7 +29147,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...b0\>, beta=6.7) |
+|  | hrf\_model | functools.par...d0\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29095,7 +29166,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7efdf22fbb10\>, \<confusius.gl...x7efdf212b100\>, \<confusius.gl...x7efdf23fa570\>, \<confusius.gl...x7efdf21ab9b0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f7994596710\>, \<confusius.gl...x7f7994587360\>, \<confusius.gl...x7f799c2f4290\>, \<confusius.gl...x7f79945daad0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29210,7 +29281,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 100.1 s
+**Total running time:** 100.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level.ipynb>)
 
@@ -29578,7 +29649,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff52ded65d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f50f64025d0>
     ```
 - [ ] Attributes: (21)
 
@@ -29815,7 +29886,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.2 s
+**Total running time:** 24.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30083,7 +30154,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f68f356a120>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd548e7e120>
     ```
 - [ ] Attributes: (25)
 
@@ -30509,7 +30580,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f692c5d5e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd580fe9e50>
     ```
 - [ ] Attributes: (25)
 
@@ -30869,7 +30940,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f68f2489bd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd547dd5bd0>
     ```
 - [ ] Attributes: (25)
 
@@ -31216,7 +31287,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.7 s
+**Total running time:** 9.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31559,7 +31630,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8a8ff63100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb5c173b100>
     ```
   - time
 
@@ -31840,7 +31911,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8a88301c10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb5b8a55c70>
     ```
 - [ ] Attributes: (6)
 
@@ -31913,7 +31984,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 55.8 s
+**Total running time:** 57.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -31957,7 +32028,7 @@ cf.datasets.list_datasets()
 │ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
 │ fetch_cybis_pereira_2026            │ 12.88 GB │    ✓    │
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
-│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✓    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
@@ -32038,7 +32109,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.9 s
+**Total running time:** 7.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32470,7 +32541,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa928d48ad0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fccec8d0ad0>
     ```
 - [ ] Attributes: (25)
 
@@ -32589,7 +32660,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 14.0 s
+**Total running time:** 13.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32872,7 +32943,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdece2bc770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcfbf9cc770>
     ```
 - [ ] Attributes: (27)
 
@@ -33088,7 +33159,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 68.0 s
+**Total running time:** 64.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33336,7 +33407,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2d19233bb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8fbcdc3bb0>
     ```
 - [ ] Attributes: (23)
 
@@ -33617,7 +33688,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2d1b7d6950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8fc152b650>
     ```
 - [ ] Attributes: (23)
 
@@ -33822,49 +33893,49 @@ xarray.DataArray
 
 - [ ]
 
-  5.455e-12 1.305e-12 3.982e-12 -6.978e-13 ... -201.4 -974.1 -49.03
+  \-1.964e-12 7.751e-13 5.531e-14 -2.283e-13 ... -864.4 -1.134e+03 -173.8
 
   ```
-  array([[[[ 5.45464089e-12,  1.30467196e-12,  3.98152895e-12, ...,
-            -5.50115169e-13, -3.79122560e-14, -7.95129303e-15],
-           [ 2.41771315e-14,  2.14356184e-14,  4.58813292e-14, ...,
-            -9.24658046e-14, -1.38526302e-14,  7.22588914e-15],
-           [-8.36288307e-13, -1.11852632e-13, -4.23512114e-14, ...,
-            -4.19785020e-14,  1.19487114e-14,  5.75986321e-15],
+  array([[[[-1.96403888e-12,  7.75125269e-13,  5.53123003e-14, ...,
+            -6.39473656e-13, -7.70055402e-13, -1.63711676e-13],
+           [-6.93192340e-14,  3.42045777e-15, -4.37685003e-15, ...,
+            -2.24162914e-13, -5.81154737e-14,  7.29730446e-15],
+           [-5.70033994e-13, -1.55506784e-13, -1.39069626e-13, ...,
+            -1.44329416e-13,  6.78073588e-14,  6.16771862e-14],
            ...,
-           [-1.68221962e-13, -6.32604004e-15,  1.41539825e-13, ...,
-             7.46047390e-14,  4.94513910e-14,  6.67430781e-15],
-           [ 2.38950664e-13,  4.27315192e-14,  1.89265453e-13, ...,
-             6.31713544e-14,  7.00406562e-14,  6.50073536e-15],
-           [ 7.15536022e-13,  1.02438182e-13,  4.51654539e-13, ...,
-             2.55958976e-13,  5.32810060e-13,  2.66468271e-12]],
+           [-5.20782008e-12,  3.51221200e-14,  3.49337626e-13, ...,
+             1.82109004e-13,  1.16823607e-13,  1.35616350e-14],
+           [ 8.21610999e-13,  1.00481541e-13,  2.84929893e-13, ...,
+             1.55920895e-13,  1.96580198e-13,  1.91139283e-14],
+           [ 5.32012949e-12,  5.39989050e-13,  7.20664067e-13, ...,
+             7.11211350e-13,  1.24129262e-12,  2.13001667e-11]],
 
-          [[ 6.39183974e-15,  1.52883650e-15,  4.66562246e-15, ...,
-            -6.44634189e-16, -4.44262179e-17, -9.31745863e-18],
-           [ 2.83311685e-17,  2.51186174e-17,  5.37645117e-17, ...,
-            -1.08352982e-16, -1.62327445e-17,  8.46741818e-18],
-           [-9.79976676e-16, -1.31070791e-16, -4.96278604e-17, ...,
-            -4.91911133e-17,  1.40017006e-17,  6.74950439e-18],
+          [[-2.30149373e-15,  9.08304801e-16,  6.48158820e-17, ...,
+            -7.49345964e-16, -9.02363846e-16, -1.91840090e-16],
+           [-8.12294419e-17,  4.00814983e-18, -5.12886633e-18, ...,
+            -2.62677865e-16, -6.81006876e-17,  8.55110385e-18],
+           [-6.67975402e-16, -1.82225460e-16, -1.62964122e-16, ...,
+            -1.69127632e-16,  7.94578012e-17,  7.22743621e-17],
   ...
-            -8.29549664e-02, -2.95855892e-02, -9.39942014e-04],
-           [ 1.56756586e-02,  3.63910998e-02,  1.08952813e-01, ...,
-            -3.00650620e-02, -2.67136802e-02, -1.90816306e-03],
-           [ 1.61750931e-01,  3.47474138e-01,  4.30028306e-01, ...,
-            -2.36031642e-01, -1.14142287e+00, -5.74578365e-02]],
+            -8.80338340e-02, -5.59621678e-02, -3.97609691e-03],
+           [ 2.32309488e-02,  4.34746934e-02,  1.21137872e-01, ...,
+            -1.25064639e-01, -8.17678942e-02, -7.95022570e-03],
+           [-4.54257959e-02,  1.12033825e+00, -7.12486566e-02, ...,
+            -1.01294622e+00, -1.32847618e+00, -2.03650505e-01]],
 
-          [[ 3.15136076e+04, -1.51292056e+02, -2.33534965e+02, ...,
-            -2.38710541e+02, -8.50912753e+00,  7.14301839e+01],
-           [-3.55010045e+02, -4.19944762e+01, -7.28383559e+01, ...,
-            -6.58597746e+01, -5.63827345e+00,  5.98615835e+01],
-           [-2.17347577e+02,  4.82848235e+01,  2.85933346e+01, ...,
-            -1.06227549e+02, -9.72601156e+00,  1.14769201e-01],
+          [[ 4.70736388e+04, -3.12447679e+02, -7.44890954e+02, ...,
+            -1.29740183e+02, -1.61485442e+01,  3.74449420e+02],
+           [-2.91075768e+03,  6.20169332e+00, -9.73765989e+01, ...,
+            -6.19327888e+01,  9.48648697e+00,  1.06152965e+02],
+           [-4.64172433e+02,  1.47804195e+02,  7.15783744e+01, ...,
+            -1.15089974e+02,  4.35609631e+00,  2.62063046e+00],
            ...,
-           [-9.18623014e+00,  4.17109899e+01,  9.60606716e+01, ...,
-            -7.07917547e+01, -2.52476237e+01, -8.02123695e-01],
-           [ 1.33772267e+01,  3.10552812e+01,  9.29776859e+01, ...,
-            -2.56567942e+01, -2.27968062e+01, -1.62838003e+00],
-           [ 1.38034312e+02,  2.96525990e+02,  3.66975721e+02, ...,
-            -2.01423674e+02, -9.74062589e+02, -4.90331241e+01]]]],
+           [-3.98099741e+01,  6.39690996e+01,  2.09604233e+02, ...,
+            -7.51259371e+01, -4.77567557e+01, -3.39310460e+00],
+           [ 1.98247278e+01,  3.71002481e+01,  1.03376119e+02, ...,
+            -1.06727127e+02, -6.97787359e+01, -6.78452963e+00],
+           [-3.87652718e+01,  9.56069451e+02, -6.08018745e+01, ...,
+            -8.64423708e+02, -1.13368930e+03, -1.73790357e+02]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34019,7 +34090,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2cfc0d9850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8fa2250fb0>
     ```
 - [x] Attributes: (4)
 
@@ -34050,7 +34121,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8921
+Rigid + B-spline final metric: -0.8950
 ```
 
 ```python
@@ -34139,7 +34210,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 67.0 s
+**Total running time:** 69.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34505,7 +34576,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f083dbaa850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f329e1d6850>
     ```
 - [ ] Attributes: (21)
 
@@ -34715,7 +34786,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 42.5 s
+**Total running time:** 43.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34733,6 +34804,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- `compute_dvars` now defaults to median-based relative DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols (2018). The median is less sensitive to unusually large DVARS values, and their simulations found it reliable under heterogeneous voxel variances. The previous mean-SD normalization used in 0.8.0 and earlier has been removed. Choose `baseline_estimator="ar1"` for the alternative RMS-based model baseline. **Existing DVARS thresholds must be adjusted for the new normalization**. The `standardize` argument was removed: use `variant="raw"` instead of `standardize=False`. The first output value is now `NaN` for all variants and estimators. Robust SDs retain lower IQR interpolation, following Nipype's FSL-compatible convention also used by fMRIPrep. All variants preserve Dask laziness. Relative DVARS and unnormalized raw DVARS reduce spatial blocks; raw intensity normalization gathers the full recording at compute time to preserve the exact global median ([\#540](<https://github.com/confusius-tools/confusius/pull/540>)).
 - Matrix-seeded rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).

@@ -3414,7 +3414,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt; (&lt;code&gt;confusius.qc.compute_dvars&lt;/code&gt;)" href="./#confusius.qc.compute_dvars">compute_dvars</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Compute the DVARS metric.</p>
+              <p>Compute the DVARS quality control metric.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3542,21 +3542,22 @@ ratio (see <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc
 <a href="#confusius.qc.compute_dvars" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">compute_dvars</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;signals&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(signals)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(signals)">signals</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;standardize&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(standardize)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(standardize)">standardize</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalization_factor&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(normalization_factor)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(normalization_factor)">normalization_factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;remove_zero_variance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(remove_zero_variance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(remove_zero_variance)">remove_zero_variance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variance_tolerance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variance_tolerance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variance_tolerance)">variance_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variant&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variant)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variant)">variant</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Literal&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;relative&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relative&quot;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;baseline_estimator&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(baseline_estimator)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(baseline_estimator)">baseline_estimator</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Literal&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;ar1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;normalization_factor&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(normalization_factor)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(normalization_factor)">normalization_factor</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;remove_zero_variance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(remove_zero_variance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(remove_zero_variance)">remove_zero_variance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;variance_tolerance&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.qc.compute_dvars(variance_tolerance)&lt;/code&gt;)" href="./#confusius.qc.compute_dvars(variance_tolerance)">variance_tolerance</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Compute the DVARS metric.</p>
-<p>DVARS (D referring to temporal derivative, VARS to RMS variance) measures how much
-the intensity at one time point changes relative to the previous time point. The
-standardized version accounts for the expected variance given the temporal
-autocorrelation structure of the data.</p>
-<p>This function was adapted from <code>nipype.algorithms.confounds.compute_dvars</code>.</p>
+        <p>Compute the DVARS quality control metric.</p>
+<p>DVARS measures the root mean square signal change between consecutive time points.
+Relative DVARS divides this trace by an estimated background baseline.</p>
+<p>This function was originally adapted from
+<code>nipype.algorithms.confounds.compute_dvars</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3566,22 +3567,34 @@ autocorrelation structure of the data.</p>
 <a href="#confusius.qc.compute_dvars(signals)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(time, ...) xarray.DataArray</code>)
           –
           <div class="doc-md-description">
-            <p>Signals to compute DVARS from. Must have a <code>time</code> dimension. Any additional
-dimensions (e.g., <code>pose</code>, <code>k</code>, <code>j</code>, <code>i</code>) are flattened to a single <code>space</code>
-dimension before computation.</p>
+            <p>Real, finite signals with a <code>time</code> dimension containing at least two samples.
+Any other dimensions are flattened into features, regardless of their names or
+ordering.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.qc.compute_dvars(standardize)" class="doc doc-heading doc-heading-parameter">              <b><code>standardize</code></b>
-<a href="#confusius.qc.compute_dvars(standardize)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></code>, default:
-                  <code>True</code>
+<h4 id="confusius.qc.compute_dvars(variant)" class="doc doc-heading doc-heading-parameter">              <b><code>variant</code></b>
+<a href="#confusius.qc.compute_dvars(variant)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(&#39;raw&#39;, &#39;relative&#39;)</code>, default:
+                  <code>&#34;raw&#34;</code>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to computed the standardized DVARS. When <code>True</code>, the DVARS values are
-standardized by the expected standard deviation given the AR(1) structure of the
-data. When <code>False</code>, return non-standardized DVARS (raw RMS of temporal
-differences).</p>
+            <p>DVARS variant to compute. Raw DVARS is the root mean square of temporal
+differences, while relative DVARS divides raw DVARS by a recording-wide
+baseline, selected by <code>baseline_estimator</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.qc.compute_dvars(baseline_estimator)" class="doc doc-heading doc-heading-parameter">              <b><code>baseline_estimator</code></b>
+<a href="#confusius.qc.compute_dvars(baseline_estimator)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(&#39;median&#39;, &#39;ar1&#39;)</code>, default:
+                  <code>&#34;median&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Baseline for relative DVARS. <code>"median"</code> uses the square root of median squared
+raw DVARS, excluding the artificial first sample. <code>"ar1"</code> uses the RMS of
+expected voxelwise difference standard deviations, estimated from robust
+temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3591,9 +3604,9 @@ differences).</p>
 )
           –
           <div class="doc-md-description">
-            <p>Normalization factor applied to the median signal intensity. If <code>None</code>, no
-normalization is performed. Note that standardized DVARS is invariant to
-intensity normalization.</p>
+            <p>Positive target median signal intensity for raw DVARS.
+If not provided, no intensity normalization is performed. Ignored for
+relative DVARS, which is invariant to positive global intensity scaling.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3603,9 +3616,9 @@ intensity normalization.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to exclude signals with near-zero variance. Zero-variance signals can
-artificially reduce the median during intensity normalization and should
-typically be removed.</p>
+            <p>Whether to exclude features whose robust temporal SD is less than or equal to
+<code>variance_tolerance</code>, before computing either variant. Mostly constant features
+with isolated transients can also have zero IQR.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3615,9 +3628,8 @@ typically be removed.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Tolerance for identifying zero-variance signals. Signals with robust standard
-deviation (<code>IQR/1.349</code>) less than or equal to this value are considered to
-have zero variance.</p>
+            <p>Finite, nonnegative threshold for robust temporal SD, estimated as
+IQR divided by the standard normal IQR using lower interpolation.</p>
           </div>
         </li>
     </ul>
@@ -3629,35 +3641,61 @@ have zero variance.</p>
               <code>(time,) xarray.DataArray</code>
           –
           <div class="doc-md-description">
-            <p>DVARS values with time coordinates matching input. When <code>standardized</code> is
-<code>True</code>, returns standardized DVARS. The first element is set to the minimum
-DVARS value (following FSL convention).</p>
+            <p>DVARS with the input time coordinates. The first value is <code>NaN</code> because the
+first frame has no preceding frame.</p>
           </div>
         </li>
     </ul>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError">TypeError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If signals are not real numeric data.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If time has fewer than two samples, features are empty or nonfinite,
+parameters are invalid, all features are removed, or a required intensity
+normalization or relative DVARS baseline is zero or nonfinite.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<details class="see-also" open>
+  <summary>See Also</summary>
+  <p>confusius.qc.compute_cv : Compute voxelwise coefficients of variation.
+confusius.qc.compute_tsnr : Compute temporal signal-to-noise ratios.</p>
+</details>
+
 <details class="note" open>
   <summary>Notes</summary>
-  <p><strong>Laziness</strong>: This function cannot preserve Dask laziness because it requires:
-(1) robust standard deviation via IQR (scipy function, not Dask-compatible), and
-(2) AR(1) coefficient estimation requiring full time series. The computation is
-executed immediately and returned as a DataArray with computed values.</p>
-<p>The standardized DVARS metric was introduced by Nichols (2013) to provide a
-normalized measure of DVARS that accounts for the temporal autocorrelation in fMRI
-data.</p>
-<p>The computation involves:</p>
-<ol>
-<li>Robust standard deviation estimation using IQR (following FSL's "lower"
-   interpolation method).</li>
-<li>Optional removal of zero-variance signals.</li>
-<li>Optional intensity normalization by median scaling.</li>
-<li>AR(1) coefficient estimation via Yule-Walker equations (standardized only).</li>
-<li>Computation of expected variance for temporal differences given AR(1)
-   structure (standardized only).</li>
-<li>Standardization by dividing observed DVARS by expected DVARS (standardized
-   only).</li>
-</ol>
+  <p>Raw DVARS is <code>sqrt(mean_i(diff(Y_i)**2))</code>. Relative DVARS divides it by a
+recording-wide baseline estimated using either:</p>
+<ul>
+<li><code>median</code>: <code>sqrt(median_t(raw_dvars_t**2))</code>.</li>
+<li><code>ar1</code>: <code>sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))</code>.</li>
+</ul>
+<p>Here <code>sigma_i</code> is the robust temporal SD and <code>rho_i</code> the Yule-Walker lag-1
+autocorrelation. Originally called <em>standardized DVARS</em> by Nichols (2013), the
+measure was renamed <em>relative DVARS</em> by Afyouni and Nichols (2018).</p>
+<p>The <code>median</code> estimator avoids AR(1) fitting but assumes most time points reflect
+baseline activity. The <code>ar1</code> estimator assumes stationarity and is sensitive to
+artifacts. Neither yields a z-score or calibrated artifact probability.</p>
+<p><strong>Precision:</strong> Float32/float64 inputs retain their precision during differencing;
+float16 and integer inputs are promoted to float32 and float64, respectively.
+Spatial sums accumulate in float64.</p>
+<p><strong>Laziness:</strong> Dask inputs remain lazy; data-dependent errors occur at compute
+time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose
+full time series must fit in memory. Intensity-normalized raw DVARS instead
+loads the full recording to compute the exact global intensity median.</p>
 </details>
 
 <details class="references" open>
@@ -3666,24 +3704,24 @@ data.</p>
 <hr />
 <ol>
 <li id="confusius.qc.compute_dvars--fn:1">
-<p>Smyser, Christopher D., et al. "Functional Connectivity MRI in Infants:
-Exploration of the Functional Organization of the Developing Brain." NeuroImage,
-vol. 56, no. 3, June 2011, pp. 1437–52. DOI.org (Crossref),
+<p>Smyser, C. D., et al. (2011). Functional Connectivity MRI in Infants:
+Exploration of the Functional Organization of the Developing Brain.
+NeuroImage, 56(3), 1437–1452.
 <a href="https://doi.org/10.1016/j.neuroimage.2011.02.073">https://doi.org/10.1016/j.neuroimage.2011.02.073</a>.&#160;<a class="footnote-backref" href="#confusius.qc.compute_dvars--fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="confusius.qc.compute_dvars--fn:2">
-<p>Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional
-Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no.
-3, Feb. 2012, pp. 2142–54. DOI.org (Crossref),
+<p>Power, J. D., et al. (2012). Spurious but Systematic Correlations in
+Functional Connectivity MRI Networks Arise from Subject Motion.
+NeuroImage, 59(3), 2142–2154.
 <a href="https://doi.org/10.1016/j.neuroimage.2011.10.018">https://doi.org/10.1016/j.neuroimage.2011.10.018</a>.&#160;<a class="footnote-backref" href="#confusius.qc.compute_dvars--fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 <li id="confusius.qc.compute_dvars--fn:3">
-<p>Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv,
-2017. DOI.org (Datacite), <a href="https://doi.org/10.48550/ARXIV.1704.01469">https://doi.org/10.48550/ARXIV.1704.01469</a>.&#160;<a class="footnote-backref" href="#confusius.qc.compute_dvars--fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>Nichols, T. E. (2017). Notes on Creating a Standardized Version of DVARS.
+<a href="https://doi.org/10.48550/arXiv.1704.01469">https://doi.org/10.48550/arXiv.1704.01469</a>.&#160;<a class="footnote-backref" href="#confusius.qc.compute_dvars--fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 <li id="confusius.qc.compute_dvars--fn:4">
-<p>Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS."
-NeuroImage, vol. 172, May 2018, pp. 291–312. DOI.org (Crossref),
+<p>Afyouni, S., and Nichols, T. E. (2018). Insight and Inference for DVARS.
+NeuroImage, 172, 291–312.
 <a href="https://doi.org/10.1016/j.neuroimage.2017.12.098">https://doi.org/10.1016/j.neuroimage.2017.12.098</a>.&#160;<a class="footnote-backref" href="#confusius.qc.compute_dvars--fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
 </ol>
@@ -3691,28 +3729,16 @@ NeuroImage, vol. 172, May 2018, pp. 291–312. DOI.org (Crossref),
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.qc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_dvars</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate synthetic 2D signals: 100 time points, 50 voxels</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add AR(1) structure</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span>    <span class="n">data</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">... </span>    <span class="n">data</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;space&quot;</span><span class="p">],</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">},</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute standardized DVARS (default)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">dvars_stdz</span> <span class="o">=</span> <span class="n">compute_dvars</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">dvars_stdz</span><span class="o">.</span><span class="n">shape</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="go">(100,)</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute non-standardized DVARS</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">dvars_nstd</span> <span class="o">=</span> <span class="n">compute_dvars</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">standardize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">dvars_nstd</span><span class="o">.</span><span class="n">shape</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="go">(100,)</span>
+    <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="mi">100</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">),</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">},</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">relative</span> <span class="o">=</span> <span class="n">compute_dvars</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">raw</span> <span class="o">=</span> <span class="n">compute_dvars</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">normalization_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">relative</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">shape</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">((100,), (100,))</span>
 </span></code></pre></div>
 
 
