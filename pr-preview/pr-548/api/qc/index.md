@@ -20,7 +20,7 @@ Functions:
   Compute the coefficient of variation (CV).
 - **`compute_dvars`** –
 
-  Compute the DVARS metric.
+  Compute the DVARS quality control metric.
 - **`compute_tsnr`** –
 
   Compute the temporal signal-to-noise ratio (tSNR).
@@ -88,18 +88,20 @@ Examples:
 ```python
 compute_dvars(
     signals: DataArray,
-    standardize: bool = True,
+    *,
+    variant: Literal["raw", "relative"] = "relative",
+    baseline_estimator: Literal["median", "ar1"] = "median",
     normalization_factor: float | None = 1000,
     remove_zero_variance: bool = True,
     variance_tolerance: float = 0.0,
 ) -> DataArray
 ```
 
-Compute the DVARS metric.
+Compute the DVARS quality control metric.
 
-DVARS (D referring to temporal derivative, VARS to RMS variance) measures how much the intensity at one time point changes relative to the previous time point. The standardized version accounts for the expected variance given the temporal autocorrelation structure of the data.
+DVARS measures the root mean square signal change between consecutive time points. Relative DVARS divides this trace by an estimated background baseline.
 
-This function was adapted from `nipype.algorithms.confounds.compute_dvars`.
+This function was originally adapted from `nipype.algorithms.confounds.compute_dvars`.
 
 Parameters:
 
@@ -107,83 +109,89 @@ Parameters:
 
   (`(time, ...) xarray.DataArray`) –
 
-  Signals to compute DVARS from. Must have a `time` dimension. Any additional dimensions (e.g., `pose`, `k`, `j`, `i`) are flattened to a single `space` dimension before computation.
-- #### **`standardize`**
+  Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering.
+- #### **`variant`**
 
-  (`bool`, default: `True` ) –
+  (`('raw', 'relative')`, default: `"raw"` ) –
 
-  Whether to computed the standardized DVARS. When `True`, the DVARS values are standardized by the expected standard deviation given the AR(1) structure of the data. When `False`, return non-standardized DVARS (raw RMS of temporal differences).
+  DVARS variant to compute. Raw DVARS is the root mean square of temporal differences, while relative DVARS divides raw DVARS by a recording-wide baseline, selected by `baseline_estimator`.
+- #### **`baseline_estimator`**
+
+  (`('median', 'ar1')`, default: `"median"` ) –
+
+  Baseline for relative DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.
 - #### **`normalization_factor`**
 
   (`float or None`, default: `1000` ) –
 
-  Normalization factor applied to the median signal intensity. If `None`, no normalization is performed. Note that standardized DVARS is invariant to intensity normalization.
+  Positive target median signal intensity for raw DVARS. If not provided, no intensity normalization is performed. Ignored for relative DVARS, which is invariant to positive global intensity scaling.
 - #### **`remove_zero_variance`**
 
   (`bool`, default: `True` ) –
 
-  Whether to exclude signals with near-zero variance. Zero-variance signals can artificially reduce the median during intensity normalization and should typically be removed.
+  Whether to exclude features whose robust temporal SD is less than or equal to `variance_tolerance`, before computing either variant. Mostly constant features with isolated transients can also have zero IQR.
 - #### **`variance_tolerance`**
 
   (`float`, default: `0.0` ) –
 
-  Tolerance for identifying zero-variance signals. Signals with robust standard deviation (`IQR/1.349`) less than or equal to this value are considered to have zero variance.
+  Finite, nonnegative threshold for robust temporal SD, estimated as IQR divided by the standard normal IQR using lower interpolation.
 
 Returns:
 
 - `(time,) xarray.DataArray` –
 
-  DVARS values with time coordinates matching input. When `standardized` is `True`, returns standardized DVARS. The first element is set to the minimum DVARS value (following FSL convention).
+  DVARS with the input time coordinates. The first value is `NaN` because the first frame has no preceding frame.
+
+Raises:
+
+- `TypeError` –
+
+  If signals are not real numeric data.
+- `ValueError` –
+
+  If time has fewer than two samples, features are empty or nonfinite, parameters are invalid, all features are removed, or a required intensity normalization or relative DVARS baseline is zero or nonfinite.
+
+**See Also**
+
+confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusius.qc.compute\_tsnr : Compute temporal signal-to-noise ratios.
 
 > [!NOTE]
 >
 > **Notes**
 >
-> **Laziness**: This function cannot preserve Dask laziness because it requires: (1) robust standard deviation via IQR (scipy function, not Dask-compatible), and (2) AR(1) coefficient estimation requiring full time series. The computation is executed immediately and returned as a DataArray with computed values.
+> Raw DVARS is `sqrt(mean_i(diff(Y_i)**2))`. Relative DVARS divides it by a recording-wide baseline estimated using either:
 >
-> The standardized DVARS metric was introduced by Nichols (2013) to provide a normalized measure of DVARS that accounts for the temporal autocorrelation in fMRI data.
+> - `median`: `sqrt(median_t(raw_dvars_t**2))`.
+> - `ar1`: `sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))`.
 >
-> The computation involves:
+> Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> 1. Robust standard deviation estimation using IQR (following FSL's "lower" interpolation method).
-> 2. Optional removal of zero-variance signals.
-> 3. Optional intensity normalization by median scaling.
-> 4. AR(1) coefficient estimation via Yule-Walker equations (standardized only).
-> 5. Computation of expected variance for temporal differences given AR(1) structure (standardized only).
-> 6. Standardization by dividing observed DVARS by expected DVARS (standardized only).
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability.
+>
+> **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
+>
+> **Laziness:** Dask inputs remain lazy; data-dependent errors occur at compute time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose full time series must fit in memory. Intensity-normalized raw DVARS instead loads the full recording to compute the exact global intensity median.
 
 **References**
 
-1. Smyser, Christopher D., et al. "Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain." NeuroImage, vol. 56, no. 3, June 2011, pp. 1437–52. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
-2. Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
-3. Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
-4. Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS." NeuroImage, vol. 172, May 2018, pp. 291–312. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
+1. Smyser, C. D., et al. (2011). Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain. NeuroImage, 56(3), 1437–1452. [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
+2. Power, J. D., et al. (2012). Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion. NeuroImage, 59(3), 2142–2154. [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
+3. Nichols, T. E. (2017). Notes on Creating a Standardized Version of DVARS. [https://doi.org/10.48550/arXiv.1704.01469](<https://doi.org/10.48550/arXiv.1704.01469>).
+4. Afyouni, S., and Nichols, T. E. (2018). Insight and Inference for DVARS. NeuroImage, 172, 291–312. [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
 
 Examples:
 
 ```pycon
->>> import numpy as np
->>> import xarray as xr
->>> from confusius.qc import compute_dvars
->>> # Generate synthetic 2D signals: 100 time points, 50 voxels
 >>> rng = np.random.default_rng(42)
->>> data = rng.standard_normal((100, 50))
->>> # Add AR(1) structure
->>> for t in range(1, 100):
-...     data[t] = 0.5 * data[t - 1] + 0.5 * data[t]
 >>> signals = xr.DataArray(
-...     data,
-...     dims=["time", "space"],
+...     100 + rng.standard_normal((100, 50)),
+...     dims=("time", "region"),
 ...     coords={"time": np.arange(100) * 0.1},
 ... )
->>> # Compute standardized DVARS (default)
->>> dvars_stdz = compute_dvars(signals)
->>> dvars_stdz.shape
-(100,)
->>> # Compute non-standardized DVARS
->>> dvars_nstd = compute_dvars(signals, standardize=False)
->>> dvars_nstd.shape
-(100,)
+>>> relative = compute_dvars(signals)
+>>> raw = compute_dvars(signals, variant="raw", normalization_factor=None)
+>>> relative.shape, raw.shape
+((100,), (100,))
 ```
 
 ### compute\_tsnr
