@@ -3392,8 +3392,8 @@ It includes geometry references and runnable, offline examples.</p>
 <p>The default destination is <code>.agents/skills/</code> in the <strong>current working directory</strong>,
 not an automatically detected repository root. Pi, Codex, Cursor, and other
 assistants support this shared location; discovery depends on your assistant.</p>
-<p>Use <code>--global</code> to install in your home directory, or <code>--claude</code> to use Claude Code's
-<code>.claude/skills/</code> directory instead:</p>
+<p>Use <code>--global</code> to install in your home directory. Use <code>--target</code> to choose another
+skills directory, such as Claude Code's <code>.claude/skills/</code>:</p>
 <table>
 <thead>
 <tr>
@@ -3411,21 +3411,26 @@ assistants support this shared location; discovery depends on your assistant.</p
 <td><code>~/.agents/skills/</code></td>
 </tr>
 <tr>
-<td><code>confusius skills install --claude</code></td>
+<td><code>confusius skills install --target .claude/skills</code></td>
 <td><code>.claude/skills/</code></td>
 </tr>
 <tr>
-<td><code>confusius skills install --claude --global</code></td>
+<td><code>confusius skills install --global --target .claude/skills</code></td>
 <td><code>~/.claude/skills/</code></td>
 </tr>
 </tbody>
 </table>
+<p>Relative targets resolve against the current directory, or your home with
+<code>--global</code>. Absolute targets are used directly; a leading <code>~</code> is expanded.</p>
 <p>To install only one named skill:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>confusius<span class="w"> </span>skills<span class="w"> </span>install<span class="w"> </span>confusius-load-data
 </span></code></pre></div>
-<p>Existing destinations are refused unless you pass <code>--force</code>. Forced replacement
-removes the whole installed skill, including local changes and stale files.
-Installation includes all references and scripts and needs no separate download.
+<p>Existing destinations are refused unless you pass <code>--force</code>. Successful replacement
+discards local changes and stale files. The installer stages all resources and keeps
+originals as backups until every replacement succeeds. Filesystem errors trigger
+rollback; if restoration also fails, backups are retained and their location is
+reported for manual recovery.</p>
+<p>Installation includes all references and scripts and needs no separate download.
 Repository maintenance skills, such as the release workflow, are not distributed.</p>
 <h2 id="use-a-skill">Use a Skill<a class="headerlink" href="#use-a-skill" title="Permanent link">&para;</a></h2>
 <p>Reload your assistant's skill discovery if necessary, then ask it to use the skill,

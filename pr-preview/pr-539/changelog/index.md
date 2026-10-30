@@ -6,6 +6,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Matrix-seeded rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
@@ -13,7 +14,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
-- Install bundled Agent Skills to the shared `.agents/skills/` directory for Pi, Codex, Cursor, and other compatible assistants with `confusius skills install`. Installation is project-local by default; use `--global` for the user's home or `--claude` for Claude Code's `.claude/skills/` directory instead. Installation defaults to all skills, supports selecting one by name, and protects existing skills unless `--force` is supplied. `confusius skills list` shows names and descriptions. The first skill, `confusius-load-data`, guides custom imports with VoxelData geometry references and runnable examples ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
+- Install bundled Agent Skills to the shared `.agents/skills/` directory for Pi, Codex, Cursor, and other compatible assistants with `confusius skills install`. Installation is project-local by default; use `--global` for the user's home or `--target` for a custom skills directory. Installation defaults to all skills, supports selecting one by name, and protects existing skills unless `--force` is supplied. Failed replacements roll back prior changes, retaining backups for manual recovery if restoration fails. `confusius skills list` shows names and descriptions. The first skill, `confusius-load-data`, guides custom imports with VoxelData geometry references and runnable examples ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
 
 ### ⚡ Performance
 

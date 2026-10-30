@@ -4690,6 +4690,10 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
+  physical center rather than the world origin. Initial alignment is unchanged,
+  but convergence and final results may differ; recheck tuned optimizer settings
+  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher
@@ -4715,10 +4719,11 @@
 <li>Install bundled Agent Skills to the shared <code>.agents/skills/</code> directory for Pi,
   Codex, Cursor, and other compatible assistants with
   <code>confusius skills install</code>. Installation is project-local by default; use
-  <code>--global</code> for the user's home or <code>--claude</code> for Claude Code's <code>.claude/skills/</code>
-  directory instead. Installation defaults to all skills, supports
-  selecting one by name, and protects existing skills unless <code>--force</code> is supplied. <code>confusius skills list</code> shows names and
-  descriptions. The first skill, <code>confusius-load-data</code>, guides custom imports with
+  <code>--global</code> for the user's home or <code>--target</code> for a custom skills directory.
+  Installation defaults to all skills, supports selecting one by name, and protects
+  existing skills unless <code>--force</code> is supplied. Failed replacements roll back prior
+  changes, retaining backups for manual recovery if restoration fails.
+  <code>confusius skills list</code> shows names and descriptions. The first skill, <code>confusius-load-data</code>, guides custom imports with
   VoxelData geometry references and runnable examples
   (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
 </ul>
