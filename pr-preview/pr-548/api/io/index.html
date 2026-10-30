@@ -6210,7 +6210,7 @@ block timing is known to differ. The theoretical timing is also exposed as
             –
           <div class="doc-md-description">
             <p>If <code>meta_path</code> is not a file, a required field is missing, or the stored
-dimensions are invalid.</p>
+dimensions are invalid, or the depth bounds are non-finite or reversed.</p>
           </div>
         </li>
     </ul>
@@ -6502,8 +6502,10 @@ functions must copy them first.</p>
 attributes in <abbr title="Brain Imaging Data Structure">BIDS</abbr> units: <code>probe_model</code>, <code>probe_center_frequency</code> (Hz),
 <code>probe_pitch</code> (mm), <code>probe_aperture</code> (mm), <code>probe_focal_depth</code> (mm),
 <code>depth</code> (mm start/end), <code>transmit_frequency</code> (Hz),
-<code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>svd_low_cutoff</code>, and
-<code>power_doppler_integration_duration</code> (s).</p>
+<code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>iconeus_svd_low_cutoff</code>, and
+<code>power_doppler_integration_duration</code> (s). The Iconeus-specific
+<code>iconeus_ultrafast_sampling_frequency</code> is the ADC sampling rate in MHz, not the
+compound sampling frequency.</p>
 <p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are <strong>ConfUSIus-ordered
 Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
 as the canonical world frame because it is the one frame that is physically

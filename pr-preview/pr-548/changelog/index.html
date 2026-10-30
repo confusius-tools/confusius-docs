@@ -4659,7 +4659,11 @@
 <ul>
 <li>Iconeus SCAN metadata now uses <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units:
   <code>iconeus_scan_mode</code> becomes <code>iconeus_acquisition_mode</code>, <code>imaging_depth</code> becomes
-  <code>depth</code>, and <code>probe_center_frequency</code>/<code>transmit_frequency</code> are reported in hertz
+  <code>depth</code>, and <code>probe_center_frequency</code>/<code>transmit_frequency</code> are reported in hertz.
+  Nonstandard scanner metadata now consistently uses the <code>iconeus_</code> prefix,
+  including probe model numbers, ADC sampling frequency (in native MHz),
+  stimulation toggle times, filter types, <abbr title="Singular Value Decomposition">SVD</abbr> cutoffs, and velocity-band limits.
+  The unused <code>is_multiplane</code> flag is no longer exported
   (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
 <li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
   physical center rather than the world origin. Initial alignment is unchanged,

@@ -468,7 +468,7 @@ Additionally, each pose has its own voxel-to-world affine transformation, meanin
 
 #### SCAN v2 (binary format)
 
-SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings in BIDS units (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, `svd_low_cutoff`, …); frequencies are in hertz. For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/pr-preview/pr-548/user-guide/multipose/#scan-v2-binary>).
+SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings in BIDS units (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, …); frequencies are in hertz. Nonstandard imported metadata uses the `iconeus_` prefix, including `iconeus_probe_model_number`, `iconeus_ultrafast_sampling_frequency` (ADC sampling rate in MHz, not the compound sampling frequency), `iconeus_stimulation_toggle_times`, `iconeus_clutter_filter_type`, `iconeus_svd_low_cutoff`, `iconeus_svd_high_cutoff`, and velocity-band limits `iconeus_velocity_min`/`iconeus_velocity_max`. The `affines` attribute is ConfUSIus geometry rather than imported scanner metadata and remains unprefixed. For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/pr-preview/pr-548/user-guide/multipose/#scan-v2-binary>).
 
 ```pycon
 >>> import confusius as cf
@@ -12108,7 +12108,7 @@ Raises:
 
 - `ValueError` –
 
-  If `meta_path` is not a file, a required field is missing, or the stored dimensions are invalid.
+  If `meta_path` is not a file, a required field is missing, or the stored dimensions are invalid, or the depth bounds are non-finite or reversed.
 
 ### load\_nifti
 
@@ -12272,7 +12272,7 @@ Raises:
 >
 > **v2.** The binary layout follows PyIconeus: header fields, measured times, one 6DOF probe pose per `pose`, acquisition/provenance metadata, then a Fortran-ordered `(size_x, size_y, size_z, time, pose, dim6)` payload. The loader exposes this as VoxelData order `(..., time, pose, k, j, i)` and keeps dim6 as an extra leading dimension when present. Mapped chunks are read-only; in-place chunk-processing functions must copy them first.
 >
-> Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes in BIDS units: `probe_model`, `probe_center_frequency` (Hz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `depth` (mm start/end), `transmit_frequency` (Hz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `svd_low_cutoff`, and `power_doppler_integration_duration` (s).
+> Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes in BIDS units: `probe_model`, `probe_center_frequency` (Hz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `depth` (mm start/end), `transmit_frequency` (Hz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `iconeus_svd_low_cutoff`, and `power_doppler_integration_duration` (s). The Iconeus-specific `iconeus_ultrafast_sampling_frequency` is the ADC sampling rate in MHz, not the compound sampling frequency.
 >
 > ConfUSIus world coordinates `(z, y, x)` for SCAN data are **ConfUSIus-ordered Iconeus lab coordinates** (mm): a fixed scanner frame shared by every pose, used as the canonical world frame because it is the one frame that is physically meaningful across poses. For multi-pose files, `da`'s voxel-to-world geometry is itself pose-dependent (a `(npose, 4, 4)` affine stack, one affine per `da.coords["pose"]` label); world selection therefore requires reducing `pose` to a scalar first, e.g. `da.isel(pose=0).sel(z=..., y=..., x=...)` or `da.isel(pose=0)`.
 >
@@ -24650,7 +24650,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43492/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_43298/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24667,19 +24667,19 @@ xarray.DataArray
   \-18.69 -18.57 -18.5 -18.46 -18.38 ... -13.37 -13.36 -13.33 -13.28
 
   ```
-  array([[[-18.687918, -18.569138, -18.501255, ..., -17.95731 ,
+  array([[[-18.687918, -18.569138, -18.501253, ..., -17.95731 ,
            -17.939037, -17.964108],
           [-18.535534, -18.445446, -18.356527, ..., -17.885906,
            -17.885307, -17.89217 ],
           [-18.489779, -18.407112, -18.328487, ..., -17.793518,
            -17.804783, -17.829914],
           ...,
-          [-12.315687, -13.394132, -13.825216, ..., -13.536499,
-           -13.521715, -13.627706],
-          [-12.319636, -13.353613, -13.749182, ..., -13.457008,
-           -13.386365, -13.444547],
+          [-12.315687, -13.394131, -13.825215, ..., -13.536497,
+           -13.521714, -13.627705],
+          [-12.319635, -13.353613, -13.749181, ..., -13.457007,
+           -13.386364, -13.444546],
           [-12.376516, -13.219033, -13.602533, ..., -13.36433 ,
-           -13.333445, -13.279077]]], shape=(1, 125, 80), dtype=float32)
+           -13.333444, -13.279077]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -24867,7 +24867,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f491e67dae0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faccf789ae0>
     ```
 - [ ] Attributes: (27)
 
@@ -25275,7 +25275,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 9.6 s
+**Total running time:** 13.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25344,7 +25344,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_46533/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46339/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25612,7 +25612,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fef1dc74830>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe49cb60890>
     ```
   - region
 
@@ -25735,7 +25735,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7fef1dc88440\>
+  \<matplotlib.colors.Normalize object at 0x7fe49cb74440\>
 
 ## Plot the seed maps
 
@@ -25775,7 +25775,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 10.1 s
+**Total running time:** 13.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26119,7 +26119,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5d2c84f9d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d3e867b10>
     ```
 - [ ] Attributes: (21)
 
@@ -26516,7 +26516,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5d28211c50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d38bfc9f0>
     ```
 - [ ] Attributes: (23)
 
@@ -26685,7 +26685,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 51.9 s
+**Total running time:** 85.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27033,7 +27033,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f78fbbba850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f835c8de990>
     ```
 - [ ] Attributes: (25)
 
@@ -27176,22 +27176,22 @@ xarray.DataArray
 
 - [ ]
 
-  1.705 0.4722 0.6067 0.5974 0.3297 ... 0.2544 1.129 0.08552 -0.1393
+  1.705 0.4722 0.6064 0.5975 0.3297 ... 0.2545 1.129 0.08549 -0.1394
 
   ```
-  array([[ 1.7053471 ,  0.47218508,  0.60667574, ...,  0.9067501 ,
-           0.8413501 , -1.3073945 ],
-         [ 3.3142476 ,  1.4946027 ,  0.289191  , ...,  0.22860953,
-           0.29316697,  0.7450524 ],
-         [ 3.6038916 ,  0.4376343 ,  0.08941008, ..., -0.78943026,
-           0.82355165,  0.8383995 ],
+  array([[ 1.7054038 ,  0.47218907,  0.6064326 , ...,  0.90661407,
+           0.8411919 , -1.3073498 ],
+         [ 3.314502  ,  1.4946285 ,  0.28877422, ...,  0.22849068,
+           0.29297888,  0.74503154],
+         [ 3.6042025 ,  0.43766832,  0.08901776, ..., -0.78946877,
+           0.82339287,  0.83835304],
          ...,
-         [ 0.19005749,  0.06548941,  1.6409812 , ...,  0.31566784,
-           1.4230514 ,  0.11540988],
-         [ 0.18706222,  1.7543579 ,  2.2873359 , ...,  1.463107  ,
-           0.6754403 ,  0.90918803],
-         [ 0.6318028 ,  0.74639934,  1.4053494 , ...,  1.1292399 ,
-           0.08552428, -0.13928768]], shape=(751, 10), dtype=float32)
+         [ 0.19027728,  0.06551931,  1.6410432 , ...,  0.31593418,
+           1.4230698 ,  0.11517171],
+         [ 0.18749171,  1.7544034 ,  2.287215  , ...,  1.4634942 ,
+           0.67545384,  0.908817  ],
+         [ 0.6320407 ,  0.7464211 ,  1.4051484 , ...,  1.12944   ,
+           0.08549026, -0.1394371 ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27298,22 +27298,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-520.3 3.505e+03 1.6e+03 -779.5 ... 1.028e+03 2.523e+03 -1.685e+03
+  \-519.2 -3.525e+03 1.596e+03 -784.8 ... 1.026e+03 2.485e+03 1.667e+03
 
   ```
-  array([[ -520.2989 ,  3504.755  ,  1599.7559 , ...,   669.60266,
-           1261.5713 , -1242.1854 ],
-         [ 1308.4633 ,  2354.9707 ,   317.7082 , ...,    -9.72171,
-           1024.7684 ,  1084.4003 ],
-         [  343.88522,  2318.199  ,   617.4685 , ...,   272.92017,
-           1235.4524 ,  1638.7083 ],
+  array([[ -519.1568  , -3524.992   ,  1596.1387  , ...,   668.32086 ,
+           1224.2369  ,  1221.0983  ],
+         [ 1309.4406  , -2365.1877  ,   315.39682 , ...,   -10.108643,
+           1006.35046 , -1100.6206  ],
+         [  344.98694 , -2330.7832  ,   614.9462  , ...,   272.7893  ,
+           1223.0826  , -1656.1445  ],
          ...,
-         [-1046.7009 ,  2457.6367 ,  3385.7192 , ...,   949.4414 ,
-           1884.1799 , -1266.8386 ],
-         [  466.82806,  2348.8738 ,  2849.441  , ...,   690.0863 ,
-           2512.9348 , -1817.8994 ],
-         [ -452.74954,  2462.4834 ,  1238.6765 , ...,  1027.5919 ,
-           2522.82   , -1685.204  ]], shape=(751, 10), dtype=float32)
+         [-1045.5885  , -2484.69    ,  3381.5269  , ...,   948.50446 ,
+           1858.6206  ,  1249.6975  ],
+         [  468.08606 , -2381.7354  ,  2844.24    , ...,   688.9029  ,
+           2480.0574  ,  1800.4146  ],
+         [ -451.43054 , -2493.9385  ,  1233.4158  , ...,  1026.327   ,
+           2484.9666  ,  1666.9863  ]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27405,7 +27405,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 167.3 s
+**Total running time:** 288.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27747,7 +27747,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f93a3ae2850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6968616990>
     ```
 - [ ] Attributes: (25)
 
@@ -27896,22 +27896,22 @@ xarray.DataArray
 
 - [ ]
 
-  0.1626 0.013 0.0 0.1839 0.0006832 ... 0.04623 0.0 0.3545 0.0 0.06981
+  0.1625 0.013 0.0 0.1839 0.0006829 ... 0.04623 0.0 0.3544 0.0 0.06981
 
   ```
-  array([[0.16255698, 0.01299934, 0.        , ..., 0.17457205, 0.55600464,
+  array([[0.16254492, 0.01299528, 0.        , ..., 0.17457072, 0.5560084 ,
           0.        ],
-         [0.08055934, 0.        , 0.        , ..., 0.05789696, 0.51770186,
+         [0.08055529, 0.        , 0.        , ..., 0.05789686, 0.51770246,
           0.        ],
-         [0.02368935, 0.        , 0.023984  , ..., 0.0156738 , 0.35746408,
+         [0.0236888 , 0.        , 0.02398688, ..., 0.01567485, 0.35746264,
           0.        ],
          ...,
-         [0.09453033, 0.01987509, 0.        , ..., 0.0882846 , 0.26667225,
+         [0.09452122, 0.01986888, 0.        , ..., 0.0882831 , 0.2666772 ,
           0.        ],
-         [0.20231232, 0.01959528, 0.        , ..., 0.10854763, 0.13271652,
+         [0.20229632, 0.01958919, 0.        , ..., 0.10854644, 0.13272034,
           0.        ],
-         [0.18283577, 0.01475037, 0.        , ..., 0.35445145, 0.        ,
-          0.06981277]], shape=(751, 10), dtype=float32)
+         [0.18282148, 0.01474581, 0.        , ..., 0.3544487 , 0.        ,
+          0.06980908]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -27969,8 +27969,8 @@ print(f"n_iter_: {nmf_t.n_iter_}")
 ```
 
 ```text
-reconstruction_err_: 1911.557
-n_iter_: 663
+reconstruction_err_: 1911.470
+n_iter_: 664
 ```
 
 ## Spatial maps and time courses
@@ -28037,22 +28037,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-48.81 -107.2 23.77 475.0 274.9 ... 34.6 -75.95 839.4 361.2 -68.61
+  \-48.81 -107.2 23.77 475.0 275.0 ... 34.6 -75.95 839.3 361.2 -68.61
 
   ```
-  array([[ -48.810776 , -107.21934  ,   23.766613 , ..., 1357.0479   ,
-           305.8229   ,  -81.77524  ],
-         [ -46.59765  , -101.35976  ,   89.079865 , ..., 1052.711    ,
-           200.53772  , -314.652    ],
-         [ -48.18569  ,  -88.049095 ,   50.88957  , ...,  991.1305   ,
-            59.319008 , -347.92282  ],
+  array([[ -48.810886, -107.219315,   23.76653 , ..., 1357.0415  ,
+           305.827   ,  -81.77564 ],
+         [ -46.597748, -101.35974 ,   89.079384, ..., 1052.7065  ,
+           200.54016 , -314.65317 ],
+         [ -48.1858  ,  -88.04905 ,   50.88931 , ...,  991.12646 ,
+            59.3195  , -347.92407 ],
          ...,
-         [ -52.89242  , -145.73181  ,    5.8395586, ..., 1228.5333   ,
-           263.19995  , -264.38028  ],
-         [ -48.556282 , -139.85196  ,   34.902374 , ..., 1233.1041   ,
-           494.40372  , -215.82959  ],
-         [ -40.809776 , -106.204285 ,  -33.665638 , ...,  839.35266  ,
-           361.19443  ,  -68.61046  ]], shape=(751, 10), dtype=float32)
+         [ -52.892544, -145.73178 ,    5.839569, ..., 1228.5282  ,
+           263.20367 , -264.38132 ],
+         [ -48.556408, -139.85194 ,   34.902218, ..., 1233.0979  ,
+           494.41037 , -215.83047 ],
+         [ -40.80987 , -106.20432 ,  -33.665436, ...,  839.34906 ,
+           361.19934 ,  -68.610725]], shape=(751, 10), dtype=float32)
   ```
 - [x] Coordinates: (2)
 
@@ -28147,7 +28147,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 180.1 s
+**Total running time:** 302.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28495,7 +28495,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f39955f6850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbea15d2990>
     ```
 - [ ] Attributes: (25)
 
@@ -28636,22 +28636,22 @@ xarray.DataArray
 
 - [ ]
 
-  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.297 1.711e-05
+  73.07 -8.361 -4.076 11.58 11.83 ... 0.01418 -0.8985 -0.2969 2.585e-05
 
   ```
-  array([[ 7.3066635e+01, -8.3605938e+00, -4.0763493e+00, ...,
-           1.0819744e+00,  1.6663108e+00,  4.4641160e-06],
-         [ 5.2037067e+01,  2.2309378e+01, -1.4225268e+01, ...,
-           8.1317788e-01, -4.4685724e-01, -5.8623887e-06],
-         [ 4.5891502e+01,  2.2932816e+01, -2.1960232e+01, ...,
-          -7.2219506e-02, -7.4409738e-02,  8.7668259e-06],
+  array([[ 7.3066635e+01, -8.3605871e+00, -4.0763474e+00, ...,
+           1.0820087e+00,  1.6663245e+00,  4.5841425e-06],
+         [ 5.2037041e+01,  2.2309393e+01, -1.4225260e+01, ...,
+           8.1314236e-01, -4.4685099e-01, -5.7125599e-06],
+         [ 4.5891487e+01,  2.2932837e+01, -2.1960238e+01, ...,
+          -7.2199710e-02, -7.4381337e-02,  1.8829988e-07],
          ...,
-         [ 7.4077156e+01, -5.9905930e+00,  4.1795883e+00, ...,
-           1.2390769e+00,  8.1436560e-02,  5.4601655e-06],
-         [ 7.5606865e+01, -6.2057152e+00,  1.7687122e+01, ...,
-          -1.1357114e+00, -4.9661902e-01, -5.1508582e-06],
-         [ 5.1808727e+01, -1.8981846e+01,  1.5910517e+01, ...,
-          -8.9845270e-01, -2.9696307e-01,  1.7107752e-05]],
+         [ 7.4077148e+01, -5.9905901e+00,  4.1795812e+00, ...,
+           1.2390802e+00,  8.1381299e-02,  8.2125753e-06],
+         [ 7.5606850e+01, -6.2057152e+00,  1.7687132e+01, ...,
+          -1.1357043e+00, -4.9657997e-01,  5.2099913e-06],
+         [ 5.1808723e+01, -1.8981842e+01,  1.5910512e+01, ...,
+          -8.9847302e-01, -2.9692146e-01,  2.5848100e-05]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28783,22 +28783,22 @@ xarray.DataArray
 
 - [ ]
 
-  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.22 39.7 15.21 0.0007041
+  \-3.187e+04 -1.548e+03 883.6 -3.861e+03 ... 1.222 39.7 15.21 -0.0009351
 
   ```
-  array([[-3.1866018e+04, -1.5477708e+03,  8.8362970e+02, ...,
-          -4.1422390e+01, -7.7635834e+01, -1.7511325e-04],
-         [-7.8375811e+03, -7.9947441e+03,  1.9465931e+03, ...,
-          -3.7357880e+01,  1.9214939e+01, -5.8000605e-04],
-         [-7.6417998e+03, -1.1311187e+04,  3.1012839e+03, ...,
-           7.6817799e+00,  5.1758451e+00, -2.5194747e-04],
+  array([[-3.18660137e+04, -1.54776685e+03,  8.83627747e+02, ...,
+          -4.14212151e+01, -7.76363373e+01, -7.46693288e-04],
+         [-7.83757812e+03, -7.99474463e+03,  1.94659033e+03, ...,
+          -3.73594131e+01,  1.92134819e+01, -8.50242039e-04],
+         [-7.64179932e+03, -1.13111875e+04,  3.10128125e+03, ...,
+           7.67992020e+00,  5.17666149e+00, -9.07336478e-04],
          ...,
-         [-3.3448461e+04,  1.1590634e+03,  5.9401001e+03, ...,
-          -5.0094185e+01, -3.7692327e+00, -5.7497656e-04],
-         [-3.1455812e+04,  6.7948394e+03,  4.7766562e+03, ...,
-           4.7841347e+01,  2.4876919e+01, -2.5275841e-04],
-         [-2.8597014e+04,  7.5429858e+03,  2.4295175e+02, ...,
-           3.9704731e+01,  1.5206790e+01,  7.0413668e-04]],
+         [-3.34484570e+04,  1.15906836e+03,  5.94009717e+03, ...,
+          -5.00937042e+01, -3.77178717e+00, -1.44857180e-03],
+         [-3.14558066e+04,  6.79484033e+03,  4.77665283e+03, ...,
+           4.78399200e+01,  2.48789673e+01, -7.70006678e-04],
+         [-2.85970098e+04,  7.54298926e+03,  2.42949936e+02, ...,
+           3.97029877e+01,  1.52076645e+01, -9.35096759e-04]],
         shape=(751, 751), dtype=float32)
   ```
 - [x] Coordinates: (2)
@@ -28889,7 +28889,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 170.7 s
+**Total running time:** 286.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29230,7 +29230,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f1607e78510>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f1d51b00930>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29245,7 +29245,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...10\>, beta=6.7) |
+|  | hrf\_model | functools.par...30\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29264,7 +29264,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f16050a3250\>, \<confusius.gl...x7f160505b5c0\>, \<confusius.gl...x7f160517e330\>, \<confusius.gl...x7f160510f8a0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f1d469ef250\>, \<confusius.gl...x7f1d469abe10\>, \<confusius.gl...x7f1d46bce330\>, \<confusius.gl...x7f1d4655f8a0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29379,7 +29379,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 78.1 s
+**Total running time:** 101.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/glm/first_level.ipynb>)
 
@@ -29747,7 +29747,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff738c02850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa2a0172990>
     ```
 - [ ] Attributes: (21)
 
@@ -29984,7 +29984,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 18.9 s
+**Total running time:** 23.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30252,7 +30252,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5e1da6a120>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3bfab66120>
     ```
 - [ ] Attributes: (25)
 
@@ -30678,7 +30678,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5e49fb5e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3c26ce9e50>
     ```
 - [ ] Attributes: (25)
 
@@ -31038,7 +31038,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5e1cea1e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3bf9c99f90>
     ```
 - [ ] Attributes: (25)
 
@@ -31385,7 +31385,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 7.5 s
+**Total running time:** 9.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31728,7 +31728,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f192c297100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6d5972f100>
     ```
   - time
 
@@ -32009,7 +32009,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f19245b7b30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6d51b5aff0>
     ```
 - [ ] Attributes: (6)
 
@@ -32082,7 +32082,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 36.3 s
+**Total running time:** 56.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32207,7 +32207,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.3 s
+**Total running time:** 5.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32639,7 +32639,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd364c99190>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faf91731190>
     ```
 - [ ] Attributes: (25)
 
@@ -32758,7 +32758,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 9.7 s
+**Total running time:** 13.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32844,16 +32844,16 @@ xarray.DataArray
   array([[[-18.687603 , -18.568825 , -18.500853 , ..., -17.956799 ,
            -17.938179 , -17.963793 ],
           [-18.534925 , -18.445103 , -18.356045 , ..., -17.885395 ,
-           -17.88491  , -17.8918   ],
+           -17.88491  , -17.891798 ],
           [-18.489155 , -18.406622 , -18.328014 , ..., -17.79321  ,
-           -17.804344 , -17.82952  ],
+           -17.804344 , -17.829521 ],
           ...,
-          [-12.314958 , -13.39374  , -13.824751 , ..., -13.536394 ,
-           -13.521338 , -13.627226 ],
-          [-12.319063 , -13.352967 , -13.748854 , ..., -13.456759 ,
-           -13.3859215, -13.444571 ],
-          [-12.375979 , -13.218855 , -13.602358 , ..., -13.363948 ,
-           -13.333373 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
+          [-12.314958 , -13.393738 , -13.82475  , ..., -13.536392 ,
+           -13.5213375, -13.627226 ],
+          [-12.319061 , -13.352966 , -13.748854 , ..., -13.4567585,
+           -13.385921 , -13.444569 ],
+          [-12.375978 , -13.218855 , -13.602357 , ..., -13.363947 ,
+           -13.333372 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -33041,7 +33041,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd3c79d8770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f27e35cc770>
     ```
 - [ ] Attributes: (27)
 
@@ -33257,7 +33257,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 38.4 s
+**Total running time:** 62.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33505,7 +33505,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f60230c3e10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7f34f13ce0>
     ```
 - [ ] Attributes: (23)
 
@@ -33786,7 +33786,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f607cfb8350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7f374b6b50>
     ```
 - [ ] Attributes: (23)
 
@@ -33919,9 +33919,9 @@ print(f"Rigid transform:\n{rigid_transform}")
 
 ```text
 Rigid transform:
-[[ 1.00000000e+00 -1.19034059e-20 -6.54108347e-21  1.24629613e-19]
- [ 1.15250165e-20  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
- [ 7.18685176e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
+[[ 1.00000000e+00 -8.56493346e-21  8.59601164e-21  8.96755349e-20]
+ [ 9.02544086e-21  9.98481665e-01 -5.50850618e-02 -1.77089580e-01]
+ [-8.11116013e-21  5.50850618e-02  9.98481665e-01  8.54466682e-01]
  [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
 ```
 
@@ -33991,49 +33991,49 @@ xarray.DataArray
 
 - [ ]
 
-  1.017e-12 8.545e-13 2.662e-13 -6.64e-13 ... -1.458e+03 -491.9 -414.7
+  \-5.752e-13 6.311e-13 4.917e-14 -3.228e-13 ... -1.199e+03 -465.3 -87.18
 
   ```
-  array([[[[ 1.01715276e-12,  8.54474413e-13,  2.66150110e-13, ...,
-            -1.41116622e-12, -3.90421503e-13, -6.90289435e-15],
-           [-9.01499360e-15,  5.38696609e-14, -1.49848591e-14, ...,
-            -6.53789633e-13, -1.03070872e-13,  1.13106190e-14],
-           [-9.08567432e-13, -3.64657394e-13, -3.91075602e-13, ...,
-            -3.16423206e-13,  1.13291974e-13,  1.67338064e-13],
+  array([[[[-5.75173327e-13,  6.31148999e-13,  4.91749962e-14, ...,
+            -3.16635666e-12, -8.81540282e-13, -7.74158810e-13],
+           [-3.25452478e-14,  1.64464964e-14, -6.51193310e-15, ...,
+            -5.94469850e-13, -1.32462096e-13,  2.94614202e-14],
+           [-3.13870372e-13, -1.64813436e-13, -2.13928312e-13, ...,
+            -2.05915766e-13,  1.75285826e-13,  5.37018798e-13],
            ...,
-           [-3.12543280e-13,  3.51999653e-14,  8.18735460e-13, ...,
-             4.38113635e-13,  4.34305434e-13,  6.80180672e-14],
-           [ 4.16175373e-13,  1.95980984e-13,  6.86265325e-13, ...,
-             3.78558623e-13,  1.92318800e-13,  4.31333923e-14],
-           [ 2.41299436e-12,  3.25418522e-13,  1.42422256e-12, ...,
-             1.50765443e-12,  5.09175514e-13,  7.82087124e-13]],
+           [-9.16191156e-13, -9.44390280e-14,  4.56922383e-13, ...,
+             3.28342629e-13,  2.35495645e-13,  5.03766363e-14],
+           [ 9.48912121e-12,  5.14125319e-13,  3.58787284e-13, ...,
+             1.84458713e-13,  1.08091328e-13,  9.97023144e-15],
+           [ 1.38749640e-08,  8.07659676e-12,  4.09141678e-13, ...,
+             1.17736880e-12,  1.87429858e-12,  1.88997532e-13]],
 
-          [[ 1.19191667e-15,  1.00128746e-15,  3.11879166e-16, ...,
-            -1.65362827e-15, -4.57502470e-16, -8.08892747e-18],
-           [-1.05639208e-17,  6.31253729e-17, -1.75595094e-17, ...,
-            -7.66121666e-16, -1.20780178e-16,  1.32539732e-17],
-           [-1.06467457e-15, -4.27311655e-16, -4.58268955e-16, ...,
-            -3.70790024e-16,  1.32757437e-16,  1.96089552e-16],
+          [[-6.73997759e-16,  7.39590991e-16,  5.76240859e-17, ...,
+            -3.71038988e-15, -1.03300370e-15, -9.07172289e-16],
+           [-3.81370676e-17,  1.92722806e-17, -7.63079251e-18, ...,
+            -6.96609748e-16, -1.55221307e-16,  3.45233867e-17],
+           [-3.67798570e-16, -1.93131150e-16, -2.50684787e-16, ...,
+            -2.41295550e-16,  2.05402873e-16,  6.29287642e-16],
   ...
-            -5.41819806e-02, -1.79909833e-01, -4.68938651e-02],
-           [ 1.80420283e-01,  1.40685242e-02,  1.39651056e-01, ...,
-            -3.10163430e-01, -2.16907073e-01, -1.42792965e-01],
-           [-1.51188764e+00,  8.35048651e-02, -4.76409251e-01, ...,
-            -1.70811928e+00, -5.76401103e-01, -4.85986045e-01]],
+            -8.58720165e-02, -8.61232938e-02, -6.88905815e-03],
+           [ 2.74440273e-02,  5.36559257e-02,  1.36951355e-01, ...,
+            -2.53915857e-01, -1.02651967e-01, -2.54955951e-02],
+           [ 5.68603161e-02,  2.59901102e-01,  1.67778302e-02, ...,
+            -1.40544632e+00, -5.45210475e-01, -1.02157353e-01]],
 
-          [[ 1.70726156e+04,  4.38138710e+02, -8.74403982e+02, ...,
-            -3.08545313e+03,  9.98188054e+02,  1.39547956e+05],
-           [-7.80542928e+02,  1.38526342e+01, -1.26869126e+02, ...,
-            -9.42188093e+01,  2.56231123e+02,  2.68747588e+02],
-           [-8.83228180e+02,  1.58955914e+02,  8.57247677e+01, ...,
-            -1.01634604e+02,  4.18600620e+01, -6.58350865e+00],
+          [[ 2.77698521e+04,  4.41043439e+02, -8.74358611e+02, ...,
+            -5.45926415e+03,  5.22714171e+03,  7.14307015e+03],
+           [-3.43783107e+02, -1.39236648e+01, -9.01829240e+01, ...,
+            -8.02439417e+01,  8.98163600e+01,  1.46136617e+02],
+           [-9.77100122e+02,  1.34874413e+02,  7.49835754e+01, ...,
+            -9.72974458e+01,  3.04759743e+01,  2.74792807e+00],
            ...,
-           [-1.69002759e+02,  4.99945411e+01,  3.02876556e+02, ...,
-            -4.62375871e+01, -1.53530684e+02, -4.00180864e+01],
-           [ 1.53966290e+02,  1.20057371e+01,  1.19174821e+02, ...,
-            -2.64685942e+02, -1.85103231e+02, -1.21856047e+02],
-           [-1.29020838e+03,  7.12610256e+01, -4.06556091e+02, ...,
-            -1.45766753e+03, -4.91886708e+02, -4.14728679e+02]]]],
+           [-4.92049929e+01,  7.55973723e+01,  2.98314005e+02, ...,
+            -7.32810945e+01, -7.34955285e+01, -5.87895501e+00],
+           [ 2.34200669e+01,  4.57886645e+01,  1.16870962e+02, ...,
+            -2.16685628e+02, -8.76006968e+01, -2.17573218e+01],
+           [ 4.85232126e+01,  2.21793293e+02,  1.43177930e+01, ...,
+            -1.19937377e+03, -4.65269381e+02, -8.71786083e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34188,7 +34188,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6006534410>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7f14db8e30>
     ```
 - [x] Attributes: (4)
 
@@ -34206,7 +34206,7 @@ xarray.DataArray
 
   **affines :**
 
-  {'bspline\_initialization': \[\[1.0, -1.1903405882410274e-20, -6.541083465249015e-21, 1.2462961252218086e-19\], \[1.1525016541509118e-20, 0.9984816653136261, -0.05508506179108768, -0.17708957996671354\], \[7.186851759894228e-21, 0.05508506179108768, 0.9984816653136261, 0.8544666816293937\], \[0.0, 0.0, 0.0, 1.0\]\]}
+  {'bspline\_initialization': \[\[1.0, -8.56493345977435e-21, 8.59601164488132e-21, 8.967553493031774e-20\], \[9.025440856831084e-21, 0.9984816653136261, -0.05508506179108739, -0.17708957996670588\], \[-8.1111601333682e-21, 0.05508506179108739, 0.9984816653136261, 0.854466681629407\], \[0.0, 0.0, 0.0, 1.0\]\]}
 
 ## Check the alignment after B-spline refinement
 
@@ -34219,7 +34219,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8973
+Rigid + B-spline final metric: -0.8950
 ```
 
 ```python
@@ -34308,7 +34308,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 59.8 s
+**Total running time:** 64.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34674,7 +34674,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd9304e2ad0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f27285b2c10>
     ```
 - [ ] Attributes: (21)
 
@@ -34787,10 +34787,10 @@ motion_df.head()
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | time |  |  |  |  |  |  |  |  |  |  |  |  |
 | 88.401400 | 0.000000e+00 | \-0.000000e+00 | 0.000000 | 0.000000 | 0.000000 | 0.000000e+00 | 0.000988 | 0.002016 | 0.001064 | \-1.000000 | 31 | completed |
-| 88.801400 | \-1.719862e-21 | \-1.379504e-21 | \-0.000198 | 0.001800 | 0.000109 | \-1.800995e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
-| 89.201400 | 5.060800e-21 | 1.657826e-21 | 0.000507 | 0.023651 | \-0.020930 | 5.297817e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
-| 89.601425 | \-3.202291e-21 | 3.400277e-22 | 0.002885 | 0.025834 | \-0.046818 | \-3.353837e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
-| 90.001425 | \-5.642973e-21 | 3.699684e-22 | 0.002614 | 0.032245 | \-0.045404 | \-5.909230e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
+| 88.801400 | \-4.441134e-21 | \-2.322813e-21 | \-0.000198 | 0.001800 | 0.000109 | \-4.650384e-20 | 0.036117 | 0.042061 | 0.036201 | \-0.950641 | 32 | completed |
+| 89.201400 | \-2.287485e-21 | 1.893490e-21 | 0.000507 | 0.023651 | \-0.020930 | \-2.396020e-20 | 0.038505 | 0.058450 | 0.039453 | \-0.973224 | 33 | completed |
+| 89.601425 | \-2.064631e-21 | \-1.442767e-22 | 0.002885 | 0.025834 | \-0.046818 | \-2.161240e-20 | 0.003992 | 0.006048 | 0.004089 | \-0.971765 | 30 | completed |
+| 90.001425 | \-3.812090e-21 | \-1.622439e-21 | 0.002614 | 0.032245 | \-0.045404 | \-3.986836e-20 | 0.008309 | 0.012347 | 0.008534 | \-0.969238 | 37 | completed |
 
 ## Plot the motion diagnostics
 
@@ -34884,7 +34884,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 25.7 s
+**Total running time:** 42.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/iconeus-raw-loader?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-548/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34902,7 +34902,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Iconeus SCAN metadata now uses fUSI-BIDS field names and units: `iconeus_scan_mode` becomes `iconeus_acquisition_mode`, `imaging_depth` becomes `depth`, and `probe_center_frequency`/`transmit_frequency` are reported in hertz ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
+- Iconeus SCAN metadata now uses fUSI-BIDS field names and units: `iconeus_scan_mode` becomes `iconeus_acquisition_mode`, `imaging_depth` becomes `depth`, and `probe_center_frequency`/`transmit_frequency` are reported in hertz. Nonstandard scanner metadata now consistently uses the `iconeus_` prefix, including probe model numbers, ADC sampling frequency (in native MHz), stimulation toggle times, filter types, SVD cutoffs, and velocity-band limits. The unused `is_multiplane` flag is no longer exported ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 - Matrix-seeded rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).

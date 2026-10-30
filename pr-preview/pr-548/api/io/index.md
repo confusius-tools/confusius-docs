@@ -1097,7 +1097,7 @@ Raises:
 
 - `ValueError` –
 
-  If `meta_path` is not a file, a required field is missing, or the stored dimensions are invalid.
+  If `meta_path` is not a file, a required field is missing, or the stored dimensions are invalid, or the depth bounds are non-finite or reversed.
 
 ### load\_nifti
 
@@ -1261,7 +1261,7 @@ Raises:
 >
 > **v2.** The binary layout follows PyIconeus: header fields, measured times, one 6DOF probe pose per `pose`, acquisition/provenance metadata, then a Fortran-ordered `(size_x, size_y, size_z, time, pose, dim6)` payload. The loader exposes this as VoxelData order `(..., time, pose, k, j, i)` and keeps dim6 as an extra leading dimension when present. Mapped chunks are read-only; in-place chunk-processing functions must copy them first.
 >
-> Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes in BIDS units: `probe_model`, `probe_center_frequency` (Hz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `depth` (mm start/end), `transmit_frequency` (Hz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `svd_low_cutoff`, and `power_doppler_integration_duration` (s).
+> Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes in BIDS units: `probe_model`, `probe_center_frequency` (Hz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `depth` (mm start/end), `transmit_frequency` (Hz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `iconeus_svd_low_cutoff`, and `power_doppler_integration_duration` (s). The Iconeus-specific `iconeus_ultrafast_sampling_frequency` is the ADC sampling rate in MHz, not the compound sampling frequency.
 >
 > ConfUSIus world coordinates `(z, y, x)` for SCAN data are **ConfUSIus-ordered Iconeus lab coordinates** (mm): a fixed scanner frame shared by every pose, used as the canonical world frame because it is the one frame that is physically meaningful across poses. For multi-pose files, `da`'s voxel-to-world geometry is itself pose-dependent (a `(npose, 4, 4)` affine stack, one affine per `da.coords["pose"]` label); world selection therefore requires reducing `pose` to a scalar first, e.g. `da.isel(pose=0).sel(z=..., y=..., x=...)` or `da.isel(pose=0)`.
 >

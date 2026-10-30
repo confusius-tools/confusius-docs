@@ -3912,7 +3912,14 @@ geometry. Metadata recovered into <code>da.attrs</code> include the <code>world_
 provenance (<code>iconeus_*</code> attrs), acquisition datetime, and <abbr title="Brain Imaging Data Structure">BIDS</abbr>-corresponding
 acquisition settings in <abbr title="Brain Imaging Data Structure">BIDS</abbr> units (<code>probe_model</code>, <code>probe_center_frequency</code>,
 <code>probe_aperture</code>, <code>transmit_frequency</code>, <code>pulse_repetition_frequency</code>,
-<code>plane_wave_angles</code>, <code>svd_low_cutoff</code>, …); frequencies are in hertz. For multi-pose
+<code>plane_wave_angles</code>, …); frequencies are in hertz. Nonstandard imported metadata
+uses the <code>iconeus_</code> prefix, including <code>iconeus_probe_model_number</code>,
+<code>iconeus_ultrafast_sampling_frequency</code> (ADC sampling rate in MHz, not the compound
+sampling frequency),
+<code>iconeus_stimulation_toggle_times</code>, <code>iconeus_clutter_filter_type</code>,
+<code>iconeus_svd_low_cutoff</code>, <code>iconeus_svd_high_cutoff</code>, and velocity-band limits
+<code>iconeus_velocity_min</code>/<code>iconeus_velocity_max</code>. The <code>affines</code> attribute is ConfUSIus
+geometry rather than imported scanner metadata and remains unprefixed. For multi-pose
 recordings, see the
 <a href="../multipose/#scan-v2-binary">multi-pose user guide</a>.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
