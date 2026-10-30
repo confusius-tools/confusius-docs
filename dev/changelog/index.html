@@ -4635,6 +4635,10 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
+  physical center rather than the world origin. Initial alignment is unchanged,
+  but convergence and final results may differ; recheck tuned optimizer settings
+  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher
