@@ -944,7 +944,7 @@ Parameters:
 
   - `"center_geometry"`: aligns image centers.
   - `"center_moments"`: aligns centers of mass.
-  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform, held fixed while optimizing the requested `transform_type`.
+  - `(N+1, N+1)` homogeneous affine matrix: holds the affine seed fixed and optimizes an identity-initialized refinement of `transform_type`. The final mapping is `seed(refinement(x))`. Rigid/affine refinement is centered at the fixed image's physical center. A seed containing scaling or shearing remains nonrigid even with rigid refinement.
   - `None`: uses the identity transform.
 
   For `transform_type="bspline"`, centering modes are ignored but affine initialization is supported.
