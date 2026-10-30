@@ -6,11 +6,16 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Iconeus SCAN metadata now uses fUSI-BIDS field names and units: `iconeus_scan_mode` becomes `iconeus_acquisition_mode`, `imaging_depth` becomes `depth`, and `probe_center_frequency`/`transmit_frequency` are reported in hertz ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 - Matrix-seeded rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
 - `plot_napari` and its `data.fusi.plot.napari()` and `data.fusi.plot()` accessors default to `layer_type="auto"` instead of `"image"`: integer and boolean data open as a labels layer, other data as an image layer. Pass `layer_type="image"` to display integer data as an image ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
+
+### ✨ Enhancements
+
+- `confusius.load` now loads compounded Iconeus RAW/HRAW beamformed IQ files as lazy VoxelData arrays, preserving acquisition blocks as Dask chunks ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 
 ### ⚡ Performance
 
