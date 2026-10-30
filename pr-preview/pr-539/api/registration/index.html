@@ -5688,7 +5688,7 @@ optimization:</p>
 <li><code>"center_geometry"</code>: aligns image centers.</li>
 <li><code>"center_moments"</code>: aligns centers of mass.</li>
 <li><code>(N+1, N+1)</code> homogeneous affine matrix: uses a precomputed affine
-  transform.</li>
+  transform, held fixed while optimizing the requested <code>transform_type</code>.</li>
 <li><code>None</code>: uses the identity transform.</li>
 </ul>
 <p>For <code>transform_type="bspline"</code>, centering modes are ignored but affine
@@ -5705,7 +5705,8 @@ initialization is supported.</p>
             <p>Per-parameter weights applied on top of the auto-estimated world shift
 scales. <code>None</code> uses identity weights (all ones). A list is passed directly to
 SimpleITK's <code>SetOptimizerWeights</code>; its length must match the number of
-transform parameters (6 for rigid, 12 for affine). The weight for each
+refinement parameters (3 for translation, 6 for rigid, 12 for affine in
+3D), including with matrix initialization. The weight for each
 parameter is multiplied into the effective step
 size: <code>0</code> freezes a parameter entirely, values in <code>(0, 1)</code> slow it down, and
 <code>1</code> leaves it unchanged. For the 3D Euler transform the parameter order is
