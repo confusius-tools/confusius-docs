@@ -103,7 +103,7 @@ For relative DVARS, `baseline_estimator` selects one of two denominators:
 - `"median"` (default): square root of median squared raw DVARS. No AR(1) fit.
 - `"ar1"`: RMS of expected voxelwise difference SDs, `sqrt(mean(2 * (1 - rho) * sigma**2))`.
 
-The AR(1) estimator uses robust temporal SDs, but its autocorrelation estimates remain sensitive to artifacts. Raw DVARS ignores `baseline_estimator` and scales intensities to a median of 1000 by default; set `normalization_factor=None` to retain native units. Both variants exclude zero-IQR features by default.
+The AR(1) estimator uses robust temporal SDs, but its autocorrelation estimates remain sensitive to artifacts. Raw DVARS ignores `baseline_estimator` and scales intensities to a median of 1000 by default; set `normalization_factor=None` to retain native units. Both variants exclude zero-IQR features by default, using lower quantile interpolation. This follows [Nipype's FSL-compatible convention](<https://github.com/nipy/nipype/blob/master/nipype/algorithms/confounds.py>), which [fMRIPrep also uses through Nipype](<https://github.com/nipreps/fmriprep/blob/master/fmriprep/workflows/bold/confounds.py>); it does not imply identical DVARS normalization across these tools. Mostly constant features with isolated transients can also have zero IQR; set `remove_zero_variance=False` to retain them.
 
 All variants preserve Dask laziness, with data-dependent validation at computation time. Relative DVARS and unnormalized raw DVARS process full-time spatial chunks; each chunk must fit in memory. Raw intensity normalization requires the exact global median and gathers the full recording into memory when computed.
 

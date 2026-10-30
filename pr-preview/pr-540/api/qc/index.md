@@ -129,7 +129,7 @@ Parameters:
 
   (`bool`, default: `True` ) –
 
-  Whether to exclude features whose robust temporal SD is less than or equal to `variance_tolerance`, before computing either variant.
+  Whether to exclude features whose robust temporal SD is less than or equal to `variance_tolerance`, before computing either variant. Mostly constant features with isolated transients can also have zero IQR.
 - #### **`variance_tolerance`**
 
   (`float`, default: `0.0` ) –
@@ -166,7 +166,7 @@ confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusiu
 >
 > Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability. The lower IQR interpolation follows Nipype's implementation (itself based on FSL). As a consequence, exact invariance to signal sign reversal is guaranteed only for `median` when feature selection is unchanged.
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability.
 >
 > **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
 >

@@ -3616,8 +3616,9 @@ relative DVARS, which is invariant to positive global intensity scaling.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Whether to exclude features whose robust temporal SD is less than or
-equal to <code>variance_tolerance</code>, before computing either variant.</p>
+            <p>Whether to exclude features whose robust temporal SD is less than or equal to
+<code>variance_tolerance</code>, before computing either variant. Mostly constant features
+with isolated transients can also have zero IQR.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -3687,10 +3688,7 @@ autocorrelation. Originally called <em>standardized DVARS</em> by Nichols (2013)
 measure was renamed <em>relative DVARS</em> by Afyouni and Nichols (2018).</p>
 <p>The <code>median</code> estimator avoids AR(1) fitting but assumes most time points reflect
 baseline activity. The <code>ar1</code> estimator assumes stationarity and is sensitive to
-artifacts. Neither yields a z-score or calibrated artifact probability. The
-lower IQR interpolation follows Nipype's implementation (itself based on FSL).
-As a consequence, exact invariance to signal sign reversal is guaranteed only
-for <code>median</code> when feature selection is unchanged.</p>
+artifacts. Neither yields a z-score or calibrated artifact probability.</p>
 <p><strong>Precision:</strong> Float32/float64 inputs retain their precision during differencing;
 float16 and integer inputs are promoted to float32 and float64, respectively.
 Spatial sums accumulate in float64.</p>
