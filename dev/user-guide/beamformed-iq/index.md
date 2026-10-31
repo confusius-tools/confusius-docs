@@ -85,7 +85,7 @@ Attributes:
     beamforming_sound_velocity:   1540.0
 ```
 
-If your acquisition system isn't directly supported by ConfUSIus, see [Other Systems](<https://confusius.tools/dev/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
+ConfUSIus loads AUTC DAT, EchoFrame DAT, and Iconeus RAW beamformed IQ files directly; see the [I/O guide](<https://confusius.tools/dev/user-guide/io/index.md>) for more details. If your acquisition system isn't directly supported, see [Other Systems](<https://confusius.tools/dev/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
 
 > [!NOTE]
 >

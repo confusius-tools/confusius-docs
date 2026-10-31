@@ -149,7 +149,27 @@ iq = cf.load("path/to/data.dat")
 iq = cf.load("path/to/data.dat", meta_path="path/to/metadata.mat")
 ```
 
-When you expect to process the same recording repeatedly, [convert it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
+When you expect to process the same recording repeatedly, [save it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
+
+### Loading Iconeus RAW Files
+
+Iconeus beamformed IQ data is stored as a binary `.raw` payload paired with an HDF5 `.hraw` metadata sidecar. Load it with `confusius.load`, which finds the matching `.hraw` file next to the payload:
+
+```python
+import confusius as cf
+
+iq = cf.load("path/to/acquisition.raw")
+```
+
+Acquisition blocks are preserved as Dask chunks (one chunk per block along `time`), so `iq.chunks[0]` gives the number of frames per block. IQ metadata is attached to `iq.attrs` using fUSI-BIDS field names where they exist. Iconeus-specific metadata is stored with the `iconeus_` prefix.
+
+> [!WARNING]
+>
+> **Iconeus RAW timestamps are theoretical**
+>
+> Iconeus RAW files do not store acquisition timestamps, so the `time` coordinate is computed from the compound sampling frequency metadata in the HRAW file. If you know the real acquisition timings (e.g. from external triggers), override the `time` coordinate with `iq.assign_coords(time=...)` after loading.
+
+When you expect to process the same recording repeatedly, [save it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
 
 ### Loading Iconeus SCAN Files
 
@@ -177,18 +197,18 @@ Indexes:
   │ y
   └ x
 Attributes:
-    affines:               {}
-    device_serial_number:  XXXXXXXX
-    software_version:      IcoScan version 1.0.0
-    iconeus_scan_mode:     4Dscan
-    iconeus_subject:       Mouse01
-    iconeus_session:       Session01
-    iconeus_scan:          sub-01_task-awake_pwd
-    iconeus_project:       Project01
-    iconeus_datetime:      2021-10-22T14:14:12+00:00
+    affines:                    {}
+    device_serial_number:       XXXXXXXX
+    software_version:           IcoScan version 1.0.0
+    iconeus_acquisition_mode:   4Dscan
+    iconeus_subject:            Mouse01
+    iconeus_session:            Session01
+    iconeus_scan:               sub-01_task-awake_pwd
+    iconeus_project:            Project01
+    iconeus_datetime:           2021-10-22T14:14:12+00:00
 ```
 
-Provenance metadata from the file is stored in `da.attrs`, including `iconeus_scan_mode`, `iconeus_subject`, `iconeus_session`, `iconeus_scan`, `iconeus_project`, `iconeus_datetime`, `software_version`, and `device_serial_number`. `iconeus_datetime` uses ISO 8601 format for both SCAN v1 and SCAN v2. SCAN v1 stores the date without a time zone, so ConfUSIus treats it as UTC.
+Provenance metadata from the file is stored in `da.attrs`, including `iconeus_acquisition_mode`, `iconeus_subject`, `iconeus_session`, `iconeus_scan`, `iconeus_project`, `iconeus_datetime`, `software_version`, and `device_serial_number`. `iconeus_datetime` uses ISO 8601 format for both SCAN v1 and SCAN v2. SCAN v1 stores the date without a time zone, so ConfUSIus treats it as UTC.
 
 Note that for recordings consisting of multiple probe poses (e.g., `3Dscan`, `4Dscan`), the `time` coordinate is **pose-dependent**, giving the acquisition time of each volume for each pose. This is useful for volume-timing corrections and for aligning multi-pose acquisitions with external events.
 
@@ -211,7 +231,7 @@ Additionally, each pose has its own voxel-to-world affine transformation, meanin
 
 #### SCAN v2 (binary format)
 
-SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, `svd_low_cutoff`, …). For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/dev/user-guide/multipose/#scan-v2-binary>).
+SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings in BIDS units (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, …). Nonstandard imported metadata uses the `iconeus_` prefix. For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/dev/user-guide/multipose/#scan-v2-binary>).
 
 ```pycon
 >>> import confusius as cf
@@ -234,15 +254,15 @@ Indexes:
 Attributes: (12/26)
     affines:                           {}
     iconeus_scan_format:               v2
-    iconeus_scan_mode:                 2Dscan
+    iconeus_acquisition_mode:          2Dscan
     iconeus_datetime:                  2026-07-14T05:00:00+00:00
     device_serial_number:              XXXXXXX
     iconeus_hardware:                  Hardware_1_0-0123
     ...                                ...
     probe_pitch:                       0.11
     probe_focal_depth:                 8.0
-    imaging_depth:                     (1.0, 10.0)
-    transmit_frequency:                15.625
+    depth:                             (1.0, 10.0)
+    transmit_frequency:                15625000.0
     pulse_repetition_frequency:        5500.0
     plane_wave_angles:                 [-10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2...
 ```
@@ -377,13 +397,9 @@ See the [Create a VoxelData array from a MAT file](<https://confusius.tools/dev/
 
 ## Converting Beamformed IQ Data to Zarr
 
-Beamformed IQ exports are often stored as large binary files together with acquisition metadata. The file structure from AUTC and EchoFrame systems is documented, allowing ConfUSIus to provide built-in conversion utilities that reorganize these datasets into Zarr for more efficient processing.
+Beamformed IQ exports are often stored as large binary files together with acquisition metadata. When you expect to process the same recording repeatedly, converting it to Zarr is recommended for better performance. Zarr is a chunked, compressed format that allows efficient out-of-core processing and parallel access to large datasets.
 
-> [!NOTE]
->
-> **Why doesn't ConfUSIus support Iconeus RAW files?**
->
-> ConfUSIus cannot currently read Iconeus beamformed IQ files because the Iconeus RAW format is not documented publicly. If you need to process RAW files with ConfUSIus, please contact Iconeus to request an export tool or format documentation.
+ConfUSIus loads AUTC DAT, EchoFrame DAT, and Iconeus RAW files directly. AUTC DAT folders are split across multiple binary files, so they use the dedicated `convert_autc_dats_to_zarr` converter. EchoFrame DAT and Iconeus RAW files load lazily as VoxelData arrays, so conversion to Zarr is as simple as loading the data with `confusius.load` followed by `confusius.save`; data is streamed chunk by chunk.
 
 This format consists of a series of binary `.dat` files (often split into parts), where each file contains multiple acquisition blocks.
 
@@ -413,31 +429,83 @@ This will create a Zarr group containing:
 
 This format consists of a binary `.dat` file containing the beamformed data and a `.mat` file containing metadata (sequence parameters).
 
-To convert EchoFrame data to Zarr, use `convert_echoframe_dat_to_zarr`. Zarr is useful for long-term storage or repeated processing of the same recording.
+```python
+import numpy as np
+
+import confusius as cf
+
+# Finds ScanParameters.mat next to the DAT file by default.
+iq = cf.load("path/to/data.dat")
+
+# Replace the theoretical time coordinate with external trigger timestamps when
+# available.
+n_volumes = iq.chunks[0][0]  # Volumes in the first acquisition block.
+block_starts = np.asarray(measured_block_start_times)  # One per block, in seconds.
+time = np.concatenate(
+    [
+        start
+        + np.arange(n_volumes) / iq.attrs["compound_sampling_frequency"]
+        for start in block_starts
+    ]
+)
+iq = iq.assign_coords(time=("time", time, iq.coords["time"].attrs))
+
+cf.save(iq, "sub-01_task-awake_iq.zarr")
+```
+
+This format consists of a binary `.raw` payload paired with an HDF5 `.hraw` metadata sidecar.
 
 ```python
-from confusius.io import convert_echoframe_dat_to_zarr
+import numpy as np
 
-convert_echoframe_dat_to_zarr(
-    dat_path="path/to/data.dat",
-    meta_path="path/to/metadata.mat",
-    output_path="sub-01_task-awake_iq.zarr",
-    # Optional: specify block start times. Other metadata (e.g., transmit frequency,
-    # axis coordinates) will be automatically extracted from the metadata file.
-    block_times=block_times,
+import confusius as cf
+
+# Finds the matching .hraw file next to the payload.
+iq = cf.load("path/to/acquisition.raw")
+
+# Replace the theoretical time coordinate with external trigger timestamps when
+# available.
+n_volumes = iq.chunks[0][0]  # Volumes in the first acquisition block.
+block_starts = np.asarray(measured_block_start_times)  # One per block, in seconds.
+time = np.concatenate(
+    [
+        start
+        + np.arange(n_volumes) / iq.attrs["compound_sampling_frequency"]
+        for start in block_starts
+    ]
+)
+iq = iq.assign_coords(time=("time", time, iq.coords["time"].attrs))
+
+cf.save(iq, "sub-01_task-awake_iq.zarr")
+```
+
+### Optional: Sharding
+
+To reduce the number of Zarr files, bundle several acquisition blocks into each shard. The encoding key must match the DataArray name, so name it `iq` first. Dask chunks must align with shard boundaries, which `align_chunks=True` handles:
+
+```python
+n_volumes = iq.chunks[0][0]  # Frames in the first acquisition block.
+shard_volumes = 4 * n_volumes
+
+iq.name = "iq"
+cf.save(
+    iq,
+    "sub-01_task-awake_iq.zarr",
+    encoding={
+        "iq": {
+            "chunks": (n_volumes, 1, *iq.shape[2:]),
+            "shards": (shard_volumes, 1, *iq.shape[2:]),
+        }
+    },
+    align_chunks=True,
 )
 ```
 
-This will create a Zarr group containing:
-
-- `iq`: Beamformed IQ data with native dimensions `(time, k, j, i)`.
-- `time`, `k`, `j`, `i`: Native time and voxel-space dimension coordinates.
-- `voxel_to_world` and `voxel_to_world_units`: Attributes on `iq` used to restore the `VoxelToWorldIndex` and derive `z`/`y`/`x` world coordinates.
-- Metadata attributes (e.g., `transmit_frequency`, `plane_wave_angles`) as extracted from the metadata file.
+Sharding increases the amount of data held by each write task to one shard. To keep only one chunk or shard in flight, add `chunkmanager_store_kwargs={"scheduler": "single-threaded"}` to `cf.save`.
 
 ### Other Systems
 
-For beamformed IQ data from a system other than AUTC or EchoFrame, load the complex array with the tool appropriate for your file format, then wrap it as a VoxelData array with `create_voxeldata`. Put IQ-specific metadata such as `transmit_frequency` and `beamforming_sound_velocity` in `attrs`:
+For beamformed IQ data from a system other than AUTC, EchoFrame, or Iconeus, load the complex array with the tool appropriate for your file format, then wrap it as a VoxelData array with `create_voxeldata`. Put IQ-specific metadata such as `transmit_frequency` and `beamforming_sound_velocity` in `attrs`:
 
 ```python
 import confusius as cf
@@ -510,7 +578,9 @@ Quick reference for converting between formats:
 | --- | --- | --- |
 | AUTC DATs | Zarr | `confusius.io.convert_autc_dats_to_zarr` |
 | EchoFrame DAT | VoxelData array | `confusius.io.load_echoframe_dat` |
-| EchoFrame DAT | Zarr | `confusius.io.convert_echoframe_dat_to_zarr` |
+| EchoFrame DAT | Zarr | `confusius.load` then `confusius.save` |
+| Iconeus RAW | VoxelData array | `confusius.load` |
+| Iconeus RAW | Zarr | `confusius.load` then `confusius.save` |
 | Iconeus SCAN | VoxelData array | `confusius.load` |
 | NIfTI | VoxelData array | `confusius.load` |
 | Zarr | VoxelData array or Dataset | `confusius.load` / `xarray.open_zarr` (Dataset) |
