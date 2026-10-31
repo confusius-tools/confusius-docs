@@ -4696,11 +4696,27 @@
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same modification so the resulting
   affine can be composed with the modified laboratory space
   (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
+<li><code>convert_echoframe_dat_to_zarr</code> was removed. EchoFrame DAT files load lazily with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a>, so save them with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a> using the I/O guide's conversion recipes for
+  measured time coordinates and sharding. The EchoFrame loader no longer stores
+  <code>n_volumes_per_block</code> in attrs; use <code>data.chunks[0]</code> for acquisition block sizes
+  (<a href="https://github.com/confusius-tools/confusius/pull/551">#551</a>).</li>
+<li>Iconeus SCAN metadata now uses <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units:
+  <code>iconeus_scan_mode</code> becomes <code>iconeus_acquisition_mode</code>, <code>imaging_depth</code> becomes
+  <code>depth</code>, and <code>probe_center_frequency</code>/<code>transmit_frequency</code> are reported in hertz.
+  Nonstandard scanner metadata now consistently uses the <code>iconeus_</code> prefix,
+  including probe model numbers, ADC sampling frequency (in native MHz),
+  stimulation toggle times, filter types, <abbr title="Singular Value Decomposition">SVD</abbr> cutoffs, and velocity-band limits
+  (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
 <li>Fix matrix initialization incorrectly allowing full affine optimization for
   rigid/translation registration. Refinement now respects the requested transform;
   in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ
   (<a href="https://github.com/confusius-tools/confusius/pull/547">#547</a>).</li>
-<li>Matrix-initialized rigid/affine registration now optimizes around the fixed image's</li>
+<li>Matrix-initialized rigid/affine registration now optimizes around the fixed image's
+  physical center rather than the world origin. Initial alignment is unchanged,
+  but convergence and final results may differ; recheck tuned optimizer settings
+  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt;" href="../api/qc/#confusius.qc.compute_dvars"><code>compute_dvars</code></a> now defaults to median-based relative
   DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols
   (2018). The median is less sensitive to unusually large DVARS values, and their
@@ -4715,10 +4731,6 @@
   DVARS reduce spatial blocks; raw
   intensity normalization gathers the full recording at compute time to preserve the
   exact global median (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
-<li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
-  physical center rather than the world origin. Initial alignment is unchanged,
-  but convergence and final results may differ; recheck tuned optimizer settings
-  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher
@@ -4749,6 +4761,9 @@
 <li>Add Agent Skills support with <code>confusius skills list</code> and <code>confusius skills install</code>.
   The first skill, <code>confusius-load-data</code>, helps agents load custom data into <code>VoxelData</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> now loads compounded Iconeus RAW/HRAW
+  beamformed <abbr title="In-phase and Quadrature">IQ</abbr> files as lazy VoxelData arrays, preserving acquisition blocks as
+  Dask chunks (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4774,6 +4789,10 @@
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Document how to convert EchoFrame DAT and Iconeus RAW recordings to Zarr with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a>, including
+  measured time coordinates, sharding, and memory-bounded writes
+  (<a href="https://github.com/confusius-tools/confusius/pull/551">#551</a>).</li>
 <li>The documentation site publishes <a href="https://confusius.tools/latest/llms.txt"><code>llms.txt</code></a>
   and <code>llms-full.txt</code> for AI assistants, along with a Markdown copy of every page
   and a "Copy as Markdown" button in the page header
@@ -4783,6 +4802,14 @@
 <ul>
 <li>Boolean arrays open as labels layers
   (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</li>
+<li>Files opened with <strong>File &gt; Open</strong> or by drag-and-drop now display the same way as
+  with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a>: complex data shows its
+  magnitude, reversed axes are shown in ascending order, a last axis of length 3 or 4
+  is never read as RGB colors, and image layers use napari's default blending
+  (<a href="https://github.com/confusius-tools/confusius/pull/549">#549</a>).</li>
+<li>Iconeus RAW files open from the Data I/O panel, the <code>confusius</code> command, <strong>File &gt;
+  Open</strong>, or by drag-and-drop, when their <code>.hraw</code> metadata file is in the same folder
+  (<a href="https://github.com/confusius-tools/confusius/pull/549">#549</a>).</li>
 </ul>
 <h2 id="080">0.8.0<a class="headerlink" href="#080" title="Permanent link">&para;</a></h2>
 <p>Released 2026-10-13.</p>
@@ -4922,9 +4949,8 @@
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_affine&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_affine"><code>apply_affine</code></a> keeps the applied key in
   <code>.attrs["affines"]</code> as the identity when the affine is given by key
   (<a href="https://github.com/confusius-tools/confusius/pull/463">#463</a>).</li>
-<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_echoframe_dat_to_zarr&lt;/span&gt;" href="../api/io/#confusius.io.convert_echoframe_dat_to_zarr"><code>convert_echoframe_dat_to_zarr</code></a> now
-  preserves time coordinate attributes when passing <code>block_times</code>
-  (<a href="https://github.com/confusius-tools/confusius/pull/473">#473</a>).</li>
+<li><code>convert_echoframe_dat_to_zarr</code> now preserves time coordinate attributes when
+  passing <code>block_times</code> (<a href="https://github.com/confusius-tools/confusius/pull/473">#473</a>).</li>
 </ul>
 <h3 id="documentation_1"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation_1" title="Permanent link">&para;</a></h3>
 <ul>
