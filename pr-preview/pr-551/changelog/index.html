@@ -4659,8 +4659,9 @@
 <ul>
 <li><code>convert_echoframe_dat_to_zarr</code> was removed. EchoFrame DAT files load lazily with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a>, so save them with
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a> using the I/O guide's conversion recipes for block
-  selection, measured time coordinates, and sharding
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a> using the I/O guide's conversion recipes for
+  measured time coordinates and sharding. The EchoFrame loader no longer stores
+  <code>n_volumes_per_block</code> in attrs; use <code>data.chunks[0]</code> for acquisition block sizes
   (<a href="https://github.com/confusius-tools/confusius/pull/551">#551</a>).</li>
 <li>Iconeus SCAN metadata now uses <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units:
   <code>iconeus_scan_mode</code> becomes <code>iconeus_acquisition_mode</code>, <code>imaging_depth</code> becomes
@@ -4741,7 +4742,7 @@
 <ul>
 <li>Document how to convert EchoFrame DAT and Iconeus RAW recordings to Zarr with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> and <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a>, including
-  block selection, measured time coordinates, sharding, and memory-bounded writes
+  measured time coordinates, sharding, and memory-bounded writes
   (<a href="https://github.com/confusius-tools/confusius/pull/551">#551</a>).</li>
 <li>The documentation site publishes <a href="https://confusius.tools/latest/llms.txt"><code>llms.txt</code></a>
   and <code>llms-full.txt</code> for AI assistants, along with a Markdown copy of every page

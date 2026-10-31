@@ -5671,9 +5671,8 @@ filename EchoFrame's storage writer uses by convention.</p>
             <p>Lazy VoxelData array with dimensions <code>(time, k, j, i)</code>, where
 <code>k</code> is a singleton
 elevation dimension. Data is wrapped in a Dask array, chunked so that each
-chunk corresponds to one acquisition block's volumes; individual blocks
-remain accessible via <code>data.isel(time=slice(i * n, (i + 1) * n))</code>, where <code>n</code>
-is <code>data.attrs["n_volumes_per_block"]</code>.</p>
+chunk corresponds to one acquisition block's volumes; the size of each block
+is available in <code>data.chunks[0]</code>.</p>
           </div>
         </li>
     </ul>
@@ -5694,8 +5693,7 @@ is <code>data.attrs["n_volumes_per_block"]</code>.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>Acquisition metadata is stored in <code>da.attrs</code>, including <code>n_volumes_per_block</code>
-(number of volumes per acquisition block).</p>
+  <p>Acquisition metadata is stored in <code>da.attrs</code>.</p>
 </details>
 
     </div>

@@ -823,7 +823,7 @@ Returns:
 
 - `DataArray` –
 
-  Lazy VoxelData array with dimensions `(time, k, j, i)`, where `k` is a singleton elevation dimension. Data is wrapped in a Dask array, chunked so that each chunk corresponds to one acquisition block's volumes; individual blocks remain accessible via `data.isel(time=slice(i * n, (i + 1) * n))`, where `n` is `data.attrs["n_volumes_per_block"]`.
+  Lazy VoxelData array with dimensions `(time, k, j, i)`, where `k` is a singleton elevation dimension. Data is wrapped in a Dask array, chunked so that each chunk corresponds to one acquisition block's volumes; the size of each block is available in `data.chunks[0]`.
 
 Raises:
 
@@ -835,7 +835,7 @@ Raises:
 >
 > **Notes**
 >
-> Acquisition metadata is stored in `da.attrs`, including `n_volumes_per_block` (number of volumes per acquisition block).
+> Acquisition metadata is stored in `da.attrs`.
 
 ### load\_echoframe\_metadata
 
