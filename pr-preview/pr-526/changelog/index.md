@@ -6,7 +6,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory frame, reordered to `(z, y, x)` and rotated by 90 degrees about the axial axis. This ensures that typical coronal recordings appear in the correct orientation. `load_bps` applies the same rotation, so `inv(load_bps(...))` remains the `world_to_brain` affine, and `confusius.io.scan.ICONEUS_LAB_CORONAL_ROTATION` is the rotation matrix used to correct the Iconeus laboratory frame. ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
+- Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory frame, reordered to `(z, y, x)` and rotated by 90 degrees about the axial axis. This aligns typical coronal recordings have `z` elevation, `y` depth, and `x` lateral. `load_bps` applies the same modification so the resulting affine can be composed with the modified laboratory space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Fix matrix initialization incorrectly allowing full affine optimization for rigid/translation registration. Refinement now respects the requested transform; in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ ([\#547](<https://github.com/confusius-tools/confusius/pull/547>)).
 - Matrix-initialized rigid/affine registration now optimizes around the fixed image's
 - `compute_dvars` now defaults to median-based relative DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols (2018). The median is less sensitive to unusually large DVARS values, and their simulations found it reliable under heterogeneous voxel variances. The previous mean-SD normalization used in 0.8.0 and earlier has been removed. Choose `baseline_estimator="ar1"` for the alternative RMS-based model baseline. **Existing DVARS thresholds must be adjusted for the new normalization**. The `standardize` argument was removed: use `variant="raw"` instead of `standardize=False`. The first output value is now `NaN` for all variants and estimators. Robust SDs retain lower IQR interpolation, following Nipype's FSL-compatible convention also used by fMRIPrep. All variants preserve Dask laziness. Relative DVARS and unnormalized raw DVARS reduce spatial blocks; raw intensity normalization gathers the full recording at compute time to preserve the exact global median ([\#540](<https://github.com/confusius-tools/confusius/pull/540>)).
@@ -19,6 +19,7 @@ Current development version for the next ConfUSIus release.
 ### ✨ Enhancements
 
 - `load_scan` stores `world_to_lab` (the identity, since lab space is the world space) and `world_to_probe` affines in `attrs["affines"]`, so `da.fusi.affine.apply("world_to_probe")` switches to the first pose's probe space (`z` elevation, `y` depth, `x` lateral) and `apply("world_to_lab")` returns to lab space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
+- Add Agent Skills support with `confusius skills list` and `confusius skills install`. The first skill, `confusius-load-data`, helps agents load custom data into `VoxelData` ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
 
 ### ⚡ Performance
 

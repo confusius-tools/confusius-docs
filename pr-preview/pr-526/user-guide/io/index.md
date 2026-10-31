@@ -205,15 +205,13 @@ Both formats are loaded lazily as [VoxelData](<https://confusius.tools/pr-previe
 >
 > Alternatively, use `n_jobs=1` for serial processing. This limitation does not apply to SCAN v2.
 
-World coordinates `(z, y, x)` are expressed in millimeters in the Iconeus laboratory frame, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives `z` elevation, `y` depth, and `x` lateral. `.attrs["affines"]` contains `world_to_lab` (identity) and `world_to_probe` (the transformation to the first pose's probe frame).
+World coordinates `(z, y, x)` are expressed in millimeters in the Iconeus laboratory space, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives `z` elevation, `y` depth, and `x` lateral. `.attrs["affines"]` contains `world_to_lab` (identity) and `world_to_probe` (the transformation to the first pose's probe space).
 
 > [!NOTE]
 >
 > **Why the 90° rotation?**
 >
-> The Iconeus laboratory frame is defined relative to the motors' initial position, which typically corresponds to sagittal slices. Since most fUSI acquisitions are coronal, ConfUSIus rotates this frame by 90° so that coronal images align with the voxel grid, simplifying visualization and registration.
->
-> This rotation is constant across recordings, preserving their relative positions and orientations, including those acquired at other probe angles.
+> The Iconeus laboratory space is defined relative to the motors' initial position, which typically corresponds to sagittal orientation. Since most fUSI acquisitions are coronal, they require rotating the probe by 90° to align with the brain's coronal plane. To avoid confusion, ConfUSIus always rotates the Iconeus laboratory space by 90° so that coronal images align with the voxel grid. This rotation is constant across recordings, preserving their relative positions and orientations, including those acquired at other probe angles.
 
 For multi-pose recordings, ConfUSIus preserves the acquisition timing and spatial geometry of each pose. See [Multi-Pose Imaging](<https://confusius.tools/pr-preview/pr-526/user-guide/multipose/index.md>) for details on handling these recordings and the differences between SCAN v1 and v2.
 
@@ -253,7 +251,7 @@ for pose in anat.pose:
 
 #### BPS Files
 
-Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System. They contain an affine matrix that maps Iconeus "brain frame" coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus "laboratory frame" coordinates `(x_lab, y_lab, z_lab, 1)` in meters. ConfUSIus transforms the laboratory frame by reordering it to `(z_lab, y_lab, x_lab)` (in millimeters), and rotating it by 90 degrees about the axial axis (see [Why the 90° rotation?](<#scan-files>)).
+Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System. They contain an affine matrix that maps Iconeus "brain space" coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus laboratory space coordinates `(x_lab, y_lab, z_lab, 1)` in meters. ConfUSIus transforms the laboratory space by reordering it to `(z_lab, y_lab, x_lab)` (in millimeters), and rotating it by 90 degrees about the axial axis (see [Why the 90° rotation?](<#scan-files>)).
 
 The affine matrix in the BPS file can be loaded with `confusius.io.load_bps`. It is generally a good idea to store it in the `.attrs["affines"]` attribute of the DataArray:
 

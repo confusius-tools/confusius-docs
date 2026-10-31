@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://confusius.tools/pr-preview/pr-526/user-guide/io/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../agents/">
       
       
         <link rel="next" href="../voxeldata/">
@@ -234,6 +234,8 @@
   
     
       
+      
+        
       
         
       
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -689,6 +693,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -3580,6 +3613,8 @@
       
         
       
+        
+      
     
     
     
@@ -3852,17 +3887,18 @@ using separate worker processes, such as
 to SCAN v2.</p>
 </div>
 <p>World coordinates <code>(z, y, x)</code> are expressed in millimeters in the Iconeus laboratory
-frame, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives
+space, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives
 <code>z</code> elevation, <code>y</code> depth, and <code>x</code> lateral. <code>.attrs["affines"]</code> contains <code>world_to_lab</code>
-(identity) and <code>world_to_probe</code> (the transformation to the first pose's probe frame).</p>
+(identity) and <code>world_to_probe</code> (the transformation to the first pose's probe space).</p>
 <div class="admonition note">
 <p class="admonition-title">Why the 90° rotation?</p>
-<p>The Iconeus laboratory frame is defined relative to the motors' initial position,
-which typically corresponds to sagittal slices. Since most <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisitions are
-coronal, ConfUSIus rotates this frame by 90° so that coronal images align with the
-voxel grid, simplifying visualization and registration.</p>
-<p>This rotation is constant across recordings, preserving their relative positions and
-orientations, including those acquired at other probe angles.</p>
+<p>The Iconeus laboratory space is defined relative to the motors' initial position,
+which typically corresponds to sagittal orientation. Since most <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisitions
+are coronal, they require rotating the probe by 90° to align with the brain's
+coronal plane. To avoid confusion, ConfUSIus always rotates the Iconeus laboratory
+space by 90° so that coronal images align with the voxel grid. This rotation is
+constant across recordings, preserving their relative positions and orientations,
+including those acquired at other probe angles.</p>
 </div>
 <p>For multi-pose recordings, ConfUSIus preserves the acquisition timing and spatial
 geometry of each pose. See <a href="../multipose/">Multi-Pose Imaging</a> for details on handling
@@ -3905,9 +3941,9 @@ acquisitions.</p>
 </div>
 <h4 id="bps-files">BPS Files<a class="headerlink" href="#bps-files" title="Permanent link">&para;</a></h4>
 <p>Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System.
-They contain an affine matrix that maps Iconeus "brain frame" coordinates <code>(x_brain,
-y_brain, z_brain, 1)</code> to Iconeus "laboratory frame" coordinates <code>(x_lab, y_lab, z_lab,
-1)</code> in meters. ConfUSIus transforms the laboratory frame by reordering it to <code>(z_lab,
+They contain an affine matrix that maps Iconeus "brain space" coordinates <code>(x_brain,
+y_brain, z_brain, 1)</code> to Iconeus laboratory space coordinates <code>(x_lab, y_lab, z_lab,
+1)</code> in meters. ConfUSIus transforms the laboratory space by reordering it to <code>(z_lab,
 y_lab, x_lab)</code> (in millimeters), and rotating it by 90 degrees about the axial axis (see
 <a href="#scan-files">Why the 90° rotation?</a>).</p>
 <p>The affine matrix in the BPS file can be loaded with

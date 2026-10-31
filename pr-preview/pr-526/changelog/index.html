@@ -273,6 +273,8 @@
       
         
       
+        
+      
     
     
     
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -688,6 +692,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -4659,11 +4692,9 @@
 <ul>
 <li>Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory
   frame, reordered to <code>(z, y, x)</code> and rotated by 90 degrees about the axial axis. This
-  ensures that typical coronal recordings appear in the correct orientation.
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same rotation, so <code>inv(load_bps(...))</code>
-  remains the <code>world_to_brain</code> affine, and
-  <code>confusius.io.scan.ICONEUS_LAB_CORONAL_ROTATION</code> is the rotation matrix used to
-  correct the Iconeus laboratory frame.
+  aligns typical coronal recordings have <code>z</code> elevation, <code>y</code> depth, and <code>x</code> lateral.
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same modification so the resulting
+  affine can be composed with the modified laboratory space
   (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
 <li>Fix matrix initialization incorrectly allowing full affine optimization for
   rigid/translation registration. Refinement now respects the requested transform;
@@ -4715,6 +4746,9 @@
   so <code>da.fusi.affine.apply("world_to_probe")</code> switches to the first pose's probe
   space (<code>z</code> elevation, <code>y</code> depth, <code>x</code> lateral) and <code>apply("world_to_lab")</code> returns
   to lab space (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
+<li>Add Agent Skills support with <code>confusius skills list</code> and <code>confusius skills install</code>.
+  The first skill, <code>confusius-load-data</code>, helps agents load custom data into <code>VoxelData</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
