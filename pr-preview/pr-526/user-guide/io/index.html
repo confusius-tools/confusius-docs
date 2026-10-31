@@ -866,10 +866,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loading-iconeus-scan-files" class="md-nav__link">
+  <a href="#loading-iconeus-files" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Loading Iconeus SCAN Files
+        Loading Iconeus Files
       </span>
     </span>
   </a>
@@ -3409,10 +3409,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loading-iconeus-scan-files" class="md-nav__link">
+  <a href="#loading-iconeus-files" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Loading Iconeus SCAN Files
+        Loading Iconeus Files
       </span>
     </span>
   </a>
@@ -3799,7 +3799,8 @@ directly:</p>
 </span></code></pre></div>
 <p>When you expect to process the same recording repeatedly, <a href="#converting-beamformed-iq-data-to-zarr">convert it to
 Zarr</a> instead for better performance.</p>
-<h3 id="loading-iconeus-scan-files">Loading Iconeus SCAN Files<a class="headerlink" href="#loading-iconeus-scan-files" title="Permanent link">&para;</a></h3>
+<h3 id="loading-iconeus-files">Loading Iconeus Files<a class="headerlink" href="#loading-iconeus-files" title="Permanent link">&para;</a></h3>
+<h4 id="scan-files">SCAN Files<a class="headerlink" href="#scan-files" title="Permanent link">&para;</a></h4>
 <p>Iconeus SCAN files use two formats depending on the IcoScan version: <strong>SCAN v1</strong>
 (HDF5, before IcoScan 2.0) and <strong>SCAN v2</strong> (binary, IcoScan 2.0 and later).
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>confusius.load</code></a> automatically detects the format:</p>
@@ -3839,22 +3840,6 @@ Zarr</a> instead for better performance.</p>
 acquisition timing, spatial geometry, and provenance metadata in <code>.attrs</code>. SCAN v2
 additionally provides more detailed acquisition parameters, such as probe
 specifications, transmit frequency, and plane-wave angles.</p>
-<p>World coordinates <code>(z, y, x)</code> are expressed in millimeters in a fixed Iconeus laboratory
-frame, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives
-<code>z</code> elevation, <code>y</code> depth, and <code>x</code> lateral. <code>.attrs["affines"]</code> contains <code>world_to_lab</code>
-(identity) and <code>world_to_probe</code> (the transformation to the first pose's probe frame).</p>
-<div class="admonition note">
-<p class="admonition-title">Why the 90° rotation?</p>
-<p>The Iconeus laboratory frame follows the motors' initial position, which typically
-corresponds to sagittal slices. Since most <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisitions are coronal, ConfUSIus
-rotates this frame by 90° so that coronal images align with the voxel grid,
-simplifying visualization and registration.</p>
-<p>This rotation is constant across recordings, preserving their relative positions and
-orientations, including those acquired at other probe angles.</p>
-</div>
-<p>For multi-pose recordings, ConfUSIus preserves the acquisition timing and spatial
-geometry of each pose. See <a href="../multipose/">Multi-Pose Imaging</a> for details on handling
-these recordings and the differences between SCAN v1 and v2.</p>
 <div class="admonition warning">
 <p class="admonition-title">Parallel processing with SCAN v1</p>
 <p>SCAN v1 files are HDF5-backed, and h5py datasets <strong>cannot be pickled</strong>. Operations
@@ -3866,47 +3851,32 @@ using separate worker processes, such as
 <p>Alternatively, use <code>n_jobs=1</code> for serial processing. This limitation does not apply
 to SCAN v2.</p>
 </div>
-<h4 id="loading-a-bps-file">Loading a BPS File<a class="headerlink" href="#loading-a-bps-file" title="Permanent link">&para;</a></h4>
-<p>Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System.
-They contain an affine matrix that maps Iconeus brain coordinates <code>(x_brain, y_brain,
-z_brain, 1)</code> to Iconeus lab coordinates <code>(x_lab, y_lab, z_lab, 1)</code> in meters. The
-Iconeus lab frame is a fixed scanner space defined by Iconeus. ConfUSIus re-expresses
-this space as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in millimeters,
-turned by the same constant that compensates the IcoScan probe mount when loading SCAN
-files: that is the world space of SCAN data, so the recipe below needs no extra step.</p>
-<p>The affine matrix in the BPS file can be loaded with
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../../api/io/#confusius.io.load_bps"><code>confusius.io.load_bps</code></a>. It is generally a good idea to store
-it in the <code>.attrs["affines"]</code> attribute of the DataArray:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">brain_to_world</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load_bps</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">)</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_brain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">brain_to_world</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Passing the BPS file path using the <code>bps_path</code> argument when loading a SCAN file offers
-a convenient shortcut:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">,</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">bps_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">,</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span>
-</span></code></pre></div>
-<p>Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to register
-<abbr title="Functional Ultrasound Imaging">fUSI</abbr> data into atlas space directly. It is a single <code>(4, 4)</code> affine, even for multi-pose
-files (<code>3Dscan</code>, <code>4Dscan</code>), since lab space is shared by every pose.</p>
-<h4 id="converting-scan-data-to-nifti">Converting SCAN Data to NIfTI<a class="headerlink" href="#converting-scan-data-to-nifti" title="Permanent link">&para;</a></h4>
+<p>World coordinates <code>(z, y, x)</code> are expressed in millimeters in the Iconeus laboratory
+frame, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives
+<code>z</code> elevation, <code>y</code> depth, and <code>x</code> lateral. <code>.attrs["affines"]</code> contains <code>world_to_lab</code>
+(identity) and <code>world_to_probe</code> (the transformation to the first pose's probe frame).</p>
+<div class="admonition note">
+<p class="admonition-title">Why the 90° rotation?</p>
+<p>The Iconeus laboratory frame is defined relative to the motors' initial position,
+which typically corresponds to sagittal slices. Since most <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisitions are
+coronal, ConfUSIus rotates this frame by 90° so that coronal images align with the
+voxel grid, simplifying visualization and registration.</p>
+<p>This rotation is constant across recordings, preserving their relative positions and
+orientations, including those acquired at other probe angles.</p>
+</div>
+<p>For multi-pose recordings, ConfUSIus preserves the acquisition timing and spatial
+geometry of each pose. See <a href="../multipose/">Multi-Pose Imaging</a> for details on handling
+these recordings and the differences between SCAN v1 and v2.</p>
+<h4 id="converting-scan-to-nifti">Converting SCAN to NIfTI<a class="headerlink" href="#converting-scan-to-nifti" title="Permanent link">&para;</a></h4>
 <p>Since <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../../api/io/#confusius.io.load"><code>load</code></a> returns a VoxelData array, you can save it directly to
 NIfTI using <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../../api/io/#confusius.io.save"><code>save</code></a> or the Xarray accessor.</p>
 <p>For <strong>2Dscan</strong> data, save it directly:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Or equivalently:</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.scan&quot;</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Or equivalently:</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">da</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.nii.gz&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p>For <strong>3Dscan</strong> and <strong>4Dscan</strong> data, consolidate the poses into a single volume before
 saving, or save each pose separately if you want to retain the multi-pose structure. See
@@ -3915,24 +3885,54 @@ acquisitions.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Consolidation</label><label for="__tabbed_3_2">Separate pose files</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">anat</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">anat</span><span class="p">)</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="s2">&quot;sub-01_acq-anat_pwd.nii.gz&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">anat</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">multipose</span><span class="o">.</span><span class="n">consolidate_poses</span><span class="p">(</span><span class="n">anat</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="s2">&quot;sub-01_acq-anat_pwd.nii.gz&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">anat</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">anat</span><span class="o">.</span><span class="n">pose</span><span class="p">:</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">pose_da</span> <span class="o">=</span> <span class="n">anat</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="n">pose</span><span class="p">)</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">pose_da</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;sub-01_acq-anat_pose-</span><span class="si">{</span><span class="n">pose</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2">.nii.gz&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">anat</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_acq-anat_pwd.scan&quot;</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">for</span> <span class="n">pose</span> <span class="ow">in</span> <span class="n">anat</span><span class="o">.</span><span class="n">pose</span><span class="p">:</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">pose_da</span> <span class="o">=</span> <span class="n">anat</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="n">pose</span><span class="p">)</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">cf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">pose_da</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;sub-01_acq-anat_pose-</span><span class="si">{</span><span class="n">pose</span><span class="o">.</span><span class="n">values</span><span class="si">}</span><span class="s2">.nii.gz&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
+<h4 id="bps-files">BPS Files<a class="headerlink" href="#bps-files" title="Permanent link">&para;</a></h4>
+<p>Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System.
+They contain an affine matrix that maps Iconeus "brain frame" coordinates <code>(x_brain,
+y_brain, z_brain, 1)</code> to Iconeus "laboratory frame" coordinates <code>(x_lab, y_lab, z_lab,
+1)</code> in meters. ConfUSIus transforms the laboratory frame by reordering it to <code>(z_lab,
+y_lab, x_lab)</code> (in millimeters), and rotating it by 90 degrees about the axial axis (see
+<a href="#scan-files">Why the 90° rotation?</a>).</p>
+<p>The affine matrix in the BPS file can be loaded with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../../api/io/#confusius.io.load_bps"><code>confusius.io.load_bps</code></a>. It is generally a good idea to store
+it in the <code>.attrs["affines"]</code> attribute of the DataArray:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">brain_to_world</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load_bps</span><span class="p">(</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;affines&quot;</span><span class="p">][</span><span class="s2">&quot;world_to_brain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">brain_to_world</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Passing the BPS file path using the <code>bps_path</code> argument when loading a SCAN file offers
+a convenient shortcut:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">da</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="s2">&quot;sub-01_task-awake_pwd.source.scan&quot;</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">bps_path</span><span class="o">=</span><span class="s2">&quot;sub-01_task-awake_pwd.bps&quot;</span><span class="p">,</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to register
+<abbr title="Functional Ultrasound Imaging">fUSI</abbr> data into atlas space directly. It is a single <code>(4, 4)</code> affine, even for multi-pose
+files (<code>3Dscan</code>, <code>4Dscan</code>), since lab space is shared by every pose.</p>
 <h3 id="loading-nifti-files">Loading NIfTI Files<a class="headerlink" href="#loading-nifti-files" title="Permanent link">&para;</a></h3>
 <p>When loading NIfTI files, ConfUSIus automatically loads a
 <a href="https://bids-specification.readthedocs.io/en/stable/"><abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr></a> metadata. For files 
