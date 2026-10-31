@@ -273,6 +273,8 @@
       
         
       
+        
+      
     
     
     
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -688,6 +692,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -4674,7 +4707,10 @@
   rigid/translation registration. Refinement now respects the requested transform;
   in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ
   (<a href="https://github.com/confusius-tools/confusius/pull/547">#547</a>).</li>
-<li>Matrix-initialized rigid/affine registration now optimizes around the fixed image's</li>
+<li>Matrix-initialized rigid/affine registration now optimizes around the fixed image's
+  physical center rather than the world origin. Initial alignment is unchanged,
+  but convergence and final results may differ; recheck tuned optimizer settings
+  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_dvars&lt;/span&gt;" href="../api/qc/#confusius.qc.compute_dvars"><code>compute_dvars</code></a> now defaults to median-based relative
   DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols
   (2018). The median is less sensitive to unusually large DVARS values, and their
@@ -4689,10 +4725,6 @@
   DVARS reduce spatial blocks; raw
   intensity normalization gathers the full recording at compute time to preserve the
   exact global median (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
-<li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
-  physical center rather than the world origin. Initial alignment is unchanged,
-  but convergence and final results may differ; recheck tuned optimizer settings
-  (<a href="https://github.com/confusius-tools/confusius/pull/543">#543</a>).</li>
 <li>Use
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_template_brunner_grillet_2021&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_template_brunner_grillet_2021"><code>fetch_template_brunner_grillet_2021</code></a>
   instead of <code>fetch_template_huang_2025</code> for the vascular mouse template. The fetcher
@@ -4715,6 +4747,9 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Add Agent Skills support with <code>confusius skills list</code> and <code>confusius skills install</code>.
+  The first skill, <code>confusius-load-data</code>, helps agents load custom data into <code>VoxelData</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> now loads compounded Iconeus RAW/HRAW
   beamformed <abbr title="In-phase and Quadrature">IQ</abbr> files as lazy VoxelData arrays, preserving acquisition blocks as
   Dask chunks (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
