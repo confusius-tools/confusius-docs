@@ -6,6 +6,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory frame, reordered to `(z, y, x)` and rotated by 90 degrees about the axial axis. This aligns typical coronal recordings have `z` elevation, `y` depth, and `x` lateral. `load_bps` applies the same modification so the resulting affine can be composed with the modified laboratory space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - `convert_echoframe_dat_to_zarr` was removed. EchoFrame DAT files load lazily with `confusius.load`, so save them with `confusius.save` using the I/O guide's conversion recipes for measured time coordinates and sharding. The EchoFrame loader no longer stores `n_volumes_per_block` in attrs; use `data.chunks[0]` for acquisition block sizes ([\#551](<https://github.com/confusius-tools/confusius/pull/551>)).
 - Iconeus SCAN metadata now uses fUSI-BIDS field names and units: `iconeus_scan_mode` becomes `iconeus_acquisition_mode`, `imaging_depth` becomes `depth`, and `probe_center_frequency`/`transmit_frequency` are reported in hertz. Nonstandard scanner metadata now consistently uses the `iconeus_` prefix, including probe model numbers, ADC sampling frequency (in native MHz), stimulation toggle times, filter types, SVD cutoffs, and velocity-band limits ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 - Fix matrix initialization incorrectly allowing full affine optimization for rigid/translation registration. Refinement now respects the requested transform; in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ ([\#547](<https://github.com/confusius-tools/confusius/pull/547>)).
@@ -18,6 +19,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- `load_scan` stores `world_to_lab` (the identity, since lab space is the world space) and `world_to_probe` affines in `attrs["affines"]`, so `da.fusi.affine.apply("world_to_probe")` switches to the first pose's probe space (`z` elevation, `y` depth, `x` lateral) and `apply("world_to_lab")` returns to lab space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Add Agent Skills support with `confusius skills list` and `confusius skills install`. The first skill, `confusius-load-data`, helps agents load custom data into `VoxelData` ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
 - `confusius.load` now loads compounded Iconeus RAW/HRAW beamformed IQ files as lazy VoxelData arrays, preserving acquisition blocks as Dask chunks ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 
@@ -27,6 +29,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- SCAN v2 files negate the stored probe-pose Euler angles when loading so their lab-space world coordinates match SCAN v1 for the same acquisition ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is remembered per annotation-set version; available meshes deleted locally are still downloaded again ([\#508](<https://github.com/confusius-tools/confusius/pull/508>)).
 

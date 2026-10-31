@@ -4690,6 +4690,12 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory
+  frame, reordered to <code>(z, y, x)</code> and rotated by 90 degrees about the axial axis. This
+  aligns typical coronal recordings have <code>z</code> elevation, <code>y</code> depth, and <code>x</code> lateral.
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same modification so the resulting
+  affine can be composed with the modified laboratory space
+  (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
 <li><code>convert_echoframe_dat_to_zarr</code> was removed. EchoFrame DAT files load lazily with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a>, so save them with
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;save&lt;/span&gt;" href="../api/io/#confusius.io.save"><code>confusius.save</code></a> using the I/O guide's conversion recipes for
@@ -4747,6 +4753,11 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../api/io/#confusius.io.load_scan"><code>load_scan</code></a> stores <code>world_to_lab</code> (the identity, since
+  lab space is the world space) and <code>world_to_probe</code> affines in <code>attrs["affines"]</code>,
+  so <code>da.fusi.affine.apply("world_to_probe")</code> switches to the first pose's probe
+  space (<code>z</code> elevation, <code>y</code> depth, <code>x</code> lateral) and <code>apply("world_to_lab")</code> returns
+  to lab space (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
 <li>Add Agent Skills support with <code>confusius skills list</code> and <code>confusius skills install</code>.
   The first skill, <code>confusius-load-data</code>, helps agents load custom data into <code>VoxelData</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
@@ -4763,6 +4774,9 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li>SCAN v2 files negate the stored probe-pose Euler angles when loading
+  so their lab-space world coordinates match SCAN v1 for the same
+  acquisition (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
 <li>Labels painted over oblique or sheared data in napari now return to the original
   reference voxel grid using nearest-neighbor interpolation, rather than retaining
   the display grid or being assigned incorrect geometry. The drawing documentation

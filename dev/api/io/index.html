@@ -3873,7 +3873,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt; (&lt;code&gt;confusius.io.load_bps&lt;/code&gt;)" href="./#confusius.io.load_bps">load_bps</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.</p>
+              <p>Load a BPS file and return its brain-to-lab affine.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -5559,25 +5559,16 @@ displacement-field DataArray, <code>cmap</code>/<code>norm</code> restored on <c
 
     <div class="doc doc-contents ">
 
-        <p>Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.</p>
-<p>BPS files are HDF5 sidecars produced by Iconeus' brain positioning system. They
-store a <code>BrainToLab</code> affine that maps Iconeus brain coordinates <code>(x_brain, y_brain,
-z_brain, 1)</code> to Iconeus lab coordinates <code>(x_lab, y_lab, z_lab, 1)</code> in meters.
-The Iconeus lab frame is a fixed scanner frame; <code>probeToLab</code> carries any rotation
-of the probe within it.</p>
-<p>To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab
-side as <strong>ConfUSIus-ordered</strong> lab space <code>(z_lab, y_lab, x_lab)</code> in millimeters. The
-brain side is left in its original axis order (the brain coordinate units are not
-declared by the BPS format and are therefore not converted).</p>
-<p>The change of basis from ConfUSIus-ordered millimeter lab coordinates to
-Iconeus-ordered meter lab coordinates is</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius_lab_to_iconeus_lab = mm_to_m @ WORLD_TO_PROBE_PERMUTATION
-</span></code></pre></div>
-<p><code>WORLD_TO_PROBE_PERMUTATION</code> permutes the axes from ConfUSIus order <code>(z, y, x)</code> to
-probe / Iconeus-lab order <code>(x, y, z)</code>, and <code>mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)</code>
-rescales the translation column. The returned affine is then</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brain_to_lab = inv(confusius_lab_to_iconeus_lab) @ BrainToLab
-</span></code></pre></div>
+        <p>Load a BPS file and return its brain-to-lab affine.</p>
+<p>BPS files are HDF5 sidecars produced by Iconeus' Brain Positioning System (BPS).
+They store a <code>BrainToLab</code> affine that maps Iconeus brain space coordinates
+<code>(x_brain, y_brain, z_brain, 1)</code> to Iconeus laboratory space coordinates
+<code>(x_lab, y_lab, z_lab, 1)</code> in meters.</p>
+<p>Since SCAN files loaded by ConfUSIus have their laboratory space modified (see
+<a href="../../../user-guide/voxeldata/#world-space">World Space</a>), the <code>BrainToLab</code> affine is
+also modified to match the ConfUSIus-modified Iconeus laboratory space.</p>
+<p>The Iconeus brain space isn't modified, as its units and intent are not declared by
+the BPS format.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5599,12 +5590,27 @@ rescales the translation column. The returned affine is then</p>
               <code>(4, 4) numpy.ndarray</code>
           –
           <div class="doc-md-description">
-            <p>Affine mapping Iconeus brain coordinates to ConfUSIus-ordered Iconeus lab
-coordinates <code>(z_lab, y_lab, x_lab, 1)</code> in millimeters.</p>
+            <p>Affine mapping Iconeus brain space coordinates to the ConfUSIus-modified Iconeus
+laboratory space coordinates in millimeters.</p>
           </div>
         </li>
     </ul>
 
+
+<details class="references" open>
+  <summary>References</summary>
+  <div class="footnote">
+<hr />
+<ol>
+<li id="confusius.io.load_bps--fn:1">
+<p>Nouhoum, M., Ferrier, J., Osmanski, B.-F., Ialy-Radio, N., Pezet, S., Tanter,
+M., &amp; Deffieux, T. (2021). A functional ultrasound brain GPS for automatic
+vascular-based neuronavigation. Scientific Reports, 11(1), 15197.
+https://doi.org/10.1038/s41598-021-94764-7&#160;<a class="footnote-backref" href="#confusius.io.load_bps--fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</details>
 
     </div>
 
@@ -6128,17 +6134,18 @@ reproduce the original NIfTI header codes.</p>
     <div class="doc doc-contents ">
 
         <p>Load an Iconeus SCAN file as a lazy VoxelData array.</p>
-<p>SCAN files (<code>.scan</code>) come in two on-disk formats, both handled here:</p>
+<p>SCAN files (<code>.scan</code>) come in two on-disk formats. <code>load_scan</code> sniffs the format
+automatically and dispatches accordingly:</p>
 <ul>
 <li><strong>v1</strong>: an HDF5 container produced by IcoScan/NeuroScan, holding power Doppler
   data and spatial/temporal metadata for 2D, 3D, or 3D+t fUSI volumes. The returned
   DataArray wraps an open <code>h5py</code> handle via a Dask array; keep it in scope (or call
   <code>.compute()</code>) before the handle is garbage-collected.</li>
 <li><strong>v2</strong>: a flat binary file (variable-length header + little-endian <code>float64</code>
-  payload). Each Dask chunk opens its own read-only memory map and, when a
-  <code>bps_path</code> is given, the returned DataArray includes <code>world_to_brain</code>.</li>
+  payload). Each Dask chunk opens its own read-only memory map.</li>
 </ul>
-<p><code>load_scan</code> sniffs the format automatically and dispatches accordingly.</p>
+<p>When a <code>bps_path</code> is provided, the returned VoxelData array includes a
+<code>world_to_brain</code> affine (see <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="./#confusius.io.load_bps"><code>load_bps</code></a>).</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6223,39 +6230,22 @@ of <code>"2Dscan"</code>, <code>"3Dscan"</code>, <code>"4Dscan"</code>, or <code
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p><strong>v2.</strong> The binary layout follows PyIconeus: header fields, measured times, one
-6DOF probe pose per <code>pose</code>, acquisition/provenance metadata, then a Fortran-ordered
-<code>(size_x, size_y, size_z, time, pose, dim6)</code> payload. The loader exposes this as
-VoxelData order <code>(..., time, pose, k, j, i)</code> and keeps dim6 as an extra leading
-dimension when present. Mapped chunks are read-only; in-place chunk-processing
-functions must copy them first.</p>
-<p>Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as
-attributes in BIDS units: <code>probe_model</code>, <code>probe_center_frequency</code> (Hz),
-<code>probe_pitch</code> (mm), <code>probe_aperture</code> (mm), <code>probe_focal_depth</code> (mm),
-<code>depth</code> (mm start/end), <code>transmit_frequency</code> (Hz),
-<code>pulse_repetition_frequency</code> (Hz), <code>plane_wave_angles</code> (deg), <code>iconeus_svd_low_cutoff</code>, and
-<code>power_doppler_integration_duration</code> (s). The Iconeus-specific
-<code>iconeus_ultrafast_sampling_frequency</code> is the ADC sampling rate in MHz, not the
-compound sampling frequency.</p>
-<p>ConfUSIus world coordinates <code>(z, y, x)</code> for SCAN data are <strong>ConfUSIus-ordered
-Iconeus lab coordinates</strong> (mm): a fixed scanner frame shared by every pose, used
-as the canonical world frame because it is the one frame that is physically
-meaningful across poses. For multi-pose files, <code>da</code>'s voxel-to-world geometry is
-itself pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per
-<code>da.coords["pose"]</code> label); world
-selection therefore requires reducing <code>pose</code> to a scalar first, e.g.
-<code>da.isel(pose=0).sel(z=..., y=..., x=...)</code> or <code>da.isel(pose=0)</code>.</p>
-<p>If <code>bps_path</code> is provided, a <code>world_to_brain</code> affine is stored in
-<code>da.attrs["affines"]["world_to_brain"]</code> that maps ConfUSIus world coordinates
-(already lab space, as above) to Iconeus' brain coordinates. Apply as
-<code>da.attrs["affines"]["world_to_brain"] @ np.array([z, y, x, 1.0])</code>.</p>
-<p>Provenance attributes are stored in <code>da.attrs</code>: BIDS-compatible fields
-(<code>device_serial_number</code>, <code>software_version</code>) and Iconeus-specific fields
-(<code>iconeus_acquisition_mode</code>, <code>iconeus_subject</code>, <code>iconeus_session</code>, <code>iconeus_scan</code>,
-<code>iconeus_project</code>, <code>iconeus_datetime</code>). <code>iconeus_datetime</code> is the acquisition
-date and time in ISO 8601 format, e.g. <code>"2021-10-22T14:14:12+00:00"</code>. SCAN v1
-stores it without a time zone, so ConfUSIus treats it as UTC. SCAN v2 files
-also provide <code>iconeus_hardware</code>.</p>
+  <p>Both formats use the same world coordinate system: the Iconeus laboratory space,
+reordered to ConfUSIus <code>(z, y, x)</code> conventions (millimeters) and rotated by 90°
+about the y-axis to align typical coronal recordings have <code>z</code> elevation, <code>y</code> depth,
+and <code>x</code> lateral. This space is shared across poses and scans, while each pose
+retains its own voxel-to-world geometry.</p>
+<p><code>da.attrs["affines"]</code> contains <code>world_to_lab</code> (identity) and <code>world_to_probe</code>
+(relative to the first probe pose). These can be applied with
+<code>da.fusi.affine.apply(...)</code>. If <code>bps_path</code> is provided, <code>world_to_brain</code> is also
+stored, mapping world coordinates to native Iconeus brain coordinates.</p>
+<p>Provenance metadata (<code>iconeus_*</code>, <code>software_version</code>, <code>device_serial_number</code>) are
+preserved in <code>da.attrs</code>. Acquisition datetimes use ISO 8601, with SCAN v1 timestamps
+assumed to be UTC. SCAN v2 additionally exposes acquisition parameters such as probe
+specifications, transmit frequency, plane-wave angles, and processing settings.</p>
+<p>SCAN v1 uses HDF5-backed Dask arrays, which cannot be pickled for process-based
+parallelism; call <code>.compute()</code> first. SCAN v2 uses read-only memory-mapped chunks,
+which must be copied before in-place modification.</p>
 </details>
 
     </div>
