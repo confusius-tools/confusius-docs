@@ -24,7 +24,7 @@ To verify that ConfUSIus has been installed correctly, you may run the following
 ```pycon
 >>> import confusius as cf
 >>> print(cf.__version__)
-'0.9.0'
+'0.10.0.dev0'
 ```
 
 If the installation was successful, this code will print the installed version of ConfUSIus without any errors. If you encounter an error, please open an issue on the [GitHub repository](<https://github.com/confusius-tools/confusius/issues/>).
