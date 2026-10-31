@@ -160,7 +160,7 @@ World coordinates are set when attaching a `VoxelToWorldIndex` to the DataArray.
 
 - **EchoFrame**: Lateral and axial coordinates are read from the acquisition metadata file.
 - **AUTC**: Spacing must be supplied explicitly to `convert_autc_dats_to_zarr`—AUTC files carry no spacing metadata of their own. Origin is optional and defaults to a probe-centered, surface-referenced position when omitted.
-- **Iconeus SCAN**: Coordinates are derived from Iconeus' laboratory frame, rotated by 90 degrees about the axial axis to ensure coronal slices are displayed in the correct orientation for typical recordings. The laboratory frame's axial axis is flipped so that it is always positive and increases with depth.
+- **Iconeus SCAN**: Coordinates are derived from Iconeus' laboratory frame, reordered and rotated by 90 degrees about the axial axis to ensure coronal slices are displayed in the correct orientation for typical recordings. The laboratory frame's axial axis is flipped so that it is always positive and increases with depth.
 - **NIfTI**: Coordinates are derived from the "best" affine transformation found in the file header, or from whichever one `load_nifti`'s `coordinate_affine` argument selects explicitly.
 
 > [!TIP]
