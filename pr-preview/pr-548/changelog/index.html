@@ -273,6 +273,8 @@
       
         
       
+        
+      
     
     
     
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -688,6 +692,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -4657,13 +4690,6 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Iconeus SCAN metadata now uses <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units:
-  <code>iconeus_scan_mode</code> becomes <code>iconeus_acquisition_mode</code>, <code>imaging_depth</code> becomes
-  <code>depth</code>, and <code>probe_center_frequency</code>/<code>transmit_frequency</code> are reported in hertz.
-  Nonstandard scanner metadata now consistently uses the <code>iconeus_</code> prefix,
-  including probe model numbers, ADC sampling frequency (in native MHz),
-  stimulation toggle times, filter types, <abbr title="Singular Value Decomposition">SVD</abbr> cutoffs, and velocity-band limits
-  (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
 <li>Fix matrix initialization incorrectly allowing full affine optimization for
   rigid/translation registration. Refinement now respects the requested transform;
   in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ
@@ -4683,6 +4709,29 @@
   DVARS reduce spatial blocks; raw
   intensity normalization gathers the full recording at compute time to preserve the
   exact global median (<a href="https://github.com/confusius-tools/confusius/pull/540">#540</a>).</li>
+<li>Iconeus SCAN metadata now uses <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units:
+  <code>iconeus_scan_mode</code> becomes <code>iconeus_acquisition_mode</code>, <code>imaging_depth</code> becomes
+  <code>depth</code>, and <code>probe_center_frequency</code>/<code>transmit_frequency</code> are reported in hertz.
+  Nonstandard scanner metadata now consistently uses the <code>iconeus_</code> prefix,
+  including probe model numbers, ADC sampling frequency (in native MHz),
+  stimulation toggle times, filter types, <abbr title="Singular Value Decomposition">SVD</abbr> cutoffs, and velocity-band limits.
+  The unused <code>is_multiplane</code> flag is no longer exported
+  (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>5cf6c4ed (docs(changelog): record Iconeus RAW loader)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
 <li>Matrix-seeded rigid/affine registration now optimizes around the fixed image's
   physical center rather than the world origin. Initial alignment is unchanged,
   but convergence and final results may differ; recheck tuned optimizer settings
@@ -4709,6 +4758,9 @@
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Add Agent Skills support with <code>confusius skills list</code> and <code>confusius skills install</code>.
+  The first skill, <code>confusius-load-data</code>, helps agents load custom data into <code>VoxelData</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/539">#539</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load&lt;/span&gt;" href="../api/io/#confusius.io.load"><code>confusius.load</code></a> now loads compounded Iconeus RAW/HRAW
   beamformed <abbr title="In-phase and Quadrature">IQ</abbr> files as lazy VoxelData arrays, preserving acquisition blocks as
   Dask chunks (<a href="https://github.com/confusius-tools/confusius/pull/548">#548</a>).</li>
