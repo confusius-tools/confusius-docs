@@ -4657,13 +4657,13 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>SCAN world coordinates are now the ConfUSIus representation of the Iconeus lab frame:
-  re-ordered to <code>(z, y, x)</code> and rotated by a constant +90 degrees about the axial axis so
-  a standard IcoScan probe mount gives <code>z</code> elevation, <code>y</code> depth and <code>x</code> lateral.
-  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same turn, so <code>inv(load_bps(...))</code>
+<li>Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory
+  frame, reordered to <code>(z, y, x)</code> and rotated by 90 degrees about the axial axis. This
+  ensures that typical coronal recordings appear in the correct orientation.
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_bps&lt;/span&gt;" href="../api/io/#confusius.io.load_bps"><code>load_bps</code></a> applies the same rotation, so <code>inv(load_bps(...))</code>
   remains the <code>world_to_brain</code> affine, and
-  <code>confusius.io.scan.ICONEUS_LAB_MOTOR_COMPENSATION</code> is the turn itself, for anyone
-  who needs Iconeus' own frame
+  <code>confusius.io.scan.ICONEUS_LAB_CORONAL_ROTATION</code> is the rotation matrix used to
+  correct the Iconeus laboratory frame.
   (<a href="https://github.com/confusius-tools/confusius/pull/526">#526</a>).</li>
 <li>Fix matrix initialization incorrectly allowing full affine optimization for
   rigid/translation registration. Refinement now respects the requested transform;

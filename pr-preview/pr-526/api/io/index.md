@@ -819,19 +819,19 @@ Load a BPS file and return its brain-to-lab affine, re-expressed for ConfUSIus.
 
 BPS files are HDF5 sidecars produced by Iconeus' brain positioning system. They store a `BrainToLab` affine that maps Iconeus brain coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus lab coordinates `(x_lab, y_lab, z_lab, 1)` in meters. The Iconeus lab frame is a fixed scanner frame; `probeToLab` carries any rotation of the probe within it.
 
-To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab side in the ConfUSIus representation of the Iconeus lab frame: **ConfUSIus-ordered** `(z_lab, y_lab, x_lab)` in millimeters, turned by `ICONEUS_LAB_MOTOR_COMPENSATION` to undo the standard IcoScan probe mount, exactly as `load_scan` does for world coordinates. The brain side is left in its original axis order (the brain coordinate units are not declared by the BPS format and are therefore not converted).
+To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab side in the ConfUSIus representation of the Iconeus lab frame: **ConfUSIus-ordered** `(z_lab, y_lab, x_lab)` in millimeters, rotated by `ICONEUS_LAB_CORONAL_ROTATION` for typical coronal acquisitions, exactly as `load_scan` does for world coordinates. The brain side is left in its original axis order (the brain coordinate units are not declared by the BPS format and are therefore not converted).
 
 The change of basis from ConfUSIus-ordered millimeter lab coordinates to Iconeus-ordered meter lab coordinates is
 
 ```text
-confusius_lab_to_iconeus_lab = mm_to_m @ WORLD_TO_PROBE_PERMUTATION
+confusius_lab_to_iconeus_lab = mm_to_m @ CONFUSIUS_TO_ICONEUS_AXES
 ```
 
-`WORLD_TO_PROBE_PERMUTATION` permutes the axes from ConfUSIus order `(z, y, x)` to probe / Iconeus-lab order `(x, y, z)`, and `mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)` rescales the translation column. The returned affine is then
+`CONFUSIUS_TO_ICONEUS_AXES` converts the axes from ConfUSIus order `(z, y, x)` to probe / Iconeus-lab order `(x, y, z)`, and `mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)` rescales the translation column. The returned affine is then
 
 ```text
 brain_to_lab = (
-    ICONEUS_LAB_MOTOR_COMPENSATION @ inv(confusius_lab_to_iconeus_lab) @ BrainToLab
+    ICONEUS_LAB_CORONAL_ROTATION @ inv(confusius_lab_to_iconeus_lab) @ BrainToLab
 )
 ```
 
@@ -1105,7 +1105,7 @@ Raises:
 >
 > Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes, in native header units: `probe_model`, `probe_center_frequency` (MHz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `imaging_depth` (mm start/end), `transmit_frequency` (MHz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `svd_low_cutoff`, and `power_doppler_integration_duration` (s).
 >
-> ConfUSIus world coordinates `(z, y, x)` for SCAN data are the **ConfUSIus representation of Iconeus lab coordinates** (mm): the Iconeus lab frame, a fixed scanner frame shared by every pose and every scan of a session, re-ordered to `(z, y, x)` and turned by a constant +90 degrees about the axial axis (`ICONEUS_LAB_MOTOR_COMPENSATION`) to undo the standard IcoScan probe mount. A standard acquisition therefore has `z` elevation, `y` depth and `x` lateral; a probe mounted at another angle keeps its rotation in the loaded geometry. The frame is the same for SCAN v1 and SCAN v2 files. For multi-pose files, `da`'s voxel-to-world geometry is itself pose-dependent (a `(npose, 4, 4)` affine stack, one affine per `da.coords["pose"]` label); world selection therefore requires reducing `pose` to a scalar first, e.g. `da.isel(pose=0).sel(z=..., y=..., x=...)` or `da.isel(pose=0)`.
+> ConfUSIus world coordinates `(z, y, x)` for SCAN data are the **ConfUSIus representation of Iconeus lab coordinates** (mm): the Iconeus lab frame, a fixed scanner frame shared by every pose and every scan of a session, re-ordered to `(z, y, x)` and rotated by `ICONEUS_LAB_CORONAL_ROTATION` (a constant +90 degrees about the axial axis) so that typical coronal acquisitions have `z` elevation, `y` depth and `x` lateral. Acquisitions at other probe angles keep their rotation in the loaded geometry. The frame is the same for SCAN v1 and SCAN v2 files. For multi-pose files, `da`'s voxel-to-world geometry is itself pose-dependent (a `(npose, 4, 4)` affine stack, one affine per `da.coords["pose"]` label); world selection therefore requires reducing `pose` to a scalar first, e.g. `da.isel(pose=0).sel(z=..., y=..., x=...)` or `da.isel(pose=0)`.
 >
 > Two named affines are stored in `da.attrs["affines"]`: `world_to_lab`, the identity, since lab space is the world space, and `world_to_probe`, mapping world coordinates to the first pose's probe space (`z` elevation, `y` depth, `x` lateral). `da.fusi.affine.apply("world_to_probe")` re-expresses the data in probe space, placing every pose relative to the first one, and `.apply("world_to_lab")` brings it back. The lab frame is the same for SCAN v1 and SCAN v2 files.
 >
