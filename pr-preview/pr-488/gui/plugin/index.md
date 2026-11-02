@@ -2,8 +2,8 @@
 
 The ConfUSIus sidebar contains seven collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
 
-- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN).
-- [**Atlas**](<#atlas-panel>) — load brain atlases and fUSI templates, browse the structure tree, and get ROI masks.
+- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, Iconeus SCAN and RAW).
+- [**Atlas**](<#atlas-panel>) — load brain atlases and fUSI templates, browse
 - [**Video**](<#video-panel>) — load videos side-by-side, temporally synced with the fUSI acquisition.
 - [**Signals**](<#signals-panel>) — plot voxel, point, or label-region signals in a bottom dock.
 - [**Events**](<#events-panel>) — annotate periods of time (BIDS events) and shade them on the signal plot.
