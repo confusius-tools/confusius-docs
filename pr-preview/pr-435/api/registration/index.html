@@ -12,7 +12,7 @@
         <meta name="author" content="Samuel Le Meur-Diebolt">
       
       
-        <link rel="canonical" href="https://confusius.tools/api/registration/">
+        <link rel="canonical" href="https://confusius.tools/pr-preview/pr-435/api/registration/">
       
       
         <link rel="prev" href="../qc/">
@@ -232,6 +232,8 @@
   
     
       
+      
+        
       
         
       
@@ -594,6 +596,8 @@
       
         
       
+        
+      
     
     
     
@@ -686,6 +690,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -3652,6 +3685,11 @@
                 <a id="__skip" tabindex="-1"></a>
                 
                   
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
 
   
   
@@ -5650,7 +5688,7 @@ optimization:</p>
 <li><code>"center_geometry"</code>: aligns image centers.</li>
 <li><code>"center_moments"</code>: aligns centers of mass.</li>
 <li><code>(N+1, N+1)</code> homogeneous affine matrix: uses a precomputed affine
-  transform.</li>
+  transform, held fixed while optimizing the requested <code>transform_type</code>.</li>
 <li><code>None</code>: uses the identity transform.</li>
 </ul>
 <p>For <code>transform_type="bspline"</code>, centering modes are ignored but affine
@@ -5667,7 +5705,8 @@ initialization is supported.</p>
             <p>Per-parameter weights applied on top of the auto-estimated world shift
 scales. <code>None</code> uses identity weights (all ones). A list is passed directly to
 SimpleITK's <code>SetOptimizerWeights</code>; its length must match the number of
-transform parameters (6 for rigid, 12 for affine). The weight for each
+refinement parameters (3 for translation, 6 for rigid, 12 for affine in
+3D), including with matrix initialization. The weight for each
 parameter is multiplied into the effective step
 size: <code>0</code> freezes a parameter entirely, values in <code>(0, 1)</code> slow it down, and
 <code>1</code> leaves it unchanged. For the 3D Euler transform the parameter order is
@@ -7091,7 +7130,7 @@ dimensions <code>k</code>, <code>j</code>, and <code>i</code>.</p>
       
         
         
-      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips","content.action.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.8b1c90bd.min.js"></script>

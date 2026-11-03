@@ -12,7 +12,7 @@
         <meta name="author" content="Samuel Le Meur-Diebolt">
       
       
-        <link rel="canonical" href="https://confusius.tools/user-guide/visualization/">
+        <link rel="canonical" href="https://confusius.tools/pr-preview/pr-435/user-guide/visualization/">
       
       
         <link rel="prev" href="../beamformed-iq/">
@@ -234,6 +234,8 @@
   
     
       
+      
+        
       
         
       
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -689,6 +693,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -3924,6 +3957,8 @@
       
         
       
+        
+      
     
     
     
@@ -3950,6 +3985,11 @@
                 <a id="__skip" tabindex="-1"></a>
                 
                   
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
 
   
   
@@ -3973,7 +4013,7 @@ generation</strong>:</p>
 <td>Interactive exploration of 3D+t datasets</td>
 </tr>
 <tr>
-<td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;draw_napari_labels&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.draw_napari_labels"><code>draw_napari_labels</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;draw_napari_labels&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.draw_napari_labels"><code>.fusi.plot.draw_napari_labels()</code></a> + <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.labels_from_layer"><code>labels_from_layer</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.labels_from_layer"><code>.fusi.plot.labels_from_layer()</code></a></td>
+<td><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;draw_napari_labels&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.draw_napari_labels"><code>draw_napari_labels</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;draw_napari_labels&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.draw_napari_labels"><code>.fusi.plot.draw_napari_labels()</code></a> + <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.extract_labels_from_layer"><code>extract_labels_from_layer</code></a> / <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.extract_labels_from_layer"><code>.fusi.plot.extract_labels_from_layer()</code></a></td>
 <td>napari</td>
 <td>Interactive manual <abbr title="Region of Interest">ROI</abbr> drawing</td>
 </tr>
@@ -4133,6 +4173,12 @@ hosts hundreds of plugins that extend functionality—from segmentation algorith
 integration with other imaging modalities like microscopy or MRI.</p>
 </div>
 <h3 id="napari-parameters">Napari Parameters<a class="headerlink" href="#napari-parameters" title="Permanent link">&para;</a></h3>
+<p>Both <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;napari&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor.napari"><code>data.fusi.plot.napari()</code></a> default to
+<code>layer_type="auto"</code>: integer and boolean data open as labels layers, and other data
+as image layers. Pass <code>layer_type="image"</code> explicitly for integer-valued intensity
+data, or <code>layer_type="labels"</code> to explicitly select a labels layer. The shorthand
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIPlotAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor"><code>data.fusi.plot()</code></a> uses the same default.</p>
 <p>By default napari auto-scales contrast to the data range. For power Doppler, working
 in decibel scale with explicit limits is often more informative:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># dB-scaled power Doppler with fixed contrast window.</span>
@@ -4209,16 +4255,16 @@ integer becomes a separate region of interest (<abbr title="Region of Interest">
 the spatial scale and origin are consistent regardless of voxel size or data origin.</p>
 <p><a class="glightbox" data-title="napari viewer with two painted ROI regions" data-type="image" href="../../images/visualization/napari-draw-labels.png"><img alt="napari viewer with two painted ROI regions" src="../../images/visualization/napari-draw-labels.png" /></a></p>
 <p>Once you have finished painting, use
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;labels_from_layer&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.labels_from_layer"><code>labels_from_layer</code></a> to convert the Labels layer
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.extract_labels_from_layer"><code>extract_labels_from_layer</code></a> to convert the Labels layer
 into a stacked integer DataArray compatible with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_with_labels&lt;/span&gt;" href="../../api/extract/#confusius.extract.extract_with_labels"><code>extract_with_labels</code></a>,
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_contours"><code>plot_contours</code></a>, and
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_contours&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.VolumePlotter.add_contours"><code>VolumePlotter.add_contours</code></a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">labels_from_layer</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_labels_from_layer</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Convert the painted layer to a stacked DataArray.</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># label_map has dims (&quot;mask&quot;, &quot;k&quot;, &quot;j&quot;, &quot;i&quot;), one layer per painted label.</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">label_map</span> <span class="o">=</span> <span class="n">labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">mean_vol</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">label_map</span> <span class="o">=</span> <span class="n">extract_labels_from_layer</span><span class="p">(</span><span class="n">labels_layer</span><span class="p">,</span> <span class="n">mean_vol</span><span class="p">)</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Each label&#39;s color as painted in napari is stored in attrs[&quot;rgb_lookup&quot;]</span>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1"># and will be reused automatically by plot_contours and add_contours.</span>
@@ -4231,6 +4277,13 @@ into a stacked integer DataArray compatible with
 </span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">mean_vol</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">slice_mode</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
 </span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="n">plotter</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
 </span></code></pre></div>
+<p>For oblique or sheared data, painting takes place on an axis-aligned display grid.
+Extraction maps the painted labels back onto <code>mean_vol</code>'s original voxel grid using
+nearest-neighbor interpolation, with zero background outside the display grid.
+Label IDs are preserved, but boundaries can change and thin regions can disappear.</p>
+<p>Prefer drawing in an existing axis-aligned acquisition/scanner frame when available. A
+known transform can be applied afterward to both the image and extracted labels using
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAffineAccessor.apply"><code>.fusi.affine.apply</code></a> without resampling.</p>
 <h2 id="static-volume-plots">Static Volume Plots<a class="headerlink" href="#static-volume-plots" title="Permanent link">&para;</a></h2>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> generates a static Matplotlib grid of 2D
 slices—one panel per coordinate along the chosen slicing dimension. It is the standard
@@ -4753,7 +4806,7 @@ in the <a href="https://github.com/confusius-tools/confusius-datasets">ConfUSIus
       
         
         
-      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips","content.action.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.8b1c90bd.min.js"></script>

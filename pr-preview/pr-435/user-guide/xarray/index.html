@@ -12,7 +12,7 @@
         <meta name="author" content="Samuel Le Meur-Diebolt">
       
       
-        <link rel="canonical" href="https://confusius.tools/user-guide/xarray/">
+        <link rel="canonical" href="https://confusius.tools/pr-preview/pr-435/user-guide/xarray/">
       
       
         <link rel="prev" href="../voxeldata/">
@@ -234,6 +234,8 @@
   
     
       
+      
+        
       
         
       
@@ -596,6 +598,8 @@
       
         
       
+        
+      
     
     
     
@@ -689,6 +693,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -3634,6 +3667,8 @@
       
         
       
+        
+      
     
     
     
@@ -3660,6 +3695,11 @@
                 <a id="__skip" tabindex="-1"></a>
                 
                   
+  <button type="button" title="Copy as Markdown" aria-label="Copy as Markdown" class="md-content__button md-icon" data-md-copy-url="./index.md">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+  </button>
+
 
   
   
@@ -3779,7 +3819,7 @@ that share some dimensions and coordinates. It shows up when a source naturally 
 several co-registered variables together, rather than one array per file. An atlas is a
 good example: loading one with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> gives you a
-Dataset with <code>reference</code>, <code>annotation</code>, and <code>hemispheres</code> variables sharing the same
+Dataset with <code>template</code>, <code>annotation</code>, and <code>hemispheres</code> variables sharing the same
 voxel grid and world coordinates:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_brainglobe_atlas</span><span class="p">(</span><span class="s2">&quot;allen_mouse_100um&quot;</span><span class="p">)</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">atlas</span>
@@ -3793,7 +3833,7 @@ voxel grid and world coordinates:</p>
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="go">  * y            (k, j, i) float64 10MB 0.0 0.0 0.0 ... 7.9 7.9</span>
 </span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="go">  * x            (k, j, i) float64 10MB 0.0 0.1 0.2 ... 11.2 11.3</span>
 </span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="go">Data variables:</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="go">    reference    (k, j, i) float32 5MB 0.0 0.0 0.0 ... 1.0 1.0</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="go">    template     (k, j, i) float32 5MB 0.0 0.0 0.0 ... 1.0 1.0</span>
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="go">    annotation   (k, j, i) int32 5MB 0 0 0 0 0 ... 0 0 0 0 0</span>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="go">    hemispheres  (k, j, i) int8 1MB 2 2 2 2 2 ... 1 1 1 1 1</span>
 </span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="go">Indexes:</span>
@@ -3808,7 +3848,7 @@ voxel grid and world coordinates:</p>
 </span></code></pre></div>
 <p>ConfUSIus mostly operates on DataArray objects. Datasets are a convenient way to group
 several DataArrays together when they naturally belong together, as with the atlas
-above—pull out a single variable (e.g. <code>atlas["reference"]</code>) to get a DataArray back.</p>
+above—pull out a single variable (e.g. <code>atlas["template"]</code>) to get a DataArray back.</p>
 <h2 id="basic-operations">Basic Operations<a class="headerlink" href="#basic-operations" title="Permanent link">&para;</a></h2>
 <div class="admonition question">
 <p class="admonition-title">New to Xarray?</p>
@@ -4400,7 +4440,7 @@ reference</a>.</p>
       
         
         
-      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.tabs","navigation.sections","navigation.expand","navigation.path","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.instant.progress","navigation.tracking","toc.follow","search.highlight","content.code.copy","content.code.annotate","content.tooltips","content.footnote.tooltips","content.action.copy"],"redirect":null,"search":"../../assets/javascripts/workers/search.7d14d953.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","clipboard.error":"Could not copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"alias":true,"default":"latest","provider":"mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.8b1c90bd.min.js"></script>
