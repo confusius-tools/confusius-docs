@@ -426,7 +426,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f24888f59d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9948c3d9d0>
     ```
 - [ ] Attributes: (25)
 
@@ -545,7 +545,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.5 s
+**Total running time:** 13.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/chore/xarray-2026.9?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-559/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-559/examples/_built/io/load_multipose_recordings.ipynb>)
 
