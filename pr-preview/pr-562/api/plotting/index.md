@@ -1891,6 +1891,10 @@ plot_napari(
     ]
     | None = None,
     resample_fill_value: float | None = None,
+    _built_layer: tuple[
+        Any, dict[str, Any], Literal["image", "labels"]
+    ]
+    | None = None,
     **layer_kwargs,
 ) -> tuple[Viewer, list[Image | Labels]]
 ```
@@ -1939,6 +1943,11 @@ Parameters:
   (`float`, default: `None` ) –
 
   Value assigned to voxels outside `data`'s field of view after resampling oblique data. If not provided, defaults to `data`'s own minimum value.
+- #### **`_built_layer`**
+
+  (`tuple[Any, dict[str, Any], Literal['image', 'labels']]`, default: `None` ) –
+
+  Internal pre-built layer payload used when adding a pose layer.
 - #### **`**layer_kwargs`**
 
   –

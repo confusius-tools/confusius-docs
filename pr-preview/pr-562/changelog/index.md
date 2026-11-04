@@ -8,6 +8,10 @@ Current development version for the next ConfUSIus release.
 
 - `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 
+### 📚 Documentation
+
+- Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
+
 ### 🔧 Maintenance
 
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
