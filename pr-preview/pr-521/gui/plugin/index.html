@@ -273,6 +273,8 @@
       
         
       
+        
+      
     
     
     
@@ -594,6 +596,8 @@
       
         
       
+        
+      
     
     
     
@@ -686,6 +690,35 @@
     
   
   Installation
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/agents/" class="md-nav__link">
+        
+  
+  
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+  
+  <span class="md-ellipsis">
+    
+  
+  Agents
 
     
   </span>
@@ -1412,34 +1445,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#saving-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Saving data
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#video-panel" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Video Panel
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Video Panel">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#loading-a-video" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1451,10 +1456,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loaded-videos" class="md-nav__link">
+  <a href="#exporting-data" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Loaded videos
+        Exporting data
       </span>
     </span>
   </a>
@@ -3404,34 +3409,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#saving-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Saving data
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#video-panel" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Video Panel
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Video Panel">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#loading-a-video" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3443,10 +3420,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#loaded-videos" class="md-nav__link">
+  <a href="#exporting-data" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Loaded videos
+        Exporting data
       </span>
     </span>
   </a>
@@ -3715,12 +3692,12 @@
 
 
 <h1 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h1>
-<p>The ConfUSIus sidebar contains six collapsible panels. Each panel operates
+<p>The ConfUSIus sidebar contains five collapsible panels. Each panel operates
 independently and can be expanded or collapsed by clicking its header. For an in-app
 introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
 <ul>
-<li><a href="#data-io-panel"><strong>Data I/O</strong></a> — load and save <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files (NIfTI, Zarr, SCAN).</li>
-<li><a href="#video-panel"><strong>Video</strong></a> — load videos side-by-side, temporally synced with the <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisition.</li>
+<li><a href="#data-io-panel"><strong>Data I/O</strong></a> — load and save <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files (NIfTI, Zarr, Iconeus SCAN,
+  Iconeus RAW) and load behavioral videos.</li>
 <li><a href="#signals-panel"><strong>Signals</strong></a> — plot voxel, point, or label-region signals in a bottom dock.</li>
 <li><a href="#events-panel"><strong>Events</strong></a> — annotate periods of time (<abbr title="Brain Imaging Data Structure">BIDS</abbr> events) and shade them on
   the signal plot.</li>
@@ -3729,25 +3706,89 @@ introduction, click <strong>Take a Tour</strong> in the sidebar header.</p>
   registration, inspect progress, and save/apply transforms.</li>
 </ul>
 <h2 id="data-io-panel">Data I/O Panel<a class="headerlink" href="#data-io-panel" title="Permanent link">&para;</a></h2>
-<p>The Data I/O Panel handles both loading and saving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files without leaving the
-viewer.</p>
+<p>The Data I/O Panel handles loading and saving <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files and loading behavioral videos
+without leaving the viewer.</p>
 <p><a class="glightbox" data-title="ConfUSIus Data I/O panel" data-type="image" href="../../images/gui/plugin-data-io.png"><img alt="ConfUSIus Data I/O panel" src="../../images/gui/plugin-data-io.png" /></a></p>
 <h3 id="loading-data">Loading data<a class="headerlink" href="#loading-data" title="Permanent link">&para;</a></h3>
-<p>Click <strong>Browse</strong> to pick a file—it loads immediately on selection. Or paste a path
-directly in the text field and press <span class="keys"><kbd class="key-enter">Enter</kbd></span>. Enable <strong>Load lazily</strong> beforehand to
-keep the array Dask-backed for large files. A progress bar animates during loading, and
-any error is reported in the napari notification bar.</p>
+<p>Use <strong>Load Data</strong> for both <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files and behavioral videos. When loading <abbr title="Functional Ultrasound Imaging">fUSI</abbr> files,
+enable <strong>Load lazily</strong> beforehand to keep large <abbr title="Functional Ultrasound Imaging">fUSI</abbr> arrays Dask-backed. This option is
+disabled for video paths, since videos already decode frames on demand.</p>
 <div class="admonition info">
 <p class="admonition-title">Time overlay</p>
 <p>When a loaded scan contains a time dimension, the current time coordinate is
 displayed as a text overlay in the bottom-left corner of the canvas. The value and
 units are read from the scan's coordinate metadata and update automatically as you
 scrub the time slider.</p>
-<p>When multiple scans are open, the overlay reflects the currently selected layer.
-If zero or more than one layer is selected, it keeps following the previously
-selected one.</p>
+<p>When multiple scans are open, the overlay reflects the currently selected layer. If
+zero or more than one layer is selected, it keeps following the previously selected
+one.</p>
 </div>
-<h3 id="saving-data">Saving data<a class="headerlink" href="#saving-data" title="Permanent link">&para;</a></h3>
+<h3 id="loading-a-video">Loading a video<a class="headerlink" href="#loading-a-video" title="Permanent link">&para;</a></h3>
+<p>Videos are opened (<code>.mp4</code>, <code>.mov</code>, <code>.avi</code>) in a second napari viewer docked between the
+main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and
+camera, so a video never changes how your <abbr title="Functional Ultrasound Imaging">fUSI</abbr> layers are displayed. The two viewers
+share only time: moving the time slider of one moves the other to the same time. They
+also share time playback: while one viewer plays, pressing the time slider's play button
+in the other stops it.</p>
+<div class="admonition tip">
+<p class="admonition-title">Launch with a video from the CLI</p>
+<p>Pass <code>--video</code> to open a video at launch, with or without data files:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>path/to/scan.nii.gz<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>confusius<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
+</span></code></pre></div></p>
+</div>
+<p>Closing the video viewer or its layer list only hides it. Use <strong>Show video viewer</strong> or
+<strong>Show video list</strong> in the Data I/O panel to bring it back. A closed video viewer does
+not decode frames, and it catches up with the main viewer's time when it reopens.</p>
+<p>When multiple videos are loaded, the video viewer shows them side by side in its grid.
+Frame <code>n</code> of a video is shown at <code>n / fps</code> seconds, so a video lines up with a recording
+whose time coordinate starts at the first video frame.</p>
+<div class="admonition warning">
+<p class="admonition-title">Irregular recording or video times</p>
+<p>Synchronization assumes regularly sampled <abbr title="Functional Ultrasound Imaging">fUSI</abbr> data and videos. Napari approximates
+irregular <abbr title="Functional Ultrasound Imaging">fUSI</abbr> timestamps using the median sample interval; videos are timed from
+frame indices and the reported frame rate, not individual frame timestamps.
+Irregular <abbr title="Functional Ultrasound Imaging">fUSI</abbr> or video sampling can therefore misalign the displayed frames. Do not
+rely on frame-accurate synchronization in these cases.</p>
+</div>
+<p><a class="glightbox" data-title="ConfUSIus playing a video in sync with a fUSI recording" data-type="image" href="../../images/gui/plugin-video.gif"><img alt="ConfUSIus playing a video in sync with a fUSI recording" src="../../images/gui/plugin-video.gif" /></a></p>
+<p>The video layers are listed in a <strong>video layer list</strong> dock under napari's own layer
+list, so they behave like any other napari layers. Available controls are:</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frame step</strong></td>
+<td>Show every <em>N</em>-th frame of the videos. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes <code>fps / N</code>, and the time slider still reports time in seconds.</td>
+</tr>
+<tr>
+<td><strong>Transpose</strong></td>
+<td>Swap the two displayed axes of the video viewer.</td>
+</tr>
+<tr>
+<td><strong>Grid</strong></td>
+<td>Toggle the grid of the video viewer. Without it, the videos are drawn on top of each other. Right-click the button to set the grid stride, width, height and spacing.</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove the selected videos.</td>
+</tr>
+</tbody>
+</table>
+<p>napari's <strong>Home</strong> button and <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-r">R</kbd></span> reset the view of both viewers. Removing the
+last video hides the video viewer.</p>
+<div class="admonition tip">
+<p class="admonition-title">Napari playback performance</p>
+<p>Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher
+depending on user hardware and operating system). Use <strong>Frame step</strong> to reduce the
+effective frame rate if playback is choppy or buffering.</p>
+</div>
+<h3 id="exporting-data">Exporting data<a class="headerlink" href="#exporting-data" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Select the layer to save from the <strong>Save layer</strong> dropdown.</li>
 <li>Optionally select a layer in the <strong>Coordinates from</strong> dropdown to borrow its physical
@@ -3788,68 +3829,6 @@ consolidate poses first or select a single pose before saving.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="video-panel">Video Panel<a class="headerlink" href="#video-panel" title="Permanent link">&para;</a></h2>
-<p>The Video Panel opens videos (<code>.mp4</code>, <code>.mov</code>, <code>.avi</code>) in a second napari viewer, the
-video viewer, docked between the main canvas and the ConfUSIus sidebar. The video
-viewer has its own layers, axes and camera, so a video never changes how your <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
-layers are displayed. The two viewers share only time: moving the time slider of one
-moves the other to the same time in seconds, so the video plays in sync with the
-recording.</p>
-<h3 id="loading-a-video">Loading a video<a class="headerlink" href="#loading-a-video" title="Permanent link">&para;</a></h3>
-<ol>
-<li>Type a path in <strong>Video file</strong> and click <strong>Add video</strong> (or press <span class="keys"><kbd class="key-enter">Enter</kbd></span>), or click
-   <strong>Browse</strong> to pick a file and add it right away.</li>
-<li>The video viewer opens with the video as a new layer.</li>
-</ol>
-<p>Repeat to add more videos: the video viewer shows them side by side in its grid. Frame
-<code>n</code> of a video is shown at <code>n / fps</code> seconds, so a video lines up with a recording whose
-time coordinate starts at the first video frame.</p>
-<div class="admonition tip">
-<p class="admonition-title">Launch with a video from the CLI</p>
-<p>Pass <code>--video</code> to open a video at launch, with or without data files:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>confusius<span class="w"> </span>path/to/scan.nii.gz<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>confusius<span class="w"> </span>--video<span class="w"> </span>path/to/camera.mp4
-</span></code></pre></div></p>
-</div>
-<p><a class="glightbox" data-title="ConfUSIus Video panel playing a video in sync with a fUSI recording" data-type="image" href="../../images/gui/plugin-video.gif"><img alt="ConfUSIus Video panel playing a video in sync with a fUSI recording" src="../../images/gui/plugin-video.gif" /></a></p>
-<h3 id="loaded-videos">Loaded videos<a class="headerlink" href="#loaded-videos" title="Permanent link">&para;</a></h3>
-<p>The <strong>Loaded videos</strong> group lists the video layers with napari's layer list: select,
-rename, reorder or hide them as you would in the main viewer. Right-click the layer for
-a short advanced menu. The row above the list holds the video controls:</p>
-<table>
-<thead>
-<tr>
-<th>Control</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Frame step</strong></td>
-<td>Show every <em>N</em>-th frame of the videos. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes <code>fps / N</code>, and the time slider still reports time in seconds.</td>
-</tr>
-<tr>
-<td><strong>Transpose</strong></td>
-<td>Swap the two displayed axes of the video viewer.</td>
-</tr>
-<tr>
-<td><strong>Grid</strong></td>
-<td>Toggle the grid of the video viewer. Without it, the videos are drawn on top of each other. Right-click the button to set the grid stride, width, height and spacing.</td>
-</tr>
-<tr>
-<td><strong>Delete</strong></td>
-<td>Remove the selected videos.</td>
-</tr>
-</tbody>
-</table>
-<p>napari's <strong>Home</strong> button and <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-r">R</kbd></span> reset the view of both viewers. Removing the
-last video hides the video viewer and gives its width back to the main canvas.</p>
-<div class="admonition tip">
-<p class="admonition-title">Napari playback performance</p>
-<p>Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher
-depending on user hardware and operating system). Use <strong>Frame step</strong> to reduce the
-effective frame rate if playback is choppy or buffering.</p>
-</div>
 <h2 id="signals-panel">Signals Panel<a class="headerlink" href="#signals-panel" title="Permanent link">&para;</a></h2>
 <p>The Signals Panel plots signals extracted from image layers along any non-spatial
 dimension (time, lag, feature, etc.). The plot appears in a bottom dock that is created

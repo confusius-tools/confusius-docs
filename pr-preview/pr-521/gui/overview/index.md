@@ -28,7 +28,7 @@ With `uvx`, no prior installation is needed:
 uvx -p 3.13 confusius
 ```
 
-The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Video](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
+The ConfUSIus sidebar contains five collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#data-io-panel>), [Signals](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
 
 > [!TIP]
 >
@@ -60,7 +60,7 @@ confusius --lazy path/to/data.zarr
 
 ### Alternative: napari file readers
 
-ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN, and Zarr files. These let you open files by dragging them onto the canvas or using **File \> Open** (<kbd class="key-control">Ctrl</kbd>\+<kbd class="key-o">O</kbd>) without switching to the Data Panel. Like the Data Panel and CLI, integer-dtype files are added as a `Labels` layer.
+ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN and RAW, and Zarr files. These let you open files by dragging them onto the canvas or using **File \> Open** (<kbd class="key-control">Ctrl</kbd>\+<kbd class="key-o">O</kbd>) without switching to the Data Panel. Like the Data Panel and CLI, integer-dtype files are added as a `Labels` layer. An Iconeus RAW file opens only when its `.hraw` metadata file is in the same folder, and its complex IQ data is shown as its magnitude.
 
 > [!WARNING]
 >
@@ -72,7 +72,7 @@ ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN, and
 
 ### Recommended: Data I/O Panel
 
-The [Data I/O Panel](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#saving-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
+The [Data I/O Panel](<https://confusius.tools/pr-preview/pr-521/gui/plugin/#exporting-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
 
 > [!WARNING]
 >

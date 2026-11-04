@@ -1,9 +1,8 @@
 # Using the Plugin
 
-The ConfUSIus sidebar contains six collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
+The ConfUSIus sidebar contains five collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
 
-- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN).
-- [**Video**](<#video-panel>) — load videos side-by-side, temporally synced with the fUSI acquisition.
+- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, Iconeus SCAN, Iconeus RAW) and load behavioral videos.
 - [**Signals**](<#signals-panel>) — plot voxel, point, or label-region signals in a bottom dock.
 - [**Events**](<#events-panel>) — annotate periods of time (BIDS events) and shade them on the signal plot.
 - [**QC**](<#qc-panel>) — compute DVARS, carpet, CV, tSNR for a selected layer.
@@ -11,11 +10,11 @@ The ConfUSIus sidebar contains six collapsible panels. Each panel operates indep
 
 ## Data I/O Panel
 
-The Data I/O Panel handles both loading and saving fUSI files without leaving the viewer.
+The Data I/O Panel handles loading and saving fUSI files and loading behavioral videos without leaving the viewer.
 
 ### Loading data
 
-Click **Browse** to pick a file—it loads immediately on selection. Or paste a path directly in the text field and press <kbd class="key-enter">Enter</kbd>. Enable **Load lazily** beforehand to keep the array Dask-backed for large files. A progress bar animates during loading, and any error is reported in the napari notification bar.
+Use **Load Data** for both fUSI files and behavioral videos. When loading fUSI files, enable **Load lazily** beforehand to keep large fUSI arrays Dask-backed. This option is disabled for video paths, since videos already decode frames on demand.
 
 > [!NOTE]
 >
@@ -25,7 +24,49 @@ Click **Browse** to pick a file—it loads immediately on selection. Or paste a 
 >
 > When multiple scans are open, the overlay reflects the currently selected layer. If zero or more than one layer is selected, it keeps following the previously selected one.
 
-### Saving data
+### Loading a video
+
+Videos are opened (`.mp4`, `.mov`, `.avi`) in a second napari viewer docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time. They also share time playback: while one viewer plays, pressing the time slider's play button in the other stops it.
+
+> [!TIP]
+>
+> **Launch with a video from the CLI**
+>
+> Pass `--video` to open a video at launch, with or without data files:
+>
+> ```bash
+> confusius path/to/scan.nii.gz --video path/to/camera.mp4
+> confusius --video path/to/camera.mp4
+> ```
+
+Closing the video viewer or its layer list only hides it. Use **Show video viewer** or **Show video list** in the Data I/O panel to bring it back. A closed video viewer does not decode frames, and it catches up with the main viewer's time when it reopens.
+
+When multiple videos are loaded, the video viewer shows them side by side in its grid. Frame `n` of a video is shown at `n / fps` seconds, so a video lines up with a recording whose time coordinate starts at the first video frame.
+
+> [!WARNING]
+>
+> **Irregular recording or video times**
+>
+> Synchronization assumes regularly sampled fUSI data and videos. Napari approximates irregular fUSI timestamps using the median sample interval; videos are timed from frame indices and the reported frame rate, not individual frame timestamps. Irregular fUSI or video sampling can therefore misalign the displayed frames. Do not rely on frame-accurate synchronization in these cases.
+
+The video layers are listed in a **video layer list** dock under napari's own layer list, so they behave like any other napari layers. Available controls are:
+
+| Control | Description |
+| --- | --- |
+| **Frame step** | Show every *N*-th frame of the videos. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes `fps / N`, and the time slider still reports time in seconds. |
+| **Transpose** | Swap the two displayed axes of the video viewer. |
+| **Grid** | Toggle the grid of the video viewer. Without it, the videos are drawn on top of each other. Right-click the button to set the grid stride, width, height and spacing. |
+| **Delete** | Remove the selected videos. |
+
+napari's **Home** button and <kbd class="key-control">Ctrl</kbd>\+<kbd class="key-r">R</kbd> reset the view of both viewers. Removing the last video hides the video viewer.
+
+> [!TIP]
+>
+> **Napari playback performance**
+>
+> Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher depending on user hardware and operating system). Use **Frame step** to reduce the effective frame rate if playback is choppy or buffering.
+
+### Exporting data
 
 1. Select the layer to save from the **Save layer** dropdown.
 2. Optionally select a layer in the **Coordinates from** dropdown to borrow its physical coordinates and attributes. This is useful when saving a labels layer drawn on top of a fUSI image: selecting the image layer as the template preserves the full physical coordinate system. If the labels layer has fewer dimensions than the template (e.g. a 3D labels layer against a 4D image), the trailing spatial dimensions are used automatically.
@@ -45,47 +86,6 @@ Three save modes are applied automatically depending on what is available:
 | **Direct** | The layer was loaded via ConfUSIus (DataArray in metadata). Saved verbatim, all coordinates and attributes preserved. |
 | **Template** | A template layer is selected. Coordinates are borrowed from the template DataArray. |
 | **Reconstruct** | No template and no DataArray in metadata (e.g. a freshly drawn labels layer). Coordinates are reconstructed from the napari layer state (`scale`, `translate`, `axis_labels`). |
-
-## Video Panel
-
-The Video Panel opens videos (`.mp4`, `.mov`, `.avi`) in a second napari viewer, the video viewer, docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time in seconds, so the video plays in sync with the recording.
-
-### Loading a video
-
-1. Type a path in **Video file** and click **Add video** (or press <kbd class="key-enter">Enter</kbd>), or click **Browse** to pick a file and add it right away.
-2. The video viewer opens with the video as a new layer.
-
-Repeat to add more videos: the video viewer shows them side by side in its grid. Frame `n` of a video is shown at `n / fps` seconds, so a video lines up with a recording whose time coordinate starts at the first video frame.
-
-> [!TIP]
->
-> **Launch with a video from the CLI**
->
-> Pass `--video` to open a video at launch, with or without data files:
->
-> ```bash
-> confusius path/to/scan.nii.gz --video path/to/camera.mp4
-> confusius --video path/to/camera.mp4
-> ```
-
-### Loaded videos
-
-The **Loaded videos** group lists the video layers with napari's layer list: select, rename, reorder or hide them as you would in the main viewer. Right-click the layer for a short advanced menu. The row above the list holds the video controls:
-
-| Control | Description |
-| --- | --- |
-| **Frame step** | Show every *N*-th frame of the videos. Higher values skip frames for lighter playback of long or high-frame-rate recordings. The effective frame rate becomes `fps / N`, and the time slider still reports time in seconds. |
-| **Transpose** | Swap the two displayed axes of the video viewer. |
-| **Grid** | Toggle the grid of the video viewer. Without it, the videos are drawn on top of each other. Right-click the button to set the grid stride, width, height and spacing. |
-| **Delete** | Remove the selected videos. |
-
-napari's **Home** button and <kbd class="key-control">Ctrl</kbd>\+<kbd class="key-r">R</kbd> reset the view of both viewers. Removing the last video hides the video viewer and gives its width back to the main canvas.
-
-> [!TIP]
->
-> **Napari playback performance**
->
-> Napari handles animations quite smoothly up to around 30 to 50 FPS (even higher depending on user hardware and operating system). Use **Frame step** to reduce the effective frame rate if playback is choppy or buffering.
 
 ## Signals Panel
 
