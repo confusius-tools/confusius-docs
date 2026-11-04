@@ -39,8 +39,6 @@ Videos are opened (`.mp4`, `.mov`, `.avi`) in a second napari viewer docked betw
 > confusius --video path/to/camera.mp4
 > ```
 
-Closing the video viewer or its layer list only hides it. Use **Show video viewer** or **Show video list** in the Data I/O panel to bring it back. A closed video viewer does not decode frames, and it catches up with the main viewer's time when it reopens.
-
 When multiple videos are loaded, the video viewer shows them side by side in its grid. Frame `n` of a video is shown at `n / fps` seconds, so a video lines up with a recording whose time coordinate starts at the first video frame.
 
 > [!WARNING]
