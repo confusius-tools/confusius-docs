@@ -4,10 +4,18 @@
 
 Current development version for the next ConfUSIus release.
 
+### 💥 Breaking changes
+
+- `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+
 ### 🔧 Maintenance
 
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
 - Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
+
+### 🖼 Napari plugin
+
+- Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 
 ## 0.9.0
 

@@ -1824,6 +1824,8 @@ For fUSI systems without a dedicated loader, multi-pose data must be assembled m
 
 Most Xarray operations that don't touch world coordinates or timing work on multi-pose arrays exactly as on any other VoxelData array—reductions, arithmetic, `.isel`, mask extraction, and so on all treat `pose` as an ordinary dimension.
 
+For [napari visualization](<https://confusius.tools/pr-preview/pr-562/user-guide/visualization/#interactive-exploration-with-napari>), `viewer, layers = pwd.fusi.plot.napari()` opens one layer per pose, each positioned using its own affine and named `<data name> [pose <value>]`. The CLI does the same; no consolidation is needed.
+
 Operations that resolve *positions* or *timestamps*, however, need a scalar `pose` first, per [The Multi-Pose Data Model](<#the-multi-pose-data-model>) above:
 
 ```python
@@ -34908,10 +34910,18 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 Current development version for the next ConfUSIus release.
 
+### 💥 Breaking changes
+
+- `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+
 ### 🔧 Maintenance
 
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
 - Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
+
+### 🖼 Napari plugin
+
+- Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 
 ## 0.9.0
 
