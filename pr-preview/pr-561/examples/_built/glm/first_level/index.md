@@ -331,7 +331,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fe1643c7b60>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fef08ecfb60>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -365,7 +365,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7fe15c59fc50\>, \<confusius.gl...x7fe15c2ee520\>, \<confusius.gl...x7fe15cbabe30\>, \<confusius.gl...x7fe15c34ebe0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fef02f9bd90\>, \<confusius.gl...x7fef02ba5ba0\>, \<confusius.gl...x7fef081030b0\>, \<confusius.gl...x7fef105f1d00\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -480,7 +480,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 103.2 s
+**Total running time:** 108.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/atlas-upstream-dask-api?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-561/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-561/examples/_built/glm/first_level.ipynb>)
 
