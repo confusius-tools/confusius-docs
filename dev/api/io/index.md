@@ -672,7 +672,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load.
+  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -964,7 +964,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the NIfTI file (`.nii` or `.nii.gz`).
+  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `pose` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
 - #### **`chunks`**
 
   (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
@@ -994,6 +994,15 @@ Returns:
 - `DataArray` –
 
   Lazy VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Data is wrapped in a Dask array for out-of-core computation.
+
+Raises:
+
+- `FileNotFoundError` –
+
+  If no files match a `{chunk}` filename template.
+- `ValueError` –
+
+  If `{chunk}` occurs outside the filename or more than once, or the loaded chunks cannot be stacked with `stack_poses`.
 
 > [!NOTE]
 >

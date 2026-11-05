@@ -603,7 +603,7 @@ Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to r
 
 ### Loading NIfTI Files
 
-When loading NIfTI files, ConfUSIus automatically loads a [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
+When loading NIfTI files, ConfUSIus automatically loads [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
 
 ```pycon
 >>> import confusius as cf
@@ -644,6 +644,16 @@ Attributes: (12/24)
     plane_wave_angles:                   [-10.0, -7.9, -5.8, -3.6999999999999...
     transmit_voltage:                    25.0
 ```
+
+To load multiple probe poses that were split into multiple NIfTI files using the fUSI-BIDS `chunk` entity, put `{chunk}` in the filename:
+
+```python
+import confusius as cf
+
+da = cf.load("sub-01_ses-01_chunk-{chunk}_pwd.nii")
+```
+
+Matching integer chunk indices are sorted numerically then combined lazily with `stack_poses`. The chunks must meet `stack_poses`' requirements, including equal time lengths and compatible voxel grids.
 
 ### Loading Other Formats
 
@@ -11837,7 +11847,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load.
+  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -12129,7 +12139,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the NIfTI file (`.nii` or `.nii.gz`).
+  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `pose` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
 - #### **`chunks`**
 
   (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
@@ -12159,6 +12169,15 @@ Returns:
 - `DataArray` –
 
   Lazy VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Data is wrapped in a Dask array for out-of-core computation.
+
+Raises:
+
+- `FileNotFoundError` –
+
+  If no files match a `{chunk}` filename template.
+- `ValueError` –
+
+  If `{chunk}` occurs outside the filename or more than once, or the loaded chunks cannot be stacked with `stack_poses`.
 
 > [!NOTE]
 >
@@ -34901,6 +34920,10 @@ Current development version for the next ConfUSIus release.
 ### 💥 Breaking changes
 
 - Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
+
+### ✨ Enhancements
+
+- Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 
 ### 🐛 Fixes
 
