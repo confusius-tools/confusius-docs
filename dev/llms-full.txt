@@ -1615,7 +1615,7 @@ The `.fusi.plot` accessor provides easy access to visualization functions for qu
 For example, to display data in [napari](<https://napari.org/>):
 
 ```python
-viewer, layer = registered.fusi.plot.napari(gamma=0.5)
+viewer, layers = registered.fusi.plot.napari(gamma=0.5)
 ```
 
 Or to show standardized time series in a carpet plot, useful for quality control:
@@ -1654,7 +1654,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 )
 
 # 3. Inspect in napari.
-viewer, layer = pwd.fusi.plot.napari(gamma=0.5)
+viewer, layers = pwd.fusi.plot.napari(gamma=0.5)
 
 # 4. Motion correction.
 registered = pwd.fusi.register.volumewise()
@@ -1833,6 +1833,8 @@ For fUSI systems without a dedicated loader, multi-pose data must be assembled m
 ## Working with Multi-Pose Arrays
 
 Most Xarray operations that don't touch world coordinates or timing work on multi-pose arrays exactly as on any other VoxelData array—reductions, arithmetic, `.isel`, mask extraction, and so on all treat `pose` as an ordinary dimension.
+
+For [napari visualization](<https://confusius.tools/dev/user-guide/visualization/#interactive-exploration-with-napari>), `viewer, layers = pwd.fusi.plot.napari()` opens one layer per pose, each positioned using its own affine and named `<data name> [pose <value>]`. The CLI does the same; no consolidation is needed.
 
 Operations that resolve *positions* or *timestamps*, however, need a scalar `pose` first, per [The Multi-Pose Data Model](<#the-multi-pose-data-model>) above:
 
@@ -2688,14 +2690,16 @@ ConfUSIus relies on [napari](<https://napari.org>) for interactive visualization
 ### Basic Usage
 
 ```python
-viewer, layer = pwd.fusi.plot.napari()
+viewer, layers = pwd.fusi.plot.napari()
 ```
 
 ```python
 import confusius as cf
 
-viewer, layer = cf.plotting.plot_napari(pwd)
+viewer, layers = cf.plotting.plot_napari(pwd)
 ```
+
+Both APIs always return `(viewer, layers)`, where `layers` is a list. Arrays with a `pose` dimension open as one layer per pose, positioned using each pose's voxel-to-world affine and named `<data name> [pose <pose value>]`. An explicit `name=` overrides the data name. To unpack a single-layer result, use `viewer, [layer] = ...`.
 
 This opens a napari viewer with a scale bar, colorbar, and correct world scaling across axes. The viewer is fully interactive: you can zoom, pan, and scroll through time and elevation slices with the sliders or mouse wheel.
 
@@ -2713,7 +2717,7 @@ By default napari auto-scales contrast to the data range. For power Doppler, wor
 
 ```python
 # dB-scaled power Doppler with fixed contrast window.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     pwd.fusi.scale.db(),
     contrast_limits=(-20, 0),
     colormap="hot",
@@ -2728,13 +2732,13 @@ Napari's **labels** layer renders integer-labeled masks as filled or contoured r
 
 ```python
 # Load power Doppler mean volume and open viewer.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     mean_vol.fusi.scale.db(),
     contrast_limits=(-20, 0),
 )
 
 # Add pre-registered Allen labels as a labels layer.
-viewer, labels_layer = cf.plotting.plot_napari(
+viewer, labels_layers = cf.plotting.plot_napari(
     atlas_labels,
     viewer=viewer,
     layer_type="labels",
@@ -2751,8 +2755,8 @@ viewer, labels_layer = cf.plotting.plot_napari(
 > The `viewer` argument works for any `plot_napari` call, letting you load two image datasets into the same viewer for direct comparison; for example, before and after motion correction:
 >
 > ```python
-> viewer, layer = pwd_before.fusi.plot.napari(name="Before correction")
-> viewer, layer = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
+> viewer, layers = pwd_before.fusi.plot.napari(name="Before correction")
+> viewer, layers = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
 > ```
 
 ### Slicing Across Different Spatial Dimensions
@@ -2761,7 +2765,7 @@ By default, napari shows the last two spatial dimensions as a 2D plane and the r
 
 ```python
 # Swap z and y: depth becomes the slider axis.
-viewer, layer = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
+viewer, layers = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ### 3D Rendering
@@ -14776,7 +14780,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`.
+  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`. Select a single pose first for multipose data.
 - #### **`labels_layer_name`**
 
   (`str`, default: `"labels"` ) –
@@ -14801,6 +14805,12 @@ Returns:
 - **`labels_layer`** ( `Labels` ) –
 
   The empty Labels layer initialised to zeros. After the user paints labels in the viewer, pass this layer to `extract_labels_from_layer` to obtain an integer label map.
+
+Raises:
+
+- `ValueError` –
+
+  If `data` is not a VoxelData array or still has a `pose` dimension. Select one pose with `data.isel(pose=p)` before drawing labels.
 
 > [!NOTE]
 >
@@ -15847,7 +15857,7 @@ plot_napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display fUSI data using the napari viewer.
@@ -15858,7 +15868,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, pose, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations).
+  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, pose, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations). Arrays with a `pose` dimension are split into one layer per pose, each positioned using its own voxel-to-world affine.
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -15898,16 +15908,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes.
+  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes. An explicit `name` overrides `data.name`. Multipose layers append `" [pose {pose}]"` using each pose's coordinate value. Unnamed multipose arrays use `"data"` as the base name.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, in pose order. Always a list, including when the input has no `pose` dimension or contains only one pose.
 
 > [!NOTE]
 >
@@ -15931,35 +15941,35 @@ Examples:
 >>> import confusius as cf
 >>> from confusius.plotting import plot_napari
 >>> data = cf.load("output.nii.gz")
->>> viewer, layer = plot_napari(data)
+>>> viewer, layers = plot_napari(data)
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = plot_napari(data, contrast_limits=(0, 100))
+>>> viewer, layers = plot_napari(data, contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = plot_napari(data, dim_order=("y", "z", "x"))
+>>> viewer, layers = plot_napari(data, dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = plot_napari(data1)
->>> viewer, layer = plot_napari(data2, viewer=viewer)
+>>> viewer, layers = plot_napari(data1)
+>>> viewer, layers = plot_napari(data2, viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = cf.load("roi_mask.nii.gz")
->>> viewer, layer = plot_napari(roi_mask, layer_type="labels")
+>>> viewer, layers = plot_napari(roi_mask, layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = plot_napari(data)
->>> viewer, layer = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
+>>> viewer, layers = plot_napari(data)
+>>> viewer, layers = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
 ```
 
 ### plot\_stat\_map
@@ -21261,7 +21271,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 #### register
@@ -22372,7 +22382,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 Methods:
@@ -22970,7 +22980,7 @@ napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display data in napari viewer.
@@ -23016,16 +23026,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap.
+  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. Multipose layer names append `" [pose {pose}]"` to `data.name` (or an explicit `name`), using each pose's coordinate value.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, one per pose in pose order. Always a list, even for input without a `pose` dimension.
 
 > [!NOTE]
 >
@@ -23041,35 +23051,35 @@ Examples:
 >>> import xarray as xr
 >>> import confusius  # Register accessor.
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = data.fusi.plot.napari(contrast_limits=(0, 100))
+>>> viewer, layers = data.fusi.plot.napari(contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = data.fusi.plot.napari(dim_order=("y", "z", "x"))
+>>> viewer, layers = data.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = data1.fusi.plot.napari()
->>> viewer, layer = data2.fusi.plot.napari(viewer=viewer)
+>>> viewer, layers = data1.fusi.plot.napari()
+>>> viewer, layers = data2.fusi.plot.napari(viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = xr.open_zarr("output.zarr")["roi_mask"]
->>> viewer, layer = roi_mask.fusi.plot.napari(layer_type="labels")
+>>> viewer, layers = roi_mask.fusi.plot.napari(layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = data.fusi.plot.napari()
->>> viewer, layer = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
+>>> viewer, layers = data.fusi.plot.napari()
+>>> viewer, layers = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
 ```
 
 #### stat\_map
@@ -34919,7 +34929,8 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
+- `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#561](<https://github.com/confusius-tools/confusius/pull/561>)).
 
 ### ✨ Enhancements
 
@@ -34938,6 +34949,10 @@ Current development version for the next ConfUSIus release.
 - `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
 - Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
+
+### 🖼 Napari plugin
+
+- Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 
 ## 0.9.0
 

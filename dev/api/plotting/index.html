@@ -5404,7 +5404,8 @@ DataArray with the same spatial coordinates.</p>
           –
           <div class="doc-md-description">
             <p>Input data array to display as the background image. Typically a time-averaged
-power Doppler frame, e.g. <code>data.mean("time")</code>.</p>
+power Doppler frame, e.g. <code>data.mean("time")</code>. Select a single pose first
+for multipose data.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5457,6 +5458,19 @@ is created via <a class="autorefs autorefs-internal" title="&lt;span class=&quot
 labels in the viewer, pass this layer to
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;extract_labels_from_layer&lt;/span&gt;" href="./#confusius.plotting.extract_labels_from_layer"><code>extract_labels_from_layer</code></a> to obtain
 an integer label map.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>data</code> is not a VoxelData array or still has a <code>pose</code> dimension.
+Select one pose with <code>data.isel(pose=p)</code> before drawing labels.</p>
           </div>
         </li>
     </ul>
@@ -7410,7 +7424,7 @@ number of panels.</p>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;resample_fill_value&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.plot_napari(resample_fill_value)&lt;/code&gt;)" href="./#confusius.plotting.plot_napari(resample_fill_value)">resample_fill_value</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="o">**</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;**layer_kwargs&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.plot_napari(**layer_kwargs)&lt;/code&gt;)" href="./#confusius.plotting.plot_napari(**layer_kwargs)">layer_kwargs</a></span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.Viewer&lt;/code&gt;" href="https://napari.org/stable/api/napari.Viewer.html#napari.Viewer">Viewer</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Image&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Image.html#napari.layers.Image">Image</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">]</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.Viewer&lt;/code&gt;" href="https://napari.org/stable/api/napari.Viewer.html#napari.Viewer">Viewer</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#list">list</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Image&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Image.html#napari.layers.Image">Image</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></span><span class="p">]]</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -7428,7 +7442,9 @@ number of panels.</p>
             <p>Input data array to visualize. Must carry a <code>VoxelToWorldIndex</code> (native
 voxel dimensions <code>(..., time, pose, k, j, i)</code> deriving world <code>z/y/x</code>
 coordinates). Use <code>dim_order</code> to specify a different displayed spatial
-ordering. Can be image data or label/mask data (e.g., ROIs, segmentations).</p>
+ordering. Can be image data or label/mask data (e.g., ROIs, segmentations).
+Arrays with a <code>pose</code> dimension are split into one layer per pose, each
+positioned using its own voxel-to-world affine.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7523,7 +7539,10 @@ For image layers, if <code>data.attrs</code> contains <code>"cmap"</code> and <c
 is not in <code>layer_kwargs</code>, the attribute is used as the colormap.
 For labels layers, if <code>data.attrs</code> contains <code>"cmap"</code> and <code>"norm"</code>
 (as set by atlas functions) and <code>"colormap"</code> is not in <code>layer_kwargs</code>,
-a per-label color dict is built automatically from those attributes.</p>
+a per-label color dict is built automatically from those attributes.
+An explicit <code>name</code> overrides <code>data.name</code>. Multipose layers append
+<code>" [pose {pose}]"</code> using each pose's coordinate value. Unnamed multipose
+arrays use <code>"data"</code> as the base name.</p>
           </div>
         </li>
     </ul>
@@ -7539,10 +7558,11 @@ a per-label color dict is built automatically from those attributes.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>layer</code></b> (              <code><a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Image&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Image.html#napari.layers.Image">Image</a> or <a class="autorefs autorefs-external" title="&lt;code&gt;napari.layers.Labels&lt;/code&gt;" href="https://napari.org/stable/api/napari.layers.Labels.html#napari.layers.Labels">Labels</a></code>
+<b><code>layers</code></b> (              <code>list of napari.layers.Image or napari.layers.Labels</code>
 )          –
           <div class="doc-md-description">
-            <p>The layer added to the viewer.</p>
+            <p>Layers added to the viewer, in pose order. Always a list, including when
+the input has no <code>pose</code> dimension or contains only one pose.</p>
           </div>
         </li>
     </ul>
@@ -7580,25 +7600,25 @@ the same viewer.</p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">confusius.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_napari</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;output.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Custom contrast limits</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Different dimension ordering (e.g., depth, elevation, lateral)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dim_order</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dim_order</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add a second dataset as a new layer in an existing viewer</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data1</span><span class="p">)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data1</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Display ROI labels (e.g., segmentation mask)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">roi_mask</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;roi_mask.nii.gz&quot;</span><span class="p">)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">roi_mask</span><span class="p">,</span> <span class="n">layer_type</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">roi_mask</span><span class="p">,</span> <span class="n">layer_type</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
 </span></code></pre></div>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Overlay labels on existing image</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">roi_mask</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer_type</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">plot_napari</span><span class="p">(</span><span class="n">roi_mask</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">,</span> <span class="n">layer_type</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 
