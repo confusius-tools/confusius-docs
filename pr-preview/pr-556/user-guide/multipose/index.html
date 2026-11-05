@@ -3783,6 +3783,10 @@ shared 1D <code>time</code>.</p>
 <p>Most Xarray operations that don't touch world coordinates or timing work on multi-pose
 arrays exactly as on any other VoxelData array—reductions, arithmetic, <code>.isel</code>, mask
 extraction, and so on all treat <code>pose</code> as an ordinary dimension.</p>
+<p>For <a href="../visualization/#interactive-exploration-with-napari">napari visualization</a>,
+<code>viewer, layers = pwd.fusi.plot.napari()</code> opens one layer per pose, each positioned
+using its own affine and named <code>&lt;data name&gt; [pose &lt;value&gt;]</code>. The CLI does the same;
+no consolidation is needed.</p>
 <p>Operations that resolve <em>positions</em> or <em>timestamps</em>, however, need a scalar <code>pose</code>
 first, per <a href="#the-multi-pose-data-model">The Multi-Pose Data Model</a> above:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">pose0</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>

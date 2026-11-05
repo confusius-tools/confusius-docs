@@ -351,7 +351,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 #### register
@@ -1686,7 +1686,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 Methods:
@@ -2284,7 +2284,7 @@ napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display data in napari viewer.
@@ -2330,16 +2330,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap.
+  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. Multipose layer names append `" [pose {pose}]"` to `data.name` (or an explicit `name`), using each pose's coordinate value.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, one per pose in pose order. Always a list, even for input without a `pose` dimension.
 
 > [!NOTE]
 >
@@ -2355,35 +2355,35 @@ Examples:
 >>> import xarray as xr
 >>> import confusius  # Register accessor.
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = data.fusi.plot.napari(contrast_limits=(0, 100))
+>>> viewer, layers = data.fusi.plot.napari(contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = data.fusi.plot.napari(dim_order=("y", "z", "x"))
+>>> viewer, layers = data.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = data1.fusi.plot.napari()
->>> viewer, layer = data2.fusi.plot.napari(viewer=viewer)
+>>> viewer, layers = data1.fusi.plot.napari()
+>>> viewer, layers = data2.fusi.plot.napari(viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = xr.open_zarr("output.zarr")["roi_mask"]
->>> viewer, layer = roi_mask.fusi.plot.napari(layer_type="labels")
+>>> viewer, layers = roi_mask.fusi.plot.napari(layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = data.fusi.plot.napari()
->>> viewer, layer = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
+>>> viewer, layers = data.fusi.plot.napari()
+>>> viewer, layers = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
 ```
 
 #### stat\_map
