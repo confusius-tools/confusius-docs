@@ -2441,6 +2441,8 @@
       
         
       
+        
+      
     
     
     
@@ -2583,6 +2585,33 @@
     
   
   The ConfUSIus Dataset Collection
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/transforms_101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transforms 101
 
     
   </span>
@@ -4172,9 +4201,11 @@ or a string key naming a reference frame already stored in <code>attrs["affines"
 </span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="c1"># By array: apply an arbitrary (4, 4) world-space affine directly.</span>
 </span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="n">shifted</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">my_affine</span><span class="p">)</span>
 </span></code></pre></div>
-<p>For the common moves, three helpers build the affine for you: <code>translate</code> shifts by a
-<code>(z, y, x)</code> vector in world units, <code>rotate</code> turns by an angle (degrees by default) about
-a world axis name or vector, and <code>zoom</code> rescales by a scalar or per-axis <code>(z, y, x)</code>
+<p>For the common moves, three helpers directly on <code>.fusi</code> build the affine for you:
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;translate&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.translate"><code>translate</code></a> shifts by a <code>(z, y, x)</code> vector in
+world units, <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;rotate&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.rotate"><code>rotate</code></a> turns by an angle (degrees
+by default) about a world axis name or vector, and
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;zoom&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIAccessor.zoom"><code>zoom</code></a> rescales by a scalar or per-axis <code>(z, y, x)</code>
 factors. <code>rotate</code> and <code>zoom</code> pivot about <code>center</code>, which is the grid origin by default
 (<code>"origin"</code>, the world position of the first voxel). Pass <code>"geometry"</code> to pivot about
 the center of the data's bounding box, or a <code>(z, y, x)</code> point such as <code>(0, 0, 0)</code> for
@@ -4182,12 +4213,10 @@ the world origin. <code>rotate</code> follows the right-hand rule in ordered <co
 coordinates. Calls chain in order; the voxel grid and data values never change, only
 their placement in world space:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Shift 1 mm along z, then tilt 5 degrees about x through the geometry center.</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">moved</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">translate</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>    <span class="mf">5.0</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;geometry&quot;</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="p">)</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="c1"># Rotate about z, then y, then x, each about the fixed world axes.</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="n">tilted</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">rotate</span><span class="p">((</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span> <span class="s2">&quot;zyx&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">moved</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">translate</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1"># Rotate about z, then y, then x, each about the fixed world axes.</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="n">tilted</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">rotate</span><span class="p">((</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span> <span class="s2">&quot;zyx&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;bounding_box&lt;/span&gt;
 

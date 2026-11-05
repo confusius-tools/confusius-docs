@@ -2446,6 +2446,8 @@
       
         
       
+        
+      
     
     
     
@@ -2588,6 +2590,33 @@
     
   
   The ConfUSIus Dataset Collection
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/transforms_101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transforms 101
 
     
   </span>
@@ -5403,7 +5432,9 @@ instead of dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays 
 <a href="#confusius.io.load(path)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="&lt;code&gt;pathlib.Path&lt;/code&gt;" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a></code>)
           –
           <div class="doc-md-description">
-            <p>Path to the file to load.</p>
+            <p>Path to the file to load. For NIfTI files, a <code>{chunk}</code> placeholder in the
+filename loads matching integer chunks in numeric order along <code>pose</code>;
+see <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="./#confusius.io.load_nifti">load_nifti</a>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5994,7 +6025,11 @@ recording folder before conversion to ConfUSIus attributes.</p>
 <a href="#confusius.io.load_nifti(path)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="&lt;code&gt;pathlib.Path&lt;/code&gt;" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a></code>)
           –
           <div class="doc-md-description">
-            <p>Path to the NIfTI file (<code>.nii</code> or <code>.nii.gz</code>).</p>
+            <p>Path to the NIfTI file (<code>.nii</code> or <code>.nii.gz</code>). A single <code>{chunk}</code> placeholder
+in the filename loads all matching integer chunk indices in numeric order
+and stacks them with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="../multipose/#confusius.multipose.stack_poses">stack_poses</a>. Chunk
+indices become integer <code>pose</code> labels, even when only one file matches.
+Each chunk must satisfy <code>stack_poses</code>' single-pose input requirements.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -6051,6 +6086,26 @@ recording folder before conversion to ConfUSIus attributes.</p>
 order (<code>k</code>, <code>j</code>, <code>i</code> plus optional <code>time</code>) and world coordinates <code>z</code>, <code>y</code>,
 <code>x</code>. Data is wrapped
 in a Dask array for out-of-core computation.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError">FileNotFoundError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If no files match a <code>{chunk}</code> filename template.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>{chunk}</code> occurs outside the filename or more than once, or the loaded
+chunks cannot be stacked with <code>stack_poses</code>.</p>
           </div>
         </li>
     </ul>

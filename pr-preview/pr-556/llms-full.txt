@@ -603,7 +603,7 @@ Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to r
 
 ### Loading NIfTI Files
 
-When loading NIfTI files, ConfUSIus automatically loads a [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
+When loading NIfTI files, ConfUSIus automatically loads [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
 
 ```pycon
 >>> import confusius as cf
@@ -644,6 +644,16 @@ Attributes: (12/24)
     plane_wave_angles:                   [-10.0, -7.9, -5.8, -3.6999999999999...
     transmit_voltage:                    25.0
 ```
+
+To load multiple probe poses that were split into multiple NIfTI files using the fUSI-BIDS `chunk` entity, put `{chunk}` in the filename:
+
+```python
+import confusius as cf
+
+da = cf.load("sub-01_ses-01_chunk-{chunk}_pwd.nii")
+```
+
+Matching integer chunk indices are sorted numerically then combined lazily with `stack_poses`. The chunks must meet `stack_poses`' requirements, including equal time lengths and compatible voxel grids.
 
 ### Loading Other Formats
 
@@ -1496,16 +1506,14 @@ registered_to_qform = pwd.fusi.affine.apply("world_to_qform")
 shifted = pwd.fusi.affine.apply(my_affine)
 ```
 
-For the common moves, three helpers build the affine for you: `translate` shifts by a `(z, y, x)` vector in world units, `rotate` turns by an angle (degrees by default) about a world axis name or vector, and `zoom` rescales by a scalar or per-axis `(z, y, x)` factors. `rotate` and `zoom` pivot about `center`, which is the grid origin by default (`"origin"`, the world position of the first voxel). Pass `"geometry"` to pivot about the center of the data's bounding box, or a `(z, y, x)` point such as `(0, 0, 0)` for the world origin. `rotate` follows the right-hand rule in ordered `(z, y, x)` world coordinates. Calls chain in order; the voxel grid and data values never change, only their placement in world space:
+For the common moves, three helpers directly on `.fusi` build the affine for you: `translate` shifts by a `(z, y, x)` vector in world units, `rotate` turns by an angle (degrees by default) about a world axis name or vector, and `zoom` rescales by a scalar or per-axis `(z, y, x)` factors. `rotate` and `zoom` pivot about `center`, which is the grid origin by default (`"origin"`, the world position of the first voxel). Pass `"geometry"` to pivot about the center of the data's bounding box, or a `(z, y, x)` point such as `(0, 0, 0)` for the world origin. `rotate` follows the right-hand rule in ordered `(z, y, x)` world coordinates. Calls chain in order; the voxel grid and data values never change, only their placement in world space:
 
 ```python
 # Shift 1 mm along z, then tilt 5 degrees about x through the geometry center.
-moved = pwd.fusi.affine.translate((1.0, 0.0, 0.0)).fusi.affine.rotate(
-    5.0, "x", center="geometry"
-)
+moved = pwd.fusi.translate((1.0, 0.0, 0.0)).fusi.rotate(5.0, "x", center="geometry")
 
 # Rotate about z, then y, then x, each about the fixed world axes.
-tilted = pwd.fusi.affine.rotate((30.0, 20.0, 10.0), "zyx", center="geometry")
+tilted = pwd.fusi.rotate((30.0, 20.0, 10.0), "zyx", center="geometry")
 ```
 
 `bounding_box` gives the extent of the data in world space, enclosing the full extent of every voxel (half a voxel beyond the outermost voxel centers). It is computed from the affine alone (exact for oblique geometry, and one bounding box per pose when the geometry is pose-dependent):
@@ -7113,7 +7121,7 @@ Returns:
 
 - `Dataset` –
 
-  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes.
+  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes. Data variables stay backed by lazy `dask.array.Array` data.
 
 Examples:
 
@@ -11859,7 +11867,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load.
+  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -12151,7 +12159,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the NIfTI file (`.nii` or `.nii.gz`).
+  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `pose` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
 - #### **`chunks`**
 
   (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
@@ -12181,6 +12189,15 @@ Returns:
 - `DataArray` –
 
   Lazy VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Data is wrapped in a Dask array for out-of-core computation.
+
+Raises:
+
+- `FileNotFoundError` –
+
+  If no files match a `{chunk}` filename template.
+- `ValueError` –
+
+  If `{chunk}` occurs outside the filename or more than once, or the loaded chunks cannot be stacked with `stack_poses`.
 
 > [!NOTE]
 >
@@ -17112,11 +17129,10 @@ Parameters:
 ```python
 apply_rotation(
     data: DataArray,
-    angle: float | ArrayLike,
+    angle: ArrayLike,
     axis: str | ArrayLike,
     *,
-    center: Literal["origin", "geometry"]
-    | ArrayLike = "origin",
+    center: TransformCenter = "origin",
     degrees: bool = True,
     inplace: bool = False,
 ) -> DataArray
@@ -17255,10 +17271,9 @@ array([0. , 0. , 1.5])
 ```python
 apply_zoom(
     data: DataArray,
-    zoom: float | ArrayLike,
+    zoom: ArrayLike,
     *,
-    center: Literal["origin", "geometry"]
-    | ArrayLike = "origin",
+    center: TransformCenter = "origin",
     inplace: bool = False,
 ) -> DataArray
 ```
@@ -17324,7 +17339,7 @@ compose_affine(
     R: NDArray[floating],
     Z: NDArray[floating],
     S: NDArray[floating] | None = None,
-) -> NDArray[floating]
+) -> NDArray[float64]
 ```
 
 Compose translations, rotations, zooms, and shears into an affine matrix.
@@ -17603,7 +17618,7 @@ Raises:
 
 - `ValueError` –
 
-  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`).
+  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`), or if a voxel dim has irregular coordinates.
 
 ### invert\_displacement\_field
 
@@ -21265,9 +21280,18 @@ array([-60., -40., -20.,   0.])
 
 Methods:
 
+- **`rotate`** –
+
+  Rotate a DataArray in world space.
 - **`save`** –
 
   Save the DataArray to file, dispatching by extension.
+- **`translate`** –
+
+  Translate a DataArray in world space.
+- **`zoom`** –
+
+  Rescale a DataArray in world space.
 
 Attributes:
 
@@ -21573,6 +21597,79 @@ Examples:
 {'k': 0.2, 'j': 0.1, 'i': 0.05}
 ```
 
+#### rotate
+
+```python
+rotate(
+    angle: ArrayLike,
+    axis: str | ArrayLike,
+    *,
+    center: TransformCenter = "origin",
+    degrees: bool = True,
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rotate a DataArray in world space.
+
+Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates, so a rotation of +90 degrees about `x` maps `+z` onto `+y`. Only the voxel-to-world geometry changes. See apply\_rotation for details.
+
+Parameters:
+
+- ##### **`angle`**
+
+  (`float or (N,) array-like`) –
+
+  Rotation angle, or one angle per name when `axis` names several axes.
+- ##### **`axis`**
+
+  (`str or (3,) array-like`) –
+
+  Rotation axis. Either one or more world dimension names among `"z"`, `"y"` and `"x"`, or a vector in world `(z, y, x)` order, which is normalized. Several names rotate in sequence from left to right about the fixed world axes, so `"zyx"` rotates about `z` first. Names may repeat, as in `"zyz"`, and their order changes the result.
+- ##### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Fixed point of the rotation. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
+- ##### **`degrees`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to read `angle` in degrees rather than radians.
+- ##### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in place instead of returning a copy.
+
+Returns:
+
+- `DataArray` –
+
+  The rotated DataArray. This is the DataArray itself if `inplace` is `True`.
+
+Raises:
+
+- `ValueError` –
+
+  If `angle` is not finite, if it does not hold one value per axis name, if `axis` is neither world dimension names nor a non-zero finite `(3,)` vector, if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, or if the DataArray is not a VoxelData array.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius  # noqa: F401
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
+... )
+>>> rotated = data.fusi.rotate(90.0, "z", center=(0.0, 0.0, 0.0))
+>>> box = rotated.fusi.affine.bounding_box
+>>> round(float(box.sel(bound="max", component="x")), 6)
+3.0
+>>> tilted = data.fusi.rotate((30.0, 20.0, 10.0), "zyx")
+```
+
 #### save
 
 ```python
@@ -21611,11 +21708,124 @@ Examples:
 >>> data.fusi.save("recording.nii.gz")
 ```
 
+#### translate
+
+```python
+translate(
+    translation: ArrayLike, *, inplace: bool = False
+) -> DataArray
+```
+
+Translate a DataArray in world space.
+
+`translation` is given in world `(z, y, x)` order. Only the voxel-to-world geometry changes. See apply\_translation for details.
+
+Parameters:
+
+- ##### **`translation`**
+
+  (`(3,) array-like`) –
+
+  Translation in world `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`).
+- ##### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in place instead of returning a copy.
+
+Returns:
+
+- `DataArray` –
+
+  The translated DataArray. This is the DataArray itself if `inplace` is `True`.
+
+Raises:
+
+- `ValueError` –
+
+  If `translation` is not a finite `(3,)` vector, or if the DataArray is not a VoxelData array.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius  # noqa: F401
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
+... )
+>>> moved = data.fusi.translate((1.0, 0.0, 0.0)).fusi.rotate(
+...     5.0, "x"
+... )
+>>> box = moved.fusi.affine.bounding_box
+>>> round(float(box.sel(bound="max", component="x")), 6)
+2.0
+```
+
+#### zoom
+
+```python
+zoom(
+    zoom: ArrayLike,
+    *,
+    center: TransformCenter = "origin",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rescale a DataArray in world space.
+
+Only the voxel-to-world geometry changes. See apply\_zoom for details.
+
+Parameters:
+
+- ##### **`zoom`**
+
+  (`float or (3,) array-like`) –
+
+  Scale factor, either a scalar applied to all axes or per-axis factors in world `(z, y, x)` order. Negative factors reflect the volume along that axis. Unequal factors shear the voxel grid when it is oblique to the world axes, so rotating then zooming differs from zooming then rotating.
+- ##### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Fixed point of the rescaling. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
+- ##### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in place instead of returning a copy.
+
+Returns:
+
+- `DataArray` –
+
+  The rescaled DataArray. This is the DataArray itself if `inplace` is `True`.
+
+Raises:
+
+- `ValueError` –
+
+  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if the DataArray is not a VoxelData array, or if a per-axis `zoom` is applied to pose-stacked geometry whose poses are not parallel (all pose affines must share equal spatial scale magnitudes).
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius  # noqa: F401
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
+... )
+>>> zoomed = data.fusi.zoom(2.0, center="geometry")
+>>> float(zoomed.fusi.affine.bounding_box.sel(bound="max", component="x"))
+4.0
+```
+
 ### FUSIAffineAccessor
 
 Accessor for affine transform operations on VoxelData arrays.
 
-Provides methods to compute relative transforms between scans and to apply affines to a scan's spatial coordinates, including translating, rotating and zooming it in world space.
+Provides methods to compute relative transforms between scans and to apply affines to a scan's spatial coordinates.
 
 Parameters:
 
@@ -21636,9 +21846,6 @@ Methods:
 - **`reindex_voxels_like`** –
 
   Rebase voxel coordinates onto `reference`'s voxel labels.
-- **`rotate`** –
-
-  Rotate a DataArray in world space.
 - **`set_units`** –
 
   Replace the world-space unit, rebuilding the VoxelToWorldIndex.
@@ -21648,12 +21855,6 @@ Methods:
 - **`to`** –
 
   Return the affine mapping `self`'s world space into `other`'s.
-- **`translate`** –
-
-  Translate a DataArray in world space.
-- **`zoom`** –
-
-  Rescale a DataArray in world space.
 
 Attributes:
 
@@ -21918,80 +22119,6 @@ Raises:
 
   If `self` or `reference` lacks voxel-to-world geometry, if their voxel dimensions or shapes differ, or if their world coordinates do not match within `atol`.
 
-#### rotate
-
-```python
-rotate(
-    angle: float | ArrayLike,
-    axis: str | ArrayLike,
-    *,
-    center: Literal["origin", "geometry"]
-    | ArrayLike = "origin",
-    degrees: bool = True,
-    inplace: bool = False,
-) -> DataArray
-```
-
-Rotate a DataArray in world space.
-
-Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates, so a rotation of +90 degrees about `x` maps `+z` onto `+y`. Only the voxel-to-world geometry changes. See apply\_rotation for details.
-
-Parameters:
-
-- ##### **`angle`**
-
-  (`float or (N,) array-like`) –
-
-  Rotation angle, or one angle per name when `axis` names several axes.
-- ##### **`axis`**
-
-  (`str or (3,) array-like`) –
-
-  Rotation axis. Either one or more world dimension names among `"z"`, `"y"` and `"x"`, or a vector in world `(z, y, x)` order, which is normalized. Several names rotate in sequence from left to right about the fixed world axes, so `"zyx"` rotates about `z` first. Names may repeat, as in `"zyz"`, and their order changes the result.
-- ##### **`center`**
-
-  (`(origin, geometry)`, default: `"origin"` ) –
-
-  Fixed point of the rotation. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
-- ##### **`degrees`**
-
-  (`bool`, default: `True` ) –
-
-  Whether to read `angle` in degrees rather than radians.
-- ##### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify the DataArray in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The rotated DataArray. This is the DataArray itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `angle` is not finite, if it does not hold one value per axis name, if `axis` is neither world dimension names nor a non-zero finite `(3,)` vector, if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, or if the DataArray is not a VoxelData array.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> import confusius  # noqa: F401
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
-... )
->>> rotated = data.fusi.affine.rotate(90.0, "z", center=(0.0, 0.0, 0.0))
->>> box = rotated.fusi.affine.bounding_box
->>> round(float(box.sel(bound="max", component="x")), 6)
-3.0
->>> tilted = data.fusi.affine.rotate((30.0, 20.0, 10.0), "zyx")
-```
-
 #### set\_units
 
 ```python
@@ -22107,120 +22234,6 @@ Examples:
 >>> b = xr.DataArray(np.zeros((2, 2)), attrs={"affines": {"to_world": eye}})
 >>> np.allclose(a.fusi.affine.to(b, via="to_world"), np.eye(4))
 True
-```
-
-#### translate
-
-```python
-translate(
-    translation: ArrayLike, *, inplace: bool = False
-) -> DataArray
-```
-
-Translate a DataArray in world space.
-
-`translation` is given in world `(z, y, x)` order. Only the voxel-to-world geometry changes. See apply\_translation for details.
-
-Parameters:
-
-- ##### **`translation`**
-
-  (`(3,) array-like`) –
-
-  Translation in world `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`).
-- ##### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify the DataArray in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The translated DataArray. This is the DataArray itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `translation` is not a finite `(3,)` vector, or if the DataArray is not a VoxelData array.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> import confusius  # noqa: F401
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
-... )
->>> moved = data.fusi.affine.translate((1.0, 0.0, 0.0)).fusi.affine.rotate(
-...     5.0, "x"
-... )
->>> box = moved.fusi.affine.bounding_box
->>> round(float(box.sel(bound="max", component="x")), 6)
-2.0
-```
-
-#### zoom
-
-```python
-zoom(
-    zoom: float | ArrayLike,
-    *,
-    center: Literal["origin", "geometry"]
-    | ArrayLike = "origin",
-    inplace: bool = False,
-) -> DataArray
-```
-
-Rescale a DataArray in world space.
-
-Only the voxel-to-world geometry changes. See apply\_zoom for details.
-
-Parameters:
-
-- ##### **`zoom`**
-
-  (`float or (3,) array-like`) –
-
-  Scale factor, either a scalar applied to all axes or per-axis factors in world `(z, y, x)` order. Negative factors reflect the volume along that axis. Unequal factors shear the voxel grid when it is oblique to the world axes, so rotating then zooming differs from zooming then rotating.
-- ##### **`center`**
-
-  (`(origin, geometry)`, default: `"origin"` ) –
-
-  Fixed point of the rescaling. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
-- ##### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify the DataArray in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The rescaled DataArray. This is the DataArray itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if the DataArray is not a VoxelData array, or if a per-axis `zoom` is applied to pose-stacked geometry whose poses are not parallel (all pose affines must share equal spatial scale magnitudes).
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> import confusius  # noqa: F401
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
-... )
->>> zoomed = data.fusi.affine.zoom(2.0, center="geometry")
->>> float(zoomed.fusi.affine.bounding_box.sel(bound="max", component="x"))
-4.0
 ```
 
 ### FUSIConnectivityAccessor
@@ -25171,7 +25184,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_44145/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_43809/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25388,7 +25401,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa028f899d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2fee7b5d00>
     ```
 - [ ] Attributes: (27)
 
@@ -25796,7 +25809,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 13.6 s
+**Total running time:** 14.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25865,7 +25878,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_47183/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_46855/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26133,7 +26146,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9ab72388f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7efb89273410>
     ```
   - region
 
@@ -26256,7 +26269,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f9ab724c590\>
+  \<matplotlib.colors.Normalize object at 0x7efb891fa270\>
 
 ## Plot the seed maps
 
@@ -26296,7 +26309,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 14.2 s
+**Total running time:** 14.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26640,7 +26653,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f125126bb10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7f6176f890>
     ```
 - [ ] Attributes: (21)
 
@@ -27037,7 +27050,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1244558750>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7f54a833f0>
     ```
 - [ ] Attributes: (23)
 
@@ -27206,7 +27219,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 84.4 s
+**Total running time:** 88.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27554,7 +27567,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcd9070a990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8fff5ca710>
     ```
 - [ ] Attributes: (25)
 
@@ -27926,7 +27939,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 280.0 s
+**Total running time:** 280.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -28268,7 +28281,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f897b7f2990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f13a2dee710>
     ```
 - [ ] Attributes: (25)
 
@@ -28668,7 +28681,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 293.9 s
+**Total running time:** 296.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -29016,7 +29029,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f83fb1d2990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f94cb4ce710>
     ```
 - [ ] Attributes: (25)
 
@@ -29410,7 +29423,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 278.0 s
+**Total running time:** 277.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29751,7 +29764,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fc4eb5d7480>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f524edf1430>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29766,7 +29779,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...80\>, beta=6.7) |
+|  | hrf\_model | functools.par...30\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29785,7 +29798,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7fc4dfb16c10\>, \<confusius.gl...x7fc4dfb13a80\>, \<confusius.gl...x7fc4dffa8b90\>, \<confusius.gl...x7fc4dfb8abe0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f524d9eb750\>, \<confusius.gl...x7f524c6c9e00\>, \<confusius.gl...x7f524dc77770\>, \<confusius.gl...x7f52581af8a0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29900,7 +29913,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 105.2 s
+**Total running time:** 106.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/glm/first_level.ipynb>)
 
@@ -30268,7 +30281,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe6b2606990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f35b461a710>
     ```
 - [ ] Attributes: (21)
 
@@ -30505,7 +30518,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 23.9 s
+**Total running time:** 25.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30773,7 +30786,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc86dcae270>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbfa01a9e80>
     ```
 - [ ] Attributes: (25)
 
@@ -31199,7 +31212,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc899de9e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbfcc3f1bd0>
     ```
 - [ ] Attributes: (25)
 
@@ -31559,7 +31572,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc86cbf1f90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbf9f111d10>
     ```
 - [ ] Attributes: (25)
 
@@ -31906,7 +31919,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.6 s
+**Total running time:** 9.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -32249,7 +32262,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f32b5b6f100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb90e233950>
     ```
   - time
 
@@ -32530,7 +32543,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f32adfe19d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb9026f65d0>
     ```
 - [ ] Attributes: (6)
 
@@ -32603,7 +32616,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 55.2 s
+**Total running time:** 55.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32728,7 +32741,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.7 s
+**Total running time:** 5.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/dataset_collection.ipynb>)
 
@@ -33160,7 +33173,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a5cc41130>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2e58bdd1f0>
     ```
 - [ ] Attributes: (25)
 
@@ -33279,11 +33292,533 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.6 s
+**Total running time:** 14.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/load_multipose_recordings.ipynb>)
 
 [^/pr-preview/pr-556/examples/_built/io/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Transforms 101
+
+A VoxelData array keeps its values on a voxel grid. A voxel-to-world affine places that grid in world space (see [World Space](<https://confusius.tools/pr-preview/pr-556/user-guide/voxeldata/#world-space>) in The VoxelData Model). The `.fusi` accessor moves the grid in world space. It changes only the affine: the data values and the voxel grid do not change. This example shows the three basic moves: `translate`, `rotate` and `zoom`. It also shows how the `center` argument selects the point that does not move during a rotation or a zoom.
+
+## Fetch the template and select one plane
+
+This example uses the mouse fUSI template from Pepe, Mariani et al. (2026)[^/pr-preview/pr-556/examples/_built/io/transforms_101/#collection]. We move one `z` plane of the template and keep the full template as a fixed background. Each composite figure shows the template in red and the moved plane in cyan, on six `z` planes around the plane that we move.
+
+```python
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import xarray as xr
+from matplotlib.patches import Rectangle
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+import confusius as cf
+
+# Adapt background color to the current Matplotlib style.
+bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
+
+# Keep notebook output compact for large DataArray displays.
+xr.set_options(display_expand_data=False, display_expand_attrs=False)
+
+template = cf.datasets.fetch_template_pepe_mariani_2026()
+
+# ConfUSIus stores world coordinates per voxel. Read the z value of the first voxel of
+# each plane in a 0.6 mm band.
+slice_coords = template.sel(z=slice(5.8, 6.4)).z.values[:, 0, 0]
+
+# Pass a list so the plane keeps its k dimension and stays a VoxelData array.
+plane = template.sel(z=[slice_coords[3]], method="nearest")
+plane
+```
+
+```
+If you use this template in your work, please cite the following source:
+
+Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., & Gozzi, A. 
+(2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound 
+imaging (fUSI). bioRxiv. https://doi.org/10.64898/2026.02.05.704055
+```
+
+xarray.DataArray
+
+'pepe-mariani-2026-fusi-template'
+
+- k: 1
+- j: 91
+- i: 116
+
+- [ ]
+
+  dask.array\<chunksize=(1, 91, 116), meta=np.ndarray\>
+
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 82.47 kiB </td>                         <td> 82.47 kiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1, 91, 116) </td>                         <td> (1, 91, 116) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 1 chunks in 4 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> float64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+- [x] Coordinates: (6)
+
+  - k
+
+    (k)
+
+    int64
+
+    39
+
+    ☐ ☐
+
+    ```
+    array([39])
+    ```
+  - j
+
+    (j)
+
+    int64
+
+    0 1 2 3 4 5 6 ... 85 86 87 88 89 90
+
+    ☐ ☐
+
+    ```
+    array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+           36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+           54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+           72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90])
+    ```
+  - i
+
+    (i)
+
+    int64
+
+    0 1 2 3 4 5 ... 111 112 113 114 115
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+           112, 113, 114, 115])
+    ```
+  - z
+
+    (k, j, i)
+
+    float64
+
+    6.13 6.13 6.13 ... 6.13 6.13 6.13
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10556 values with dtype=float64]
+    ```
+  - y
+
+    (k, j, i)
+
+    float64
+
+    0.7195 0.7195 0.7195 ... 9.72 9.72
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10556 values with dtype=float64]
+    ```
+  - x
+
+    (k, j, i)
+
+    float64
+
+    \-0.5957 -0.4857 ... 11.94 12.05
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10556 values with dtype=float64]
+    ```
+- [ ] Indexes: (4)
+
+  - k
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([39], dtype='int64', name='k'))
+    ```
+  - j
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+           36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+           54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+           72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+           90],
+          dtype='int64', name='j'))
+    ```
+  - i
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           106, 107, 108, 109, 110, 111, 112, 113, 114, 115],
+          dtype='int64', name='i', length=116))
+    ```
+  - z  
+    y  
+    x
+
+    VoxelToWorldIndex
+
+    ☐ ☐
+
+    ```
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0cca39cf50>
+    ```
+- [ ] Attributes: (4)
+
+  **sform\_code :**
+
+  5
+
+  **qform\_code :**
+
+  1
+
+  **affines :**
+
+  {'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\]), 'world\_to\_sform': array(\[\[ 9.78086874e-01, 2.08504737e-01, 3.89841677e-04, -1.00940156e-01\], \[-2.08133288e-01, 9.76538346e-01, -9.60079872e-06, 4.80922337e-01\], \[-4.52545639e-04, -3.04725813e-04, 9.99925833e-01, 1.18406038e-03\], \[ 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00\]\])}
+
+  **citation :**
+
+  Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., &amp; Gozzi, A. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). bioRxiv. https://doi.org/10.64898/2026.02.05.704055
+
+Before a move, the plane sits exactly on the fourth `z` panel. The composite shows it in cyan, and in white where the template is also bright. The other panels show only the template.
+
+```python
+# Options shared by the six-panel composites. The figure is wide, so use a large font.
+panel_kwargs = dict(slice_coords=slice_coords, bg_color=bg_color, fontsize=20)
+
+_ = template.fusi.plot.composite(plane, **panel_kwargs)
+```
+
+## Rotate about the grid origin
+
+`rotate` takes an angle in degrees and the name of the world axis to turn about. By default, the fixed point of the rotation is the grid origin. The grid origin is the world position of the first voxel of the array. In these figures, it is the top-left corner of the plane. The yellow dot marks it.
+
+```python
+rotated_about_origin = plane.fusi.rotate(30, "z")
+
+origin = plane.fusi.origin
+plotter = template.fusi.plot.composite(rotated_about_origin, **panel_kwargs)
+_ = plotter.axes.ravel()[3].plot(
+    origin["x"], origin["y"], "yo", markersize=15, clip_on=False
+)
+```
+
+A 3D view shows the rotation axis. The collapsed `plot_plane_in_3d` helper draws the plane before (red) and after (cyan) a move, inside the bounding box of the template. It also draws the fixed point and an arrow from that point along the rotation axis. The arrow points in the positive direction of that axis. The plane is one voxel thick. The helper draws it thicker so that the slab is visible.
+
+The view has the same orientation as the composite panels: `x` to the right, `y` downward, and `z` as the depth axis, with `+z` toward you. This orientation keeps the right-hand rule of the `(z, y, x)` world coordinates. With the thumb of your right hand along `+z`, the fingers curl from `+y` toward `+x`. That is the direction in which the plane turned.
+
+> [!NOTE]
+>
+> **Code for `plot_plane_in_3d` helper**
+>
+> ```python
+> def plot_plane_in_3d(before, after, center, axis):
+>     """Draw a plane before (red) and after (cyan) a move, inside the template box."""
+>     box = template.fusi.affine.bounding_box
+>     fig = plt.figure(figsize=(7, 4.5), facecolor=bg_color)
+>     ax = fig.add_subplot(projection="3d", facecolor=bg_color)
+>     # Fill the figure with the axes, below the legend. Together with the box zoom
+>     # further down, this keeps labels and slabs inside the figure.
+>     ax.set_position([0, 0, 1, 0.92])
+>     # Draw in call order, so the fixed point and the axis stay on top of the slabs.
+>     ax.computed_zorder = False
+>
+>     # The voxel corners of the plane are the same before and after the move. Only the
+>     # voxel-to-world affine differs. The plane is one voxel thick along k. Draw it five
+>     # voxels thick so that the slab is visible.
+>     k, nj, ni = before.k.item(), before.sizes["j"], before.sizes["i"]
+>     corners = np.array(
+>         [
+>             [kk, jj, ii, 1]
+>             for kk in (k - 2.5, k + 2.5)
+>             for jj in (-0.5, nj - 0.5)
+>             for ii in (-0.5, ni - 0.5)
+>         ]
+>     )
+>     faces = [
+>         [0, 1, 3, 2],
+>         [4, 5, 7, 6],
+>         [0, 1, 5, 4],
+>         [2, 3, 7, 6],
+>         [0, 2, 6, 4],
+>         [1, 3, 7, 5],
+>     ]
+>     for array, color in ((before, "red"), (after, "cyan")):
+>         # World corners in (z, y, x), reordered to the (z, x, y) display axes.
+>         world = (array.fusi.affine.voxel_to_world @ corners.T)[:3].T[:, [0, 2, 1]]
+>         ax.add_collection3d(
+>             Poly3DCollection(
+>                 [world[face] for face in faces],
+>                 facecolor=color,
+>                 edgecolor=color,
+>                 alpha=0.35,
+>             )
+>         )
+>
+>     # Arrow from the fixed point along the rotation axis, in its positive direction, up
+>     # to the edge of the template box.
+>     center = np.asarray(center, dtype=float)[[0, 2, 1]]
+>     end = center.copy()
+>     end["zxy".index(axis)] = box.sel(component=axis, bound="max").item()
+>     ax.quiver(
+>         *center,
+>         *(end - center),
+>         color="yellow",
+>         linewidth=2.5,
+>         arrow_length_ratio=0.25,
+>         label=f"rotation axis (+{axis})",
+>     )
+>     ax.plot(*center, "yo", markersize=8, label="fixed point")
+>
+>     # Same orientation as the composite panels: x to the right, y downward.
+>     for name, setter in zip("zxy", (ax.set_xlim, ax.set_ylim, ax.set_zlim)):
+>         setter(*box.sel(component=name).values)
+>     ax.invert_zaxis()
+>     extent = (box.sel(bound="max") - box.sel(bound="min")).values
+>     ax.set_box_aspect(extent[[0, 2, 1]], zoom=0.85)
+>     ax.view_init(elev=25, azim=20)
+>     ax.set_zlabel("y (mm)")
+>     # Matplotlib writes 3D tick labels next to the back panes, where the slabs hide
+>     # them. Hide the x and z tick labels and write them along the front edges instead.
+>     # Matplotlib's x axis holds world z, and its y axis holds world x.
+>     ax.xaxis.set_tick_params(labelcolor="none")
+>     ax.yaxis.set_tick_params(labelcolor="none")
+>     z_min, _, x_min = box.sel(bound="min").values
+>     z_max, y_max, x_max = box.sel(bound="max").values
+>     # Space between the box edge and the labels, in mm.
+>     gap = 0.4
+>     for x in ax.get_yticks():
+>         if x_min <= x <= x_max:
+>             ax.text(z_max, x, y_max + gap, f"{x:g}", ha="center", va="top")
+>     for z in ax.get_xticks()[::2]:
+>         if z_min <= z <= z_max:
+>             ax.text(z, x_max + gap, y_max, f"{z:g}", ha="left", va="center")
+>     ax.text(
+>         z_max, (x_min + x_max) / 2, y_max + 4 * gap, "x (mm)", ha="center", va="top"
+>     )
+>     ax.text(
+>         (z_min + z_max) / 2, x_max + 5 * gap, y_max, "z (mm)", ha="left", va="center"
+>     )
+>     fig.legend(loc="upper center", ncol=2)
+>     return ax
+> ```
+
+```python
+_ = plot_plane_in_3d(
+    plane, rotated_about_origin, center=list(origin.values()), axis="z"
+)
+```
+
+## Rotate about the geometry center
+
+Pass `center="geometry"` to turn the plane about the center of its bounding box. This point is available as `geometry_center`. The plane now turns in place. You can also pass a `(z, y, x)` world point as `center`.
+
+```python
+rotated_about_center = plane.fusi.rotate(30, "z", center="geometry")
+
+center = plane.fusi.affine.geometry_center
+plotter = template.fusi.plot.composite(rotated_about_center, **panel_kwargs)
+_ = plotter.axes.ravel()[3].plot(
+    center.sel(component="x"), center.sel(component="y"), "yo", markersize=15
+)
+```
+
+```python
+_ = plot_plane_in_3d(plane, rotated_about_center, center=center, axis="z")
+```
+
+## Rotate out of the plane
+
+A rotation about `y` tilts the plane out of its initial `z` position. The tilted plane now crosses several `z` panels. Each panel shows only the thin band where the tilted plane cuts through it. This band moves along `x` from one panel to the next.
+
+```python
+tilted = plane.fusi.rotate(15, "y", center="geometry")
+
+_ = template.fusi.plot.composite(tilted, **panel_kwargs)
+```
+
+```python
+_ = plot_plane_in_3d(plane, tilted, center=center, axis="y")
+```
+
+To see the full tilted plane, slice the composite along `y`. The yellow box is the `bounding_box` of the six `z` planes from the previous figures. Those panels showed only the part of the tilted plane inside this box.
+
+```python
+band_box = template.sel(z=slice_coords).fusi.affine.bounding_box
+band_box
+```
+
+xarray.DataArray
+
+- bound: 2
+- component: 3
+
+- [ ]
+
+  5.78 0.6695 -0.6507 6.38 9.77 12.11
+
+  ```
+  array([[ 5.77956305,  0.66954763, -0.65072703],
+         [ 6.37956306,  9.76954776, 12.1092729 ]])
+  ```
+- [x] Coordinates: (2)
+
+  - bound
+
+    (bound)
+
+    \<U3
+
+    'min' 'max'
+
+    ☐ ☐
+
+    ```
+    array(['min', 'max'], dtype='<U3')
+    ```
+  - component
+
+    (component)
+
+    \<U1
+
+    'z' 'y' 'x'
+
+    ☐ ☐
+
+    ```
+    array(['z', 'y', 'x'], dtype='<U1')
+    ```
+- [ ] Attributes: (1)
+
+  **units :**
+
+  mm
+
+```python
+plotter = template.fusi.plot.composite(
+    tilted, slice_mode="y", slice_coords=[3], bg_color=bg_color
+)
+
+z_min, z_max = band_box.sel(component="z").values
+x_min, x_max = band_box.sel(component="x").values
+_ = plotter.axes.ravel()[0].add_patch(
+    Rectangle(
+        (x_min, z_min), x_max - x_min, z_max - z_min, fill=False, edgecolor="yellow"
+    )
+)
+```
+
+## Translate
+
+`translate` moves the array by a `(z, y, x)` vector in world units. Here the plane moves 0.2 mm along `z`, 1 mm along `y` and 3 mm along `x`. The move along `z` puts the plane two panels later. The moves along `y` and `x` shift it inside that panel.
+
+```python
+translated = plane.fusi.translate((0.2, 1, 3))
+
+_ = template.fusi.plot.composite(translated, **panel_kwargs)
+```
+
+## Zoom
+
+`zoom` scales the array by a factor, about the grid origin by default. A factor of 3 makes the plane three times larger in each direction, which includes its thickness along `z`. As a result, the plane now shows in three panels. The origin does not move, so the plane grows away from its top-left corner. Only the part near that corner stays inside the template.
+
+```python
+zoomed_about_origin = plane.fusi.zoom(3)
+
+plotter = template.fusi.plot.composite(zoomed_about_origin, **panel_kwargs)
+_ = plotter.axes.ravel()[3].plot(
+    origin["x"], origin["y"], "yo", markersize=15, clip_on=False
+)
+```
+
+With `center="geometry"`, the plane grows about its own center. The brain stays in the center of the panel and looks three times larger.
+
+```python
+zoomed_about_center = plane.fusi.zoom(3, center="geometry")
+
+plotter = template.fusi.plot.composite(zoomed_about_center, **panel_kwargs)
+_ = plotter.axes.ravel()[3].plot(
+    center.sel(component="x"), center.sel(component="y"), "yo", markersize=15
+)
+```
+
+## What changed, and what did not
+
+Each move returned a new DataArray with the same values and the same `k`, `j`, `i` grid as `plane`. Only the voxel-to-world affine changed, and with it the world coordinates derived from that affine. Moves apply in the order that you write them. Thus a rotation followed by a zoom differs from a zoom followed by a rotation. To resample a moved array onto another grid, use `resample_like`. This is what `plot_composite` did internally for each figure in this example.
+
+```python
+np.array_equal(zoomed_about_center.values, plane.values)
+```
+
+```text
+True
+```
+
+```python
+zoomed_about_center.fusi.affine.voxel_to_world
+```
+
+```text
+array([[  0.3       ,   0.        ,   0.        ,  -5.57043712],
+       [  0.        ,   0.3       ,   0.        ,  -8.2804525 ],
+       [  0.        ,   0.        ,   0.33      , -13.24572696],
+       [  0.        ,   0.        ,   0.        ,   1.        ]])
+```
+
+---
+
+**Total running time:** 18.0 s
+
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/transforms_101.ipynb>)
+
+[^/pr-preview/pr-556/examples/_built/io/transforms_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
 # Register a recording to an Allen fUSI template
 
@@ -33562,7 +34097,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fde031b0770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd248b0cfc0>
     ```
 - [ ] Attributes: (27)
 
@@ -33778,7 +34313,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 66.0 s
+**Total running time:** 67.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -34026,7 +34561,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faf09817bb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f65a6d5c2b0>
     ```
 - [ ] Attributes: (23)
 
@@ -34307,7 +34842,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faf0bdaab50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f65a930fe50>
     ```
 - [ ] Attributes: (23)
 
@@ -34512,49 +35047,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-6.065e-10 -1.26e-12 -1.477e-14 -2.43e-13 ... -449.7 -206.7 -304.5
+  \-4.18e-13 3.015e-13 4.796e-14 -2.524e-13 ... -638.6 -546.1 -105.2
 
   ```
-  array([[[[-6.06535992e-10, -1.26049864e-12, -1.47662142e-14, ...,
-            -1.59214520e-12, -4.97709664e-13, -2.49083348e-14],
-           [-6.60890840e-13, -7.35163327e-14, -4.32406245e-15, ...,
-            -1.92618441e-13, -3.43926720e-14,  2.34853901e-15],
-           [-2.31748228e-13, -8.32670782e-14, -8.76973602e-14, ...,
-            -9.52891255e-14,  2.31238714e-14,  2.27548604e-14],
+  array([[[[-4.17965654e-13,  3.01493540e-13,  4.79566890e-14, ...,
+            -1.20861725e-12, -7.54950142e-13, -7.96565907e-14],
+           [-1.41667927e-13,  1.22810099e-14, -1.07708083e-14, ...,
+            -3.96180577e-13, -7.78130137e-14,  1.38223197e-14],
+           [-3.17386438e-13, -1.67879495e-13, -2.95225278e-13, ...,
+            -1.88326067e-13,  5.55304827e-14,  4.11722172e-14],
            ...,
-           [-1.99106798e-13, -2.78766475e-14,  2.22813622e-13, ...,
-             1.33448164e-13,  1.36455405e-13,  2.93958367e-14],
-           [ 5.99262437e-14,  1.05473529e-13,  1.94978539e-13, ...,
-             1.00151405e-13,  4.36914804e-14,  3.05754786e-15],
-           [ 2.07958906e-11,  7.65527241e-12,  7.64536448e-13, ...,
-             2.25902437e-13,  1.27195517e-13,  1.65297841e-14]],
+           [-1.97759317e-13,  1.86571351e-15,  4.79592496e-13, ...,
+             3.14599679e-13,  1.62058763e-13,  3.58761973e-14],
+           [ 4.89791178e-13,  1.21225202e-13,  4.30837581e-13, ...,
+             1.89347395e-13,  1.41624689e-13,  1.20615036e-14],
+           [ 8.65042661e-13,  1.77954911e-13,  1.83197368e-12, ...,
+             6.40425305e-13,  1.01020166e-12,  5.24604496e-13]],
 
-          [[-7.10749054e-13, -1.47707346e-15, -1.73032976e-17, ...,
-            -1.86570247e-15, -5.83224538e-16, -2.91880049e-17],
-           [-7.74442980e-16, -8.61476726e-17, -5.06700895e-18, ...,
-            -2.25713522e-16, -4.03019103e-17,  2.75205744e-18],
-           [-2.71566463e-16, -9.75737599e-17, -1.02765239e-16, ...,
-            -1.11661397e-16,  2.70969406e-17,  2.66645273e-17],
+          [[-4.89779168e-16,  3.53295191e-16,  5.61964532e-17, ...,
+            -1.41627798e-15, -8.84663248e-16, -9.33429301e-17],
+           [-1.66008854e-16,  1.43910935e-17, -1.26214139e-17, ...,
+            -4.64251050e-16, -9.11825955e-17,  1.61972262e-17],
+           [-3.71918755e-16, -1.96724010e-16, -3.45949936e-16, ...,
+            -2.20683647e-16,  6.50715518e-17,  4.82462953e-17],
   ...
-            -1.19917553e-01, -5.58871123e-02, -4.54196109e-03],
-           [ 1.48414980e-02,  5.28787242e-02,  1.27107286e-01, ...,
-            -1.29078922e-01, -8.16411773e-02, -6.81373383e-02],
-           [ 8.13877325e-02,  3.96430067e-01,  2.24078003e-01, ...,
-            -5.26930107e-01, -2.42230458e-01, -3.56857752e-01]],
+            -7.79071515e-02, -9.30798882e-02, -1.72393310e-02],
+           [ 4.93197977e-02,  4.75877695e-02,  1.44233775e-01, ...,
+            -1.87138542e-01, -1.19357718e-01, -1.06130248e-02],
+           [ 4.04328168e-02,  8.65353422e-02, -2.77525592e-02, ...,
+            -7.48271261e-01, -6.39921599e-01, -1.23262409e-01]],
 
-          [[ 1.24149662e+04,  1.69757482e+02, -2.97949714e+02, ...,
-            -8.16951114e+01, -2.81536342e+00,  1.68181390e+01],
-           [-1.37435161e+02, -3.79546636e+00, -8.08372236e+01, ...,
-            -5.72857890e+01,  1.97303287e+00,  8.24169809e+00],
-           [-7.24260135e+02,  8.84090038e+01,  5.07885672e+01, ...,
-            -1.11884696e+02, -2.54645132e-01,  5.48980204e+00],
+          [[ 2.33133861e+04, -1.82009512e+03, -4.89247525e+02, ...,
+            -4.53786821e+02,  1.65078311e+01,  1.28364950e+03],
+           [-3.69173931e+02, -1.76118711e+00, -7.83265216e+01, ...,
+            -8.56766707e+01,  4.77293022e+01,  1.19547948e+03],
+           [-9.80860460e+02,  1.35714458e+02,  8.25624385e+01, ...,
+            -9.21152590e+01,  2.31479956e+01,  2.29943960e+00],
            ...,
-           [-6.31378896e+01,  1.67582952e+02,  1.78558821e+02, ...,
-            -1.02334729e+02, -4.76927050e+01, -3.87599933e+00],
-           [ 1.26653742e+01,  4.51254196e+01,  1.08470272e+02, ...,
-            -1.10152819e+02, -6.96705990e+01, -5.81467493e+01],
-           [ 6.94543181e+01,  3.38303800e+02,  1.91222728e+02, ...,
-            -4.49669365e+02, -2.06713592e+02, -3.04533794e+02]]]],
+           [-3.06070720e+02,  1.05054881e+02,  2.72074144e+02, ...,
+            -6.64840720e+01, -7.94321173e+01, -1.47116266e+01],
+           [ 4.20883185e+01,  4.06102474e+01,  1.23085602e+02, ...,
+            -1.59699489e+02, -1.01856979e+02, -9.05689769e+00],
+           [ 3.45043850e+01,  7.38471605e+01, -2.36833603e+01, ...,
+            -6.38556524e+02, -5.46093559e+02, -1.05189137e+02]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34709,7 +35244,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7faeec6d17f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6588dd20f0>
     ```
 - [x] Attributes: (4)
 
@@ -34740,7 +35275,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8898
+Rigid + B-spline final metric: -0.8949
 ```
 
 ```python
@@ -34829,7 +35364,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 48.1 s
+**Total running time:** 82.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -35195,7 +35730,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8ab1aeec10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5f8a7fa990>
     ```
 - [ ] Attributes: (21)
 
@@ -35405,7 +35940,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 41.9 s
+**Total running time:** 42.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -35421,18 +35956,30 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 Current development version for the next ConfUSIus release.
 
+### 💥 Breaking changes
+
+- Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
+
 ### ✨ Enhancements
 
-- Add `apply_translation`, `apply_rotation` and `apply_zoom`, plus the matching `.fusi.affine.translate()`, `.rotate()` and `.zoom()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
+- Add `apply_translation`, `apply_rotation` and `apply_zoom`, plus the matching `.fusi.translate()`, `.fusi.rotate()` and `.fusi.zoom()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 
 ### 🐛 Fixes
 
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 
+### 📚 Documentation
+
+- Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
+- Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+
 ### 🔧 Maintenance
 
+- `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
+- Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
 
 ## 0.9.0
 
@@ -35928,23 +36475,25 @@ This project follows the [Contributor Covenant Code of Conduct](<https://github.
 
 # Citing ConfUSIus
 
-If you use ConfUSIus in your research, please cite it using the following reference:
+If you use ConfUSIus in your research, please cite the following preprint:
 
-> Le Meur-Diebolt, S., &amp; Cybis Pereira, F. (2026). ConfUSIus (v0.9.0). Zenodo. https://doi.org/10.5281/zenodo.18611124
+> Le Meur-Diebolt, S., &amp; Cybis Pereira, F. (2026). ConfUSIus: an accessible and scalable toolkit for functional ultrasound imaging analysis. *bioRxiv*. https://doi.org/10.64898/2026.10.27.762250
 
 Or in BibTeX format:
 
 ```bibtex
-@software{confusius,
-  author    = {Le Meur-Diebolt, Samuel and Cybis Pereira, Felipe},
-  title     = {ConfUSIus},
-  year      = {2026},
-  publisher = {Zenodo},
-  version   = {v0.9.0},
-  doi       = {10.5281/zenodo.18611124},
-  url       = {https://doi.org/10.5281/zenodo.18611124}
+@article{confusius,
+  title = {ConfUSIus: an accessible and scalable toolkit for functional ultrasound imaging analysis},
+  url = {http://dx.doi.org/10.64898/2026.10.27.762250},
+  DOI = {10.64898/2026.10.27.762250},
+  publisher = {openRxiv},
+  author = {Le Meur-Diebolt,  Samuel and Cybis Pereira,  Felipe},
+  year = {2026},
+  month = Nov
 }
 ```
+
+ConfUSIus versions are archived on [Zenodo](<https://doi.org/10.5281/zenodo.18611124>).
 
 ---
 
@@ -36146,15 +36695,17 @@ License: **[CC BY 4.0](<https://creativecommons.org/licenses/by/4.0/>)**.
 
 The `fetch_pepe_mariani_2026` function provides a fUSI-BIDS re-export of this dataset. If you use it, please cite:
 
-> Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., &amp; Gozzi, A. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (Fusi). https://doi.org/10.64898/2026.02.05.704055
+> Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., &amp; Gozzi, A. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). *bioRxiv*. https://doi.org/10.64898/2026.02.05.704055
 
 ```bibtex
-@misc{pepe_structural_2026,
-  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging ({Fusi})},
-  doi = {10.64898/2026.02.05.704055},
-  url = {http://biorxiv.org/lookup/doi/10.64898/2026.02.05.704055},
-  author = {Pepe, Chiara and Mariani, Jean-Charles and Urosevic, Mila and Gini, Silvia and Stuefer, Alexia and Ricci, Fabio and Galbusera, Alberto and Iurilli, Giuliano and Gozzi, Alessandro},
+@article{Pepe2026,
+  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI)},
+  url = {http://dx.doi.org/10.64898/2026.02.05.704055},
+  DOI = {10.64898/2026.02.05.704055},
+  publisher = {openRxiv},
+  author = {Pepe,  Chiara and Mariani,  Jean-Charles and Urosevic,  Mila and Gini,  Silvia and Stuefer,  Alexia and Ricci,  Fabio and Galbusera,  Alberto and Iurilli,  Giuliano and Gozzi,  Alessandro},
   year = {2026},
+  month = Feb
 }
 ```
 
@@ -36194,11 +36745,9 @@ License: **[CC0 1.0](<https://creativecommons.org/publicdomain/zero/1.0/>)**.
 
 ### Brunner, Grillet et al. (2021)
 
-The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
+The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper:
 
 > Brunner, C., Grillet, M., Urban, A., Roska, B., Montaldo, G., &amp; Macé, E. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. https://doi.org/10.1038/s41596-021-00548-8
->
-> Macé, E., &amp; Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). *Zenodo*. https://doi.org/10.5281/zenodo.4905862
 
 Or in BibTeX format:
 
@@ -36214,18 +36763,9 @@ Or in BibTeX format:
   year = {2021},
   doi = {10.1038/s41596-021-00548-8},
 }
-
-@dataset{mace_montaldo2020,
-  title = {Whole-brain visually evoked activity maps in head-fixed awake mice},
-  author = {Macé, Emilie and Montaldo, Gabriel},
-  publisher = {Zenodo},
-  year = {2020},
-  note = {June 2021 metadata update},
-  doi = {10.5281/zenodo.4905862},
-}
 ```
 
-The template conversion reorders axes and assigns the Allen 50 µm coordinate grid without changing vascular voxel values. Also cite Wang et al. (2020) for the Allen CCF reference framework: [https://doi.org/10.1016/j.cell.2020.04.007](<https://doi.org/10.1016/j.cell.2020.04.007>).
+The associated dataset is archived on [Zenodo](<https://doi.org/10.5281/zenodo.4905862>).
 
 License: **[CC BY 4.0](<https://creativecommons.org/licenses/by/4.0/>)**.
 
@@ -36238,17 +36778,14 @@ The `fetch_template_pepe_mariani_2026` function provides a mouse fUSI template d
 Or in BibTeX format:
 
 ```bibtex
-@article{pepe2026fusi,
-  author    = {Pepe, Chiara and Mariani, Jean-Charles and Urosevic, Mila and Gini, Silvia and
-               Stuefer, Alexia and Ricci, Fabio and Galbusera, Alberto and Iurilli, Giuliano and
-               Gozzi, Alessandro},
-  title     = {Structural and dynamic embedding of the mouse functional connectome revealed by
-               functional ultrasound imaging ({fUSI})},
-  journal   = {bioRxiv},
-  year      = {2026},
-  publisher = {Cold Spring Harbor Laboratory},
-  doi       = {10.64898/2026.02.05.704055},
-  url       = {https://doi.org/10.64898/2026.02.05.704055}
+@article{Pepe2026,
+  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI)},
+  url = {http://dx.doi.org/10.64898/2026.02.05.704055},
+  DOI = {10.64898/2026.02.05.704055},
+  publisher = {openRxiv},
+  author = {Pepe,  Chiara and Mariani,  Jean-Charles and Urosevic,  Mila and Gini,  Silvia and Stuefer,  Alexia and Ricci,  Fabio and Galbusera,  Alberto and Iurilli,  Giuliano and Gozzi,  Alessandro},
+  year = {2026},
+  month = Feb
 }
 ```
 
