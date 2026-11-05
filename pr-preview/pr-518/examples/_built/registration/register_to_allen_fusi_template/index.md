@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6e06f9c510>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1d96174c30>
     ```
 - [ ] Attributes: (27)
 
@@ -490,7 +490,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 280.1 s
+**Total running time:** 119.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 

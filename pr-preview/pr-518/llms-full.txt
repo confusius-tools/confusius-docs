@@ -2,7 +2,7 @@
 
 > Python package for analysis and visualization of functional ultrasound imaging data.
 
-This file describes ConfUSIus version 0.9.0.dev0. ConfUSIus is a Python library built on xarray for loading, registering, extracting signals from, and visualizing functional ultrasound imaging (fUSI) data. Every spatial array is a VoxelData `xarray.DataArray` with dims `(..., time, pose, k, j, i)` and a voxel-to-world affine index. Install with `pip install confusius`. The package is in beta and the API may change between releases.
+This file describes ConfUSIus version 0.10.0.dev0. ConfUSIus is a Python library built on xarray for loading, registering, extracting signals from, and visualizing functional ultrasound imaging (fUSI) data. Every spatial array is a VoxelData `xarray.DataArray` with dims `(..., time, pose, k, j, i)` and a voxel-to-world affine index. Install with `pip install confusius`. The package is in beta and the API may change between releases.
 
 # User guide
 
@@ -236,10 +236,70 @@ To verify that ConfUSIus has been installed correctly, you may run the following
 ```pycon
 >>> import confusius as cf
 >>> print(cf.__version__)
-'0.9.0.dev0'
+'0.10.0.dev0'
 ```
 
 If the installation was successful, this code will print the installed version of ConfUSIus without any errors. If you encounter an error, please open an issue on the [GitHub repository](<https://github.com/confusius-tools/confusius/issues/>).
+
+# Agents
+
+ConfUSIus includes [Agent Skills](<https://agentskills.io/>): task-specific instructions that help coding agents use ConfUSIus. Skills work with Pi, Codex, Claude Code, Cursor, and other compatible agents.
+
+## Available Skills
+
+List the bundled skills:
+
+```sh
+confusius skills list
+```
+
+| Skill | Description |
+| --- | --- |
+| `confusius-load-data` | Load any spatially referenced voxel array into ConfUSIus, including fUSI recordings, derived maps, anatomical images, and atlases. Use when importing data from files or arrays, choosing loaders, or constructing VoxelData with correct dimensions, coordinates, timing, and spatial geometry. |
+
+## Install Skills
+
+Install all bundled skills in your project:
+
+```sh
+confusius skills install
+```
+
+By default, skills are installed in `.agents/skills/` relative to your current working directory (not necessarily the repository root). This shared location is supported by Pi, Codex, Cursor, and other agents.
+
+You can also install skills globally or choose a different destination:
+
+| Command | Destination |
+| --- | --- |
+| `confusius skills install` | `.agents/skills/` |
+| `confusius skills install --global` | `~/.agents/skills/` |
+| `confusius skills install --target .claude/skills` | `.claude/skills/` |
+| `confusius skills install --global --target .claude/skills` | `~/.claude/skills/` |
+
+Relative paths resolve from the current directory, or your home directory with `--global`. Absolute paths and `~` are also supported. Existing skills are preserved unless `--force` is specified, which replaces them and discards local changes.
+
+To install a specific skill:
+
+```sh
+confusius skills install confusius-load-data
+```
+
+## Use a Skill
+
+After installation, reload your agent's skill discovery if needed. You can then ask it to use a skill directly, for example:
+
+> Use confusius-load-data to help me load my MATLAB recording.
+
+Skill discovery varies between agents. Avoid installing duplicate copies in directories scanned by the same agent.
+
+## Documentation for Assistants
+
+ConfUSIus also provides agent-friendly documentation:
+
+- [llms.txt](<https://confusius.tools/latest/llms.txt>): an index linking to Markdown versions of the documentation.
+- [llms-full.txt](<https://confusius.tools/latest/llms-full.txt>): the complete documentation in a single, much larger file.
+
+These resources can be used with any agent, even without skills support. The links above point to the latest documentation; use the version matching your installed ConfUSIus release.
 
 # Input/Output
 
@@ -392,69 +452,33 @@ iq = cf.load("path/to/data.dat")
 iq = cf.load("path/to/data.dat", meta_path="path/to/metadata.mat")
 ```
 
-When you expect to process the same recording repeatedly, [convert it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
+When you expect to process the same recording repeatedly, [save it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
 
-### Loading Iconeus SCAN Files
+### Loading Iconeus RAW Files
 
-Iconeus SCAN files come in two flavors, depending on your version of IcoScan: IcoScan versions before 2.0 output SCAN files using the HDF5-based SCAN v1 format, while versions 2.0 and after use the newer binary SCAN v2 format. `confusius.load` automatically detects the format and dispatches to the appropriate loader.
+Iconeus beamformed IQ data is stored as a binary `.raw` payload paired with an HDF5 `.hraw` metadata sidecar. Load it with `confusius.load`, which finds the matching `.hraw` file next to the payload:
 
-#### SCAN v1 (HDF5 format)
+```python
+import confusius as cf
 
-```pycon
->>> import confusius as cf
->>> da = cf.load("sub-01_task-awake_pwd.source.scan")
->>> da
-<xarray.DataArray 'sub-01_task-awake_pwd' (time: 500, pose: 4, k: 4, j: 92, i: 103)> Size: 606MB
-dask.array<transpose, shape=(500, 4, 4, 92, 103), dtype=float64, chunksize=(110, 4, 4, 92, 103), chunktype=numpy.ndarray>
-Coordinates:
-    time     (time, pose) float64 16kB 0.4 2.2 1.0 ... 1.199e+03 1.199e+03
-  * pose     (pose) int64 32B 0 1 2 3
-  * k        (k) int64 32B 0 1 2 3
-  * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91
-  * i        (i) int64 824B 0 1 2 3 4 5 6 7 8 ... 94 95 96 97 98 99 100 101 102
-  * z        (pose, k, j, i) float64 1MB -0.19 -0.3 -0.41 ... -11.3 -11.41
-  * y        (pose, k, j, i) float64 1MB 20.3 20.3 20.3 ... 29.27 29.27 29.27
-  * x        (pose, k, j, i) float64 1MB -3.851 -3.851 -3.851 ... 4.024 4.024
-Indexes:
-  ┌ z        VoxelToWorldIndex
-  │ y
-  └ x
-Attributes:
-    affines:               {}
-    device_serial_number:  XXXXXXXX
-    software_version:      IcoScan version 1.0.0
-    iconeus_scan_mode:     4Dscan
-    iconeus_subject:       Mouse01
-    iconeus_session:       Session01
-    iconeus_scan:          sub-01_task-awake_pwd
-    iconeus_project:       Project01
-    iconeus_datetime:      2021-10-22T14:14:12+00:00
+iq = cf.load("path/to/acquisition.raw")
 ```
 
-Provenance metadata from the file is stored in `da.attrs`, including `iconeus_scan_mode`, `iconeus_subject`, `iconeus_session`, `iconeus_scan`, `iconeus_project`, `iconeus_datetime`, `software_version`, and `device_serial_number`. `iconeus_datetime` uses ISO 8601 format for both SCAN v1 and SCAN v2. SCAN v1 stores the date without a time zone, so ConfUSIus treats it as UTC.
-
-Note that for recordings consisting of multiple probe poses (e.g., `3Dscan`, `4Dscan`), the `time` coordinate is **pose-dependent**, giving the acquisition time of each volume for each pose. This is useful for volume-timing corrections and for aligning multi-pose acquisitions with external events.
-
-Additionally, each pose has its own voxel-to-world affine transformation, meaning the `z`/`y`/`x` world coordinates are **pose-dependent**. The `pose` coordinate indexes the pose dimension, and the `z`/`y`/`x` coordinates are derived from the corresponding pose's affine. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-518/user-guide/voxeldata/index.md>) for details on how world coordinates are derived from voxel indices and affines.
+Acquisition blocks are preserved as Dask chunks (one chunk per block along `time`), so `iq.chunks[0]` gives the number of frames per block. IQ metadata is attached to `iq.attrs` using fUSI-BIDS field names where they exist. Iconeus-specific metadata is stored with the `iconeus_` prefix.
 
 > [!WARNING]
 >
-> **SCAN files and parallel processing**
+> **Iconeus RAW timestamps are theoretical**
 >
-> SCAN v1 files are HDF5 files, and h5py datasets **cannot be pickled**. This means lazy SCAN DataArrays cannot be passed to functions that use parallel workers (e.g., `register_volumewise` with `n_jobs != 1`). Call `.compute()` to load the data into memory before running any parallel operation:
->
-> ```python
-> import confusius as cf
->
-> fusi = cf.load("recording.scan").compute()  # materialize first
-> fusi = cf.registration.register_volumewise(fusi)
-> ```
->
-> Alternatively, use `n_jobs=1` for serial processing (slower but works with lazy SCAN data).
+> Iconeus RAW files do not store acquisition timestamps, so the `time` coordinate is computed from the compound sampling frequency metadata in the HRAW file. If you know the real acquisition timings (e.g. from external triggers), override the `time` coordinate with `iq.assign_coords(time=...)` after loading.
 
-#### SCAN v2 (binary format)
+When you expect to process the same recording repeatedly, [save it to Zarr](<#converting-beamformed-iq-data-to-zarr>) instead for better performance.
 
-SCAN v2 files preserve the recording's data, acquisition timing, and VoxelData geometry. Metadata recovered into `da.attrs` include the `world_to_lab` affine, provenance (`iconeus_*` attrs), acquisition datetime, and BIDS-corresponding acquisition settings (`probe_model`, `probe_center_frequency`, `probe_aperture`, `transmit_frequency`, `pulse_repetition_frequency`, `plane_wave_angles`, `svd_low_cutoff`, …). For multi-pose recordings, see the [multi-pose user guide](<https://confusius.tools/pr-preview/pr-518/user-guide/multipose/#scan-v2-binary>).
+### Loading Iconeus Files
+
+#### SCAN Files
+
+Iconeus SCAN files use two formats depending on the IcoScan version: **SCAN v1** (HDF5, before IcoScan 2.0) and **SCAN v2** (binary, IcoScan 2.0 and later). `confusius.load` automatically detects the format:
 
 ```pycon
 >>> import confusius as cf
@@ -467,59 +491,54 @@ Coordinates:
   * k        (k) int64 8B 0
   * j        (j) int64 736B 0 1 2 3 4 5 6 7 8 9 ... 83 84 85 86 87 88 89 90 91
   * i        (i) int64 1kB 0 1 2 3 4 5 6 7 8 ... 120 121 122 123 124 125 126 127
-  * z        (k, j, i) float64 94kB -4.385 -4.275 -4.165 ... 9.365 9.475 9.585
+  * z        (k, j, i) float64 94kB 0.7 0.7 0.7 0.7 0.7 ... 0.7 0.7 0.7 0.7 0.7
   * y        (k, j, i) float64 94kB 1.0 1.0 1.0 1.0 ... 9.969 9.969 9.969 9.969
-  * x        (k, j, i) float64 94kB 0.7 0.7 0.7 0.7 0.7 ... 0.7 0.7 0.7 0.7 0.7
+  * x        (k, j, i) float64 94kB -9.585 -9.475 -9.365 ... 4.165 4.275 4.385
 Indexes:
   ┌ z        VoxelToWorldIndex
   │ y
   └ x
 Attributes: (12/26)
-    affines:                           {}
+    affines:                           {'world_to_lab': array([[1., 0., 0.,...
     iconeus_scan_format:               v2
-    iconeus_scan_mode:                 2Dscan
+    iconeus_acquisition_mode:          2Dscan
     iconeus_datetime:                  2026-07-14T05:00:00+00:00
     device_serial_number:              XXXXXXX
     iconeus_hardware:                  Hardware_1_0-0123
     ...                                ...
     probe_pitch:                       0.11
     probe_focal_depth:                 8.0
-    imaging_depth:                     (1.0, 10.0)
-    transmit_frequency:                15.625
+    depth:                             (1.0, 10.0)
+    transmit_frequency:                15625000.0
     pulse_repetition_frequency:        5500.0
     plane_wave_angles:                 [-10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2...
 ```
 
-#### Loading a BPS File
+Both formats are loaded lazily as [VoxelData](<https://confusius.tools/pr-preview/pr-518/user-guide/voxeldata/index.md>) arrays, preserving acquisition timing, spatial geometry, and provenance metadata in `.attrs`. SCAN v2 additionally provides more detailed acquisition parameters, such as probe specifications, transmit frequency, and plane-wave angles.
 
-Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System. They contain an affine matrix that maps Iconeus brain coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus lab coordinates `(x_lab, y_lab, z_lab, 1)` in meters. The Iconeus lab frame is a fixed scanner space defined by Iconeus. ConfUSIus re-expresses this space as **ConfUSIus-ordered** lab space `(z_lab, y_lab, x_lab)` in millimeters: that is the world space used when loading SCAN files.
+> [!WARNING]
+>
+> **Parallel processing with SCAN v1**
+>
+> SCAN v1 files are HDF5-backed, and h5py datasets **cannot be pickled**. Operations using separate worker processes, such as `register_volumewise` with `n_jobs > 1`, therefore require loading the data into memory first:
+>
+> ```python
+> da = cf.load("recording.scan").compute()
+> ```
+>
+> Alternatively, use `n_jobs=1` for serial processing. This limitation does not apply to SCAN v2.
 
-The affine matrix in the BPS file can be loaded with `confusius.io.load_bps`. It is generally a good idea to store it in the `.attrs["affines"]` attribute of the DataArray:
+World coordinates `(z, y, x)` are expressed in millimeters in the Iconeus laboratory space, rotated by 90° about the axial axis. For typical coronal acquisitions, this gives `z` elevation, `y` depth, and `x` lateral. `.attrs["affines"]` contains `world_to_lab` (identity) and `world_to_probe` (the transformation to the first pose's probe space).
 
-```python
-import confusius as cf
-import numpy as np
+> [!NOTE]
+>
+> **Why the 90° rotation?**
+>
+> The Iconeus laboratory space is defined relative to the motors' initial position, which typically corresponds to sagittal orientation. Since most fUSI acquisitions are coronal, they require rotating the probe by 90° to align with the brain's coronal plane. To avoid confusion, ConfUSIus always rotates the Iconeus laboratory space by 90° so that coronal images align with the voxel grid. This rotation is constant across recordings, preserving their relative positions and orientations, including those acquired at other probe angles.
 
-da = cf.load("sub-01_task-awake_pwd.source.scan")
+For multi-pose recordings, ConfUSIus preserves the acquisition timing and spatial geometry of each pose. See [Multi-Pose Imaging](<https://confusius.tools/pr-preview/pr-518/user-guide/multipose/index.md>) for details on handling these recordings and the differences between SCAN v1 and v2.
 
-brain_to_world = cf.io.load_bps("sub-01_task-awake_pwd.bps")
-da.attrs["affines"]["world_to_brain"] = np.linalg.inv(brain_to_world)
-```
-
-Passing the BPS file path using the `bps_path` argument when loading a SCAN file offers a convenient shortcut:
-
-```python
-import confusius as cf
-
-da = cf.load(
-    "sub-01_task-awake_pwd.source.scan",
-    bps_path="sub-01_task-awake_pwd.bps",
-)
-```
-
-Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to register fUSI data into atlas space directly. For multi-pose files (`3Dscan`, `4Dscan`) the affine has shape `(npose, 4, 4)` and is indexed by pose, the same way `world_to_lab` is.
-
-#### Converting SCAN Data to NIfTI
+#### Converting SCAN to NIfTI
 
 Since `load` returns a VoxelData array, you can save it directly to NIfTI using `save` or the Xarray accessor.
 
@@ -553,9 +572,38 @@ for pose in anat.pose:
     cf.save(pose_da, f"sub-01_acq-anat_pose-{pose.values}.nii.gz")
 ```
 
+#### BPS Files
+
+Iconeus' BPS files are HDF5 containers produced by Iconeus' Brain Positioning System. They contain an affine matrix that maps Iconeus "brain space" coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus laboratory space coordinates `(x_lab, y_lab, z_lab, 1)` in meters. ConfUSIus transforms the laboratory space by reordering it to `(z_lab, y_lab, x_lab)` (in millimeters), and rotating it by 90 degrees about the axial axis (see [Why the 90° rotation?](<#scan-files>)).
+
+The affine matrix in the BPS file can be loaded with `confusius.io.load_bps`. It is generally a good idea to store it in the `.attrs["affines"]` attribute of the DataArray:
+
+```python
+import confusius as cf
+import numpy as np
+
+da = cf.load("sub-01_task-awake_pwd.source.scan")
+
+brain_to_world = cf.io.load_bps("sub-01_task-awake_pwd.bps")
+da.attrs["affines"]["world_to_brain"] = np.linalg.inv(brain_to_world)
+```
+
+Passing the BPS file path using the `bps_path` argument when loading a SCAN file offers a convenient shortcut:
+
+```python
+import confusius as cf
+
+da = cf.load(
+    "sub-01_task-awake_pwd.source.scan",
+    bps_path="sub-01_task-awake_pwd.bps",
+)
+```
+
+Compose it with brain-side affines (e.g. brain-to-CCFv3 from a brain atlas) to register fUSI data into atlas space directly. It is a single `(4, 4)` affine, even for multi-pose files (`3Dscan`, `4Dscan`), since lab space is shared by every pose.
+
 ### Loading NIfTI Files
 
-When loading NIfTI files, ConfUSIus automatically loads a [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
+When loading NIfTI files, ConfUSIus automatically loads [fUSI-BIDS](<https://bids-specification.readthedocs.io/en/stable/>) metadata. For files inside a BIDS folder tree, matching sidecars are inherited from the dataset root (the folder containing `dataset_description.json`) down to the recording folder, with more specific sidecars overriding shared values. Metadata fields are interpreted using the fUSI-BIDS naming conventions and converted back to the usual ConfUSIus attribute names on the loaded DataArray. Timing metadata in the sidecar takes precedence over the NIfTI header when both are available.
 
 ```pycon
 >>> import confusius as cf
@@ -597,6 +645,16 @@ Attributes: (12/24)
     transmit_voltage:                    25.0
 ```
 
+To load multiple probe poses that were split into multiple NIfTI files using the fUSI-BIDS `chunk` entity, put `{chunk}` in the filename:
+
+```python
+import confusius as cf
+
+da = cf.load("sub-01_ses-01_chunk-{chunk}_pwd.nii")
+```
+
+Matching integer chunk indices are sorted numerically then combined lazily with `stack_poses`. The chunks must meet `stack_poses`' requirements, including equal time lengths and compatible voxel grids.
+
 ### Loading Other Formats
 
 For unsupported formats, such as lab-specific MAT-files, load the array with the appropriate Python tool and use `create_voxeldata` to attach dimensions, coordinates, and metadata:
@@ -620,13 +678,9 @@ See the [Create a VoxelData array from a MAT file](<https://confusius.tools/pr-p
 
 ## Converting Beamformed IQ Data to Zarr
 
-Beamformed IQ exports are often stored as large binary files together with acquisition metadata. The file structure from AUTC and EchoFrame systems is documented, allowing ConfUSIus to provide built-in conversion utilities that reorganize these datasets into Zarr for more efficient processing.
+Beamformed IQ exports are often stored as large binary files together with acquisition metadata. When you expect to process the same recording repeatedly, converting it to Zarr is recommended for better performance. Zarr is a chunked, compressed format that allows efficient out-of-core processing and parallel access to large datasets.
 
-> [!NOTE]
->
-> **Why doesn't ConfUSIus support Iconeus RAW files?**
->
-> ConfUSIus cannot currently read Iconeus beamformed IQ files because the Iconeus RAW format is not documented publicly. If you need to process RAW files with ConfUSIus, please contact Iconeus to request an export tool or format documentation.
+ConfUSIus loads AUTC DAT, EchoFrame DAT, and Iconeus RAW files directly. AUTC DAT folders are split across multiple binary files, so they use the dedicated `convert_autc_dats_to_zarr` converter. EchoFrame DAT and Iconeus RAW files load lazily as VoxelData arrays, so conversion to Zarr is as simple as loading the data with `confusius.load` followed by `confusius.save`; data is streamed chunk by chunk.
 
 This format consists of a series of binary `.dat` files (often split into parts), where each file contains multiple acquisition blocks.
 
@@ -656,31 +710,83 @@ This will create a Zarr group containing:
 
 This format consists of a binary `.dat` file containing the beamformed data and a `.mat` file containing metadata (sequence parameters).
 
-To convert EchoFrame data to Zarr, use `convert_echoframe_dat_to_zarr`. Zarr is useful for long-term storage or repeated processing of the same recording.
+```python
+import numpy as np
+
+import confusius as cf
+
+# Finds ScanParameters.mat next to the DAT file by default.
+iq = cf.load("path/to/data.dat")
+
+# Replace the theoretical time coordinate with external trigger timestamps when
+# available.
+n_volumes = iq.chunks[0][0]  # Volumes in the first acquisition block.
+block_starts = np.asarray(measured_block_start_times)  # One per block, in seconds.
+time = np.concatenate(
+    [
+        start
+        + np.arange(n_volumes) / iq.attrs["compound_sampling_frequency"]
+        for start in block_starts
+    ]
+)
+iq = iq.assign_coords(time=("time", time, iq.coords["time"].attrs))
+
+cf.save(iq, "sub-01_task-awake_iq.zarr")
+```
+
+This format consists of a binary `.raw` payload paired with an HDF5 `.hraw` metadata sidecar.
 
 ```python
-from confusius.io import convert_echoframe_dat_to_zarr
+import numpy as np
 
-convert_echoframe_dat_to_zarr(
-    dat_path="path/to/data.dat",
-    meta_path="path/to/metadata.mat",
-    output_path="sub-01_task-awake_iq.zarr",
-    # Optional: specify block start times. Other metadata (e.g., transmit frequency,
-    # axis coordinates) will be automatically extracted from the metadata file.
-    block_times=block_times,
+import confusius as cf
+
+# Finds the matching .hraw file next to the payload.
+iq = cf.load("path/to/acquisition.raw")
+
+# Replace the theoretical time coordinate with external trigger timestamps when
+# available.
+n_volumes = iq.chunks[0][0]  # Volumes in the first acquisition block.
+block_starts = np.asarray(measured_block_start_times)  # One per block, in seconds.
+time = np.concatenate(
+    [
+        start
+        + np.arange(n_volumes) / iq.attrs["compound_sampling_frequency"]
+        for start in block_starts
+    ]
+)
+iq = iq.assign_coords(time=("time", time, iq.coords["time"].attrs))
+
+cf.save(iq, "sub-01_task-awake_iq.zarr")
+```
+
+### Optional: Sharding
+
+To reduce the number of Zarr files, bundle several acquisition blocks into each shard. The encoding key must match the DataArray name, so name it `iq` first. Dask chunks must align with shard boundaries, which `align_chunks=True` handles:
+
+```python
+n_volumes = iq.chunks[0][0]  # Frames in the first acquisition block.
+shard_volumes = 4 * n_volumes
+
+iq.name = "iq"
+cf.save(
+    iq,
+    "sub-01_task-awake_iq.zarr",
+    encoding={
+        "iq": {
+            "chunks": (n_volumes, 1, *iq.shape[2:]),
+            "shards": (shard_volumes, 1, *iq.shape[2:]),
+        }
+    },
+    align_chunks=True,
 )
 ```
 
-This will create a Zarr group containing:
-
-- `iq`: Beamformed IQ data with native dimensions `(time, k, j, i)`.
-- `time`, `k`, `j`, `i`: Native time and voxel-space dimension coordinates.
-- `voxel_to_world` and `voxel_to_world_units`: Attributes on `iq` used to restore the `VoxelToWorldIndex` and derive `z`/`y`/`x` world coordinates.
-- Metadata attributes (e.g., `transmit_frequency`, `plane_wave_angles`) as extracted from the metadata file.
+Sharding increases the amount of data held by each write task to one shard. To keep only one chunk or shard in flight, add `chunkmanager_store_kwargs={"scheduler": "single-threaded"}` to `cf.save`.
 
 ### Other Systems
 
-For beamformed IQ data from a system other than AUTC or EchoFrame, load the complex array with the tool appropriate for your file format, then wrap it as a VoxelData array with `create_voxeldata`. Put IQ-specific metadata such as `transmit_frequency` and `beamforming_sound_velocity` in `attrs`:
+For beamformed IQ data from a system other than AUTC, EchoFrame, or Iconeus, load the complex array with the tool appropriate for your file format, then wrap it as a VoxelData array with `create_voxeldata`. Put IQ-specific metadata such as `transmit_frequency` and `beamforming_sound_velocity` in `attrs`:
 
 ```python
 import confusius as cf
@@ -753,7 +859,9 @@ Quick reference for converting between formats:
 | --- | --- | --- |
 | AUTC DATs | Zarr | `confusius.io.convert_autc_dats_to_zarr` |
 | EchoFrame DAT | VoxelData array | `confusius.io.load_echoframe_dat` |
-| EchoFrame DAT | Zarr | `confusius.io.convert_echoframe_dat_to_zarr` |
+| EchoFrame DAT | Zarr | `confusius.load` then `confusius.save` |
+| Iconeus RAW | VoxelData array | `confusius.load` |
+| Iconeus RAW | Zarr | `confusius.load` then `confusius.save` |
 | Iconeus SCAN | VoxelData array | `confusius.load` |
 | NIfTI | VoxelData array | `confusius.load` |
 | Zarr | VoxelData array or Dataset | `confusius.load` / `xarray.open_zarr` (Dataset) |
@@ -922,7 +1030,7 @@ World coordinates are set when attaching a `VoxelToWorldIndex` to the DataArray.
 
 - **EchoFrame**: Lateral and axial coordinates are read from the acquisition metadata file.
 - **AUTC**: Spacing must be supplied explicitly to `convert_autc_dats_to_zarr`—AUTC files carry no spacing metadata of their own. Origin is optional and defaults to a probe-centered, surface-referenced position when omitted.
-- **Iconeus SCAN**: Coordinates are derived from the `voxelsToProbe` affine embedded in the SCAN file. The axial axis is flipped so that it is always positive and increases with depth.
+- **Iconeus SCAN**: Coordinates are derived from Iconeus' laboratory space, reordered and rotated by 90 degrees about the axial axis so typical coronal recordings have `z` elevation, `y` depth, and `x` lateral. The laboratory space's axial axis is flipped so that it is always positive and increases with depth.
 - **NIfTI**: Coordinates are derived from the "best" affine transformation found in the file header, or from whichever one `load_nifti`'s `coordinate_affine` argument selects explicitly.
 
 > [!TIP]
@@ -973,7 +1081,7 @@ A space counts as a "reference space" rather than *the* world space only because
 Several loaders populate `.attrs["affines"]` automatically:
 
 - **NIfTI**: The world space is whichever affine (`sform` or `qform`) was selected; its own entry (`"world_to_sform"` or `"world_to_qform"`) is the identity. When the other one is also valid, it is stored under the other key, so the world space can be switched between the two. `save_nifti` can write any named affine in `.attrs["affines"]` back to the header via its `qform=`/`sform=` arguments, defaulting to `"world_to_qform"`/`"world_to_sform"` when not specified.
-- **Iconeus SCAN**: `load_scan` stores a `"world_to_lab"` affine mapping ConfUSIus world coordinates to the Iconeus lab coordinate system. For multi-pose acquisitions (`3Dscan`, `4Dscan`), one affine per pose is stored, with shape `(pose, 4, 4)`.
+- **Iconeus SCAN**: `load_scan` uses the modified Iconeus laboratory space (see [World Space](<#world-space>)) as world space, so its `"world_to_lab"` entry is the identity. A `"world_to_probe"` entry maps world coordinates to the first pose's probe space (`z` elevation, `y` depth, `x` lateral), so the world space can be switched to the probe and back. When `bps_path` is supplied, the `"world_to_brain"` entry maps world coordinates to the Iconeus brain space defined by the BPS file.
 
 Registration transforms are handled separately from `.attrs["affines"]`. `register_volume` returns the estimated transform explicitly but does not store automatically in `.attrs["affines"]`.
 
@@ -1507,7 +1615,7 @@ The `.fusi.plot` accessor provides easy access to visualization functions for qu
 For example, to display data in [napari](<https://napari.org/>):
 
 ```python
-viewer, layer = registered.fusi.plot.napari(gamma=0.5)
+viewer, layers = registered.fusi.plot.napari(gamma=0.5)
 ```
 
 Or to show standardized time series in a carpet plot, useful for quality control:
@@ -1546,7 +1654,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 )
 
 # 3. Inspect in napari.
-viewer, layer = pwd.fusi.plot.napari(gamma=0.5)
+viewer, layers = pwd.fusi.plot.napari(gamma=0.5)
 
 # 4. Motion correction.
 registered = pwd.fusi.register.volumewise()
@@ -1643,7 +1751,8 @@ Coordinates:
     y          (pose, k, j, i) float64 1MB ...
     x          (pose, k, j, i) float64 1MB ...
 Attributes:
-    affines:               {}
+    affines:               {'world_to_lab': array([[1., 0., 0., 0.],
+       ...
     device_serial_number:  ASAO0000
     software_version:      IcoScan v.1.9.0
     iconeus_scan_mode:     4Dscan
@@ -1677,7 +1786,7 @@ Coordinates:
 Attributes:
     probe_model:                         IcoPrime 4D MultiArray
     iconeus_scan_format:                 v2
-    iconeus_scan_mode:                   4Dscan
+    iconeus_acquisition_mode:            4Dscan
     ...
 ```
 
@@ -1724,6 +1833,8 @@ For fUSI systems without a dedicated loader, multi-pose data must be assembled m
 ## Working with Multi-Pose Arrays
 
 Most Xarray operations that don't touch world coordinates or timing work on multi-pose arrays exactly as on any other VoxelData array—reductions, arithmetic, `.isel`, mask extraction, and so on all treat `pose` as an ordinary dimension.
+
+For [napari visualization](<https://confusius.tools/pr-preview/pr-518/user-guide/visualization/#interactive-exploration-with-napari>), `viewer, layers = pwd.fusi.plot.napari()` opens one layer per pose, each positioned using its own affine and named `<data name> [pose <value>]`. The CLI does the same; no consolidation is needed.
 
 Operations that resolve *positions* or *timestamps*, however, need a scalar `pose` first, per [The Multi-Pose Data Model](<#the-multi-pose-data-model>) above:
 
@@ -1777,7 +1888,8 @@ Coordinates:
     y           (k, j, i) float64 1MB ...
     x           (k, j, i) float64 1MB ...
 Attributes:
-    affines:               {}
+    affines:               {'world_to_lab': array([[1., 0., 0., 0.],
+       ...
     device_serial_number:  ASAO0000
     software_version:      IcoScan v.1.9.0
     iconeus_scan_mode:     4Dscan
@@ -1787,7 +1899,7 @@ Attributes:
     ...
 ```
 
-4 poses × 4 slices = 16 consolidated z positions, spanning −4.95 to 2.93 mm in world space. The pose-dependent `time` coordinate is reduced to a single whole-volume `time` and a `slice_time` coordinate with dims `(time, k)`: each slice retains the timestamp of the pose it came from.
+4 poses × 4 slices = 16 consolidated z positions, spanning −3.85 to 4.02 mm along elevation. The pose-dependent `time` coordinate is reduced to a single whole-volume `time` and a `slice_time` coordinate with dims `(time, k)`: each slice retains the timestamp of the pose it came from.
 
 After consolidation, the per-pose affine stack is reduced to a single `(4, 4)` matrix representing the consolidated volume's orientation in world space.
 
@@ -1919,7 +2031,7 @@ Attributes:
     beamforming_sound_velocity:   1540.0
 ```
 
-If your acquisition system isn't directly supported by ConfUSIus, see [Other Systems](<https://confusius.tools/pr-preview/pr-518/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
+ConfUSIus loads AUTC DAT, EchoFrame DAT, and Iconeus RAW beamformed IQ files directly; see the [I/O guide](<https://confusius.tools/pr-preview/pr-518/user-guide/io/index.md>) for more details. If your acquisition system isn't directly supported, see [Other Systems](<https://confusius.tools/pr-preview/pr-518/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
 
 > [!NOTE]
 >
@@ -2375,7 +2487,7 @@ Attributes:
     beamforming_sound_velocity:           1540.0
     units:                                m/s
     long_name:                            Axial velocity
-    cmap:                                 coolwarm
+    cmap:                                 berlin
     clutter_filters:                      Index-based SVD [50, +inf[
     clutter_filter_window_duration:       0.4
     clutter_filter_window_stride:         0.3999999999999999
@@ -2578,14 +2690,16 @@ ConfUSIus relies on [napari](<https://napari.org>) for interactive visualization
 ### Basic Usage
 
 ```python
-viewer, layer = pwd.fusi.plot.napari()
+viewer, layers = pwd.fusi.plot.napari()
 ```
 
 ```python
 import confusius as cf
 
-viewer, layer = cf.plotting.plot_napari(pwd)
+viewer, layers = cf.plotting.plot_napari(pwd)
 ```
+
+Both APIs always return `(viewer, layers)`, where `layers` is a list. Arrays with a `pose` dimension open as one layer per pose, positioned using each pose's voxel-to-world affine and named `<data name> [pose <pose value>]`. An explicit `name=` overrides the data name. To unpack a single-layer result, use `viewer, [layer] = ...`.
 
 This opens a napari viewer with a scale bar, colorbar, and correct world scaling across axes. The viewer is fully interactive: you can zoom, pan, and scroll through time and elevation slices with the sliders or mouse wheel.
 
@@ -2603,7 +2717,7 @@ By default napari auto-scales contrast to the data range. For power Doppler, wor
 
 ```python
 # dB-scaled power Doppler with fixed contrast window.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     pwd.fusi.scale.db(),
     contrast_limits=(-20, 0),
     colormap="hot",
@@ -2618,13 +2732,13 @@ Napari's **labels** layer renders integer-labeled masks as filled or contoured r
 
 ```python
 # Load power Doppler mean volume and open viewer.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     mean_vol.fusi.scale.db(),
     contrast_limits=(-20, 0),
 )
 
 # Add pre-registered Allen labels as a labels layer.
-viewer, labels_layer = cf.plotting.plot_napari(
+viewer, labels_layers = cf.plotting.plot_napari(
     atlas_labels,
     viewer=viewer,
     layer_type="labels",
@@ -2641,8 +2755,8 @@ viewer, labels_layer = cf.plotting.plot_napari(
 > The `viewer` argument works for any `plot_napari` call, letting you load two image datasets into the same viewer for direct comparison; for example, before and after motion correction:
 >
 > ```python
-> viewer, layer = pwd_before.fusi.plot.napari(name="Before correction")
-> viewer, layer = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
+> viewer, layers = pwd_before.fusi.plot.napari(name="Before correction")
+> viewer, layers = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
 > ```
 
 ### Slicing Across Different Spatial Dimensions
@@ -2651,7 +2765,7 @@ By default, napari shows the last two spatial dimensions as a 2D plane and the r
 
 ```python
 # Swap z and y: depth becomes the slider axis.
-viewer, layer = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
+viewer, layers = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ### 3D Rendering
@@ -3037,41 +3151,75 @@ ConfUSIus provides three QC metrics, divided into two categories:
 
 > [!NOTE]
 >
-> **Example dataset setup (Nunez-Elizalde *et al.*, 2022)**
+> **Example dataset setup (Landemard *et al.*, 2026)**
 >
-> The figures on this page are generated using the Nunez-Elizalde *et al.* (2022) dataset[^/pr-preview/pr-518/user-guide/quality-control/#nunez2022] obtained with `fetch_nunez_elizalde_2022`. The code below shows how to load the power Doppler and Allen atlas segmentation for one acquisition. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
+> The figures on this page are generated using the Landemard *et al.* (2026) dataset[^/pr-preview/pr-518/user-guide/quality-control/#landemard2026] obtained with `fetch_landemard_2026`. The code below loads the power Doppler and the per-session Allen region map for subject `ALD001`, acquisition `ref20`. The scans table maps the acquisition to the anatomy session key used by the region-map derivative. You can run this code in a Jupyter notebook to follow along and generate the same figures as you read through the guide.
 >
 > ```python
+> import csv
+> from pathlib import Path
+>
+> import numpy as np
+>
 > import confusius as cf
-> from confusius.datasets import fetch_nunez_elizalde_2022
+> from confusius.datasets import fetch_landemard_2026
 >
-> bids_root = fetch_nunez_elizalde_2022(
->     subjects=["CR022"],
->     sessions=["20201011"],
->     tasks=["spontaneous"],
->     acqs=["slice03"],
+> subject, acq = "ALD001", "ref20"
+> bids_root = fetch_landemard_2026(
+>     datasets=["rawdata", "atlas_mapping"],
+>     subjects=subject,
+>     acqs=acq,
+>     datatypes=["fusi"],
 > )
 >
-> pwd = cf.load(
+> fusi_path = (
 >     bids_root
->     / "sub-CR022/ses-20201011/fusi"
->     / "sub-CR022_ses-20201011_task-spontaneous_acq-slice03_pwd.nii.gz"
+>     / f"sub-{subject}/fusi"
+>     / f"sub-{subject}_task-awake_acq-{acq}_pwd.nii.gz"
 > )
-> atlas_labels = cf.load(
+> pwd = cf.load(fusi_path)
+>
+> scans_path = bids_root / f"sub-{subject}/sub-{subject}_scans.tsv"
+> with scans_path.open(newline="") as file:
+>     scan = next(
+>         row
+>         for row in csv.DictReader(file, delimiter="\t")
+>         if Path(row["filename"]).name == fusi_path.name
+>     )
+> session = f"{scan['acq_time'].split('T')[0]}_{int(scan['experiment_id'])}"
+>
+> region_matches_path = (
 >     bids_root
->     / "derivatives/allenccf_align/sub-CR022/ses-20201011/fusi"
->     / "sub-CR022_ses-20201011_space-fusi_desc-allenccf_dseg.nii.gz"
+>     / f"derivatives/atlas_mapping/sub-{subject}"
+>     / f"AnatomyRegionMatches_{subject}.npz"
 > )
-> atlas_labels = atlas_labels.sel(z=pwd["z"], method="nearest").assign_coords(z=pwd["z"])
-> brain_mask = atlas_labels > 0
+> with np.load(region_matches_path, allow_pickle=True) as region_matches:
+>     region_map = region_matches[session]
+> brain_mask = pwd.isel(time=0, drop=True).copy(data=(region_map != 0)[None])
 > signals = pwd.fusi.extract.with_mask(brain_mask)
 > ```
 
 ## DVARS
 
-DVARS (temporal **D**erivative of **VAR**iance**S**) measures how much the signal intensity changes between consecutive time points, averaged across all brain voxels[^/pr-preview/pr-518/user-guide/quality-control/#power2012]. A spike in DVARS typically indicates a motion event, a scanner artifact, or another transient disturbance that corrupted one or more volumes.
+DVARS (temporal **D**erivative of **VAR**iance**S**) quantifies changes in signal intensity between consecutive time points, computed as the root mean square of temporal differences across brain voxels[^/pr-preview/pr-518/user-guide/quality-control/#power2012]. Large DVARS values indicate abrupt signal changes, which may arise from motion, acquisition artifacts, or strong physiological fluctuations. DVARS is sensitive to both global and strong local changes, making it a useful metric for identifying potentially problematic time points that warrant further inspection or exclusion from further analysis.
 
-By default, ConfUSIus computes the **standardized** DVARS[^/pr-preview/pr-518/user-guide/quality-control/#nichols2017], which accounts for the temporal autocorrelation structure of the data and is therefore more comparable across acquisitions. Standardized DVARS is approximately 1 for a stationary recording; values significantly above 1 indicate outlier volumes.
+Mathematically, raw DVARS is defined as
+
+\\\[ \\mathrm{DVARS}\_t = \\sqrt{\\frac{1}{N} \\sum\_{i=1}^{N} (x\_{i,t} - x\_{i,t-1})^2}, \\\]
+
+where \\(x\_{i,t}\\) is the signal intensity at voxel \\(i\\) and time point \\(t\\), and \\(N\\) is the number of included voxels.
+
+For a recording with \\(T\\) time points, DVARS is defined for \\(T-1\\) consecutive pairs. Since there is no preceding frame for \\(t=0\\), its DVARS is undefined. ConfUSIus returns `NaN` at that position to preserve the input time coordinates and length.
+
+By default, ConfUSIus computes **relative DVARS**[^/pr-preview/pr-518/user-guide/quality-control/#afyouni2018]: raw DVARS divided by the square root of its median squared value. This empirical normalization puts the median near 1 and assumes background fluctuations dominate the recording; frequent artifacts or a changing baseline can compromise the estimate.
+
+Nichols originally called the measure *standardized DVARS*[^/pr-preview/pr-518/user-guide/quality-control/#nichols2017]; Afyouni and Nichols subsequently used the name *relative DVARS*.
+
+> [!WARNING]
+>
+> **DVARS normalization changed in ConfUSIus 0.9.0**
+>
+> ConfUSIus 0.8.0 and earlier used a mean-SD AR(1)-based normalization, which has been removed. The default is now median-based relative DVARS, following recommendations by Afyouni and Nichols[^/pr-preview/pr-518/user-guide/quality-control/#afyouni2018]. The median is less sensitive to unusually large DVARS values, and their simulations found it reliable under heterogeneous voxel variances. **Existing outlier thresholds must be adjusted for the new normalization**.
 
 ### Usage
 
@@ -3080,14 +3228,41 @@ DVARS is computed from any `(time, ...)` DataArray—spatial dimensions are flat
 ```python
 from confusius.qc import compute_dvars
 
-# Compute standardized DVARS (default).
+# Compute median-based relative DVARS (default).
 dvars = compute_dvars(signals)
-# dvars has dims (time,).
+# Alternative model-based baseline, using the mean expected difference variance.
+dvars_ar1 = compute_dvars(signals, baseline_estimator="ar1")
+# Raw DVARS in native intensity units.
+dvars_raw = compute_dvars(signals, variant="raw", normalization_factor=None)
+# Each result has dims (time,).
+```
+
+For relative DVARS, `baseline_estimator` selects one of two denominators:
+
+- `"median"` (default): square root of median squared raw DVARS. No AR(1) fit.
+- `"ar1"`: RMS of expected voxelwise difference SDs, `sqrt(mean(2 * (1 - rho) * sigma**2))`.
+
+The AR(1) estimator uses robust temporal SDs, but its autocorrelation estimates remain sensitive to artifacts. Raw DVARS ignores `baseline_estimator` and scales intensities to a median of 1000 by default; set `normalization_factor=None` to retain native units. Both variants exclude zero-IQR features by default, using lower quantile interpolation. This follows [Nipype's FSL-compatible convention](<https://github.com/nipy/nipype/blob/master/nipype/algorithms/confounds.py>), which [fMRIPrep also uses through Nipype](<https://github.com/nipreps/fmriprep/blob/master/fmriprep/workflows/bold/confounds.py>); it does not imply identical DVARS normalization across these tools. Mostly constant features with isolated transients can also have zero IQR; set `remove_zero_variance=False` to retain them.
+
+All variants preserve Dask laziness, with data-dependent validation at computation time. Relative DVARS and unnormalized raw DVARS process full-time spatial chunks; each chunk must fit in memory. Raw intensity normalization requires the exact global median and gathers the full recording into memory when computed.
+
+### Sample Masks
+
+Creating a boolean mask of good samples is straightforward: simply threshold the DVARS time series. The threshold below is illustrative: you should review the DVARS plot on your own dataset to determine an appropriate threshold for your paradigm.
+
+```python
+import confusius as cf
+
+threshold = 2.5
+# The first frame has no preceding frame, so its DVARS is NaN. Thresholding will produce
+# a False value for that frame.
+sample_mask = (dvars < threshold).compute()  # True means keep.
+cleaned = cf.signal.clean(signals, sample_mask=sample_mask)
 ```
 
 ### Visualizing and Thresholding
 
-DVARS is a time series and is best examined as a line plot. Flagged frames can be marked for quick visual inspection:
+DVARS is a time series and is best examined as a line plot. Flagged frames can be marked for quick visual inspection. The threshold below is illustrative, not calibrated for fUSI; changing the estimator requires reviewing the threshold:
 
 ```python
 import matplotlib.pyplot as plt
@@ -3097,7 +3272,7 @@ flagged = dvars > threshold
 flagged_dvars = dvars.where(flagged, drop=True)
 
 fig, ax = plt.subplots(figsize=(10, 3))
-dvars.plot(ax=ax, linewidth=0.8, label="Standardized DVARS")
+dvars.plot(ax=ax, linewidth=0.8, label="relative DVARS")
 if flagged_dvars.size > 0:
     ax.plot(
         flagged_dvars["time"].values,
@@ -3205,11 +3380,13 @@ For full parameter documentation, see the [QC API reference](<https://confusius.
 
 [^/pr-preview/pr-518/user-guide/quality-control/#power2012]: Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
 
+[^/pr-preview/pr-518/user-guide/quality-control/#afyouni2018]: Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS." NeuroImage, 172, 2018, pp. 291–312. [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
+
 [^/pr-preview/pr-518/user-guide/quality-control/#nichols2017]: Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
 
 [^/pr-preview/pr-518/user-guide/quality-control/#lemeurdiebolt2025]: Le Meur-Diebolt, Samuel, et al. "Robust Functional Ultrasound Imaging in the Awake and Behaving Brain: A Systematic Framework for Motion Artifact Removal." bioRxiv, 17 June 2025. DOI.org (Crossref), [https://doi.org/10.1101/2025.06.16.659882](<https://doi.org/10.1101/2025.06.16.659882>).
 
-[^/pr-preview/pr-518/user-guide/quality-control/#nunez2022]: Nunez-Elizalde, A. O., et al. "A Neurophysiological fUSI-BIDS dataset from awake, behaving mice." figshare dataset, 2022. DOI.org (Datacite), [https://doi.org/10.6084/m9.figshare.19316228](<https://doi.org/10.6084/m9.figshare.19316228>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
+[^/pr-preview/pr-518/user-guide/quality-control/#landemard2026]: Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. "Brainwide blood volume reflects opposing neural populations." *Nature*, 2026. DOI.org (Crossref), [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>); the fUSI-BIDS re-export is hosted in the [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 
 # Atlases
 
@@ -4060,7 +4237,7 @@ confusius --lazy path/to/data.zarr
 
 ### Alternative: napari file readers
 
-ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN, and Zarr files. These let you open files by dragging them onto the canvas or using **File \> Open** (<kbd class="key-control">Ctrl</kbd>\+<kbd class="key-o">O</kbd>) without switching to the Data Panel. Like the Data Panel and CLI, integer-dtype files are added as a `Labels` layer.
+ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN and RAW, and Zarr files. These let you open files by dragging them onto the canvas or using **File \> Open** (<kbd class="key-control">Ctrl</kbd>\+<kbd class="key-o">O</kbd>) without switching to the Data Panel. Like the Data Panel and CLI, integer-dtype files are added as a `Labels` layer. An Iconeus RAW file opens only when its `.hraw` metadata file is in the same folder, and its complex IQ data is shown as its magnitude.
 
 > [!WARNING]
 >
@@ -4096,7 +4273,7 @@ ConfUSIus also registers native napari writers for NIfTI and Zarr files. These l
 
 The ConfUSIus sidebar contains six collapsible panels. Each panel operates independently and can be expanded or collapsed by clicking its header. For an in-app introduction, click **Take a Tour** in the sidebar header.
 
-- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, SCAN).
+- [**Data I/O**](<#data-io-panel>) — load and save fUSI files (NIfTI, Zarr, Iconeus SCAN and RAW).
 - [**Video**](<#video-panel>) — load videos side-by-side, temporally synced with the fUSI acquisition.
 - [**Signals**](<#signals-panel>) — plot voxel, point, or label-region signals in a bottom dock.
 - [**Events**](<#events-panel>) — annotate periods of time (BIDS events) and shade them on the signal plot.
@@ -6525,7 +6702,7 @@ Attributes:
   Extracted (and cleaned) seed region signals when `seed_masks` is used, or the supplied signals (possibly transposed to `(time, region)` order) when `seed_signals` is used. Set after `fit`.
 - **`maps_`** (`(region, ...) xarray.DataArray`) –
 
-  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"coolwarm"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
+  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"berlin"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
 
 Examples:
 
@@ -6928,7 +7105,7 @@ Returns:
 
 - `Dataset` –
 
-  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes.
+  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes. Data variables stay backed by lazy `dask.array.Array` data.
 
 Examples:
 
@@ -11016,7 +11193,10 @@ Modules:
   Utilities for loading and converting AUTC DAT files.
 - **`echoframe`** –
 
-  Utilities for loading and converting EchoFrame DAT files.
+  Utilities for loading EchoFrame DAT files.
+- **`iconeus_raw`** –
+
+  Utilities for loading Iconeus RAW beamformed IQ files.
 - **`loadsave`** –
 
   Generic file loading and saving dispatcher.
@@ -11041,6 +11221,9 @@ Classes:
 - **`EchoFrameMetadata`** –
 
   Metadata extracted from an EchoFrame MAT file.
+- **`IconeusRawMetadata`** –
+
+  Metadata extracted from an Iconeus HRAW file.
 
 Functions:
 
@@ -11050,9 +11233,6 @@ Functions:
 - **`convert_autc_dats_to_zarr`** –
 
   Convert AUTC DAT files to Zarr format compatible with Xarray.
-- **`convert_echoframe_dat_to_zarr`** –
-
-  Convert an EchoFrame DAT file to Zarr format compatible with Xarray.
 - **`load`** –
 
   Load a VoxelData array from file, dispatching by extension.
@@ -11061,13 +11241,19 @@ Functions:
   Load an atlas Dataset from a Zarr store.
 - **`load_bps`** –
 
-  Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.
+  Load a BPS file and return its brain-to-lab affine.
 - **`load_echoframe_dat`** –
 
   Load an EchoFrame DAT file as a lazy, ConfUSIus-ordered DataArray.
 - **`load_echoframe_metadata`** –
 
   Load acquisition metadata from an EchoFrame MAT file.
+- **`load_iconeus_raw`** –
+
+  Load an Iconeus RAW file as a lazy, ConfUSIus-ordered DataArray.
+- **`load_iconeus_raw_metadata`** –
+
+  Load acquisition metadata from an Iconeus HRAW file.
 - **`load_nifti`** –
 
   Load a NIfTI file as a lazy VoxelData array.
@@ -11318,6 +11504,75 @@ Attributes:
 
   Number of volumes per acquisition block.
 
+### IconeusRawMetadata
+
+Bases: `TypedDict`
+
+Metadata extracted from an Iconeus HRAW file.
+
+Attributes:
+
+- **`size_x`** (`int`) –
+
+  Number of lateral samples.
+- **`size_y`** (`int`) –
+
+  Number of elevation samples.
+- **`size_z`** (`int`) –
+
+  Number of axial (depth) samples.
+- **`n_compound`** (`int`) –
+
+  Number of compounded images per frame.
+- **`n_frames_per_block`** (`int`) –
+
+  Number of frames per acquisition block.
+- **`n_blocks`** (`int`) –
+
+  Number of acquisition blocks.
+- **`lateral_spacing`** (`float`) –
+
+  Lateral voxel spacing in millimeters.
+- **`elevation_spacing`** (`float`) –
+
+  Elevation voxel spacing in millimeters.
+- **`axial_spacing`** (`float`) –
+
+  Axial (depth) voxel spacing in millimeters.
+- **`depth_near`** (`float`) –
+
+  Near imaging depth in millimeters.
+- **`depth_far`** (`float`) –
+
+  Far imaging depth in millimeters.
+- **`transmit_frequency`** (`float`) –
+
+  Central transmit frequency in hertz.
+- **`pulse_repetition_frequency`** (`float`) –
+
+  Pulse repetition frequency in hertz.
+- **`beamforming_sound_velocity`** (`float`) –
+
+  Speed of sound in meters per second used during beamforming.
+- **`frame_rate`** (`float`) –
+
+  Frame rate of the stored (compounded) frames in hertz.
+- **`plane_wave_angles`** (`ndarray`) –
+
+  Angles at which tilted plane waves are emitted in degrees.
+- **`receive_aperture`** (`ndarray`) –
+
+  Receive aperture samples.
+- **`compound`** (`bool`) –
+
+  Whether the stored frames are compounded images.
+- **`is_legacy_format`** (`bool`) –
+
+  Whether the payload is preceded by the legacy 117-byte header.
+- **`acquisition_mode`** (`str`) –
+
+  Iconeus acquisition mode (e.g. `"2Dscan"`).
+
 ### check\_path
 
 ```python
@@ -11566,157 +11821,6 @@ Raises:
 >
 > Correctly computing elevation (`spacing[0]`) spacing requires the elevation beam width, which itself needs the elevation aperture and elevation focus; that computation isn't implemented here, so pass `spacing[0]` explicitly if that information is known, or an intentional placeholder (e.g. `0.4`) otherwise.
 
-### convert\_echoframe\_dat\_to\_zarr
-
-```python
-convert_echoframe_dat_to_zarr(
-    dat_path: str | Path,
-    meta_path: str | Path,
-    output_path: str | Path,
-    dat_dtype: DTypeLike = complex64,
-    header_dtype: DTypeLike = uint64,
-    n_header_items: int = 5,
-    volumes_per_chunk: int | None = None,
-    chunks_per_shard: int | None = None,
-    batch_size: int = 100,
-    overwrite: bool = False,
-    zarr_kwargs: dict[str, Any] | None = None,
-    skip_first_blocks: int = 0,
-    skip_last_blocks: int = 0,
-    block_times: ArrayLike | None = None,
-    show_progress: bool = True,
-    progress: Progress | None = None,
-    track_kwargs: dict[str, Any] | None = None,
-) -> Group
-```
-
-Convert an EchoFrame DAT file to Zarr format compatible with Xarray.
-
-Beamformed IQ data is converted to a Zarr group with an `iq` array of shape `(time, k, j, i)` chunked along the first dimension. Voxel-to-world geometry is stored as `attrs["voxel_to_world"]` on the `iq` array rather than dense `z`/`y`/`x` coordinate arrays, matching `confusius.io.save`'s Zarr convention. Coordinates are stored as separate Zarr arrays following Xarray conventions, allowing the data to be opened directly with `xarray.open_zarr()`.
-
-Parameters:
-
-- #### **`dat_path`**
-
-  (`str or Path`) –
-
-  Path to the EchoFrame DAT file containing beamformed IQ data.
-- #### **`meta_path`**
-
-  (`str or Path`) –
-
-  Path to the EchoFrame sequence parameter file (MAT v7.3 / HDF5 format).
-- #### **`output_path`**
-
-  (`str or Path`) –
-
-  Path where the Zarr group will be saved.
-- #### **`dat_dtype`**
-
-  (`dtype_like`, default: `numpy.complex64` ) –
-
-  Data type of the beamformed IQ data in the DAT file.
-- #### **`header_dtype`**
-
-  (`dtype_like`, default: `numpy.uint64` ) –
-
-  Data type of the DAT file header.
-- #### **`n_header_items`**
-
-  (`int`, default: `5` ) –
-
-  Number of items in the DAT file header.
-- #### **`volumes_per_chunk`**
-
-  (`int`, default: `None` ) –
-
-  Number of volumes to include in each Zarr chunk. If not provided, defaults to the number of volumes per block from the raw file.
-- #### **`chunks_per_shard`**
-
-  (`int`, default: `None` ) –
-
-  Number of chunks to bundle into each shard. If provided, enables Zarr v3 sharding to reduce the number of files on disk. If not provided, sharding is disabled.
-- #### **`batch_size`**
-
-  (`int`, default: `100` ) –
-
-  Number of blocks to process in each batch.
-- #### **`overwrite`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to overwrite existing Zarr group at the output path.
-- #### **`zarr_kwargs`**
-
-  (`dict`, default: `None` ) –
-
-  Additional keyword arguments to pass to `zarr.create_array` for the main data array.
-- #### **`skip_first_blocks`**
-
-  (`int`, default: `0` ) –
-
-  Number of blocks to skip from the beginning of the acquisition. This is useful when the first blocks are known to be corrupted or unusable.
-- #### **`skip_last_blocks`**
-
-  (`int`, default: `0` ) –
-
-  Number of blocks to skip from the end of the acquisition. This is useful when the last blocks are known to be corrupted or unusable.
-- #### **`block_times`**
-
-  (`(n_blocks_after_skip,) array_like`, default: `None` ) –
-
-  Start time of each IQ block in seconds, for the retained blocks only. If provided, individual volume times will be computed and stored as a time coordinate. Requires `compound_sampling_frequency` to be provided. If not provided, time coordinate will be computed based on `compound_sampling_frequency` or set to frame indices.
-- #### **`show_progress`**
-
-  (`bool`, default: `True` ) –
-
-  Whether to show progress during conversion. If `False`, no progress bars are displayed.
-- #### **`progress`**
-
-  (`Progress`, default: `None` ) –
-
-  External `rich.progress.Progress` instance to add tasks to. If provided and `show_progress` is `True`, a task will be added to this `rich.progress.Progress` instance instead of creating a new progress bar with `rich.progress.track`.
-- #### **`track_kwargs`**
-
-  (`dict`, default: `None` ) –
-
-  Additional keyword arguments to pass to `rich.progress.track` if using internal progress tracking (only used if `show_progress` is `True` and `progress` is `None`).
-
-Returns:
-
-- `Group` –
-
-  The created Zarr group containing the `iq` data array and coordinate arrays. Can be opened directly with `xarray.open_zarr()`.
-
-> [!NOTE]
->
-> **Notes**
->
-> The output Zarr group follows Xarray conventions and can be opened with::
->
-> ```text
-> import xarray as xr
-> ds = xr.open_zarr("output.zarr")
-> iq = ds["iq"]
-> ```
->
-> `iq` above carries plain `k`/`j`/`i` voxel dims, not a VoxelData array -- `xarray.open_zarr` doesn't know how to rebuild a `VoxelToWorldIndex` from `attrs["voxel_to_world"]`. Load with `confusius.io.load` instead to get the world coordinates back:
->
-> ```text
-> import confusius as cf
-> iq = cf.io.load("output.zarr")
-> ```
->
-> Metadata attributes (e.g., `transmit_frequency`, `beamforming_sound_velocity`) are stored on the `iq` DataArray (accessible via `iq.attrs`), consistent with how reduction functions return DataArrays with attributes.
->
-> The group contains:
->
-> - `iq`: The main data array with dimensions `(time, k, j, i)`. Voxel-to-world geometry is stored as `attrs["voxel_to_world"]`/`attrs["voxel_to_world_units"]` rather than dense `z`/`y`/`x` coordinate arrays.
-> - `time`: Time coordinate array.
-> - `k`: Elevation voxel coordinate array (always `[0]` for 2D data).
-> - `j`: Axial (depth) voxel coordinate array.
-> - `i`: Lateral voxel coordinate array.
-
 ### load
 
 ```python
@@ -11734,6 +11838,7 @@ Supported formats:
 - **NIfTI** (`.nii`, `.nii.gz`): loaded via `load_nifti`.
 - **SCAN** (`.scan`): loaded via `load_scan`.
 - **EchoFrame DAT** (`.dat`): loaded via `load_echoframe_dat`. If no metadata path is provided, `load_echoframe_dat` looks for `ScanParameters.mat` next to the DAT file.
+- **Iconeus RAW** (`.raw`): loaded via `load_iconeus_raw`. If no metadata path is provided, `load_iconeus_raw` looks for the matching `.hraw` sidecar next to the RAW file.
 - **Zarr** (`.zarr`): opened via `xarray.open_zarr` and a single variable is extracted. Must be a store previously written by `save` (identified by `attrs["voxel_to_world"]`); for an arbitrary/foreign Zarr store, use `xarray.open_zarr` directly and build a VoxelData array yourself (e.g. via `create_voxeldata`).
 
 If `attrs["rgb_lookup"]` is present but `attrs["cmap"]`/`attrs["norm"]` are missing (as happens after a save/load round-trip, since matplotlib colormap/norm objects are not JSON-serializable and are dropped on save), the colormap and normalization are rebuilt from the RGB lookup table so atlas-derived masks and annotations keep their canonical colors after reload.
@@ -11746,7 +11851,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load.
+  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -11817,23 +11922,13 @@ Raises:
 load_bps(bps_path: str | Path) -> NDArray[float64]
 ```
 
-Load a BPS file and return an affine from Iconeus' brain space to ConfUSIus lab space.
+Load a BPS file and return its brain-to-lab affine.
 
-BPS files are HDF5 sidecars produced by Iconeus' brain positioning system. They store a `BrainToLab` affine that maps Iconeus brain coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus lab coordinates `(x_lab, y_lab, z_lab, 1)` in meters. The Iconeus lab frame is a fixed scanner frame; `probeToLab` carries any rotation of the probe within it.
+BPS files are HDF5 sidecars produced by Iconeus' Brain Positioning System (BPS). They store a `BrainToLab` affine that maps Iconeus brain space coordinates `(x_brain, y_brain, z_brain, 1)` to Iconeus laboratory space coordinates `(x_lab, y_lab, z_lab, 1)` in meters.
 
-To compose this affine with the rest of the ConfUSIus pipeline we re-express the lab side as **ConfUSIus-ordered** lab space `(z_lab, y_lab, x_lab)` in millimeters. The brain side is left in its original axis order (the brain coordinate units are not declared by the BPS format and are therefore not converted).
+Since SCAN files loaded by ConfUSIus have their laboratory space modified (see [World Space](<https://confusius.tools/pr-preview/user-guide/voxeldata/#world-space>)), the `BrainToLab` affine is also modified to match the ConfUSIus-modified Iconeus laboratory space.
 
-The change of basis from ConfUSIus-ordered millimeter lab coordinates to Iconeus-ordered meter lab coordinates is
-
-```text
-confusius_lab_to_iconeus_lab = mm_to_m @ WORLD_TO_PROBE_PERMUTATION
-```
-
-`WORLD_TO_PROBE_PERMUTATION` permutes the axes from ConfUSIus order `(z, y, x)` to probe / Iconeus-lab order `(x, y, z)`, and `mm_to_m = diag(1e-3, 1e-3, 1e-3, 1)` rescales the translation column. The returned affine is then
-
-```text
-brain_to_lab = inv(confusius_lab_to_iconeus_lab) @ BrainToLab
-```
+The Iconeus brain space isn't modified, as its units and intent are not declared by the BPS format.
 
 Parameters:
 
@@ -11847,7 +11942,11 @@ Returns:
 
 - `(4, 4) numpy.ndarray` –
 
-  Affine mapping Iconeus brain coordinates to ConfUSIus-ordered Iconeus lab coordinates `(z_lab, y_lab, x_lab, 1)` in millimeters.
+  Affine mapping Iconeus brain space coordinates to the ConfUSIus-modified Iconeus laboratory space coordinates in millimeters.
+
+**References**
+
+1. Nouhoum, M., Ferrier, J., Osmanski, B.-F., Ialy-Radio, N., Pezet, S., Tanter, M., &amp; Deffieux, T. (2021). A functional ultrasound brain GPS for automatic vascular-based neuronavigation. Scientific Reports, 11(1), 15197. https://doi.org/10.1038/s41598-021-94764-7
 
 ### load\_echoframe\_dat
 
@@ -11897,7 +11996,7 @@ Returns:
 
 - `DataArray` –
 
-  Lazy VoxelData array with dimensions `(time, k, j, i)`, where `k` is a singleton elevation dimension. Data is wrapped in a Dask array, chunked so that each chunk corresponds to one acquisition block's volumes; individual blocks remain accessible via `data.isel(time=slice(i * n, (i + 1) * n))`, where `n` is `data.attrs["n_volumes_per_block"]`.
+  Lazy VoxelData array with dimensions `(time, k, j, i)`, where `k` is a singleton elevation dimension. Data is wrapped in a Dask array, chunked so that each chunk corresponds to one acquisition block's volumes; the size of each block is available in `data.chunks[0]`.
 
 Raises:
 
@@ -11909,7 +12008,7 @@ Raises:
 >
 > **Notes**
 >
-> Acquisition metadata is stored in `da.attrs`, including `n_volumes_per_block` (number of volumes per acquisition block).
+> Acquisition metadata is stored in `da.attrs`.
 
 ### load\_echoframe\_metadata
 
@@ -11941,6 +12040,84 @@ Raises:
 
   If `meta_path` does not exist or is not a file.
 
+### load\_iconeus\_raw
+
+```python
+load_iconeus_raw(
+    raw_path: str | Path,
+    meta_path: str | Path | None = None,
+) -> DataArray
+```
+
+Load an Iconeus RAW file as a lazy, ConfUSIus-ordered DataArray.
+
+Beamformed IQ data is loaded as a VoxelData array with voxel dimensions `(time, k, j, i)` and a voxel-to-world index deriving world coordinates `z`, `y`, `x`. Coordinates and acquisition metadata are attached from the HRAW sidecar. Acquisition blocks are preserved as Dask chunks: each chunk holds one block's frames, given by the per-block frame counts in `data.chunks[0]`. The `time` coordinate is theoretical: it is computed from frame indices and the HRAW frame rate, because RAW/HRAW files store no measured per-frame timestamps. Callers with acquisition timestamps should override it (e.g. via `data.assign_coords(time=...)`). Each chunk reopens a read-only memory map on its worker; in-place processing requires a copy.
+
+Only compounded acquisitions stored as a single compound image per frame are supported. This is the layout used by standard Iconeus fUSI acquisitions.
+
+Parameters:
+
+- #### **`raw_path`**
+
+  (`str or Path`) –
+
+  Path to the Iconeus RAW file containing beamformed IQ data.
+- #### **`meta_path`**
+
+  (`str or Path`, default: `None` ) –
+
+  Path to the Iconeus HRAW metadata sidecar. If not provided, looks for a file with the same stem and the `.hraw` suffix next to `raw_path`.
+
+Returns:
+
+- `DataArray` –
+
+  Lazy VoxelData array with dimensions `(time, k, j, i)`, where `k` is elevation, `j` is depth, and `i` is lateral.
+
+Raises:
+
+- `ValueError` –
+
+  If the acquisition is not compounded, if the compound axis is not singleton, if the HRAW dimensions are invalid, or if the payload is truncated.
+
+> [!NOTE]
+>
+> **Notes**
+>
+> Acquisition metadata is stored in `da.attrs`, including the BIDS-compatible `transmit_frequency` (hertz), `pulse_repetition_frequency` (hertz), `beamforming_sound_velocity` (meters per second), `compound_sampling_frequency` (hertz), `plane_wave_angles` (degrees), `receive_aperture`, and `depth` (near and far imaging depth in millimeters), plus the Iconeus-specific `iconeus_acquisition_mode` and `iconeus_legacy_format`.
+>
+> Blocks are assumed to be contiguous, so the uniform `time` coordinate does not represent acquisition gaps between them. Pass explicit acquisition timestamps when block timing is known to differ. The theoretical timing is also exposed as `volume_acquisition_duration = 1 / frame_rate`.
+
+### load\_iconeus\_raw\_metadata
+
+```python
+load_iconeus_raw_metadata(
+    meta_path: str | Path,
+) -> IconeusRawMetadata
+```
+
+Load acquisition metadata from an Iconeus HRAW file.
+
+Parameters:
+
+- #### **`meta_path`**
+
+  (`str or Path`) –
+
+  Path to the Iconeus HRAW metadata sidecar.
+
+Returns:
+
+- `IconeusRawMetadata` –
+
+  Dictionary containing the extracted metadata fields.
+
+Raises:
+
+- `ValueError` –
+
+  If `meta_path` is not a file, a required field is missing, or the stored dimensions are invalid, or the depth bounds are non-finite or reversed.
+
 ### load\_nifti
 
 ```python
@@ -11966,7 +12143,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the NIfTI file (`.nii` or `.nii.gz`).
+  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `pose` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
 - #### **`chunks`**
 
   (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
@@ -11996,6 +12173,15 @@ Returns:
 - `DataArray` –
 
   Lazy VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Data is wrapped in a Dask array for out-of-core computation.
+
+Raises:
+
+- `FileNotFoundError` –
+
+  If no files match a `{chunk}` filename template.
+- `ValueError` –
+
+  If `{chunk}` occurs outside the filename or more than once, or the loaded chunks cannot be stacked with `stack_poses`.
 
 > [!NOTE]
 >
@@ -12044,12 +12230,12 @@ load_scan(
 
 Load an Iconeus SCAN file as a lazy VoxelData array.
 
-SCAN files (`.scan`) come in two on-disk formats, both handled here:
+SCAN files (`.scan`) come in two on-disk formats. `load_scan` sniffs the format automatically and dispatches accordingly:
 
 - **v1**: an HDF5 container produced by IcoScan/NeuroScan, holding power Doppler data and spatial/temporal metadata for 2D, 3D, or 3D+t fUSI volumes. The returned DataArray wraps an open `h5py` handle via a Dask array; keep it in scope (or call `.compute()`) before the handle is garbage-collected.
-- **v2**: a flat binary file (variable-length header + little-endian `float64` payload). Each Dask chunk opens its own read-only memory map and, when a `bps_path` is given, the returned DataArray includes `world_to_brain`.
+- **v2**: a flat binary file (variable-length header + little-endian `float64` payload). Each Dask chunk opens its own read-only memory map.
 
-`load_scan` sniffs the format automatically and dispatches accordingly.
+When a `bps_path` is provided, the returned VoxelData array includes a `world_to_brain` affine (see `load_bps`).
 
 Parameters:
 
@@ -12101,15 +12287,13 @@ Raises:
 >
 > **Notes**
 >
-> **v2.** The binary layout follows PyIconeus: header fields, measured times, one 6DOF probe pose per `pose`, acquisition/provenance metadata, then a Fortran-ordered `(size_x, size_y, size_z, time, pose, dim6)` payload. The loader exposes this as VoxelData order `(..., time, pose, k, j, i)` and keeps dim6 as an extra leading dimension when present. Mapped chunks are read-only; in-place chunk-processing functions must copy them first.
+> Both formats use the same world coordinate system: the Iconeus laboratory space, reordered to ConfUSIus `(z, y, x)` conventions (millimeters) and rotated by 90° about the y-axis to align typical coronal recordings have `z` elevation, `y` depth, and `x` lateral. This space is shared across poses and scans, while each pose retains its own voxel-to-world geometry.
 >
-> Acquisition settings that correspond to fUSI-BIDS fields are also surfaced as attributes, in native header units: `probe_model`, `probe_center_frequency` (MHz), `probe_pitch` (mm), `probe_aperture` (mm), `probe_focal_depth` (mm), `imaging_depth` (mm start/end), `transmit_frequency` (MHz), `pulse_repetition_frequency` (Hz), `plane_wave_angles` (deg), `svd_low_cutoff`, and `power_doppler_integration_duration` (s).
+> `da.attrs["affines"]` contains `world_to_lab` (identity) and `world_to_probe` (relative to the first probe pose). These can be applied with `da.fusi.affine.apply(...)`. If `bps_path` is provided, `world_to_brain` is also stored, mapping world coordinates to native Iconeus brain coordinates.
 >
-> ConfUSIus world coordinates `(z, y, x)` for SCAN data are **ConfUSIus-ordered Iconeus lab coordinates** (mm): a fixed scanner frame shared by every pose, used as the canonical world frame because it is the one frame that is physically meaningful across poses. For multi-pose files, `da`'s voxel-to-world geometry is itself pose-dependent (a `(npose, 4, 4)` affine stack, one affine per `da.coords["pose"]` label); world selection therefore requires reducing `pose` to a scalar first, e.g. `da.isel(pose=0).sel(z=..., y=..., x=...)` or `da.isel(pose=0)`.
+> Provenance metadata (`iconeus_*`, `software_version`, `device_serial_number`) are preserved in `da.attrs`. Acquisition datetimes use ISO 8601, with SCAN v1 timestamps assumed to be UTC. SCAN v2 additionally exposes acquisition parameters such as probe specifications, transmit frequency, plane-wave angles, and processing settings.
 >
-> If `bps_path` is provided, a `world_to_brain` affine is stored in `da.attrs["affines"]["world_to_brain"]` that maps ConfUSIus world coordinates (already lab space, as above) to Iconeus' brain coordinates. Apply as `da.attrs["affines"]["world_to_brain"] @ np.array([z, y, x, 1.0])`.
->
-> Provenance attributes are stored in `da.attrs`: BIDS-compatible fields (`device_serial_number`, `software_version`) and Iconeus-specific fields (`iconeus_scan_mode`, `iconeus_subject`, `iconeus_session`, `iconeus_scan`, `iconeus_project`, `iconeus_datetime`). `iconeus_datetime` is the acquisition date and time in ISO 8601 format, e.g. `"2021-10-22T14:14:12+00:00"`. SCAN v1 stores it without a time zone, so ConfUSIus treats it as UTC. SCAN v2 files also provide `iconeus_hardware`.
+> SCAN v1 uses HDF5-backed Dask arrays, which cannot be pickled for process-based parallelism; call `.compute()` first. SCAN v2 uses read-only memory-mapped chunks, which must be copied before in-place modification.
 
 ### save
 
@@ -14667,7 +14851,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`.
+  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`. Select a single pose first for multipose data.
 - #### **`labels_layer_name`**
 
   (`str`, default: `"labels"` ) –
@@ -14692,6 +14876,12 @@ Returns:
 - **`labels_layer`** ( `Labels` ) –
 
   The empty Labels layer initialised to zeros. After the user paints labels in the viewer, pass this layer to `extract_labels_from_layer` to obtain an integer label map.
+
+Raises:
+
+- `ValueError` –
+
+  If `data` is not a VoxelData array or still has a `pose` dimension. Select one pose with `data.isel(pose=p)` before drawing labels.
 
 > [!NOTE]
 >
@@ -15738,7 +15928,7 @@ plot_napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display fUSI data using the napari viewer.
@@ -15749,7 +15939,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, pose, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations).
+  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, pose, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations). Arrays with a `pose` dimension are split into one layer per pose, each positioned using its own voxel-to-world affine.
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -15789,16 +15979,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes.
+  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes. An explicit `name` overrides `data.name`. Multipose layers append `" [pose {pose}]"` using each pose's coordinate value. Unnamed multipose arrays use `"data"` as the base name.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, in pose order. Always a list, including when the input has no `pose` dimension or contains only one pose.
 
 > [!NOTE]
 >
@@ -15822,35 +16012,35 @@ Examples:
 >>> import confusius as cf
 >>> from confusius.plotting import plot_napari
 >>> data = cf.load("output.nii.gz")
->>> viewer, layer = plot_napari(data)
+>>> viewer, layers = plot_napari(data)
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = plot_napari(data, contrast_limits=(0, 100))
+>>> viewer, layers = plot_napari(data, contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = plot_napari(data, dim_order=("y", "z", "x"))
+>>> viewer, layers = plot_napari(data, dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = plot_napari(data1)
->>> viewer, layer = plot_napari(data2, viewer=viewer)
+>>> viewer, layers = plot_napari(data1)
+>>> viewer, layers = plot_napari(data2, viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = cf.load("roi_mask.nii.gz")
->>> viewer, layer = plot_napari(roi_mask, layer_type="labels")
+>>> viewer, layers = plot_napari(roi_mask, layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = plot_napari(data)
->>> viewer, layer = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
+>>> viewer, layers = plot_napari(data)
+>>> viewer, layers = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
 ```
 
 ### plot\_stat\_map
@@ -16424,7 +16614,7 @@ Functions:
   Compute the coefficient of variation (CV).
 - **`compute_dvars`** –
 
-  Compute the DVARS metric.
+  Compute the DVARS quality control metric.
 - **`compute_tsnr`** –
 
   Compute the temporal signal-to-noise ratio (tSNR).
@@ -16492,18 +16682,20 @@ Examples:
 ```python
 compute_dvars(
     signals: DataArray,
-    standardize: bool = True,
+    *,
+    variant: Literal["raw", "relative"] = "relative",
+    baseline_estimator: Literal["median", "ar1"] = "median",
     normalization_factor: float | None = 1000,
     remove_zero_variance: bool = True,
     variance_tolerance: float = 0.0,
 ) -> DataArray
 ```
 
-Compute the DVARS metric.
+Compute the DVARS quality control metric.
 
-DVARS (D referring to temporal derivative, VARS to RMS variance) measures how much the intensity at one time point changes relative to the previous time point. The standardized version accounts for the expected variance given the temporal autocorrelation structure of the data.
+DVARS measures the root mean square signal change between consecutive time points. Relative DVARS divides this trace by an estimated background baseline.
 
-This function was adapted from `nipype.algorithms.confounds.compute_dvars`.
+This function was originally adapted from `nipype.algorithms.confounds.compute_dvars`.
 
 Parameters:
 
@@ -16511,83 +16703,89 @@ Parameters:
 
   (`(time, ...) xarray.DataArray`) –
 
-  Signals to compute DVARS from. Must have a `time` dimension. Any additional dimensions (e.g., `pose`, `k`, `j`, `i`) are flattened to a single `space` dimension before computation.
-- #### **`standardize`**
+  Real, finite signals with a `time` dimension containing at least two samples. Any other dimensions are flattened into features, regardless of their names or ordering.
+- #### **`variant`**
 
-  (`bool`, default: `True` ) –
+  (`('raw', 'relative')`, default: `"raw"` ) –
 
-  Whether to computed the standardized DVARS. When `True`, the DVARS values are standardized by the expected standard deviation given the AR(1) structure of the data. When `False`, return non-standardized DVARS (raw RMS of temporal differences).
+  DVARS variant to compute. Raw DVARS is the root mean square of temporal differences, while relative DVARS divides raw DVARS by a recording-wide baseline, selected by `baseline_estimator`.
+- #### **`baseline_estimator`**
+
+  (`('median', 'ar1')`, default: `"median"` ) –
+
+  Baseline for relative DVARS. `"median"` uses the square root of median squared raw DVARS, excluding the artificial first sample. `"ar1"` uses the RMS of expected voxelwise difference standard deviations, estimated from robust temporal SDs and lag-1 autocorrelations. Ignored for raw DVARS.
 - #### **`normalization_factor`**
 
   (`float or None`, default: `1000` ) –
 
-  Normalization factor applied to the median signal intensity. If `None`, no normalization is performed. Note that standardized DVARS is invariant to intensity normalization.
+  Positive target median signal intensity for raw DVARS. If not provided, no intensity normalization is performed. Ignored for relative DVARS, which is invariant to positive global intensity scaling.
 - #### **`remove_zero_variance`**
 
   (`bool`, default: `True` ) –
 
-  Whether to exclude signals with near-zero variance. Zero-variance signals can artificially reduce the median during intensity normalization and should typically be removed.
+  Whether to exclude features whose robust temporal SD is less than or equal to `variance_tolerance`, before computing either variant. Mostly constant features with isolated transients can also have zero IQR.
 - #### **`variance_tolerance`**
 
   (`float`, default: `0.0` ) –
 
-  Tolerance for identifying zero-variance signals. Signals with robust standard deviation (`IQR/1.349`) less than or equal to this value are considered to have zero variance.
+  Finite, nonnegative threshold for robust temporal SD, estimated as IQR divided by the standard normal IQR using lower interpolation.
 
 Returns:
 
 - `(time,) xarray.DataArray` –
 
-  DVARS values with time coordinates matching input. When `standardized` is `True`, returns standardized DVARS. The first element is set to the minimum DVARS value (following FSL convention).
+  DVARS with the input time coordinates. The first value is `NaN` because the first frame has no preceding frame.
+
+Raises:
+
+- `TypeError` –
+
+  If signals are not real numeric data.
+- `ValueError` –
+
+  If time has fewer than two samples, features are empty or nonfinite, parameters are invalid, all features are removed, or a required intensity normalization or relative DVARS baseline is zero or nonfinite.
+
+**See Also**
+
+confusius.qc.compute\_cv : Compute voxelwise coefficients of variation. confusius.qc.compute\_tsnr : Compute temporal signal-to-noise ratios.
 
 > [!NOTE]
 >
 > **Notes**
 >
-> **Laziness**: This function cannot preserve Dask laziness because it requires: (1) robust standard deviation via IQR (scipy function, not Dask-compatible), and (2) AR(1) coefficient estimation requiring full time series. The computation is executed immediately and returned as a DataArray with computed values.
+> Raw DVARS is `sqrt(mean_i(diff(Y_i)**2))`. Relative DVARS divides it by a recording-wide baseline estimated using either:
 >
-> The standardized DVARS metric was introduced by Nichols (2013) to provide a normalized measure of DVARS that accounts for the temporal autocorrelation in fMRI data.
+> - `median`: `sqrt(median_t(raw_dvars_t**2))`.
+> - `ar1`: `sqrt(mean_i(2 * (1 - rho_i) * sigma_i**2))`.
 >
-> The computation involves:
+> Here `sigma_i` is the robust temporal SD and `rho_i` the Yule-Walker lag-1 autocorrelation. Originally called *standardized DVARS* by Nichols (2013), the measure was renamed *relative DVARS* by Afyouni and Nichols (2018).
 >
-> 1. Robust standard deviation estimation using IQR (following FSL's "lower" interpolation method).
-> 2. Optional removal of zero-variance signals.
-> 3. Optional intensity normalization by median scaling.
-> 4. AR(1) coefficient estimation via Yule-Walker equations (standardized only).
-> 5. Computation of expected variance for temporal differences given AR(1) structure (standardized only).
-> 6. Standardization by dividing observed DVARS by expected DVARS (standardized only).
+> The `median` estimator avoids AR(1) fitting but assumes most time points reflect baseline activity. The `ar1` estimator assumes stationarity and is sensitive to artifacts. Neither yields a z-score or calibrated artifact probability.
+>
+> **Precision:** Float32/float64 inputs retain their precision during differencing; float16 and integer inputs are promoted to float32 and float64, respectively. Spatial sums accumulate in float64.
+>
+> **Laziness:** Dask inputs remain lazy; data-dependent errors occur at compute time. Relative DVARS and unnormalized raw DVARS process spatial chunks whose full time series must fit in memory. Intensity-normalized raw DVARS instead loads the full recording to compute the exact global intensity median.
 
 **References**
 
-1. Smyser, Christopher D., et al. "Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain." NeuroImage, vol. 56, no. 3, June 2011, pp. 1437–52. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
-2. Power, Jonathan D., et al. "Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion." NeuroImage, vol. 59, no. 3, Feb. 2012, pp. 2142–54. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
-3. Nichols, Thomas E. "Notes on Creating a Standardized Version of DVARS." arXiv, 2017. DOI.org (Datacite), [https://doi.org/10.48550/ARXIV.1704.01469](<https://doi.org/10.48550/ARXIV.1704.01469>).
-4. Afyouni, Soroosh, and Thomas E. Nichols. "Insight and Inference for DVARS." NeuroImage, vol. 172, May 2018, pp. 291–312. DOI.org (Crossref), [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
+1. Smyser, C. D., et al. (2011). Functional Connectivity MRI in Infants: Exploration of the Functional Organization of the Developing Brain. NeuroImage, 56(3), 1437–1452. [https://doi.org/10.1016/j.neuroimage.2011.02.073](<https://doi.org/10.1016/j.neuroimage.2011.02.073>).
+2. Power, J. D., et al. (2012). Spurious but Systematic Correlations in Functional Connectivity MRI Networks Arise from Subject Motion. NeuroImage, 59(3), 2142–2154. [https://doi.org/10.1016/j.neuroimage.2011.10.018](<https://doi.org/10.1016/j.neuroimage.2011.10.018>).
+3. Nichols, T. E. (2017). Notes on Creating a Standardized Version of DVARS. [https://doi.org/10.48550/arXiv.1704.01469](<https://doi.org/10.48550/arXiv.1704.01469>).
+4. Afyouni, S., and Nichols, T. E. (2018). Insight and Inference for DVARS. NeuroImage, 172, 291–312. [https://doi.org/10.1016/j.neuroimage.2017.12.098](<https://doi.org/10.1016/j.neuroimage.2017.12.098>).
 
 Examples:
 
 ```pycon
->>> import numpy as np
->>> import xarray as xr
->>> from confusius.qc import compute_dvars
->>> # Generate synthetic 2D signals: 100 time points, 50 voxels
 >>> rng = np.random.default_rng(42)
->>> data = rng.standard_normal((100, 50))
->>> # Add AR(1) structure
->>> for t in range(1, 100):
-...     data[t] = 0.5 * data[t - 1] + 0.5 * data[t]
 >>> signals = xr.DataArray(
-...     data,
-...     dims=["time", "space"],
+...     100 + rng.standard_normal((100, 50)),
+...     dims=("time", "region"),
 ...     coords={"time": np.arange(100) * 0.1},
 ... )
->>> # Compute standardized DVARS (default)
->>> dvars_stdz = compute_dvars(signals)
->>> dvars_stdz.shape
-(100,)
->>> # Compute non-standardized DVARS
->>> dvars_nstd = compute_dvars(signals, standardize=False)
->>> dvars_nstd.shape
-(100,)
+>>> relative = compute_dvars(signals)
+>>> raw = compute_dvars(signals, variant="raw", normalization_factor=None)
+>>> relative.shape, raw.shape
+((100,), (100,))
 ```
 
 ### compute\_tsnr
@@ -17606,7 +17804,7 @@ Parameters:
 
   - `"center_geometry"`: aligns image centers.
   - `"center_moments"`: aligns centers of mass.
-  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform.
+  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform, held fixed while optimizing the requested `transform_type`.
   - `None`: uses the identity transform.
 
   For `transform_type="bspline"`, centering modes are ignored but affine initialization is supported.
@@ -17614,7 +17812,7 @@ Parameters:
 
   (`list of float`, default: `None` ) –
 
-  Per-parameter weights applied on top of the auto-estimated world shift scales. `None` uses identity weights (all ones). A list is passed directly to SimpleITK's `SetOptimizerWeights`; its length must match the number of transform parameters (6 for rigid, 12 for affine). The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
+  Per-parameter weights applied on top of the auto-estimated world shift scales. `None` uses identity weights (all ones). A list is passed directly to SimpleITK's `SetOptimizerWeights`; its length must match the number of refinement parameters (3 for translation, 6 for rigid, 12 for affine in 3D), including with matrix initialization. The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
 - #### **`mesh_size`**
 
   (`tuple of int`, default: `(10, 10, 10)` ) –
@@ -21144,7 +21342,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 #### register
@@ -21403,19 +21601,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  The DataArray with updated spatial coordinates and `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space.
+  The DataArray with updated spatial coordinates and `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `self` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, or if `affine` is a string and `self` has no `"affines"` entry in `attrs`.
+  If `self` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, if `affine` is a string and `self` has no `"affines"` entry in `attrs`, or if `inplace` is set and `self` has a voxel dim removed by scalar indexing.
 - `KeyError` –
 
   If `affine` is a string not present in `self.attrs["affines"]`.
@@ -21424,18 +21622,17 @@ Examples:
 
 ```pycon
 >>> import numpy as np
->>> import xarray as xr
->>> import confusius  # noqa: F401
->>> data = xr.DataArray(
-...     np.zeros((3, 4)),
-...     dims=["j", "i"],
-...     coords={"j": np.arange(3), "i": np.arange(4)},
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)),
+...     dims=("k", "j", "i"),
+...     spacing=(1, 1, 1),
+...     origin=(0, 0, 0),
 ... )
->>> data = data.fusi.affine.set_voxel_to_world(np.eye(3))
->>> shift = np.eye(3)
->>> shift[:2, 2] = [10.0, 5.0]
+>>> shift = np.eye(4)
+>>> shift[:3, 3] = [10.0, 5.0, 0.0]
 >>> result = data.fusi.affine.apply(shift)
->>> float(result.fusi.affine.voxel_to_world[0, 2])
+>>> float(result.fusi.affine.voxel_to_world[0, 3])
 10.0
 ```
 
@@ -21455,19 +21652,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the wrapped DataArray in-place.
+  Whether to modify the wrapped DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  DataArray with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged.
+  DataArray with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `self` lacks voxel-to-world geometry, or if world spacing is undefined for any voxel dimension.
+  If `self` lacks voxel-to-world geometry, if world spacing is undefined for any voxel dimension, or if `inplace` is set and `self` has a voxel dim removed by scalar indexing.
 
 Examples:
 
@@ -22256,7 +22453,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 Methods:
@@ -22854,7 +23051,7 @@ napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display data in napari viewer.
@@ -22900,16 +23097,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap.
+  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. Multipose layer names append `" [pose {pose}]"` to `data.name` (or an explicit `name`), using each pose's coordinate value.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, one per pose in pose order. Always a list, even for input without a `pose` dimension.
 
 > [!NOTE]
 >
@@ -22925,35 +23122,35 @@ Examples:
 >>> import xarray as xr
 >>> import confusius  # Register accessor.
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = data.fusi.plot.napari(contrast_limits=(0, 100))
+>>> viewer, layers = data.fusi.plot.napari(contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = data.fusi.plot.napari(dim_order=("y", "z", "x"))
+>>> viewer, layers = data.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = data1.fusi.plot.napari()
->>> viewer, layer = data2.fusi.plot.napari(viewer=viewer)
+>>> viewer, layers = data1.fusi.plot.napari()
+>>> viewer, layers = data2.fusi.plot.napari(viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = xr.open_zarr("output.zarr")["roi_mask"]
->>> viewer, layer = roi_mask.fusi.plot.napari(layer_type="labels")
+>>> viewer, layers = roi_mask.fusi.plot.napari(layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = data.fusi.plot.napari()
->>> viewer, layer = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
+>>> viewer, layers = data.fusi.plot.napari()
+>>> viewer, layers = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
 ```
 
 #### stat\_map
@@ -23583,7 +23780,7 @@ Parameters:
 
   - `"center_geometry"`: aligns image centers.
   - `"center_moments"`: aligns centers of mass.
-  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform.
+  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform, held fixed while optimizing the requested `transform` type.
   - `None`: uses the identity transform.
 
   For `transform="bspline"`, centering modes are ignored but affine initialization is supported.
@@ -24021,19 +24218,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  `da` with updated spatial coordinates and updated `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space.
+  `da` with updated spatial coordinates and updated `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `da` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, or if `affine` is a string and `da` has no `"affines"` entry in `attrs`.
+  If `da` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, if `affine` is a string and `da` has no `"affines"` entry in `attrs`, or if `inplace` is set and `da` has a voxel dim removed by scalar indexing.
 - `KeyError` –
 
   If `affine` is a string not present in `da.attrs["affines"]`.
@@ -24042,18 +24239,17 @@ Examples:
 
 ```pycon
 >>> import numpy as np
->>> import xarray as xr
->>> import confusius  # noqa: F401
->>> data = xr.DataArray(
-...     np.zeros((3, 4)),
-...     dims=["j", "i"],
-...     coords={"j": np.arange(3), "i": np.arange(4)},
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)),
+...     dims=("k", "j", "i"),
+...     spacing=(1, 1, 1),
+...     origin=(0, 0, 0),
 ... )
->>> data = data.fusi.affine.set_voxel_to_world(np.eye(3))
->>> shift = np.eye(3)
->>> shift[:2, 2] = [10.0, 5.0]
+>>> shift = np.eye(4)
+>>> shift[:3, 3] = [10.0, 5.0, 0.0]
 >>> result = data.fusi.affine.apply(shift)
->>> float(result.fusi.affine.voxel_to_world[0, 2])
+>>> float(result.fusi.affine.voxel_to_world[0, 3])
 10.0
 ```
 
@@ -24430,7 +24626,7 @@ Returns:
 
 - `DataArray` –
 
-  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. For pose-dependent geometry, `voxel_to_world` stays a per-pose stack: each pose keeps its own origin and direction (spacing is shared, per the equal-scale invariant), so rebasing is unambiguous per pose and every pose is reindexed at once.
+  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. For pose-dependent geometry, `voxel_to_world` stays a per-pose stack: each pose keeps its own origin and direction (spacing is shared, per the equal-scale invariant), so rebasing is unambiguous per pose and every pose is reindexed at once. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
@@ -24552,7 +24748,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_26381/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24617/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24769,7 +24965,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8dfa7f7ac0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6a649e3bd0>
     ```
 - [ ] Attributes: (27)
 
@@ -25173,7 +25369,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 15.9 s
+**Total running time:** 14.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25242,7 +25438,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_29166/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26139/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25510,7 +25706,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7ab40a3650>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa7bc08a510>
     ```
   - region
 
@@ -25629,11 +25825,11 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f7ab431bb60\>
+  \<matplotlib.colors.Normalize object at 0x7fa7bc209940\>
 
 ## Plot the seed maps
 
@@ -25669,7 +25865,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 17.1 s
+**Total running time:** 14.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26013,7 +26209,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f880a3cb4d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1a0c67b750>
     ```
 - [ ] Attributes: (21)
 
@@ -26410,7 +26606,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f88050f89f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1a08246510>
     ```
 - [ ] Attributes: (23)
 
@@ -26574,7 +26770,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 94.0 s
+**Total running time:** 90.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -26922,7 +27118,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0ae9a91590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fda4f211810>
     ```
 - [ ] Attributes: (25)
 
@@ -27292,7 +27488,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 313.7 s
+**Total running time:** 312.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27634,7 +27830,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2612669590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc3a5861810>
     ```
 - [ ] Attributes: (25)
 
@@ -28032,7 +28228,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 331.4 s
+**Total running time:** 327.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28380,7 +28576,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09e4c31590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0113d45810>
     ```
 - [ ] Attributes: (25)
 
@@ -28772,7 +28968,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 307.6 s
+**Total running time:** 306.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29112,7 +29308,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fb9d1fda2a0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f678c97d220>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29127,7 +29323,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...a0\>, beta=6.7) |
+|  | hrf\_model | functools.par...20\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29146,7 +29342,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7fb9c2b5b110\>, \<confusius.gl...x7fb9c2beeb10\>, \<confusius.gl...x7fb9c2b07ad0\>, \<confusius.gl...x7fb9c2b2bf00\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f677e9fec10\>, \<confusius.gl...x7f677d70c640\>, \<confusius.gl...x7f677fe1b9b0\>, \<confusius.gl...x7f677e613570\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29258,7 +29454,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 134.1 s
+**Total running time:** 130.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/glm/first_level.ipynb>)
 
@@ -29625,7 +29821,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f00a21d9590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb4e6019810>
     ```
 - [ ] Attributes: (21)
 
@@ -29860,7 +30056,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 30.7 s
+**Total running time:** 29.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30128,7 +30324,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f87f61fea50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f77d1b4a660>
     ```
 - [ ] Attributes: (25)
 
@@ -30554,7 +30750,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8823ec1d10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f77ff8bd950>
     ```
 - [ ] Attributes: (25)
 
@@ -30914,7 +31110,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f87f3879090>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f77cf14d1d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31261,7 +31457,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.3 s
+**Total running time:** 9.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31602,7 +31798,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f83d80fb100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f086dddf950>
     ```
   - time
 
@@ -31883,7 +32079,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f83d43071d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0869e4d2b0>
     ```
 - [ ] Attributes: (6)
 
@@ -31909,7 +32105,7 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
 ## Plot the GLM map
 
@@ -31955,7 +32151,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 59.6 s
+**Total running time:** 58.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -31999,7 +32195,7 @@ cf.datasets.list_datasets()
 │ fetch_pereira_2025                  │ 29.96 GB │    ✗    │
 │ fetch_cybis_pereira_2026            │ 12.88 GB │    ✓    │
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
-│ fetch_landemard_2026                │ 42.04 GB │    ✗    │
+│ fetch_landemard_2026                │ 42.04 GB │    ✓    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
@@ -32512,7 +32708,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa482e4e270>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5a51afa7b0>
     ```
 - [ ] Attributes: (25)
 
@@ -32631,7 +32827,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 14.9 s
+**Total running time:** 14.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -32914,7 +33110,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6e06f9c510>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1d96174c30>
     ```
 - [ ] Attributes: (27)
 
@@ -33129,7 +33325,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 280.1 s
+**Total running time:** 119.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33377,7 +33573,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3fe78d69e0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa431f07490>
     ```
 - [ ] Attributes: (23)
 
@@ -33658,7 +33854,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3fe7abaa50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa43210f850>
     ```
 - [ ] Attributes: (23)
 
@@ -33861,49 +34057,49 @@ xarray.DataArray
 
 - [ ]
 
-  2.278e-12 1.734e-13 2.037e-14 -3.601e-13 ... -982.1 -350.1 -29.46
+  \-1.066e-13 1.454e-14 -2.04e-15 -1.463e-13 ... -463.0 -160.8 -19.77
 
   ```
-  array([[[[ 2.27802676e-12,  1.73445510e-13,  2.03674399e-14, ...,
-            -5.79600696e-13, -2.07096509e-13, -5.87240450e-15],
-           [ 7.92161193e-14,  2.55705064e-14, -9.81103865e-15, ...,
-            -2.71792707e-13, -3.81156174e-14,  1.32921539e-14],
-           [-8.32486400e-13, -1.67580797e-13, -2.09351055e-13, ...,
-            -1.11218210e-13,  4.89772136e-14,  4.44019921e-14],
+  array([[[[-1.06553134e-13,  1.45411499e-14, -2.04013176e-15, ...,
+            -2.75037258e-13, -9.73043574e-14, -1.17763087e-14],
+           [-3.58626888e-14, -3.85410069e-15, -1.05348135e-14, ...,
+            -1.29085344e-13, -2.39862346e-14,  5.17193025e-15],
+           [-4.40714245e-13, -9.95044877e-14, -1.02538451e-13, ...,
+            -6.50177597e-14,  2.96493126e-14,  1.94014105e-14],
            ...,
-           [-3.39343889e-13, -4.37166896e-15,  4.29375296e-13, ...,
-             2.13752397e-13,  2.19622569e-13,  2.69100788e-14],
-           [ 2.84825960e-13,  1.28039665e-13,  2.90116856e-13, ...,
-             1.69817524e-13,  6.69428117e-14,  5.28039692e-15],
-           [ 2.87402292e-12,  2.55235366e-13,  4.08538525e-13, ...,
-             7.91032913e-13,  2.78010461e-13,  2.23689579e-14]],
+           [-1.79733265e-13, -2.32309173e-15,  3.18292991e-13, ...,
+             1.64950591e-13,  6.91986997e-14,  7.38668917e-15],
+           [ 2.06210933e-13,  7.33502091e-14,  1.77947861e-13, ...,
+             9.32861570e-14,  4.05258433e-14,  5.04434841e-15],
+           [ 6.41266509e-13,  1.69835134e-13,  2.12307592e-13, ...,
+             2.24633558e-13,  1.12397693e-13,  1.39594300e-14]],
 
-          [[ 2.66942999e-15,  2.03246360e-16,  2.38669080e-17, ...,
-            -6.79185825e-16, -2.42679165e-16, -6.88138217e-18],
-           [ 9.28267782e-17,  2.99639486e-17, -1.14967398e-17, ...,
-            -3.18491256e-16, -4.46645203e-17,  1.55759691e-17],
-           [-9.75521537e-16, -1.96373991e-16, -2.45321080e-16, ...,
-            -1.30327365e-16,  5.73923209e-17,  5.20309996e-17],
+          [[-1.24860751e-16,  1.70395635e-17, -2.39066064e-18, ...,
+            -3.22293276e-16, -1.14022879e-16, -1.37996762e-17],
+           [-4.20245007e-17, -4.51629988e-18, -1.23448712e-17, ...,
+            -1.51264373e-16, -2.81074723e-17,  6.06055468e-18],
+           [-5.16436350e-16, -1.16601029e-16, -1.20156277e-16, ...,
+            -7.61889022e-17,  3.47435622e-17,  2.27348984e-17],
   ...
-            -9.41593423e-02, -8.54607347e-02, -1.93214662e-02],
-           [ 4.82745178e-02,  6.22014080e-02,  1.59522330e-01, ...,
-            -1.42715343e-01, -7.29270369e-02, -8.28084994e-03],
-           [ 5.78585782e-02,  1.62074775e-01,  1.12487482e-01, ...,
-            -1.15089367e+00, -4.10219062e-01, -3.45214687e-02]],
+            -1.00320758e-01, -6.68504694e-02, -1.38172904e-02],
+           [ 2.45364096e-02,  7.73999128e-02,  1.22074561e-01, ...,
+            -9.67085763e-02, -4.39984934e-02, -5.58539818e-03],
+           [ 7.72657870e-01,  1.41547221e+00,  1.02974814e-01, ...,
+            -5.42593041e-01, -1.88485088e-01, -2.31637639e-02]],
 
-          [[ 4.09577726e+03,  3.43735999e+02, -4.17415646e+02, ...,
-            -4.46458139e+02,  8.85818900e+00,  1.28665614e+02],
-           [ 2.42373864e+02,  4.91488284e+01, -1.14548132e+02, ...,
-            -6.96369571e+01,  1.77104787e+01,  6.69408917e+01],
-           [-1.36758632e+03,  1.60656735e+02,  5.24313437e+01, ...,
-            -1.08985027e+02,  1.40320484e+01,  2.15740277e+00],
+          [[ 9.03708499e+03,  8.52490247e+02, -8.84063746e+02, ...,
+            -1.37269776e+02, -1.58789988e+01,  3.19888242e+01],
+           [-3.46722891e+01,  7.64852174e+00, -9.53872068e+01, ...,
+            -5.82903401e+01,  2.13052933e+00,  1.14420186e+01],
+           [-3.84485204e+02,  4.82841742e+01,  4.31963098e+01, ...,
+            -9.88215239e+01,  2.38724581e+00,  1.01019633e+01],
            ...,
-           [-3.08061397e+01,  8.38721665e+01,  2.47572737e+02, ...,
-            -8.03532971e+01, -7.29301165e+01, -1.64884701e+01],
-           [ 4.11963019e+01,  5.30811718e+01,  1.36132484e+02, ...,
-            -1.21789810e+02, -6.22341630e+01, -7.06667635e+00],
-           [ 4.93751047e+01,  1.38310678e+02,  9.59940868e+01, ...,
-            -9.82144739e+02, -3.50070993e+02, -2.94597833e+01]]]],
+           [-3.37627837e+01,  7.25843139e+01,  1.82897924e+02, ...,
+            -8.56112997e+01, -5.70485679e+01, -1.17913402e+01],
+           [ 2.09387765e+01,  6.60512068e+01,  1.04175468e+02, ...,
+            -8.25287515e+01, -3.75472461e+01, -4.76644315e+00],
+           [ 6.59367611e+02,  1.20792962e+03,  8.78762080e+01, ...,
+            -4.63035729e+02, -1.60848598e+02, -1.97673938e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34058,7 +34254,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3fe0a3ccb0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa42c1b9a90>
     ```
 - [x] Attributes: (4)
 
@@ -34089,7 +34285,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8953
+Rigid + B-spline final metric: -0.8908
 ```
 
 ```python
@@ -34175,7 +34371,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 73.0 s
+**Total running time:** 60.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34541,7 +34737,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb0b89f1810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7feea625da90>
     ```
 - [ ] Attributes: (21)
 
@@ -34748,7 +34944,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 46.1 s
+**Total running time:** 45.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34760,13 +34956,54 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 # Changelog
 
-## 0.9.0.dev0
+## 0.10.0.dev0
 
 Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#561](<https://github.com/confusius-tools/confusius/pull/561>)).
+
+### ✨ Enhancements
+
+- New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
+
+### 🐛 Fixes
+
+- `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
+
+### 📚 Documentation
+
+- Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
+
+### 🔧 Maintenance
+
+- The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
+- Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
+- Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
+
+### 🖼 Napari plugin
+
+- Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+
+## 0.9.0
+
+Released 2026-10-31.
+
+### 💥 Breaking changes
+
+- Iconeus SCAN world coordinates are now computed from a modified Iconeus laboratory frame, reordered to `(z, y, x)` and rotated by 90 degrees about the axial axis. This aligns typical coronal recordings have `z` elevation, `y` depth, and `x` lateral. `load_bps` applies the same modification so the resulting affine can be composed with the modified laboratory space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
+- `convert_echoframe_dat_to_zarr` was removed. EchoFrame DAT files load lazily with `confusius.load`, so save them with `confusius.save` using the I/O guide's conversion recipes for measured time coordinates and sharding. The EchoFrame loader no longer stores `n_volumes_per_block` in attrs; use `data.chunks[0]` for acquisition block sizes ([\#551](<https://github.com/confusius-tools/confusius/pull/551>)).
+- Iconeus SCAN metadata now uses fUSI-BIDS field names and units: `iconeus_scan_mode` becomes `iconeus_acquisition_mode`, `imaging_depth` becomes `depth`, and `probe_center_frequency`/`transmit_frequency` are reported in hertz. Nonstandard scanner metadata now consistently uses the `iconeus_` prefix, including probe model numbers, ADC sampling frequency (in native MHz), stimulation toggle times, filter types, SVD cutoffs, and velocity-band limits ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
+- Fix matrix initialization incorrectly allowing full affine optimization for rigid/translation registration. Refinement now respects the requested transform; in 3D, use 6 rigid or 3 translation optimizer weights instead of 12. Results may differ ([\#547](<https://github.com/confusius-tools/confusius/pull/547>)).
+- Matrix-initialized rigid/affine registration now optimizes around the fixed image's physical center rather than the world origin. Initial alignment is unchanged, but convergence and final results may differ; recheck tuned optimizer settings ([\#543](<https://github.com/confusius-tools/confusius/pull/543>)).
+- `compute_dvars` now defaults to median-based relative DVARS, following the empirical baseline estimator recommended by Afyouni and Nichols (2018). The median is less sensitive to unusually large DVARS values, and their simulations found it reliable under heterogeneous voxel variances. The previous mean-SD normalization used in 0.8.0 and earlier has been removed. Choose `baseline_estimator="ar1"` for the alternative RMS-based model baseline. **Existing DVARS thresholds must be adjusted for the new normalization**. The `standardize` argument was removed: use `variant="raw"` instead of `standardize=False`. The first output value is now `NaN` for all variants and estimators. Robust SDs retain lower IQR interpolation, following Nipype's FSL-compatible convention also used by fMRIPrep. All variants preserve Dask laziness. Relative DVARS and unnormalized raw DVARS reduce spatial blocks; raw intensity normalization gathers the full recording at compute time to preserve the exact global median ([\#540](<https://github.com/confusius-tools/confusius/pull/540>)).
 - Use `fetch_template_brunner_grillet_2021` instead of `fetch_template_huang_2025` for the vascular mouse template. The fetcher uses the published Brunner, Grillet 2021 release, with paper and dataset citations and a CC BY 4.0 license. Voxel values and Allen-grid geometry are unchanged; downloads use a new `brunner-grillet-2021-template` cache directory ([\#517](<https://github.com/confusius-tools/confusius/pull/517>)).
 - Rename `labels_from_layer` to `extract_labels_from_layer`, including the `.fusi.plot` accessor ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Atlas Datasets use `template` instead of `reference`, matching BrainGlobe's naming. Use `atlas.atlas.template` or `atlas["template"]`; update custom atlas Datasets and regenerate previously saved atlas stores ([\#510](<https://github.com/confusius-tools/confusius/pull/510>)).
@@ -34774,7 +35011,9 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
-- New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- `load_scan` stores `world_to_lab` (the identity, since lab space is the world space) and `world_to_probe` affines in `attrs["affines"]`, so `da.fusi.affine.apply("world_to_probe")` switches to the first pose's probe space (`z` elevation, `y` depth, `x` lateral) and `apply("world_to_lab")` returns to lab space ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
+- Add Agent Skills support with `confusius skills list` and `confusius skills install`. The first skill, `confusius-load-data`, helps agents load custom data into `VoxelData` ([\#539](<https://github.com/confusius-tools/confusius/pull/539>)).
+- `confusius.load` now loads compounded Iconeus RAW/HRAW beamformed IQ files as lazy VoxelData arrays, preserving acquisition blocks as Dask chunks ([\#548](<https://github.com/confusius-tools/confusius/pull/548>)).
 
 ### ⚡ Performance
 
@@ -34782,21 +35021,20 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
-- `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- SCAN v2 files negate the stored probe-pose Euler angles when loading so their lab-space world coordinates match SCAN v1 for the same acquisition ([\#526](<https://github.com/confusius-tools/confusius/pull/526>)).
 - Labels painted over oblique or sheared data in napari now return to the original reference voxel grid using nearest-neighbor interpolation, rather than retaining the display grid or being assigned incorrect geometry. The drawing documentation explains interpolation limits and recommends an existing axis-aligned frame ([\#512](<https://github.com/confusius-tools/confusius/pull/512>)).
 - Fetching a cached BrainGlobe atlas no longer warns or checks the network repeatedly for regions with no upstream mesh, such as Allen mouse RSPd4. Mesh availability is remembered per annotation-set version; available meshes deleted locally are still downloaded again ([\#508](<https://github.com/confusius-tools/confusius/pull/508>)).
 
 ### 📚 Documentation
 
+- Document how to convert EchoFrame DAT and Iconeus RAW recordings to Zarr with `confusius.load` and `confusius.save`, including measured time coordinates, sharding, and memory-bounded writes ([\#551](<https://github.com/confusius-tools/confusius/pull/551>)).
 - The documentation site publishes [`llms.txt`](<https://confusius.tools/latest/llms.txt>) and `llms-full.txt` for AI assistants, along with a Markdown copy of every page and a "Copy as Markdown" button in the page header ([\#513](<https://github.com/confusius-tools/confusius/pull/513>)).
 
 ### 🖼 Napari plugin
 
 - Boolean arrays open as labels layers ([\#504](<https://github.com/confusius-tools/confusius/pull/504>)).
-
-### 🔧 Maintenance
-
-- The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- Files opened with **File \> Open** or by drag-and-drop now display the same way as with `plot_napari`: complex data shows its magnitude, reversed axes are shown in ascending order, a last axis of length 3 or 4 is never read as RGB colors, and image layers use napari's default blending ([\#549](<https://github.com/confusius-tools/confusius/pull/549>)).
+- Iconeus RAW files open from the Data I/O panel, the `confusius` command, **File \> Open**, or by drag-and-drop, when their `.hraw` metadata file is in the same folder ([\#549](<https://github.com/confusius-tools/confusius/pull/549>)).
 
 ## 0.8.0
 
@@ -35248,23 +35486,25 @@ This project follows the [Contributor Covenant Code of Conduct](<https://github.
 
 # Citing ConfUSIus
 
-If you use ConfUSIus in your research, please cite it using the following reference:
+If you use ConfUSIus in your research, please cite the following preprint:
 
-> Le Meur-Diebolt, S., &amp; Cybis Pereira, F. (2026). ConfUSIus (v0.8.0). Zenodo. https://doi.org/10.5281/zenodo.18611124
+> Le Meur-Diebolt, S., &amp; Cybis Pereira, F. (2026). ConfUSIus: an accessible and scalable toolkit for functional ultrasound imaging analysis. *bioRxiv*. https://doi.org/10.64898/2026.10.27.762250
 
 Or in BibTeX format:
 
 ```bibtex
-@software{confusius,
-  author    = {Le Meur-Diebolt, Samuel and Cybis Pereira, Felipe},
-  title     = {ConfUSIus},
-  year      = {2026},
-  publisher = {Zenodo},
-  version   = {v0.8.0},
-  doi       = {10.5281/zenodo.18611124},
-  url       = {https://doi.org/10.5281/zenodo.18611124}
+@article{confusius,
+  title = {ConfUSIus: an accessible and scalable toolkit for functional ultrasound imaging analysis},
+  url = {http://dx.doi.org/10.64898/2026.10.27.762250},
+  DOI = {10.64898/2026.10.27.762250},
+  publisher = {openRxiv},
+  author = {Le Meur-Diebolt,  Samuel and Cybis Pereira,  Felipe},
+  year = {2026},
+  month = Nov
 }
 ```
+
+ConfUSIus versions are archived on [Zenodo](<https://doi.org/10.5281/zenodo.18611124>).
 
 ---
 
@@ -35466,15 +35706,17 @@ License: **[CC BY 4.0](<https://creativecommons.org/licenses/by/4.0/>)**.
 
 The `fetch_pepe_mariani_2026` function provides a fUSI-BIDS re-export of this dataset. If you use it, please cite:
 
-> Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., &amp; Gozzi, A. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (Fusi). https://doi.org/10.64898/2026.02.05.704055
+> Pepe, C., Mariani, J.-C., Urosevic, M., Gini, S., Stuefer, A., Ricci, F., Galbusera, A., Iurilli, G., &amp; Gozzi, A. (2026). Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI). *bioRxiv*. https://doi.org/10.64898/2026.02.05.704055
 
 ```bibtex
-@misc{pepe_structural_2026,
-  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging ({Fusi})},
-  doi = {10.64898/2026.02.05.704055},
-  url = {http://biorxiv.org/lookup/doi/10.64898/2026.02.05.704055},
-  author = {Pepe, Chiara and Mariani, Jean-Charles and Urosevic, Mila and Gini, Silvia and Stuefer, Alexia and Ricci, Fabio and Galbusera, Alberto and Iurilli, Giuliano and Gozzi, Alessandro},
+@article{Pepe2026,
+  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI)},
+  url = {http://dx.doi.org/10.64898/2026.02.05.704055},
+  DOI = {10.64898/2026.02.05.704055},
+  publisher = {openRxiv},
+  author = {Pepe,  Chiara and Mariani,  Jean-Charles and Urosevic,  Mila and Gini,  Silvia and Stuefer,  Alexia and Ricci,  Fabio and Galbusera,  Alberto and Iurilli,  Giuliano and Gozzi,  Alessandro},
   year = {2026},
+  month = Feb
 }
 ```
 
@@ -35514,11 +35756,9 @@ License: **[CC0 1.0](<https://creativecommons.org/publicdomain/zero/1.0/>)**.
 
 ### Brunner, Grillet et al. (2021)
 
-The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper and source dataset:
+The `fetch_template_brunner_grillet_2021` function provides an Allen-aligned vascular mouse template. If you use this template in your research, please cite the paper:
 
 > Brunner, C., Grillet, M., Urban, A., Roska, B., Montaldo, G., &amp; Macé, E. (2021). Whole-brain functional ultrasound imaging in awake head-fixed mice. *Nature Protocols*, 16, 3547–3571. https://doi.org/10.1038/s41596-021-00548-8
->
-> Macé, E., &amp; Montaldo, G. (2020). Whole-brain visually evoked activity maps in head-fixed awake mice (June 2021 metadata update). *Zenodo*. https://doi.org/10.5281/zenodo.4905862
 
 Or in BibTeX format:
 
@@ -35534,18 +35774,9 @@ Or in BibTeX format:
   year = {2021},
   doi = {10.1038/s41596-021-00548-8},
 }
-
-@dataset{mace_montaldo2020,
-  title = {Whole-brain visually evoked activity maps in head-fixed awake mice},
-  author = {Macé, Emilie and Montaldo, Gabriel},
-  publisher = {Zenodo},
-  year = {2020},
-  note = {June 2021 metadata update},
-  doi = {10.5281/zenodo.4905862},
-}
 ```
 
-The template conversion reorders axes and assigns the Allen 50 µm coordinate grid without changing vascular voxel values. Also cite Wang et al. (2020) for the Allen CCF reference framework: [https://doi.org/10.1016/j.cell.2020.04.007](<https://doi.org/10.1016/j.cell.2020.04.007>).
+The associated dataset is archived on [Zenodo](<https://doi.org/10.5281/zenodo.4905862>).
 
 License: **[CC BY 4.0](<https://creativecommons.org/licenses/by/4.0/>)**.
 
@@ -35558,17 +35789,14 @@ The `fetch_template_pepe_mariani_2026` function provides a mouse fUSI template d
 Or in BibTeX format:
 
 ```bibtex
-@article{pepe2026fusi,
-  author    = {Pepe, Chiara and Mariani, Jean-Charles and Urosevic, Mila and Gini, Silvia and
-               Stuefer, Alexia and Ricci, Fabio and Galbusera, Alberto and Iurilli, Giuliano and
-               Gozzi, Alessandro},
-  title     = {Structural and dynamic embedding of the mouse functional connectome revealed by
-               functional ultrasound imaging ({fUSI})},
-  journal   = {bioRxiv},
-  year      = {2026},
-  publisher = {Cold Spring Harbor Laboratory},
-  doi       = {10.64898/2026.02.05.704055},
-  url       = {https://doi.org/10.64898/2026.02.05.704055}
+@article{Pepe2026,
+  title = {Structural and dynamic embedding of the mouse functional connectome revealed by functional ultrasound imaging (fUSI)},
+  url = {http://dx.doi.org/10.64898/2026.02.05.704055},
+  DOI = {10.64898/2026.02.05.704055},
+  publisher = {openRxiv},
+  author = {Pepe,  Chiara and Mariani,  Jean-Charles and Urosevic,  Mila and Gini,  Silvia and Stuefer,  Alexia and Ricci,  Fabio and Galbusera,  Alberto and Iurilli,  Giuliano and Gozzi,  Alessandro},
+  year = {2026},
+  month = Feb
 }
 ```
 

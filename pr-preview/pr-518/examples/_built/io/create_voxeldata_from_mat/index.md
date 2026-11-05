@@ -333,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f83d80fb100>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f086dddf950>
     ```
   - time
 
@@ -614,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f83d43071d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0869e4d2b0>
     ```
 - [ ] Attributes: (6)
 
@@ -640,7 +640,7 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
 ## Plot the GLM map
 
@@ -686,7 +686,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 59.6 s
+**Total running time:** 58.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 

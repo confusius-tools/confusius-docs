@@ -338,7 +338,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09e4c31590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0113d45810>
     ```
 - [ ] Attributes: (25)
 
@@ -730,7 +730,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 307.6 s
+**Total running time:** 306.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/decomposition/pca_single_recording.ipynb>)
 

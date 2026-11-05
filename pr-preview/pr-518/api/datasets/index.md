@@ -79,7 +79,7 @@ Returns:
 
 - `Dataset` –
 
-  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes.
+  Atlas Dataset with data variables `template`, `annotation`, and `hemispheres` on a common voxel-to-world `(k, j, i)` grid with world `z`/`y`/`x` coordinates in millimetres, and the `.atlas` accessor for structure queries, masks, and meshes. Data variables stay backed by lazy `dask.array.Array` data.
 
 Examples:
 

@@ -61,7 +61,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_29166/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26139/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -329,7 +329,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7ab40a3650>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa7bc08a510>
     ```
   - region
 
@@ -448,11 +448,11 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f7ab431bb60\>
+  \<matplotlib.colors.Normalize object at 0x7fa7bc209940\>
 
 ## Plot the seed maps
 
@@ -488,7 +488,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 17.1 s
+**Total running time:** 14.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/perf/example-gallery?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-518/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
