@@ -78,16 +78,16 @@ xarray.DataArray
   array([[[-18.687603 , -18.568825 , -18.500853 , ..., -17.956799 ,
            -17.938179 , -17.963793 ],
           [-18.534925 , -18.445103 , -18.356045 , ..., -17.885395 ,
-           -17.88491  , -17.8918   ],
+           -17.88491  , -17.891798 ],
           [-18.489155 , -18.406622 , -18.328014 , ..., -17.79321  ,
-           -17.804344 , -17.82952  ],
+           -17.804344 , -17.829521 ],
           ...,
-          [-12.314958 , -13.39374  , -13.824751 , ..., -13.536394 ,
-           -13.521338 , -13.627226 ],
-          [-12.319063 , -13.352967 , -13.748854 , ..., -13.456759 ,
-           -13.3859215, -13.444571 ],
-          [-12.375979 , -13.218855 , -13.602358 , ..., -13.363948 ,
-           -13.333373 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
+          [-12.314958 , -13.393738 , -13.82475  , ..., -13.536392 ,
+           -13.5213375, -13.627226 ],
+          [-12.319061 , -13.352966 , -13.748854 , ..., -13.4567585,
+           -13.385921 , -13.444569 ],
+          [-12.375978 , -13.218855 , -13.602357 , ..., -13.363947 ,
+           -13.333372 , -13.279113 ]]], shape=(1, 125, 80), dtype=float32)
   ```
 - [x] Coordinates: (6)
 
@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1ddbca8e90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8c766d3e10>
     ```
 - [ ] Attributes: (27)
 
@@ -440,7 +440,6 @@ The initialization was already close, so the refinement is small. Comparing the 
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 for ax, moving_view, title in [
     (axes[0], initialized, "Manual initialization"),
     (axes[1], registered, "Affine registration refinement"),
@@ -491,7 +490,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 67.3 s
+**Total running time:** 122.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 

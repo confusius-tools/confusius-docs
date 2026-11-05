@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa876e83890>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa433353890>
     ```
 - [ ] Attributes: (21)
 
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa87020bd90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa42df49630>
     ```
 - [ ] Attributes: (23)
 
@@ -844,10 +844,6 @@ z_scores = glm.compute_contrast("speed")
 The searchlight reports a cross-validated coefficient of determination, so values at or below zero mean the local neighborhood predicts the speed regressor no better than the fold mean; we clip the color scale at zero. The GLM reports a z-score for the speed contrast. Both maps cover the whole plane.
 
 ```python
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-searchlight_cmap = "inferno" if is_dark_theme else "inferno_r"
-glm_cmap = "berlin" if is_dark_theme else "coolwarm"
-
 background_data = data.mean("time").fusi.scale.db()
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 3), constrained_layout=True)
@@ -855,7 +851,7 @@ fig, axes = plt.subplots(1, 2, figsize=(10, 3), constrained_layout=True)
 searchlight.scores_.fusi.plot.stat_map(
     bg_volume=background_data,
     axes=axes[0],
-    cmap=searchlight_cmap,
+    cmap="inferno_r",
     vmin=0,
     auto_range=False,
     cbar_label="Cross-validated $R^2$",
@@ -867,7 +863,6 @@ axes[0].set_title("Searchlight decoding of speed")
 z_scores.where(mask).fusi.plot.stat_map(
     bg_volume=background_data,
     axes=axes[1],
-    cmap=glm_cmap,
     cbar_label="z-score",
     show_titles=False,
     bg_color=bg_color,
@@ -902,7 +897,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 98.8 s
+**Total running time:** 83.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.ipynb>)
 

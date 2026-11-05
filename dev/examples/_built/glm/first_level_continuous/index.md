@@ -27,7 +27,6 @@ import confusius as cf
 
 # Adapt background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 
 # Keep notebook output compact for large DataArray displays. The coordinates section is
 # left expanded on purpose; `display_expand_data` alone does not cover the attributes.
@@ -360,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6e8e09e710>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa131ac9950>
     ```
 - [ ] Attributes: (21)
 
@@ -484,7 +483,7 @@ speed = (
 )
 speed = speed.interp(time=data.time, method="linear").ffill("time")
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(speed.time, speed, color="#d93a54")
 ax.set_xlabel("Time (s)")
 _ = ax.set_ylabel("Animal speed (cm/s)")
@@ -583,12 +582,10 @@ thresholded_zscore, threshold = cf.stats.apply_statistical_threshold(
     cluster_threshold=30,
 )
 
-cmap = "berlin" if is_dark_theme else None
 _ = thresholded_zscore.fusi.plot.stat_map(
     bg_volume=data.mean("time").fusi.scale.db().expand_dims(lag=z_score.lag),
     slice_mode="lag",
     nrows=3,
-    cmap=cmap,
     threshold=threshold,
     bg_color=bg_color,
     fontsize=20,
@@ -597,7 +594,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 29.2 s
+**Total running time:** 27.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.ipynb>)
 

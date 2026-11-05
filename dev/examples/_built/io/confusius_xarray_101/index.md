@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdd4486de80>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa5b1f5a660>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdd7c9e5a90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa5dfcb5a90>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdd437d1d10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa5af581310>
     ```
 - [ ] Attributes: (25)
 
@@ -1346,10 +1346,10 @@ The resulting 1D DataArray keeps the time coordinate from the original recording
 ```python
 roi_trace_smooth = roi_trace.rolling(time=15, center=True).mean()
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 
 roi_trace.plot(ax=ax, color="#d93a54", label="ROI mean")
-roi_trace_smooth.plot(ax=ax, color="#3ad9a4", label="Rolling mean (15 samples)")
+roi_trace_smooth.plot(ax=ax, color="#27906d", label="Rolling mean (15 samples)")
 
 ax.set_title("Mean power Doppler intensity in a central ROI")
 ax.set_xlabel("Time (s)")
@@ -1393,7 +1393,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.8 s
+**Total running time:** 10.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/confusius_xarray_101.ipynb>)
 

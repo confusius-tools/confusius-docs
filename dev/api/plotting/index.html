@@ -1724,6 +1724,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.ThresholdedColormap" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThresholdedColormap
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.VolumePlotter" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3336,6 +3347,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#confusius.plotting.ThresholdedColormap" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThresholdedColormap
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#confusius.plotting.VolumePlotter" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -3632,6 +3654,13 @@
 <p><span class="doc-section-title">Modules:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+          <b><code><span title="confusius.plotting.colormap">colormap</span></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Colormaps built by the plotting functions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><span title="confusius.plotting.image">image</span></code></b>
           –
           <div class="doc-md-description">
@@ -3668,6 +3697,13 @@
 
 <p><span class="doc-section-title">Classes:</span></p>
     <ul>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;ThresholdedColormap&lt;/span&gt; (&lt;code&gt;confusius.plotting.ThresholdedColormap&lt;/code&gt;)" href="./#confusius.plotting.ThresholdedColormap">ThresholdedColormap</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Colormap with a gray band over the thresholded range of a norm.</p>
+          </div>
+        </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;VolumePlotter&lt;/span&gt; (&lt;code&gt;confusius.plotting.VolumePlotter&lt;/code&gt;)" href="./#confusius.plotting.VolumePlotter">VolumePlotter</a></code></b>
           –
@@ -3781,6 +3817,179 @@
 
 
 
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="confusius.plotting.ThresholdedColormap" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ThresholdedColormap</span>
+
+
+<a href="#confusius.plotting.ThresholdedColormap" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-external" title="&lt;code&gt;matplotlib.colors.LinearSegmentedColormap&lt;/code&gt;" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html#matplotlib.colors.LinearSegmentedColormap">LinearSegmentedColormap</a></code></p>
+
+
+
+        <p>Colormap with a gray band over the thresholded range of a norm.</p>
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;add_volume&lt;/span&gt;" href="./#confusius.plotting.VolumePlotter.add_volume"><code>VolumePlotter.add_volume</code></a> wraps
+every colormap it draws with in one of these, so that the part of the data
+masked by <code>threshold</code> reads as gray in the colorbar. The source colormap and
+the threshold are kept, so the same band can be rebuilt on another colormap
+with <code>with_source</code>; the docs gallery uses this to re-theme a drawn figure.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.ThresholdedColormap(source)" class="doc doc-heading doc-heading-parameter">              <b><code>source</code></b>
+<a href="#confusius.plotting.ThresholdedColormap(source)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;matplotlib.colors.Colormap&lt;/code&gt;" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Colormap the gray band is applied to.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.ThresholdedColormap(norm)" class="doc doc-heading doc-heading-parameter">              <b><code>norm</code></b>
+<a href="#confusius.plotting.ThresholdedColormap(norm)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;matplotlib.colors.Normalize&lt;/code&gt;" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Normalize.html#matplotlib.colors.Normalize">Normalize</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Norm positioning the band: it covers <code>norm(-threshold)</code> to
+<code>norm(threshold)</code> for <code>threshold_mode="lower"</code>, and everything outside
+that range for <code>threshold_mode="upper"</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.ThresholdedColormap(threshold)" class="doc doc-heading doc-heading-parameter">              <b><code>threshold</code></b>
+<a href="#confusius.plotting.ThresholdedColormap(threshold)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#float">float</a></code>, default:
+                  <code>None</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Threshold on the absolute data values. If not provided, no band is added
+and the colormap matches <code>source</code>.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.plotting.ThresholdedColormap(threshold_mode)" class="doc doc-heading doc-heading-parameter">              <b><code>threshold_mode</code></b>
+<a href="#confusius.plotting.ThresholdedColormap(threshold_mode)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(&#39;lower&#39;, &#39;upper&#39;)</code>, default:
+                  <code>&#34;lower&#34;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether values below (<code>"lower"</code>) or above (<code>"upper"</code>) the threshold are
+grayed out.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
+            –
+          <div class="doc-md-description">
+            <p>If <code>norm.vmin</code> or <code>norm.vmax</code> is not finite.</p>
+          </div>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;with_source&lt;/span&gt; (&lt;code&gt;confusius.plotting.ThresholdedColormap.with_source&lt;/code&gt;)" href="./#confusius.plotting.ThresholdedColormap.with_source">with_source</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Return the same gray band applied to another colormap.</p>
+            </div>
+          </li>
+    </ul>
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="confusius.plotting.ThresholdedColormap.with_source" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">with_source</span>
+
+
+<a href="#confusius.plotting.ThresholdedColormap.with_source" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">with_source</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;source&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.plotting.ThresholdedColormap.with_source(source)&lt;/code&gt;)" href="./#confusius.plotting.ThresholdedColormap.with_source(source)">source</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;matplotlib.colors.Colormap&lt;/code&gt;" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;ThresholdedColormap&lt;/span&gt; (&lt;code&gt;confusius.plotting.colormap.ThresholdedColormap&lt;/code&gt;)" href="./#confusius.plotting.ThresholdedColormap">ThresholdedColormap</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the same gray band applied to another colormap.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h5 id="confusius.plotting.ThresholdedColormap.with_source(source)" class="doc doc-heading doc-heading-parameter">              <b><code>source</code></b>
+<a href="#confusius.plotting.ThresholdedColormap.with_source(source)" class="headerlink" title="Permanent link">&para;</a></h5>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a> or <a class="autorefs autorefs-external" title="&lt;code&gt;matplotlib.colors.Colormap&lt;/code&gt;" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap">Colormap</a></code>)
+          –
+          <div class="doc-md-description">
+            <p>Colormap to apply the band to, by name or instance.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;ThresholdedColormap&lt;/span&gt; (&lt;code&gt;confusius.plotting.colormap.ThresholdedColormap&lt;/code&gt;)" href="./#confusius.plotting.ThresholdedColormap">ThresholdedColormap</a></code>
+          –
+          <div class="doc-md-description">
+            <p>A new colormap with this one's <code>norm</code>, <code>threshold</code> and
+<code>threshold_mode</code>.</p>
+          </div>
+        </li>
+    </ul>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-class">
 
@@ -4687,9 +4896,10 @@ based on the sign of <code>stat_map</code>:</p>
 <li>Both positive and negative values: diverging, symmetric <code>[-m, m]</code>
   range where <code>m = max(|vmin|, |vmax|)</code> over the bounds actually
   provided, falling back to the largest magnitude in <code>stat_map</code> when
-  neither is given, with <code>cmap</code> defaulting to <code>"coolwarm"</code> — the right
-  choice for diverging statistics where the sign is meaningful (e.g.
-  t-statistics, correlation coefficients, PCA/ICA component maps).</li>
+  neither is given, with <code>cmap</code> defaulting to <code>"coolwarm"</code> on light
+  backgrounds and <code>"berlin"</code> on dark ones (judged from <code>bg_color</code>),
+  both diverging colormaps for statistics where the sign is meaningful
+  (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).</li>
 <li>Only non-negative values: sequential <code>[0, vmax]</code> range, with <code>cmap</code>
   defaulting to <code>"viridis"</code> — the right choice for non-diverging
   statistics where only magnitude matters (e.g. R², F-statistics).</li>
@@ -4699,8 +4909,8 @@ based on the sign of <code>stat_map</code>:</p>
   non-positive cases).</li>
 </ul>
 <p>Set to <code>False</code> to use the resolved <code>vmin</code>/<code>vmax</code> directly with no
-zero-anchoring (<code>cmap</code> then defaults to <code>"coolwarm"</code> regardless of
-sign).</p>
+zero-anchoring (<code>cmap</code> then defaults to the same background-dependent diverging
+colormap regardless of sign).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7178,7 +7388,8 @@ on the sign of <code>matrix</code>:</p>
 <li>Both positive and negative values: diverging, symmetric <code>[-m, m]</code> range
   where <code>m = max(|vmin|, |vmax|)</code> over the bounds actually provided,
   falling back to the largest magnitude in <code>matrix</code> when neither is given,
-  with <code>cmap</code> defaulting to <code>"coolwarm"</code>.</li>
+  with <code>cmap</code> defaulting to <code>"coolwarm"</code> on light backgrounds and <code>"berlin"</code> on
+  dark ones (judged from <code>bg_color</code>).</li>
 <li>Only non-negative values: sequential <code>[0, vmax]</code> range, with <code>cmap</code>
   defaulting to <code>"viridis"</code>.</li>
 <li>Only non-positive values: sequential <code>[vmin, 0]</code> range, with <code>cmap</code>
@@ -7187,7 +7398,8 @@ on the sign of <code>matrix</code>:</p>
   cases).</li>
 </ul>
 <p>Set to <code>False</code> to use the resolved <code>vmin</code>/<code>vmax</code> directly with no zero-anchoring
-(<code>cmap</code> then defaults to <code>"coolwarm"</code> regardless of sign).</p>
+(<code>cmap</code> then defaults to the same background-dependent diverging colormap
+regardless of sign).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -7831,9 +8043,10 @@ on the sign of <code>stat_map</code>:</p>
 <li>Both positive and negative values: diverging, symmetric <code>[-m, m]</code> range
   where <code>m = max(|vmin|, |vmax|)</code> over the bounds actually provided,
   falling back to the largest magnitude in <code>stat_map</code> when neither is
-  given, with <code>cmap</code> defaulting to <code>"coolwarm"</code> — the right choice for
-  diverging statistics where the sign is meaningful (e.g. t-statistics,
-  correlation coefficients, PCA/ICA component maps).</li>
+  given, with <code>cmap</code> defaulting to <code>"coolwarm"</code> on light backgrounds and
+  <code>"berlin"</code> on dark ones (judged from <code>bg_color</code>), both diverging
+  colormaps for statistics where the sign is meaningful (e.g.
+  t-statistics, correlation coefficients, PCA/ICA component maps).</li>
 <li>Only non-negative values: sequential <code>[0, vmax]</code> range, with <code>cmap</code>
   defaulting to <code>"viridis"</code> — the right choice for non-diverging
   statistics where only magnitude matters (e.g. R², F-statistics).</li>
@@ -7843,7 +8056,8 @@ on the sign of <code>stat_map</code>:</p>
   non-positive cases).</li>
 </ul>
 <p>Set to <code>False</code> to use the resolved <code>vmin</code>/<code>vmax</code> directly with no
-zero-anchoring (<code>cmap</code> then defaults to <code>"coolwarm"</code> regardless of sign).</p>
+zero-anchoring (<code>cmap</code> then defaults to the same background-dependent diverging
+colormap regardless of sign).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
