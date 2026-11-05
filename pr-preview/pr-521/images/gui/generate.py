@@ -473,7 +473,7 @@ try:
     from confusius.plotting.napari import plot_napari
 
     viewer = napari.Viewer(show=False)
-    _viewer, _layer = plot_napari(
+    _viewer, [_layer] = plot_napari(
         da,
         viewer=viewer,
         gamma=DISPLAY_GAMMA,
@@ -499,7 +499,7 @@ try:
     import numpy as np
 
     viewer2 = napari.Viewer(show=False)
-    _viewer2, _layer2 = plot_napari(
+    _viewer2, [_layer2] = plot_napari(
         da,
         viewer=viewer2,
         gamma=DISPLAY_GAMMA,
@@ -542,7 +542,7 @@ try:
     from confusius.qc import compute_cv, compute_dvars
 
     viewer3 = napari.Viewer(show=False)
-    _viewer3, _layer3 = plot_napari(
+    _viewer3, [_layer3] = plot_napari(
         da,
         viewer=viewer3,
         gamma=DISPLAY_GAMMA,
@@ -593,7 +593,7 @@ try:
     import numpy as np
 
     viewer4 = napari.Viewer(show=False)
-    _viewer4, _layer4 = plot_napari(
+    _viewer4, [_layer4] = plot_napari(
         da,
         viewer=viewer4,
         gamma=DISPLAY_GAMMA,
@@ -656,7 +656,7 @@ try:
     import numpy as np
 
     viewer5 = napari.Viewer(show=False)
-    _viewer5, _layer5 = plot_napari(
+    _viewer5, [_layer5] = plot_napari(
         da,
         viewer=viewer5,
         gamma=DISPLAY_GAMMA,
@@ -738,7 +738,7 @@ try:
     )
 
     viewer7 = napari.Viewer(show=False)
-    _viewer7, fixed_layer7 = plot_napari(
+    _viewer7, [fixed_layer7] = plot_napari(
         fixed_da,
         viewer=viewer7,
         name=f"Fixed angio ({_REGISTRATION_FIXED_SESSION})",
@@ -746,7 +746,7 @@ try:
         colormap="red",
         contrast_limits=registration_contrast,
     )
-    _viewer7, moving_layer7 = plot_napari(
+    _viewer7, [moving_layer7] = plot_napari(
         moving_da,
         viewer=viewer7,
         name=f"Moving angio ({_REGISTRATION_MOVING_SESSION})",
@@ -909,7 +909,7 @@ try:
     n_frames = volumewise_da.sizes["time"]
 
     viewer8 = napari.Viewer(show=False)
-    _viewer8, moving_layer8 = plot_napari(
+    _viewer8, [moving_layer8] = plot_napari(
         volumewise_da,
         viewer=viewer8,
         name=f"Open field ({_VOLUMEWISE_SESSION})",
@@ -1082,7 +1082,7 @@ try:
     _qt_sleep(100)
 
     # Open the video from the Data I/O panel; it plays in the video viewer
-    # docked beside the main canvas and is listed under napari's layer list.
+    # shown beside the main canvas and is listed under napari's layer list.
     _open_accordion_panel(widget6, "Data I/O")
     video_panel = widget6.findChild(VideoPanel)
     if video_panel is None:

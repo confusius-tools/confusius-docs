@@ -26,7 +26,7 @@ Use **Load Data** for both fUSI files and behavioral videos. When loading fUSI f
 
 ### Loading a video
 
-Videos are opened (`.mp4`, `.mov`, `.avi`) in a second napari viewer docked between the main canvas and the ConfUSIus sidebar. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time. They also share time playback: while one viewer plays, pressing the time slider's play button in the other stops it.
+Videos are opened (`.mp4`, `.mov`, `.avi`) in a second napari viewer shown between the main canvas and the ConfUSIus sidebar. Drag the handle between the two canvases to resize the video viewer; the sidebar keeps its width. The video viewer has its own layers, axes and camera, so a video never changes how your fUSI layers are displayed. The two viewers share only time: moving the time slider of one moves the other to the same time. They also share time playback: while one viewer plays, pressing the time slider's play button in the other stops it.
 
 > [!TIP]
 >

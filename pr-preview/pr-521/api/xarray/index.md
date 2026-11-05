@@ -339,7 +339,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 #### register
@@ -598,19 +598,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  The DataArray with updated spatial coordinates and `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space.
+  The DataArray with updated spatial coordinates and `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `self` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, or if `affine` is a string and `self` has no `"affines"` entry in `attrs`.
+  If `self` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, if `affine` is a string and `self` has no `"affines"` entry in `attrs`, or if `inplace` is set and `self` has a voxel dim removed by scalar indexing.
 - `KeyError` –
 
   If `affine` is a string not present in `self.attrs["affines"]`.
@@ -619,18 +619,17 @@ Examples:
 
 ```pycon
 >>> import numpy as np
->>> import xarray as xr
->>> import confusius  # noqa: F401
->>> data = xr.DataArray(
-...     np.zeros((3, 4)),
-...     dims=["j", "i"],
-...     coords={"j": np.arange(3), "i": np.arange(4)},
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)),
+...     dims=("k", "j", "i"),
+...     spacing=(1, 1, 1),
+...     origin=(0, 0, 0),
 ... )
->>> data = data.fusi.affine.set_voxel_to_world(np.eye(3))
->>> shift = np.eye(3)
->>> shift[:2, 2] = [10.0, 5.0]
+>>> shift = np.eye(4)
+>>> shift[:3, 3] = [10.0, 5.0, 0.0]
 >>> result = data.fusi.affine.apply(shift)
->>> float(result.fusi.affine.voxel_to_world[0, 2])
+>>> float(result.fusi.affine.voxel_to_world[0, 3])
 10.0
 ```
 
@@ -650,19 +649,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the wrapped DataArray in-place.
+  Whether to modify the wrapped DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  DataArray with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged.
+  DataArray with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `self` lacks voxel-to-world geometry, or if world spacing is undefined for any voxel dimension.
+  If `self` lacks voxel-to-world geometry, if world spacing is undefined for any voxel dimension, or if `inplace` is set and `self` has a voxel dim removed by scalar indexing.
 
 Examples:
 
@@ -1451,7 +1450,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 Methods:
@@ -2049,7 +2048,7 @@ napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display data in napari viewer.
@@ -2095,16 +2094,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap.
+  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. Multipose layer names append `" [pose {pose}]"` to `data.name` (or an explicit `name`), using each pose's coordinate value.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, one per pose in pose order. Always a list, even for input without a `pose` dimension.
 
 > [!NOTE]
 >
@@ -2120,35 +2119,35 @@ Examples:
 >>> import xarray as xr
 >>> import confusius  # Register accessor.
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = data.fusi.plot.napari(contrast_limits=(0, 100))
+>>> viewer, layers = data.fusi.plot.napari(contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = data.fusi.plot.napari(dim_order=("y", "z", "x"))
+>>> viewer, layers = data.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = data1.fusi.plot.napari()
->>> viewer, layer = data2.fusi.plot.napari(viewer=viewer)
+>>> viewer, layers = data1.fusi.plot.napari()
+>>> viewer, layers = data2.fusi.plot.napari(viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = xr.open_zarr("output.zarr")["roi_mask"]
->>> viewer, layer = roi_mask.fusi.plot.napari(layer_type="labels")
+>>> viewer, layers = roi_mask.fusi.plot.napari(layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = data.fusi.plot.napari()
->>> viewer, layer = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
+>>> viewer, layers = data.fusi.plot.napari()
+>>> viewer, layers = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
 ```
 
 #### stat\_map
@@ -3216,19 +3215,19 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place. This requires all native voxel dimensions `k`, `j` and `i`, since a DataArray modified in-place cannot get back dimensions that scalar indexing removed.
 
 Returns:
 
 - `DataArray` –
 
-  `da` with updated spatial coordinates and updated `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space.
+  `da` with updated spatial coordinates and updated `attrs["affines"]`. No entry is removed: when `affine` is a string, that key is kept as the identity, since the world frame now is that named space. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
 - `ValueError` –
 
-  If `da` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, or if `affine` is a string and `da` has no `"affines"` entry in `attrs`.
+  If `da` lacks voxel-to-world geometry, if `affine` shape does not match the DataArray's voxel-to-world affine, if `affine` is a string and `da` has no `"affines"` entry in `attrs`, or if `inplace` is set and `da` has a voxel dim removed by scalar indexing.
 - `KeyError` –
 
   If `affine` is a string not present in `da.attrs["affines"]`.
@@ -3237,18 +3236,17 @@ Examples:
 
 ```pycon
 >>> import numpy as np
->>> import xarray as xr
->>> import confusius  # noqa: F401
->>> data = xr.DataArray(
-...     np.zeros((3, 4)),
-...     dims=["j", "i"],
-...     coords={"j": np.arange(3), "i": np.arange(4)},
+>>> from confusius.xarray import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)),
+...     dims=("k", "j", "i"),
+...     spacing=(1, 1, 1),
+...     origin=(0, 0, 0),
 ... )
->>> data = data.fusi.affine.set_voxel_to_world(np.eye(3))
->>> shift = np.eye(3)
->>> shift[:2, 2] = [10.0, 5.0]
+>>> shift = np.eye(4)
+>>> shift[:3, 3] = [10.0, 5.0, 0.0]
 >>> result = data.fusi.affine.apply(shift)
->>> float(result.fusi.affine.voxel_to_world[0, 2])
+>>> float(result.fusi.affine.voxel_to_world[0, 3])
 10.0
 ```
 
@@ -3625,7 +3623,7 @@ Returns:
 
 - `DataArray` –
 
-  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. For pose-dependent geometry, `voxel_to_world` stays a per-pose stack: each pose keeps its own origin and direction (spacing is shared, per the equal-scale invariant), so rebasing is unambiguous per pose and every pose is reindexed at once.
+  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. For pose-dependent geometry, `voxel_to_world` stays a per-pose stack: each pose keeps its own origin and direction (spacing is shared, per the equal-scale invariant), so rebasing is unambiguous per pose and every pose is reindexed at once. A voxel dim removed by scalar indexing is restored as a singleton dim.
 
 Raises:
 
