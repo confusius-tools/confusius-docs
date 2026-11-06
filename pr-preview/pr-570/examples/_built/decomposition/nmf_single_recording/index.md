@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8ed9071950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f45fe949950>
     ```
 - [ ] Attributes: (25)
 
@@ -730,7 +730,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 296.3 s
+**Total running time:** 298.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/update/pre-commit-update?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-570/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-570/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
