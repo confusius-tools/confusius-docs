@@ -672,7 +672,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `grid`; see load\_nifti.
+  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -964,7 +964,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `grid` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
+  Path to the NIfTI file (`.nii` or `.nii.gz`). A single `{chunk}` placeholder in the filename loads all matching integer chunk indices in numeric order and stacks them with stack\_poses. Chunk indices become integer `pose` labels, even when only one file matches. Each chunk must satisfy `stack_poses`' single-pose input requirements.
 - #### **`chunks`**
 
   (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
@@ -1090,13 +1090,13 @@ Returns:
   Lazy VoxelData array with dimensions and coordinates:
 
   - v1 `2Dscan` → `(time, k, j, i)`.
-  - v1 `3Dscan` → `(grid, k, j, i)`.
-  - v1 `4Dscan`/`4DscanCustom` → `(time, grid, k, j, i)`.
+  - v1 `3Dscan` → `(pose, k, j, i)`.
+  - v1 `4Dscan`/`4DscanCustom` → `(time, pose, k, j, i)`.
   - v2 single-pose → `(time, k, j, i)`.
-  - v2 multi-pose → `(time, grid, k, j, i)`.
+  - v2 multi-pose → `(time, pose, k, j, i)`.
   - v2 dim6 payloads prepend a `dim6` dimension.
 
-  World coordinates `z`, `y`, `x` are in millimeters. The `time` coordinate is in seconds. For v1/v2 multi-pose time series, `time` is pose-dependent (`(time, grid)`-shaped), holding each pose's own acquisition timestamps directly.
+  World coordinates `z`, `y`, `x` are in millimeters. The `time` coordinate is in seconds. For v1/v2 multi-pose time series, `time` is pose-dependent (`(time, pose)`-shaped), holding each pose's own acquisition timestamps directly.
 
 Raises:
 

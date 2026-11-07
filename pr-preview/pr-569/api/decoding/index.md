@@ -32,7 +32,7 @@ For every voxel of `process_mask`, `fit` gathers the `mask` voxels lying within 
 
 This estimator wraps scikit-learn while keeping xarray metadata:
 
-- Input data must be a VoxelData array with dims `(time, k, j, i)`—no `grid` or extra dimensions.
+- Input data must be a VoxelData array with dims `(time, k, j, i)`—no `pose` or extra dimensions.
 - The `time` dimension is the sample axis. It need not be temporally ordered. For trial-averaged data, rename the trial dimension with `.rename(trial="time")`.
 - `scores_` is returned in the spatial geometry of `process_mask`.
 

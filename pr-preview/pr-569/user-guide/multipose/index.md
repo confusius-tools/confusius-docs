@@ -9,7 +9,7 @@ The probe at each pose can image a 2D plane or a 3D volume, depending on the pro
 - **Linear probes** (e.g., standard linear probes): each pose yields a single 2D image (one elevation slice). Stepping across *N* poses and stacking gives a 3D volume of *N* elevation slices.
 - **2D probes** (e.g., matrix, RCA, or stacked linear probes): each pose already yields a 3D volume. Stepping across *N* poses concatenates these volumes into a larger 3D volume.
 
-Multiple fUSI systems support this approach, including Iconeus, EchoFrame, and AUTC. ConfUSIus represents multi-pose data with a `grid` dimension and per-pose affine transformations that record the world position of each pose.
+Multiple fUSI systems support this approach, including Iconeus, EchoFrame, and AUTC. ConfUSIus represents multi-pose data with a `pose` dimension and per-pose affine transformations that record the world position of each pose.
 
 > [!WARNING]
 >
@@ -17,22 +17,22 @@ Multiple fUSI systems support this approach, including Iconeus, EchoFrame, and A
 >
 > `consolidate_poses` requires a **purely translational** sweep, where the probe is shifted along one axis without rotating. Rotational sweeps (so-called tomographic acquisitions) are not yet supported and will raise a `ValueError`.
 >
-> Named world frames must also be shared across the merged grids. An identical per-grid stack can be reduced to one affine; a frame that genuinely varies across grids cannot describe a single consolidated volume and raises an error. Apply a common frame or explicitly remove the varying frame before consolidation.
+> Named world frames must also be shared across the merged grids. An identical per-pose stack can be reduced to one affine; a frame that genuinely varies across grids cannot describe a single consolidated volume and raises an error. Apply a common frame or explicitly remove the varying frame before consolidation.
 
 ## The Multi-Pose Data Model
 
-A multi-pose VoxelData array uses the **`grid` dimension to represent probe poses**. Its dimensions end in `(k, j, i)`; leading dimensions may have any order. For example, both `(time, grid, k, j, i)` and `(grid, time, k, j, i)` are valid. Creation preserves leading order; canonicalization uses `(...extra_dims, grid, time, k, j, i)`.
+A multi-pose VoxelData array uses the **`pose` dimension to represent probe poses**. Its dimensions end in `(k, j, i)`; leading dimensions may have any order. For example, both `(time, pose, k, j, i)` and `(pose, time, k, j, i)` are valid. Creation preserves leading order; canonicalization uses `(...extra_dims, pose, time, k, j, i)`.
 
-The probe-specific functions retain their names: `stack_poses(poses, grid=labels)` stacks separate probe poses, and `consolidate_poses(data)` merges their spatial samples. Geometry is read and modified through `data.vd`, not `data.fusi`.
+The probe-specific functions retain their names: `stack_poses(poses, pose=labels)` stacks separate probe poses, and `consolidate_poses(data)` merges their spatial samples. Geometry is read and modified through `data.vd`, not `data.fusi`.
 
-`grid` is not just an extra axis: it changes what the `z`/`y`/`x` world coordinates and the `time` coordinate mean, because both are per-pose rather than per-array.
+`pose` is not just an extra axis: it changes what the `z`/`y`/`x` world coordinates and the `time` coordinate mean, because both are per-pose rather than per-array.
 
-- **Geometry is per-pose.** Each pose has its own voxel-to-world affine, so the world coordinates `z`/`y`/`x` are pose-dependent with shape `(grid, k, j, i)`. Resolving a voxel to a single world position requires selecting a scalar `grid` first, e.g. `data.isel(grid=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-569/user-guide/voxeldata/#the-voxeldata-model>) for the full explanation of pose-dependent voxel-to-world geometry.
-- **Timing can be per-pose.** When poses are acquired sequentially rather than simultaneously, each pose is captured at a slightly different time. The `time` coordinate then holds each pose's own acquisition timestamp directly, shaped `(time, grid)` or `(grid, time)` instead of the usual 1D `(time,)`—mirroring how `z`/`y`/`x` require a scalar `grid` selection before they resolve to a single value:
+- **Geometry is per-pose.** Each pose has its own voxel-to-world affine, so the world coordinates `z`/`y`/`x` are pose-dependent with shape `(pose, k, j, i)`. Resolving a voxel to a single world position requires selecting a scalar `pose` first, e.g. `data.isel(pose=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-569/user-guide/voxeldata/#the-voxeldata-model>) for the full explanation of pose-dependent voxel-to-world geometry.
+- **Timing can be per-pose.** When poses are acquired sequentially rather than simultaneously, each pose is captured at a slightly different time. The `time` coordinate then holds each pose's own acquisition timestamp directly, shaped `(time, pose)` or `(pose, time)` instead of the usual 1D `(time,)`—mirroring how `z`/`y`/`x` require a scalar `pose` selection before they resolve to a single value:
 
   ```python
-  pwd.time  # (time, grid) in seconds.
-  pwd.isel(grid=0).time  # (time,) in seconds, for pose 0 only.
+  pwd.time  # (time, pose) in seconds.
+  pwd.isel(pose=0).time  # (time,) in seconds, for pose 0 only.
   ```
 
   This matters for slice timing correction (see [Slice Timing Correction](<#slice-timing-correction>) below), which accounts for the fact that different poses were not acquired simultaneously.
@@ -47,31 +47,29 @@ These two rules—pose-dependent world coordinates, pose-dependent timing—driv
 
 ConfUSIus reads two Iconeus SCAN formats: SCAN v1 (HDF5) and SCAN v2 (binary). The two formats keep multi-pose recordings in different forms:
 
-- SCAN v1 keeps one `grid` entry for each probe position.
+- SCAN v1 keeps one `pose` entry for each probe position.
 - SCAN v2 keeps the recording as one volume that IcoScan already consolidated.
 
 #### SCAN v1 (HDF5)
 
-When you load a multi-pose SCAN v1 file (`3Dscan` or `4Dscan` acquisition mode), the VoxelData array has a `grid` dimension. The example that follows shows a mouse recording with an **IcoPrime-4D MultiArray probe**. This probe has four linear arrays along the elevation axis, which give 4 elevation slices per pose. A motor moved the probe across a series of positions with a regular spacing:
+When you load a multi-pose SCAN v1 file (`3Dscan` or `4Dscan` acquisition mode), the VoxelData array has a `pose` dimension. The example that follows shows a mouse recording with an **IcoPrime-4D MultiArray probe**. This probe has four linear arrays along the elevation axis, which give 4 elevation slices per pose. A motor moved the probe across a series of positions with a regular spacing:
 
 ```pycon
 >>> from confusius.io import load_scan
 >>> pwd = load_scan("sub-01_task-awake_pwd.scan")
 >>> pwd
-<xarray.DataArray 'scan_data' (time: 409, grid: 4, k: 4, j: 92, i: 118)> Size: 568MB
+<xarray.DataArray 'scan_data' (time: 409, pose: 4, k: 4, j: 92, i: 118)> Size: 568MB
 dask.array<transpose, shape=(409, 4, 4, 92, 118), dtype=float64, chunksize=(106, 4, 4, 92, 106), chunktype=numpy.ndarray>
 Coordinates:
-    time       (time, grid) float64 13kB 0.4 2.05 0.95 1.5 ... 899.7 898.6 899.1
+    time       (time, pose) float64 13kB 0.4 2.05 0.95 1.5 ... 899.7 898.6 899.1
   * pose       (pose) int64 32B 0 1 2 3
   * k          (k) int64 32B 0 1 2 3
   * j          (j) int64 736B 0 1 2 3 ... 89 90 91
   * i          (i) int64 944B 0 1 2 3 ... 116 117
-    z          (grid, k, j, i) float64 1MB ...
-    y          (grid, k, j, i) float64 1MB ...
-    x          (grid, k, j, i) float64 1MB ...
+    z          (pose, k, j, i) float64 1MB ...
+    y          (pose, k, j, i) float64 1MB ...
+    x          (pose, k, j, i) float64 1MB ...
 Attributes:
-    affines:               {'world_to_lab': array([[1., 0., 0., 0.],
-       ...
     device_serial_number:  ASAO0000
     software_version:      IcoScan v.1.9.0
     iconeus_scan_mode:     4Dscan
@@ -81,11 +79,13 @@ Attributes:
     ...
 ```
 
+Named world frames are available through `pwd.vd.affines`.
+
 The motor moved the probe across 4 positions. Each position gives 4 elevation slices. After [consolidation](<#pose-consolidation>), the array has 16 slices.
 
 #### SCAN v2 (binary)
 
-IcoScan writes multi-pose SCAN v2 recordings that are already consolidated, if possible. Thus, `load_scan` gives an array without a `grid` dimension. The `k` dimension holds all the slices of the volume. The example that follows shows a SCAN v2 recording with an IcoPrime-4D MultiArray probe:
+IcoScan writes multi-pose SCAN v2 recordings that are already consolidated, if possible. Thus, `load_scan` gives an array without a `pose` dimension. The `k` dimension holds all the slices of the volume. The example that follows shows a SCAN v2 recording with an IcoPrime-4D MultiArray probe:
 
 ```pycon
 >>> from confusius.io import load_scan
@@ -113,26 +113,26 @@ The 16 slices come from 4 linear arrays (2.1 mm apart) and 4 motor steps (0.525 
 
 ### Reloading from Zarr
 
-Saving unconsolidated multi-pose data to **Zarr** preserves the `grid` dimension and the per-pose affine stack (see [Saving](<#saving>) below). `cf.load` round-trips this transparently: reloading a Zarr store written by `cf.save` rebuilds the pose-dependent `VoxelToWorldIndex` from `attrs["voxel_to_world"]`, so a reloaded array is indistinguishable from the one that was saved.
+Saving unconsolidated multi-pose data to **Zarr** preserves the `pose` dimension and the per-pose affine stack (see [Saving](<#saving>) below). `cf.load` round-trips this transparently: reloading a Zarr store written by `cf.save` rebuilds the pose-dependent `VoxelToWorldIndex` from `attrs["voxel_to_world"]`, so a reloaded array is indistinguishable from the one that was saved.
 
 ```python
 import confusius as cf
 
-pwd = cf.load("sub-01_task-awake_pwd_multipose.zarr")  # dims: (time, grid, k, j, i)
+pwd = cf.load("sub-01_task-awake_pwd_multipose.zarr")  # dims: (time, pose, k, j, i)
 ```
 
 ### Other Systems
 
 For fUSI systems without a dedicated loader, multi-pose data must be assembled manually, in one of two ways:
 
-- **From a raw array**, using `create_voxeldata` with a `grid` dimension, an `(npose, 4, 4)` `voxel_to_world` affine stack, and, if poses were acquired sequentially, a 1D `t0` array giving each pose's own time origin:
+- **From a raw array**, using `create_voxeldata` with a `pose` dimension, an `(npose, 4, 4)` `voxel_to_world` affine stack, and, if poses were acquired sequentially, a 1D `t0` array giving each pose's own time origin:
 
   ```python
   import confusius as cf
 
   multipose = cf.create_voxeldata(
-      raw_power,  # shape: (i, j, k, grid, time)
-      dims=("i", "j", "k", "grid", "time"),
+      raw_power,  # shape: (i, j, k, pose, time)
+      dims=("i", "j", "k", "pose", "time"),
       dt=0.6,  # seconds, shared across poses.
       t0=[0.0, 0.15, 0.3, 0.45],  # per-pose time origin, in seconds.
       voxel_to_world=pose_affines,  # shape: (4, 4, 4)
@@ -144,19 +144,21 @@ For fUSI systems without a dedicated loader, multi-pose data must be assembled m
   from confusius.multipose import stack_poses
 
   poses = [cf.load(f"sub-01_pose-{i:02d}_pwd.nii.gz") for i in range(4)]
-  multipose = stack_poses(poses)  # dims: (time, grid, k, j, i)
+  multipose = stack_poses(poses)  # dims: (time, pose, k, j, i)
   ```
 
-  If the individual poses were acquired sequentially rather than simultaneously and carry different `time` values, `stack_poses` automatically produces a pose-dependent `(time, grid)` coordinate instead of a shared 1D `time`.
+  If the individual poses were acquired sequentially rather than simultaneously and carry different `time` values, `stack_poses` automatically produces a pose-dependent `(time, pose)` coordinate instead of a shared 1D `time`.
 
 ## Working with Multi-Pose Arrays
 
-Most Xarray operations that don't touch world coordinates or timing work on multi-pose arrays exactly as on any other VoxelData array—reductions, arithmetic, `.isel`, mask extraction, and so on all treat `grid` as an ordinary dimension.
+Most Xarray operations that don't touch world coordinates or timing work on multi-pose arrays exactly as on any other VoxelData array—reductions, arithmetic, `.isel`, mask extraction, and so on all treat `pose` as an ordinary dimension.
 
-Operations that resolve *positions* or *timestamps*, however, need a scalar `grid` first, per [The Multi-Pose Data Model](<#the-multi-pose-data-model>) above:
+For [napari visualization](<https://confusius.tools/pr-preview/pr-569/user-guide/visualization/#interactive-exploration-with-napari>), `viewer, layers = pwd.fusi.plot.napari()` opens one layer per pose, each positioned using its own affine and named `<data name> [pose <value>]`. The CLI does the same; no consolidation is needed.
+
+Operations that resolve *positions* or *timestamps*, however, need a scalar `pose` first, per [The Multi-Pose Data Model](<#the-multi-pose-data-model>) above:
 
 ```python
-pose0 = pwd.sel(grid=0)
+pose0 = pwd.sel(pose=0)
 shallow = pose0.sel(z=slice(0, 2.5))       # world-coordinate selection now works.
 subset = pose0.sel(time=slice(10, 60))     # time is now 1D, .sel(time=...) works too.
 ```
@@ -170,7 +172,7 @@ A number of ConfUSIus functions go further and require multi-pose data to be red
 
 ## Slice Timing Correction
 
-Because poses in a sequential acquisition are not captured simultaneously, comparing voxels across poses at the same nominal `time` index compares samples taken at slightly different real times. `correct_slice_timings` resamples each pose's time series onto a shared, per-volume reference time, removing this offset. It accepts either unconsolidated data with a pose-dependent `(time, grid)` `time` coordinate, or already-[consolidated](<#pose-consolidation>) data with a `slice_time` coordinate:
+Because poses in a sequential acquisition are not captured simultaneously, comparing voxels across poses at the same nominal `time` index compares samples taken at slightly different real times. `correct_slice_timings` resamples each pose's time series onto a shared, per-volume reference time, removing this offset. It accepts either unconsolidated data with a pose-dependent `(time, pose)` `time` coordinate, or already-[consolidated](<#pose-consolidation>) data with a `slice_time` coordinate:
 
 ```python
 from confusius.multipose import correct_slice_timings
@@ -180,13 +182,13 @@ corrected = correct_slice_timings(pwd)  # time coordinate becomes a plain 1D ind
 
 ## Pose Consolidation
 
-`consolidate_poses` merges the `grid` dimension and the sweep spatial dimension into a single axis with physically meaningful coordinates, producing a VoxelData array with a single, non-pose-dependent voxel-to-world affine. `consolidate_poses` performs the following steps:
+`consolidate_poses` merges the `pose` dimension and the sweep spatial dimension into a single axis with physically meaningful coordinates, producing a VoxelData array with a single, non-pose-dependent voxel-to-world affine. `consolidate_poses` performs the following steps:
 
 1. Detect the swept voxel dimension (`sweep_dim`) from the per-pose affines: match the pose-translation direction against each voxel dimension's world-space direction, and take the best-aligned one.
-2. Read the per-pose affines to compute the world position of every `(grid,    sweep_dim)` voxel.
+2. Read the per-pose affines to compute the world position of every `(pose,    sweep_dim)` voxel.
 3. Find the precise sweep direction via SVD of all these voxel positions, and project each voxel onto that axis.
 4. Check that the resulting positions form a regular grid.
-5. Reindex the data in ascending position order, replacing `grid` and `sweep_dim` with a single consolidated coordinate in world space.
+5. Reindex the data in ascending position order, replacing `pose` and `sweep_dim` with a single consolidated coordinate in world space.
 
 ```pycon
 >>> import confusius as cf
@@ -205,8 +207,6 @@ Coordinates:
     y           (k, j, i) float64 1MB ...
     x           (k, j, i) float64 1MB ...
 Attributes:
-    affines:               {'world_to_lab': array([[1., 0., 0., 0.],
-       ...
     device_serial_number:  ASAO0000
     software_version:      IcoScan v.1.9.0
     iconeus_scan_mode:     4Dscan
@@ -247,16 +247,16 @@ volume.to_zarr("sub-01_acq-anat_pwd.zarr")
 
 ### Without Consolidation
 
-Non-consolidated data can be saved to **Zarr** directly, preserving the `grid` dimension and all per-pose affines:
+Non-consolidated data can be saved to **Zarr** directly, preserving the `pose` dimension and all per-pose affines:
 
 ```python
 data.to_zarr("sub-01_acq-anat_pwd_multipose.zarr")
 ```
 
-Saving non-consolidated data to **NIfTI** is not straightforward because NIfTI stores a single affine per file. If you need NIfTI output before consolidating (e.g., for per-grid slice timing correction), save each pose as a separate file:
+Saving non-consolidated data to **NIfTI** is not straightforward because NIfTI stores a single affine per file. If you need NIfTI output before consolidating (e.g., for per-pose slice timing correction), save each pose as a separate file:
 
 ```python
 for i, pose in enumerate(anat.pose.values):
     # The pose entity is defined in the fUSI-BIDS specification.
-    anat.sel(grid=pose).fusi.save(f"sub-01_acq-anat_pose-{i:02d}_pwd.nii.gz")
+    anat.sel(pose=pose).fusi.save(f"sub-01_acq-anat_pose-{i:02d}_pwd.nii.gz")
 ```

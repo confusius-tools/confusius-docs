@@ -95,7 +95,7 @@ Functions:
 
 Plot registration progress in real time.
 
-Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt).
+Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt). Draws on a black background.
 
 Parameters:
 
@@ -1299,7 +1299,7 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array to resample. May be spatial-only, or have any number of extra non-spatial dimensions (`time` and/or others; `grid` is not supported) (single-slice recordings use a singleton `k` axis). The same transform is applied to every slice along the extra dimensions.
+  VoxelData array to resample. May be spatial-only, or have any number of extra non-spatial dimensions (`time` and/or others; `pose` is not supported) (single-slice recordings use a singleton `k` axis). The same transform is applied to every slice along the extra dimensions.
 - #### **`reference`**
 
   (`DataArray`) –
@@ -1384,7 +1384,7 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array to resample. May be spatial-only, or have any number of extra non-spatial dimensions (`time` and/or others; `grid` is not supported) (single-slice recordings use a singleton `k` axis). The same transform is applied to every slice along the extra dimensions.
+  VoxelData array to resample. May be spatial-only, or have any number of extra non-spatial dimensions (`time` and/or others; `pose` is not supported) (single-slice recordings use a singleton `k` axis). The same transform is applied to every slice along the extra dimensions.
 - #### **`transform`**
 
   (`(4, 4) numpy.ndarray or xarray.DataArray`) –

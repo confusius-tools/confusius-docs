@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fcbad73f110>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7ff902c01810>
     ```
 - [ ] Attributes: (24)
 
@@ -547,7 +547,6 @@ Plotting the spatial mixing weights alongside the independent time courses gives
 ```python
 n_show = 10
 fig = plt.figure(figsize=(14, 20), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -671,7 +670,6 @@ xarray.DataArray
 ```python
 n_show = 10
 fig = plt.figure(figsize=(14, 20), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -708,7 +706,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 182.4 s
+**Total running time:** 236.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/fastica_single_recording.ipynb>)
 

@@ -1,32 +1,26 @@
 # `confusius.extract`
 
+Mask extraction, label aggregation, and reconstruction are direct re-exports from the standalone VoxelData package. The public functions and `.fusi.extract` methods remain available. They preserve existing timing metadata without adding acquisition defaults or validating fUSI timing semantics. ConfUSIus constructors, loaders, and explicit acquisition-aware validation retain that responsibility.
+
+Extraction works out of the box in VoxelData using Xarray. Flox acceleration and Dask-backed lazy arrays are optional backends there; ConfUSIus continues to install its existing analysis dependencies. VoxelData offers independent `accel` (flox) and `lazy` (Dask) extras, or `all` for both; no extra is needed for extraction.
+
+Binary masks flatten all their dimensions into `space`, including extra feature axes used by decomposition and multipose GLM. Labels are spatial-only, optionally stacked along `mask`. A shared spatial map requires identical physical grids across geometry dependencies not included in the mask. Label aggregation supports overlapping layers and negative or repeated layer ids. `unmask` reconstructs eagerly and positionally, preserving the mask's native labels, units, geometry, and named frames. With flox, median may need explicit spatial rechunking.
+
 ## extract
 
-Signal extraction from fUSI data.
-
-Modules:
-
-- **`labels`** –
-
-  Extraction of region-aggregated signals using integer label maps.
-- **`mask`** –
-
-  Extraction of signals using boolean masks.
-- **`reconstruction`** –
-
-  Reconstruction of VoxelData arrays from N-D signals using masks.
+Generic extraction and reconstruction re-exported from VoxelData.
 
 Functions:
 
 - **`extract_with_labels`** –
 
-  Extract region-aggregated signals from a VoxelData array.
+  Aggregate voxel samples by integer regions or overlapping mask layers.
 - **`extract_with_mask`** –
 
-  Extract signals from a VoxelData array using a binary mask.
+  Extract samples over the dimensions of a binary VoxelData mask.
 - **`unmask`** –
 
-  Reconstruct a VoxelData array from N-D signals using a mask.
+  Reconstruct a voxel grid from samples and their original spatial mask.
 
 ### extract\_with\_labels
 
@@ -40,9 +34,9 @@ extract_with_labels(
 ) -> DataArray
 ```
 
-Extract region-aggregated signals from a VoxelData array.
+Aggregate voxel samples by integer regions or overlapping mask layers.
 
-For each unique non-zero label in `labels`, applies `reduction` across all voxels belonging to that region. The native voxel dimensions (`k`/`j`/`i`) are collapsed into a single `region` dimension.
+Background label zero is excluded. A flat map identifies regions by its nonzero integer values; stacked mask layers are identified by their `mask` coordinate, even when layers reuse the same integer id or overlap.
 
 Parameters:
 
@@ -50,82 +44,38 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array with native voxel dims `k`/`j`/`i` and a `VoxelToWorldIndex`, plus any number of non-spatial dimensions (e.g., `time`, `grid`). See `ensure_voxeldata`.
+  VoxelData array with arbitrary nonspatial dimensions.
 - #### **`labels`**
 
   (`DataArray`) –
 
-  Integer label map sharing `data`'s voxel grid, in one of two formats:
-
-  - **Flat label map**: Spatial dims only, e.g. `(k, j, i)`. Background voxels labeled `0`; each unique non-zero integer identifies a distinct, non-overlapping region. The `region` coordinate of the output holds the integer label values.
-  - **Stacked mask format**: Has a leading `mask` dimension followed by spatial dims, e.g. `(mask, k, j, i)`. Each layer has exactly one non-zero value identifying its own voxels, and regions may overlap; the non-zero value itself is not used to identify the layer, so it may repeat across layers (e.g. the same region id for left/right hemisphere layers). The `region` coordinate of the output holds the `mask` coordinate values (e.g., region label).
+  Spatial VoxelData label map with dimensions `(k, j, i)`, or stacked masks with dimensions `(mask, k, j, i)`. Each stacked layer must contain exactly one distinct nonzero value. Geometry, units, and native voxel labels must match the data. Select varying data geometry before using a shared map.
 - #### **`reduction`**
 
   (`(mean, sum, median, min, max, var, std)`, default: `"mean"` ) –
 
-  Aggregation function applied across voxels in each region.
+  Reduction applied across voxel samples belonging to each region.
 
 Returns:
 
 - `DataArray` –
 
-  Array with spatial dimensions replaced by a `region` dimension. All non-spatial dimensions are preserved.
-
-  For example (flat label map):
-
-  - `(time, k, j, i)` → `(time, region)`
-  - `(time, grid, k, j, i)` → `(time, grid, region)`
-  - `(k, j, i)` → `(region,)`
+  Region-aggregated samples, retaining nonspatial dimensions and replacing native voxel dimensions with `region`.
 
 Raises:
 
-- `ValueError` –
-
-  If `labels` or `data` isn't a VoxelData array, if `labels`'s voxel grid doesn't match `data`'s, if `reduction` is not a valid option, or if `labels` contains no non-zero values.
 - `TypeError` –
 
-  If `labels` is not integer dtype.
+  If labels are not an integer VoxelData array.
+- `ValueError` –
+
+  If grids do not match, dimensions, reduction, or backend chunking are unsupported, labels are all background, or a stacked layer has zero or multiple distinct ids.
 
 > [!NOTE]
 >
 > **Notes**
 >
-> Uses [flox](<https://flox.readthedocs.io/en/latest/>) for efficient, lazy groupby reductions on Dask-backed arrays. Data can be chunked along any dimension without restriction.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.extract import extract_with_labels
->>> from confusius.xarray import create_voxeldata
->>>
->>> # 3D+t data: (time, k, j, i)
->>> data = create_voxeldata(
-...     np.random.randn(100, 10, 20, 30),
-...     dims=("time", "k", "j", "i"),
-...     dt=0.5,
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> labels = create_voxeldata(
-...     np.zeros((10, 20, 30), dtype=int),
-...     dims=("k", "j", "i"),
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> labels[0, :, :] = 1  # Region 1: first k-slice.
->>> labels[1, :, :] = 2  # Region 2: second k-slice.
->>> signals = extract_with_labels(data, labels)
->>> signals.dims
-('time', 'region')
->>> signals.coords["region"].values
-array([1, 2])
->>>
->>> # Stacked mask format from the atlas accessor's get_masks. Left/right hemisphere
->>> # layers share a region id, but each is disambiguated by its `mask` coord.
->>> mask = atlas_fusi.atlas.get_masks(["VISp", "VISp"], sides=["left", "right"])
->>> signals = extract_with_labels(data, mask)
->>> signals.coords["region"].values
-array(['VISp_L', 'VISp_R'], dtype=object)
-```
+> Uses Xarray's grouped reductions, automatically accelerated by flox when installed and enabled. Dask-backed signal data remain lazy. With flox, median requires each group to fit within a single Dask chunk; explicitly rechunk the spatial dimensions when needed. Label metadata are evaluated eagerly to determine groups. No modality-specific acquisition metadata are required.
 
 ### extract\_with\_mask
 
@@ -135,9 +85,9 @@ extract_with_mask(
 ) -> DataArray
 ```
 
-Extract signals from a VoxelData array using a binary mask.
+Extract samples over the dimensions of a binary VoxelData mask.
 
-This function flattens `mask`'s native voxel dimensions (`k`/`j`/`i`) into a single `space` dimension, while preserving all other dimensions of `data` (e.g., `time`, `grid`).
+Mask dimensions are flattened into `space`, retaining other data dimensions and their coordinates. Selected mask-axis labels form a MultiIndex, suitable for `.unstack("space")` or `unmask` reconstruction.
 
 Parameters:
 
@@ -145,68 +95,27 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array with native voxel dims `k`/`j`/`i` and a `VoxelToWorldIndex`, plus any number of non-spatial dimensions (e.g., `time`, `grid`). See `ensure_voxeldata`.
+  VoxelData array, optionally with nonspatial dimensions.
 - #### **`mask`**
 
   (`DataArray`) –
 
-  Mask defining which voxels to extract, sharing `data`'s voxel grid. Must have boolean dtype, or binary numeric dtype (0 = background, at most one non-zero value = foreground). The latter format is produced by `get_masks`, and also covers masks written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks with values in `{0, 1}` or `{0.0, 1.0}`).
+  VoxelData mask on the same physical grid. Must be boolean or binary numeric: zero is background and one distinct nonzero value selects samples. Extra mask axes, such as view or channel, are flattened along with native voxel axes. A shared mask can span geometry dependencies only if their affine matrices agree; otherwise include or select those dependencies.
 
 Returns:
 
 - `DataArray` –
 
-  Array with `k`/`j`/`i` flattened into a `space` dimension. All non-spatial dimensions are preserved. The `space` dimension has a MultiIndex storing spatial coordinates.
-
-  - `(time, k, j, i)` → `(time, space)`
-  - `(time, grid, k, j, i)` → `(time, grid, space)`
-  - `(k, j, i)` → `(space,)`
-
-  For simple round-trip reconstruction, use `.unstack("space")` which re-creates the original DataArray using the smallest bounding box containing the masked voxels. For full mask shape reconstruction, use `confusius.extract.unmask`.
+  Samples with mask dimensions replaced by `space`. Signal data remain lazy when Dask-backed; mask values are evaluated for selection.
 
 Raises:
 
 - `ValueError` –
 
-  If `mask` or `data` isn't a VoxelData array, or if `mask`'s voxel grid doesn't match `data`'s.
+  If geometry, dimension labels, or units do not match. Scalar-selected voxel axes are restored first.
 - `TypeError` –
 
-  If `mask` is not boolean dtype (or a binary numeric dtype).
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.extract import extract_with_mask
->>> from confusius.xarray import create_voxeldata
->>>
->>> # 3D+t data: (time, k, j, i)
->>> data = create_voxeldata(
-...     np.random.randn(100, 10, 20, 30),
-...     dims=("time", "k", "j", "i"),
-...     dt=0.5,
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> mask = create_voxeldata(
-...     np.random.rand(10, 20, 30) > 0.5,
-...     dims=("k", "j", "i"),
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> signals = extract_with_mask(data, mask)
->>> signals.dims
-('time', 'space')
->>>
->>> # 3D+t data with extra dim: (time, grid, k, j, i)
->>> pose_data = create_voxeldata(
-...     np.random.randn(100, 5, 10, 20, 30),
-...     dims=("time", "grid", "k", "j", "i"),
-...     dt=0.5,
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> pose_signals = extract_with_mask(pose_data, mask)
->>> pose_signals.dims
-('time', 'grid', 'space')
-```
+  If the mask is not a boolean or binary numeric VoxelData array.
 
 ### unmask
 
@@ -221,7 +130,7 @@ unmask(
 ) -> DataArray
 ```
 
-Reconstruct a VoxelData array from N-D signals using a mask.
+Reconstruct a voxel grid from samples and their original spatial mask.
 
 Parameters:
 
@@ -229,88 +138,50 @@ Parameters:
 
   (`ndarray or DataArray`) –
 
-  Array with shape `(..., space)` where `...` can be any number of dimensions. The last dimension must correspond to masked voxels.
-
-  - If `signals` is a DataArray, it must have a `space` dimension as the last dimension. All other dimensions and their coordinates are preserved.
-  - If `signals` is a Numpy array, you can specify names and coordinates for the leading dimensions using `new_dims` and `new_dims_coords`. If not provided, dimensions are named `["dim_0", "dim_1", ...]` with integer coordinates.
+  Samples shaped `(..., space)`, one value per selected mask voxel. A DataArray must have `space` last; its leading dimension coordinates, including timestamp attributes, are preserved.
 - #### **`mask`**
 
   (`DataArray`) –
 
-  VoxelData mask used for the original extraction. Provides spatial dimensions, coordinates, and `VoxelToWorldIndex` for reconstruction. Must be either boolean dtype, or binary numeric dtype (0 = background, at most one non-zero value = foreground). Spatial dimensions and coordinates must match the original data.
+  Boolean or binary numeric VoxelData mask. Supplies native voxel labels, any extra feature axes, units, geometry dependencies, and named frames.
 - #### **`new_dims`**
 
-  (`list of str`, default: `None` ) –
+  (`list[str]`, default: `None` ) –
 
-  Names for leading dimensions when `signals` is a Numpy array. Must match the number of leading dimensions `(ndim - 1)`. If not provided, uses `["dim_0", "dim_1", ...]`. Ignored if `signals` is a DataArray.
+  Leading dimension names for NumPy input. If not provided, use `dim_0`, `dim_1`, and so on. Ignored for DataArray input.
 - #### **`new_dims_coords`**
 
   (`dict[str, ndarray]`, default: `None` ) –
 
-  Coordinates for leading dimensions when `signals` is a Numpy array. Keys must match dimension names in `new_dims`. If not provided, uses integer indices for all dimensions. Ignored if `signals` is a DataArray.
+  Leading dimension coordinates for NumPy input. Missing coordinates use zero-based positions. Ignored for DataArray input.
 - #### **`attrs`**
 
   (`dict`, default: `None` ) –
 
-  Attributes to attach to the output DataArray.
+  Attributes to attach to the reconstructed array.
 - #### **`fill_value`**
 
   (`float`, default: `0.0` ) –
 
-  Value to fill in non-masked voxels.
+  Value assigned outside the mask, cast to the signal dtype.
 
 Returns:
 
 - `DataArray` –
 
-  Reconstructed VoxelData array with shape `(..., *mask.dims)`, where spatial dimensions, coordinates, and the derived world `z`/`y`/`x` coordinates come from the mask.
+  Samples restored into the mask's complete grid, including extra feature axes. Geometry dependencies and named frames are supplied by the mask.
 
 Raises:
 
-- `ValueError` –
-
-  If `mask` isn't a valid VoxelData array, if `signals` shape doesn't match `mask`, or if `new_dims`/`new_dims_coords` are inconsistent with `signals` shape.
 - `TypeError` –
 
-  If `mask` is not boolean dtype (or a binary numeric dtype).
+  If signals have an unsupported type or the mask is not boolean/binary.
+- `ValueError` –
 
-Examples:
+  If mask geometry or dimensions are invalid, signal count does not match, or leading dimension names/coordinates are inconsistent.
 
-```pycon
->>> import numpy as np
->>> from confusius.extract import extract_with_mask, unmask
->>> from confusius.xarray import create_voxeldata
->>> from sklearn.cluster import KMeans
->>>
->>> data = create_voxeldata(
-...     np.random.rand(10, 4, 5, 6),
-...     dims=("time", "k", "j", "i"),
-...     dt=0.5,
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> mask = create_voxeldata(
-...     np.random.rand(4, 5, 6) > 0.5, dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
-... )
->>>
->>> # Extract signals into a (time, space) matrix, then cluster voxel time-courses.
->>> # Clustering needs the flat voxel axis as samples, so this can't be done
->>> # directly on the gridded (k, j, i) array.
->>> signals = extract_with_mask(data, mask)
->>> labels = KMeans(n_clusters=3, n_init="auto").fit_predict(signals.values.T)
->>>
->>> # Unmask - reconstruct the cluster labels as a spatial map, no extra dims
->>> cluster_map = unmask(labels, mask, fill_value=-1)
->>> cluster_map.dims
-('k', 'j', 'i')
->>>
->>> # Unmask - two extra dims, with custom coords
->>> pose_data = np.random.randn(5, 3, signals.sizes["space"])  # (component, grid, space)
->>> spatial_pose = unmask(
-...     pose_data,
-...     mask,
-...     new_dims=["component", "grid"],
-...     new_dims_coords={"component": [1, 2, 3, 4, 5], "grid": [0, 1, 2]},
-... )
->>> spatial_pose.dims
-('component', 'grid', 'k', 'j', 'i')
-```
+> [!NOTE]
+>
+> **Notes**
+>
+> Reconstruction is eager, including when a DataArray holds Dask-backed signals. Mask and signal sample ordering must correspond; a `space` MultiIndex is not used to realign samples automatically.

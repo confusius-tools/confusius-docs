@@ -60,18 +60,33 @@ Classes:
 
 Functions:
 
+- **`apply_affine`** –
+
+  Apply a world-space affine to a DataArray's world coordinates.
 - **`create_voxeldata`** –
 
   Build a VoxelData array from a raw array.
 - **`db_scale`** –
 
   Convert data to decibel scale relative to maximum value.
+- **`get_bounding_box`** –
+
+  Return the world-space bounding box of a VoxelData array.
+- **`get_relative_affine`** –
+
+  Return the affine mapping `da`'s world space into `other`'s.
 - **`log_scale`** –
 
   Apply natural logarithm to data.
 - **`power_scale`** –
 
   Apply power scaling to data.
+- **`reindex_voxels`** –
+
+  Rebase voxel coordinates to dense positions without moving world coordinates.
+- **`reindex_voxels_like`** –
+
+  Rebase voxel coordinates onto `reference`'s voxel labels.
 
 ### FUSIAccessor
 
@@ -219,7 +234,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 #### register
@@ -398,7 +413,7 @@ Examples:
 
 Xarray accessor for signal extraction operations.
 
-Provides convenient methods for extracting signals from VoxelData arrays by flattening spatial dimensions, and reconstructing VoxelData arrays from processed signals.
+Provides convenient methods for extracting signals from VoxelData arrays by flattening spatial dimensions, and reconstructing VoxelData arrays from processed signals. These methods call VoxelData's generic functions; they preserve timing metadata without applying ConfUSIus acquisition defaults or validation.
 
 Parameters:
 
@@ -539,7 +554,7 @@ Returns:
   For example:
 
   - `(time, k, j, i)` → `(time, region)`
-  - `(time, grid, k, j, i)` → `(time, grid, region)`
+  - `(time, pose, k, j, i)` → `(time, pose, region)`
   - `(k, j, i)` → `(region,)`
 
 Raises:
@@ -913,7 +928,7 @@ Examples:
 ```pycon
 >>> import xarray as xr
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 Methods:
@@ -1511,7 +1526,7 @@ napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display data in napari viewer.
@@ -1557,16 +1572,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap.
+  Additional keyword arguments passed to the layer creation method. For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. Multipose layer names append `" [pose {pose}]"` to `data.name` (or an explicit `name`), using each pose's coordinate value.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, one per pose in pose order. Always a list, even for input without a `pose` dimension.
 
 > [!NOTE]
 >
@@ -1582,35 +1597,35 @@ Examples:
 >>> import xarray as xr
 >>> import confusius  # Register accessor.
 >>> data = xr.open_zarr("output.zarr")["iq"]
->>> viewer, layer = data.fusi.plot.napari()
+>>> viewer, layers = data.fusi.plot.napari()
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = data.fusi.plot.napari(contrast_limits=(0, 100))
+>>> viewer, layers = data.fusi.plot.napari(contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = data.fusi.plot.napari(dim_order=("y", "z", "x"))
+>>> viewer, layers = data.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = data1.fusi.plot.napari()
->>> viewer, layer = data2.fusi.plot.napari(viewer=viewer)
+>>> viewer, layers = data1.fusi.plot.napari()
+>>> viewer, layers = data2.fusi.plot.napari(viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = xr.open_zarr("output.zarr")["roi_mask"]
->>> viewer, layer = roi_mask.fusi.plot.napari(layer_type="labels")
+>>> viewer, layers = roi_mask.fusi.plot.napari(layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = data.fusi.plot.napari()
->>> viewer, layer = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
+>>> viewer, layers = data.fusi.plot.napari()
+>>> viewer, layers = roi_mask.fusi.plot.napari(viewer=viewer, layer_type="labels")
 ```
 
 #### stat\_map
@@ -2648,6 +2663,75 @@ Examples:
 array([1., 2., 3., 4.])
 ```
 
+### apply\_affine
+
+```python
+apply_affine(
+    da: DataArray,
+    affine: NDArray[float64] | str,
+    inplace: bool = False,
+    *,
+    geometry_dims: tuple[str, ...] | None = None,
+) -> DataArray
+```
+
+Apply a world-space affine to a DataArray's world coordinates.
+
+The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame. `attrs["affines"]` entries are ignored entirely.
+
+Parameters:
+
+- #### **`da`**
+
+  (`DataArray`) –
+
+  Input scan with voxel-to-world geometry (a `VoxelToWorldIndex`).
+- #### **`affine`**
+
+  (`(4, 4) numpy.ndarray or str`) –
+
+  Homogeneous world-space affine matrix to apply. If a string, it is looked up among the index's named affine frames.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in-place.
+- #### **`geometry_dims`**
+
+  (`tuple[str, ...]`, default: `None` ) –
+
+  Named batch axes of a NumPy action. Omitted stacked actions use the existing geometry dimensions; shared actions use `()`. Explicit axes may select any nonspatial dimensions and are aligned by name.
+
+Returns:
+
+- `DataArray` –
+
+  `da` with updated spatial coordinates and updated named affine frames. No frame is removed: when `affine` is a string, that frame is kept as the identity, since the world frame now is that named space.
+
+Raises:
+
+- `ValueError` –
+
+  If `da` lacks voxel-to-world geometry or if `affine`'s shape does not match the DataArray's voxel-to-world affine.
+- `KeyError` –
+
+  If `affine` is a string not present among the index's named affines.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> from voxeldata import create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((3, 4, 5)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
+... )
+>>> shift = np.eye(4)
+>>> shift[:3, 3] = [10.0, 5.0, 0.0]
+>>> result = apply_affine(data, shift)
+>>> float(result.coords["x"].isel(k=0, j=0, i=0))
+10.0
+```
+
 ### create\_voxeldata
 
 ```python
@@ -2658,7 +2742,7 @@ create_voxeldata(
     extra_coords: Mapping[str, ArrayLike | DataArray]
     | None = None,
     time: ArrayLike | DataArray | None = None,
-    grid: ArrayLike | DataArray | None = None,
+    pose: ArrayLike | DataArray | None = None,
     k: ArrayLike | DataArray | None = None,
     j: ArrayLike | DataArray | None = None,
     i: ArrayLike | DataArray | None = None,
@@ -2670,6 +2754,7 @@ create_voxeldata(
     origin: Sequence[float] | None = None,
     direction: ArrayLike | None = None,
     voxel_to_world: ArrayLike | None = None,
+    geometry_dims: tuple[str, ...] | None = None,
     affines: Mapping[str, ArrayLike] | None = None,
     units: str = "mm",
     name: str | None = None,
@@ -2693,7 +2778,7 @@ Parameters:
   Input dimension names. Core dimensions are:
 
   - `i`/`j`/`k`: native voxel dimensions,
-  - `grid`: probe pose dimension,
+  - `pose`: probe pose dimension,
   - `time`: time dimension.
 
   Any other extra dimensions are allowed. The returned DataArray will have spatial dimensions reordered to trailing `(k, j, i)`. Leading dimensions retain their relative order; canonicalization is optional.
@@ -2706,12 +2791,12 @@ Parameters:
 
   (`ArrayLike or DataArray`, default: `None` ) –
 
-  Floating coordinates for the `time` dimension. A 2D `(n_time, npose)` array or DataArray gives each pose its own real timestamps directly (poses acquired sequentially rather than simultaneously) rather than a single shared `time` axis: there is no single answer for "the" time of a `(grid, k, j, i)` voxel any more than there is a single answer for its `z`/`y`/`x` position, so `time` requires a scalar `grid` selection first, exactly like world coordinates already do. Requires a `grid` dimension in `dims` with a matching length. A 2D `time` is not itself an index (xarray dimension coordinates must be 1D), so `.sel(time=...)` is unavailable until a pose is selected; after that, `.set_xindex("time")` promotes the resulting 1D `time` back into a real, selectable index.
-- #### **`grid`**
+  Floating coordinates for the `time` dimension. A named DataArray may depend on `time` and any additional nonspatial dimensions, independently of geometry. Select all timestamp dependencies before using a shared-time analysis. A 2D `(n_time, npose)` array or DataArray gives each pose its own real timestamps directly (poses acquired sequentially rather than simultaneously) rather than a single shared `time` axis: there is no single answer for "the" time of a `(pose, k, j, i)` voxel any more than there is a single answer for its `z`/`y`/`x` position, so `time` requires a scalar `pose` selection first, exactly like world coordinates already do. Requires a `pose` dimension in `dims` with a matching length. A 2D `time` is not itself an index (xarray dimension coordinates must be 1D), so `.sel(time=...)` is unavailable until a pose is selected; after that, `.set_xindex("time")` promotes the resulting 1D `time` back into a real, selectable index.
+- #### **`pose`**
 
   (`ArrayLike or DataArray`, default: `None` ) –
 
-  Integer coordinates for the `grid` dimension.
+  Integer coordinates for the `pose` dimension.
 - #### **`k`**
 
   (`ArrayLike or DataArray`, default: `None` ) –
@@ -2736,7 +2821,7 @@ Parameters:
 
   (`float or ArrayLike`, default: `0.0` ) –
 
-  First time coordinate value when `dt` is used. For multi-pose arrays, a 1D `t0` with one value per pose generates a pose-dependent `(time, grid)` time coordinate using the shared `dt`.
+  First time coordinate value when `dt` is used. For multi-pose arrays, a 1D `t0` with one value per pose generates a pose-dependent `(time, pose)` time coordinate using the shared `dt`.
 - #### **`volume_acquisition_reference`**
 
   (`('start', 'center', 'end')`, default: `"start"` ) –
@@ -2746,12 +2831,12 @@ Parameters:
 
   (`float`, default: `None` ) –
 
-  Acquisition duration stored on generated `time` coordinates. If not provided, it defaults to `dt` for a plain 1D `time` coordinate, or to the smallest nonzero gap between `t0` values for a pose-dependent `(time, grid)` coordinate—`dt` there is the repetition period between successive samples of the *same* pose, not one pose's own acquisition time. Poses sharing the same `t0` (e.g. a stacked-linear-probe pose acquired simultaneously with another) don't count toward the gap.
+  Acquisition duration stored on generated `time` coordinates. If not provided, it defaults to `dt` for a plain 1D `time` coordinate, or to the smallest nonzero gap between `t0` values for a pose-dependent `(time, pose)` coordinate—`dt` there is the repetition period between successive samples of the *same* pose, not one pose's own acquisition time. Poses sharing the same `t0` (e.g. a stacked-linear-probe pose acquired simultaneously with another) don't count toward the gap.
 - #### **`spacing`**
 
   (`sequence[float]`, default: `None` ) –
 
-  World spacing in `z/y/x` order. Mutually exclusive with `voxel_to_world`.
+  World spacing in `k/j/i` order. Mutually exclusive with `voxel_to_world`.
 - #### **`origin`**
 
   (`sequence[float]`, default: `None` ) –
@@ -2766,7 +2851,12 @@ Parameters:
 
   (`ArrayLike`, default: `None` ) –
 
-  4x4 homogeneous affine in world `z/y/x` row and voxel `k/j/i` column order, or an `(npose, 4, 4)` stack of one such affine per pose when a `grid` dimension is present in `dims`. Mutually exclusive with `spacing`, `origin`, and `direction`.
+  4x4 homogeneous affine in world `z/y/x` row and voxel `k/j/i` column order, or a stack indexed by `geometry_dims`. `(npose, 4, 4)` stacks use the `pose` dimension. Mutually exclusive with `spacing`, `origin`, and `direction`.
+- #### **`geometry_dims`**
+
+  (`tuple[str, ...]`, default: `None` ) –
+
+  Ordered nonspatial dimensions indexing the affine stack. Its shape must be `(*[sizes[d] for d in geometry_dims], 4, 4)`. A shared affine uses `()`. If not provided, 3D stacks use `("pose",)` when a `pose` dimension is present. Timing dependencies are independent of geometry dependencies.
 - #### **`affines`**
 
   (`mapping[str, ArrayLike]`, default: `None` ) –
@@ -2798,7 +2888,7 @@ Raises:
 
 - `ValueError` –
 
-  If `dims` uses world `z`/`y`/`x` names instead of native voxel names, if a pose-stacked `voxel_to_world` is given without a matching `grid` dimension, if `dims` has a `grid` dimension and `voxel_to_world` is not a matching per-pose stack, or if dimensions, coordinates, geometry, timing, or VoxelData validation otherwise fail.
+  If `dims` uses world `z`/`y`/`x` names instead of native voxel names, if a stacked `voxel_to_world` has missing or incompatible geometry dimensions, or if dimensions, coordinates, geometry, timing, or VoxelData validation otherwise fail.
 
 ### db\_scale
 
@@ -2845,6 +2935,91 @@ Examples:
 >>> data = xr.DataArray([1, 10, 100, 1000])
 >>> db_scale(data, factor=20)
 ```
+
+### get\_bounding\_box
+
+```python
+get_bounding_box(data: DataArray) -> DataArray
+```
+
+Return the world-space bounding box of a VoxelData array.
+
+The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `get_voxel_to_world_index_spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array, normalized with ensure\_voxeldata (scalar-indexed voxel dims are restored as singletons before computing the bounds).
+
+Returns:
+
+- `(2, 3) xarray.DataArray` –
+
+  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Geometry-dependent dimensions are prepended in affine-axis order, giving one bounding box per geometry.
+
+Raises:
+
+- `TypeError` –
+
+  If `data` is not an `xarray.DataArray`.
+- `ValueError` –
+
+  If `data` is not a valid VoxelData array, or if a voxel dim has irregular coordinates (no defined voxel extent).
+
+Examples:
+
+```pycon
+>>> bbox = get_bounding_box(volume)
+>>> bbox.sel(bound="min", component="z").item()
+```
+
+### get\_relative\_affine
+
+```python
+get_relative_affine(
+    da: DataArray, other: DataArray, via: str
+) -> NDArray[float64]
+```
+
+Return the affine mapping `da`'s world space into `other`'s.
+
+Computes `inv(other_named[via]) @ da_named[via]`, giving the transform that takes coordinates expressed in `da`'s world frame and expresses them in `other`'s world frame. Both arrays must carry a named affine frame `via` on their `VoxelToWorldIndex`.
+
+Parameters:
+
+- #### **`da`**
+
+  (`DataArray`) –
+
+  The source scan (origin world space).
+- #### **`other`**
+
+  (`DataArray`) –
+
+  The scan whose world space is the target.
+- #### **`via`**
+
+  (`str`) –
+
+  Named affine frame shared by both world spaces (e.g. `"world_to_lab"`).
+
+Returns:
+
+- `(4, 4) numpy.ndarray` –
+
+  Homogeneous affine matrix mapping `da`'s world coordinates to `other`'s world coordinates.
+
+Raises:
+
+- `ValueError` –
+
+  If either array lacks voxel-to-world geometry.
+- `KeyError` –
+
+  If `via` is not a named affine on either array's index.
 
 ### log\_scale
 
@@ -2920,6 +3095,81 @@ Examples:
 >>> power_scale(data, exponent=0.5)  # Square root
 ```
 
+### reindex\_voxels
+
+```python
+reindex_voxels(da: DataArray) -> DataArray
+```
+
+Rebase voxel coordinates to dense positions without moving world coordinates.
+
+A VoxelData array's stored `voxel_to_world` affine is defined in terms of voxel *coordinate values*, which stay unchanged across cropping or striding by design (see `VoxelToWorldIndex`). Because of this, the affine generally does not describe where voxel *position* `(0, ..., 0)` sits in world space, or the world distance between consecutive positions, once `da` has been cropped or strided from a larger array. This replaces each voxel dimension's coordinate with `0, 1, ..., dim - 1` and rebuilds `voxel_to_world` so the resulting affine directly maps those dense positions to `da`'s existing world coordinates, producing a DataArray whose affine is directly usable by software that assumes dense, zero-based voxel indices (e.g. ITK, nilearn).
+
+Parameters:
+
+- #### **`da`**
+
+  (`DataArray`) –
+
+  Input scan with voxel-to-world geometry.
+
+Returns:
+
+- `DataArray` –
+
+  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. Each geometry retains its origin, direction, and spatial scalings. Rebasing is performed for every geometry without evaluating world coordinates.
+
+Raises:
+
+- `ValueError` –
+
+  If `da` lacks voxel-to-world geometry, or if world spacing is undefined for any voxel dimension.
+
+### reindex\_voxels\_like
+
+```python
+reindex_voxels_like(
+    data: DataArray,
+    reference: DataArray,
+    *,
+    atol: float = 1e-06,
+) -> DataArray
+```
+
+Rebase voxel coordinates onto `reference`'s voxel labels.
+
+`data` and `reference`'s `voxel_to_world` affines can differ even when they describe the exact same world grid: the affine is defined in terms of voxel *coordinate values*, so two arrays occupying identical world positions can still carry different affines if their voxel dimensions happen to be labeled differently (e.g. `reference` was cropped or strided from a larger array, while `data` was freshly built with dense labels). This verifies the two occupy the same world grid, then relabels `data`'s voxel coordinates and affine to match `reference`'s exactly, so the two become directly alignable (`.sel()`, arithmetic, `xarray.align`, ...) by voxel label as well as by world position. Inputs with geometry dependencies must have matching geometry labels in the same order. Named frames remain those of `data`, since relabeling voxel coordinates does not change its world frame.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  Input scan with voxel-to-world geometry, physically aligned with `reference`.
+- #### **`reference`**
+
+  (`DataArray`) –
+
+  DataArray whose voxel labels and affine `data` should adopt.
+- #### **`atol`**
+
+  (`float`, default: `1e-6` ) –
+
+  Absolute tolerance, in `reference`'s physical units, for the world-coordinate alignment check between `data` and `reference`.
+
+Returns:
+
+- `DataArray` –
+
+  `data` with voxel coordinates and `voxel_to_world` replaced by `reference`'s. World coordinates are unchanged, since `data` and `reference` are verified to already occupy the same world grid.
+
+Raises:
+
+- `ValueError` –
+
+  If `data` or `reference` lacks voxel-to-world geometry, if their voxel dimensions or shapes differ, or if their world coordinates do not match within `atol`.
+
 ## Geometry: VoxelData
 
 Geometry is implemented by the external [`voxeldata`](<https://github.com/confusius-tools/voxeldata>) package. Its flat `.vd` accessor replaces `.fusi.affine` and the former `.fusi` geometry properties. ConfUSIus re-exports module-level affine functions but does not implement them.
@@ -2989,15 +3239,15 @@ Attributes:
 - **`fixed_voxel_coords`** (`dict[str, float]`) –
 
   Voxel coordinates pinned by a prior scalar selection.
+- **`geometry_dims`** (`tuple[str, ...]`) –
+
+  Named affine dependencies, in affine batch-axis order.
 - **`index`** (`VoxelToWorldIndex`) –
 
   Attached voxel-to-world index.
 - **`is_axis_aligned`** (`bool`) –
 
   Whether the voxel-to-world affine is axis-aligned.
-- **`is_grid_dependent`** (`bool`) –
-
-  Whether geometry still carries a per-grid affine stack.
 - **`origin`** (`dict[str, float]`) –
 
   Origin metadata for all dimensions.
@@ -3076,6 +3326,20 @@ Returns:
 
   Pinned voxel-space coordinates keyed by dimension name.
 
+### geometry\_dims
+
+```python
+geometry_dims: tuple[str, ...]
+```
+
+Named affine dependencies, in affine batch-axis order.
+
+Returns:
+
+- `tuple[str, ...]` –
+
+  Geometry-dependent nonspatial dimension names.
+
 ### index
 
 ```python
@@ -3109,20 +3373,6 @@ Returns:
 - `bool` –
 
   Whether world axes align with voxel axes (allowing signed scaling).
-
-### is\_grid\_dependent
-
-```python
-is_grid_dependent: bool
-```
-
-Whether geometry still carries a per-grid affine stack.
-
-Returns:
-
-- `bool` –
-
-  Whether the index is grid-dependent.
 
 ### origin
 
@@ -3208,9 +3458,9 @@ Voxel-to-world affine.
 
 Returns:
 
-- `(4, 4) numpy.ndarray or (ngrid, 4, 4) numpy.ndarray` –
+- `(4, 4) numpy.ndarray or (*geometry_shape, 4, 4) numpy.ndarray` –
 
-  Affine mapping active voxel dimensions to world coordinates, or a per-grid stack while geometry is grid-dependent.
+  Affine mapping active voxel dimensions to world coordinates, shared or stacked along `geometry_dims`.
 
 ### world\_dims
 
@@ -3229,7 +3479,12 @@ Returns:
 ### apply
 
 ```python
-apply(affine: Any, *, inplace: bool = False) -> DataArray
+apply(
+    affine: Any,
+    *,
+    geometry_dims: tuple[str, ...] | None = None,
+    inplace: bool = False,
+) -> DataArray
 ```
 
 Apply a world-space affine to the world coordinates.
@@ -3241,6 +3496,11 @@ Parameters:
   (`(4, 4) numpy.ndarray or str`) –
 
   World-space affine, or the name of a stored frame. Applying a named frame makes it the identity and re-expresses every other frame.
+- #### **`geometry_dims`**
+
+  (`tuple[str, ...]`, default: `None` ) –
+
+  Ordered dependencies of a NumPy action. Defaults to the existing geometry dimensions for a stack, or `()` for a shared affine. Named frames already carry their dependencies. New action dependencies are broadcast by name and added to the geometry.
 - #### **`inplace`**
 
   (`bool`, default: `False` ) –
@@ -3307,7 +3567,7 @@ Parameters:
 
 Returns:
 
-- `(4, 4) numpy.ndarray or (ngrid, 4, 4) numpy.ndarray` –
+- `(4, 4) numpy.ndarray or (*geometry_shape, 4, 4) numpy.ndarray` –
 
   The named frame.
 
@@ -3432,7 +3692,7 @@ Parameters:
 
   (`ArrayLike`) –
 
-  Homogeneous `(4, 4)` frame, or an `(ngrid, 4, 4)` stack when geometry is grid-dependent.
+  Homogeneous `(4, 4)` frame, or a full stack in `geometry_dims` order.
 - #### **`inplace`**
 
   (`bool`, default: `False` ) –
@@ -3481,6 +3741,7 @@ set_voxel_to_world(
     voxel_to_world: Any,
     *,
     units: str | None = None,
+    geometry_dims: tuple[str, ...] | None = None,
     named_affines: dict[str, Any] | None = None,
     inplace: bool = False,
 ) -> DataArray
@@ -3496,12 +3757,17 @@ Parameters:
 
   (`ArrayLike`) –
 
-  Homogeneous `(4, 4)` affine, or an `(ngrid, 4, 4)` stack when the DataArray has a `grid` dimension.
+  Homogeneous `(4, 4)` affine, or a full stack in `geometry_dims` order.
 - #### **`units`**
 
   (`str`, default: `None` ) –
 
   World coordinate unit. If not provided, keeps the existing unit, or defaults to `"mm"` for a plain DataArray.
+- #### **`geometry_dims`**
+
+  (`tuple[str, ...]`, default: `None` ) –
+
+  Ordered nonspatial dimensions indexing the affine stack. A shared affine uses `()`. Stacks always require explicit names.
 - #### **`named_affines`**
 
   (`mapping[str, ArrayLike]`, default: `None` ) –
@@ -3577,12 +3843,14 @@ apply_affine(
     da: DataArray,
     affine: NDArray[float64] | str,
     inplace: bool = False,
+    *,
+    geometry_dims: tuple[str, ...] | None = None,
 ) -> DataArray
 ```
 
 Apply a world-space affine to a DataArray's world coordinates.
 
-The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame. Legacy `attrs["affines"]` entries are ignored entirely.
+The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame. `attrs["affines"]` entries are ignored entirely.
 
 Parameters:
 
@@ -3601,6 +3869,11 @@ Parameters:
   (`bool`, default: `False` ) –
 
   Whether to modify the DataArray in-place.
+- ### **`geometry_dims`**
+
+  (`tuple[str, ...]`, default: `None` ) –
+
+  Named batch axes of a NumPy action. Omitted stacked actions use the existing geometry dimensions; shared actions use `()`. Explicit axes may select any nonspatial dimensions and are aligned by name.
 
 Returns:
 
@@ -3654,7 +3927,7 @@ Returns:
 
 - `(2, 3) xarray.DataArray` –
 
-  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Grid-dependent geometry adds a leading `grid` dim carrying the input's `grid` coordinate, one bounding box per grid.
+  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Geometry-dependent dimensions are prepended in affine-axis order, giving one bounding box per geometry.
 
 Raises:
 
@@ -3739,7 +4012,7 @@ Returns:
 
 - `DataArray` –
 
-  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. For grid-dependent geometry, `voxel_to_world` stays a per-grid stack: each grid keeps its own origin and direction (spacing is shared, per the equal-scale invariant), so rebasing is unambiguous per grid and every grid is reindexed at once.
+  `da` with voxel coordinates rebased to `0, 1, ..., dim - 1` and an updated `voxel_to_world` affine. World coordinates are unchanged. Each geometry retains its origin, direction, and spatial scalings. Rebasing is performed for every geometry without evaluating world coordinates.
 
 Raises:
 
@@ -3760,7 +4033,7 @@ reindex_voxels_like(
 
 Rebase voxel coordinates onto `reference`'s voxel labels.
 
-`data` and `reference`'s `voxel_to_world` affines can differ even when they describe the exact same world grid: the affine is defined in terms of voxel *coordinate values*, so two arrays occupying identical world positions can still carry different affines if their voxel dimensions happen to be labeled differently (e.g. `reference` was cropped or strided from a larger array, while `data` was freshly built with dense labels). This verifies the two occupy the same world grid, then relabels `data`'s voxel coordinates and affine to match `reference`'s exactly, so the two become directly alignable (`.sel()`, arithmetic, `xarray.align`, ...) by voxel label as well as by world position. Grid-dependent inputs must have matching grid labels in the same order. Named frames remain those of `data`, since relabeling voxel coordinates does not change its world frame.
+`data` and `reference`'s `voxel_to_world` affines can differ even when they describe the exact same world grid: the affine is defined in terms of voxel *coordinate values*, so two arrays occupying identical world positions can still carry different affines if their voxel dimensions happen to be labeled differently (e.g. `reference` was cropped or strided from a larger array, while `data` was freshly built with dense labels). This verifies the two occupy the same world grid, then relabels `data`'s voxel coordinates and affine to match `reference`'s exactly, so the two become directly alignable (`.sel()`, arithmetic, `xarray.align`, ...) by voxel label as well as by world position. Inputs with geometry dependencies must have matching geometry labels in the same order. Named frames remain those of `data`, since relabeling voxel coordinates does not change its world frame.
 
 Parameters:
 
@@ -3829,7 +4102,6 @@ validate_voxeldata(
     require_time: bool = False,
     require_uniform_time: bool = False,
     uniformity_tolerance: float = 0.01,
-    allow_grid: bool = True,
     allow_extra_dims: bool = True,
     require_regular_spacing: bool = False,
     regular_spacing_tolerance: float = 0.01,
@@ -3840,7 +4112,7 @@ validate_voxeldata(
 
 Validate a DataArray against the VoxelData model without modifying it.
 
-This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, a matching `VoxelToWorldIndex` carrying world `z`/`y`/`x` coordinates, and dimensions ordered as `(*nonspatial_dims, k, j, i)`. Nonspatial dimensions, including optional `grid` and `time`, may appear in any order. Every dimension coordinate is validated. Optional flags add requirements needed by a particular consumer. Use ensure\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
+This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, a matching `VoxelToWorldIndex` carrying world `z`/`y`/`x` coordinates, and dimensions ordered as `(*nonspatial_dims, k, j, i)`. Nonspatial dimensions, including optional `time`, may appear in any order. Every dimension coordinate is validated. Optional flags add requirements needed by a particular consumer. Use ensure\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
 
 Parameters:
 
@@ -3864,16 +4136,11 @@ Parameters:
   (`float`, default: `1e-2` ) –
 
   Maximum relative variation allowed between consecutive time intervals.
-- ### **`allow_grid`**
-
-  (`bool`, default: `True` ) –
-
-  Whether to allow a `grid` dimension.
 - ### **`allow_extra_dims`**
 
   (`bool`, default: `True` ) –
 
-  Whether to allow dimensions outside `time`, `grid`, `k`, `j`, and `i`.
+  Whether to allow dimensions outside `time`, `k`, `j`, and `i`.
 - ### **`require_regular_spacing`**
 
   (`bool`, default: `False` ) –
@@ -3912,7 +4179,7 @@ canonicalize_voxeldata(data: DataArray) -> DataArray
 
 Restore scalar-indexed VoxelData dimensions and order them canonically.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, grid, time, k, j, i)`. Extra dimensions retain their relative order. Missing `grid` and `time` dimensions are not restored.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored.
 
 Parameters:
 
@@ -3947,7 +4214,7 @@ ensure_voxeldata(
 
 Return a canonical, validated VoxelData array.
 
-This restores scalar-indexed native voxel dimensions, orders dimensions as `(...extra_dims, grid, time, k, j, i)`, preserving the relative order of extra dimensions, then validates the result with validate\_voxeldata.
+This restores scalar-indexed native voxel dimensions, orders dimensions as `(...extra_dims, time, k, j, i)`, preserving the relative order of extra dimensions, then validates the result with validate\_voxeldata.
 
 Parameters:
 

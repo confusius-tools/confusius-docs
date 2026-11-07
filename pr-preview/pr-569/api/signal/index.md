@@ -285,13 +285,13 @@ Warns:
   If `confounds` or `sample_mask` has no `time` coordinates, since alignment with `signals` cannot be verified.
 - `UserWarning` –
 
-  If `confounds` is given and `signals` has a `grid` dimension, since the same confounds are regressed from every pose.
+  If `confounds` is given and `signals` has a `pose` dimension, since the same confounds are regressed from every pose.
 
 > [!NOTE]
 >
 > **Notes**
 >
-> Signals with pose-dependent `(time, grid)` `time` coordinates are cleaned pose by pose along `time`. `confounds` and `sample_mask` are per-volume quantities and align with the whole-volume time (see `ensure_time_aligned`), so the same confounds and mask apply to every pose.
+> Signals with pose-dependent `(time, pose)` `time` coordinates are cleaned pose by pose along `time`. `confounds` and `sample_mask` are per-volume quantities and align with the whole-volume time (see `ensure_time_aligned`), so the same confounds and mask apply to every pose.
 
 **References**
 
@@ -797,7 +797,7 @@ Warns:
 >
 > - Kept samples (`sample_mask=True`) are unchanged; only censored samples (`sample_mask=False`) are replaced with interpolated values.
 > - Uses `xarray.DataArray.interp` which handles coordinates and Dask arrays automatically.
-> - Signals with pose-dependent `(time, grid)` `time` coordinates are interpolated pose by pose, each on its own timestamps, but using the same `sample_mask`.
+> - Signals with pose-dependent `(time, pose)` `time` coordinates are interpolated pose by pose, each on its own timestamps, but using the same `sample_mask`.
 
 Examples:
 
@@ -902,7 +902,7 @@ Warns:
   If `confounds` has no `time` coordinates, since alignment cannot be verified.
 - `UserWarning` –
 
-  If `signals` has a `grid` dimension, since the same confounds are regressed from every pose.
+  If `signals` has a `pose` dimension, since the same confounds are regressed from every pose.
 
 > [!NOTE]
 >

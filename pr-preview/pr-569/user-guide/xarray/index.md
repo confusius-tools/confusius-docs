@@ -2,7 +2,7 @@
 
 ## Why Xarray?
 
-A typical fUSI recording is a 4D array indexed by time and native voxel dimensions (`i`, `j`, `k`). Some experimental paradigms acquire data at multiple probe poses, adding a `grid` dimension and making the recording 5D. World coordinates corresponding to the voxel dimensions are (`x`, `y`, `z`). Storing this as a plain NumPy array means losing all of that structure: axes become anonymous integers, world coordinates must be tracked separately, and keeping them in sync with the data after slicing or averaging is error-prone. A custom wrapper class would address the labeling and coordinate tracking, but at the cost of needing a complex reimplementation of many array operations and losing access to the broader scientific Python ecosystem.
+A typical fUSI recording is a 4D array indexed by time and native voxel dimensions (`i`, `j`, `k`). Some experimental paradigms acquire data at multiple probe poses, adding a `pose` dimension and making the recording 5D. World coordinates corresponding to the voxel dimensions are (`x`, `y`, `z`). Storing this as a plain NumPy array means losing all of that structure: axes become anonymous integers, world coordinates must be tracked separately, and keeping them in sync with the data after slicing or averaging is error-prone. A custom wrapper class would address the labeling and coordinate tracking, but at the cost of needing a complex reimplementation of many array operations and losing access to the broader scientific Python ecosystem.
 
 [Xarray](<https://xarray.dev/>) solves this by wrapping arrays with named dimensions and world coordinates, while [maintaining compatibility](<https://xarray.dev/#ecosystem>) with the Python scientific ecosystem. With Xarray, operations become self-documenting:
 
@@ -141,10 +141,10 @@ shallow = pwd.sel(y=slice(0, 2.5))              # depth 0-2.5 mm, by coordinate.
 >
 > **Multi-pose caveat**
 >
-> For recordings with a `grid` dimension, world coordinates become pose-dependent. Select a single pose before slicing in world space:
+> For recordings with a `pose` dimension, world coordinates become pose-dependent. Select a single pose before slicing in world space:
 >
 > ```python
-> pose0 = pwd.sel(grid=0).sel(y=slice(0, 2.5))  # OK
+> pose0 = pwd.sel(pose=0).sel(y=slice(0, 2.5))  # OK
 > shallow = pose0.sel(y=slice(0, 2.5))
 > ```
 >
@@ -165,7 +165,7 @@ Most geometry-sensitive ConfUSIus functions automatically restore such scalar-in
 
 ## Creating VoxelData arrays from Raw Arrays
 
-Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. Dimensions can be supplied in any order; the result is canonicalized to native `(..., time, grid, k, j, i)` order:
+Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. Dimensions can be supplied in any order; the result is canonicalized to native `(..., time, pose, k, j, i)` order:
 
 ```python
 import confusius as cf
@@ -194,12 +194,12 @@ Acquisition metadata that describes the whole recording belongs in the DataArray
 
 ### Multi-Pose Data
 
-For multi-pose data, `create_voxeldata` also accepts a `grid` dimension, a 2D `(time, grid)` time coordinate, a tuple `t0` time origin, and a stacked `(npose, 4, 4)` `voxel_to_world` affine:
+For multi-pose data, `create_voxeldata` also accepts a `pose` dimension, a 2D `(time, pose)` time coordinate, a tuple `t0` time origin, and a stacked `(npose, 4, 4)` `voxel_to_world` affine:
 
 ```python
 multipose = cf.create_voxeldata(
     raw_power,
-    dims=("i", "j", "k", "grid", "time"),
+    dims=("i", "j", "k", "pose", "time"),
     dt=2.4,
     t0=[0.0, 0.6, 1.2, 1.8],
     voxel_to_world=pose_affines,
@@ -374,7 +374,7 @@ registered_to_qform = pwd.vd.apply("world_to_qform")
 shifted = pwd.vd.apply(my_affine)
 ```
 
-`bounding_box` gives the extent of the data in world space, enclosing the full extent of every voxel (half a voxel beyond the outermost voxel centers). It is computed from the affine alone (exact for oblique geometry, and one bounding box per grid when the geometry is grid-dependent):
+`bounding_box` gives the extent of the data in world space, enclosing the full extent of every voxel (half a voxel beyond the outermost voxel centers). It is computed from the affine alone (exact for oblique geometry, and one bounding box per pose when the geometry is pose-dependent):
 
 ```python
 bbox = pwd.vd.bounding_box  # Dims (bound, component), e.g. ("max", "x").
@@ -483,7 +483,7 @@ The `.fusi.plot` accessor provides easy access to visualization functions for qu
 For example, to display data in [napari](<https://napari.org/>):
 
 ```python
-viewer, layer = registered.fusi.plot.napari(gamma=0.5)
+viewer, layers = registered.fusi.plot.napari(gamma=0.5)
 ```
 
 Or to show standardized time series in a carpet plot, useful for quality control:
@@ -522,7 +522,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 )
 
 # 3. Inspect in napari.
-viewer, layer = pwd.fusi.plot.napari(gamma=0.5)
+viewer, layers = pwd.fusi.plot.napari(gamma=0.5)
 
 # 4. Motion correction.
 registered = pwd.fusi.register.volumewise()

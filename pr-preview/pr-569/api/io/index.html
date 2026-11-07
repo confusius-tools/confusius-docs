@@ -5404,7 +5404,7 @@ instead of dense <code>z</code>/<code>y</code>/<code>x</code> coordinate arrays 
           –
           <div class="doc-md-description">
             <p>Path to the file to load. For NIfTI files, a <code>{chunk}</code> placeholder in the
-filename loads matching integer chunks in numeric order along <code>grid</code>;
+filename loads matching integer chunks in numeric order along <code>pose</code>;
 see <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="./#confusius.io.load_nifti">load_nifti</a>.</p>
           </div>
         </li>
@@ -5999,7 +5999,7 @@ recording folder before conversion to ConfUSIus attributes.</p>
             <p>Path to the NIfTI file (<code>.nii</code> or <code>.nii.gz</code>). A single <code>{chunk}</code> placeholder
 in the filename loads all matching integer chunk indices in numeric order
 and stacks them with <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="../multipose/#confusius.multipose.stack_poses">stack_poses</a>. Chunk
-indices become integer <code>grid</code> labels, even when only one file matches.
+indices become integer <code>pose</code> labels, even when only one file matches.
 Each chunk must satisfy <code>stack_poses</code>' single-pose input requirements.</p>
           </div>
         </li>
@@ -6225,15 +6225,15 @@ affine is added to <code>da.vd.affines</code>.</p>
             <p>Lazy VoxelData array with dimensions and coordinates:</p>
 <ul>
 <li>v1 <code>2Dscan</code> → <code>(time, k, j, i)</code>.</li>
-<li>v1 <code>3Dscan</code> → <code>(grid, k, j, i)</code>.</li>
-<li>v1 <code>4Dscan</code>/<code>4DscanCustom</code> → <code>(time, grid, k, j, i)</code>.</li>
+<li>v1 <code>3Dscan</code> → <code>(pose, k, j, i)</code>.</li>
+<li>v1 <code>4Dscan</code>/<code>4DscanCustom</code> → <code>(time, pose, k, j, i)</code>.</li>
 <li>v2 single-pose → <code>(time, k, j, i)</code>.</li>
-<li>v2 multi-pose → <code>(time, grid, k, j, i)</code>.</li>
+<li>v2 multi-pose → <code>(time, pose, k, j, i)</code>.</li>
 <li>v2 dim6 payloads prepend a <code>dim6</code> dimension.</li>
 </ul>
 <p>World coordinates <code>z</code>, <code>y</code>, <code>x</code> are in millimeters. The <code>time</code> coordinate is in
 seconds. For v1/v2 multi-pose time series, <code>time</code> is pose-dependent
-(<code>(time, grid)</code>-shaped), holding each pose's own acquisition timestamps directly.</p>
+(<code>(time, pose)</code>-shaped), holding each pose's own acquisition timestamps directly.</p>
           </div>
         </li>
     </ul>

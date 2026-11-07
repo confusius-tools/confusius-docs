@@ -3127,6 +3127,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#napari-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Napari plugin
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3200,7 +3211,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -3283,7 +3294,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_1" class="md-nav__link">
+  <a href="#napari-plugin_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -3333,7 +3344,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_2" class="md-nav__link">
+  <a href="#napari-plugin_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4046,6 +4057,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#napari-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+         Napari plugin
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4119,7 +4141,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4202,7 +4224,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_1" class="md-nav__link">
+  <a href="#napari-plugin_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4252,7 +4274,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_2" class="md-nav__link">
+  <a href="#napari-plugin_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4834,36 +4856,72 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Geometry now comes from the external <code>voxeldata</code> package. Use the flat <code>.vd</code>
+<li>Geometry now comes from the external <code>voxeldata&gt;=0.0.4</code> package. Use the flat <code>.vd</code>
   accessor instead of <code>.fusi.affine</code>, <code>.fusi.spacing</code>, <code>.fusi.origin</code>, or
   <code>.fusi.direction</code>. Named world frames live on the VoxelData index and are
   managed with <code>.vd.set_affine</code>/<code>.vd.get_affine</code>, not DataArray attributes.</li>
-<li>Probe poses are represented by <code>grid</code>, replacing the <code>pose</code> dimension and
-  corresponding coordinate/validation keywords. Leading dimensions may appear
-  in any order; optional canonicalization uses <code>(...extra, grid, time, k, j, i)</code>.</li>
-<li>
-<p>Canonicalize scalar-selected spatial dimensions before <code>.vd</code> geometry mutators,
-  for example <code>ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)</code>.</p>
-</li>
-<li>
-<p>Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer,
+<li>Probe positions use <code>pose</code> with <code>geometry_dims=("pose",)</code>. Leading dimensions
+  may appear in any order; optional canonicalization uses
+  <code>(...extra, pose, time, k, j, i)</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/569">#569</a>).</li>
+<li>Canonicalize scalar-selected spatial dimensions before <code>.vd</code> geometry mutators,
+  for example <code>ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)</code>.</li>
+<li>Import extraction functions from <code>confusius.extract</code>, not its former <code>mask</code>,
+  <code>labels</code>, or <code>reconstruction</code> submodules. These are direct VoxelData re-exports:
+  extraction preserves timing metadata but no longer adds acquisition defaults
+  or validates <abbr title="Functional Ultrasound Imaging">fUSI</abbr> timing semantics. Use ConfUSIus <code>ensure_voxeldata</code> explicitly
+  when acquisition-aware canonicalization/validation is required.</li>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a> default to the <code>"berlin"</code>
+  colormap for signed data on dark backgrounds (<code>"coolwarm"</code> stays the default on
+  light ones), judged from <code>bg_color</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
+<li>Seed-based correlation maps, decomposition maps, <abbr title="General Linear Model">GLM</abbr> contrast maps and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_axial_velocity&lt;/span&gt;" href="../api/iq/#confusius.iq.process_iq_to_axial_velocity"><code>process_iq_to_axial_velocity</code></a> outputs
+  carry <code>attrs["cmap"] = "berlin"</code>, the colormap
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_volume&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_volume"><code>plot_volume</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_napari&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_napari"><code>plot_napari</code></a> draw them with
+  (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
+<li><code>plot_napari</code> and its xarray accessors always return <code>(viewer, layers)</code>;
+  use <code>viewer, [layer] = ...</code> for single-layer results
+  (<a href="https://github.com/confusius-tools/confusius/pull/562">#562</a>).</li>
+<li>Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer,
   following BrainGlobe's move to Python 3.12-3.14 and
   <a href="https://scientific-python.org/specs/spec-0000/">SPEC 0</a>
-  (<a href="https://github.com/confusius-tools/confusius/issues/377">#377</a>).</p>
-</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/561">#561</a>).</li>
 </ul>
 <h3 id="enhancements"><img alt="✨" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/2728.svg" title=":sparkles:" /> Enhancements<a class="headerlink" href="#enhancements" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Define arbitrary named affine dependencies with <code>geometry_dims</code>, independently
+  of acquisition timestamps. Zarr round-trips retain dependency names, order, and
+  named frames. Mask and label extraction support shared geometry across independent
+  nonspatial axes; select a geometry first when their physical grids differ.
+  Native Xarray <code>.reindex()</code> on geometry axes remains unsupported; use <code>.isel()</code> or
+  <code>.sel()</code> instead (<a href="https://github.com/confusius-tools/confusius/pull/569">#569</a>).</li>
+<li>New <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;ThresholdedColormap&lt;/span&gt;" href="../api/plotting/#confusius.plotting.ThresholdedColormap"><code>ThresholdedColormap</code></a>, the gray-banded
+  colormap stat maps are drawn with, which remembers its source colormap and
+  threshold and can be rebuilt on another colormap with <code>with_source</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
 <li>Load <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> NIfTI chunks together using <code>{chunk}</code> in the filename, stacking
-  them along <code>grid</code> in numeric chunk order while preserving geometry and timing
+  them along <code>pose</code> in numeric chunk order while preserving geometry and timing
   (<a href="https://github.com/confusius-tools/confusius/pull/564">#564</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Scalar-indexed VoxelData geometry was restored automatically before the external
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_motion_diagnostics&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_motion_diagnostics"><code>plot_motion_diagnostics</code></a> draws the
+  iteration count in a darker turquoise, readable on light backgrounds
+  (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
+<li>
+<p>The first-level <abbr title="General Linear Model">GLM</abbr> example preserves named NIfTI frames when relabeling voxel
+  axes, allowing its <code>world_to_qform</code> correction and full analysis to complete
+  (<a href="https://github.com/confusius-tools/confusius/pull/569">#569</a>).</p>
+</li>
+<li>
+<p>Scalar-indexed VoxelData geometry was restored automatically before the external
   VoxelData integration. Explicit canonicalization is now required before applying
   or reindexing geometry on these arrays (see breaking changes above)
-  (<a href="https://github.com/confusius-tools/confusius/pull/558">#558</a>).</li>
+  (<a href="https://github.com/confusius-tools/confusius/pull/558">#558</a>).</p>
+</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <ul>
@@ -4873,6 +4931,17 @@
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Re-export extraction and reconstruction directly from VoxelData, retaining
+  <code>.fusi.extract</code> methods but not acquisition-defaulting extraction wrappers.
+  Acquisition-aware mask/label validators, constructors, and loaders remain in
+  ConfUSIus. Named timestamps support any number of nonspatial dependencies;
+  <code>slice_time</code> stays consumer-defined in VoxelData and interpreted by ConfUSIus.
+  VoxelData provides extraction out of the box through Xarray, with independent
+  <code>accel</code> (flox), <code>lazy</code> (Dask), and combined <code>all</code> extras
+  (<a href="https://github.com/confusius-tools/confusius/pull/569">#569</a>).</li>
+<li>The examples gallery runs each example once and renders its light and dark
+  figures from that single run
+  (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;fetch_brainglobe_atlas&lt;/span&gt;" href="../api/datasets/#confusius.datasets.fetch_brainglobe_atlas"><code>fetch_brainglobe_atlas</code></a> now uses
   BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals,
   so atlas arrays stay lazy without depending on private upstream code
@@ -4881,6 +4950,12 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/555">#555</a>).</li>
 <li>Use the released xarray 2026.9.0 instead of a git pin now that it ships the
   required fixes (<a href="https://github.com/confusius-tools/confusius/pull/559">#559</a>).</li>
+</ul>
+<h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Open multipose arrays as one positioned layer per pose in <code>plot_napari</code>, its
+  xarray accessors, and the CLI, with pose values in layer names
+  (<a href="https://github.com/confusius-tools/confusius/pull/562">#562</a>).</li>
 </ul>
 <h2 id="090">0.9.0<a class="headerlink" href="#090" title="Permanent link">&para;</a></h2>
 <p>Released 2026-10-31.</p>
@@ -4994,7 +5069,7 @@
   and a "Copy as Markdown" button in the page header
   (<a href="https://github.com/confusius-tools/confusius/pull/513">#513</a>).</li>
 </ul>
-<h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_1"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Boolean arrays open as labels layers
   (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</li>
@@ -5156,7 +5231,7 @@
   <code>confusius.xarray</code> subpackage
   (<a href="https://github.com/confusius-tools/confusius/pull/500">#500</a>).</li>
 </ul>
-<h3 id="napari-plugin_1"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_1" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_2"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Renaming a layer now immediately updates selectors in Registration, Signals,
   Quality Control, Video, and Data → Save without changing the selected layer
@@ -5201,7 +5276,7 @@
   gzip-compressed NIfTI files
   (<a href="https://github.com/confusius-tools/confusius/pull/441">#441</a>).</li>
 </ul>
-<h3 id="napari-plugin_2"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_2" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_3"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Scrolling the sidebar with the mouse wheel no longer gets hijacked by whichever
   combo box or spin box the cursor happens to be over

@@ -36,7 +36,6 @@ import confusius as cf
 
 # Adapt background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 
 # Keep notebook output compact for large DataArray displays. The coordinates section is
 # left expanded on purpose; `display_expand_data` alone does not cover the attributes.
@@ -163,6 +162,9 @@ This dataset is stored with a spatial convention that differs from the [spatial 
 >         dims=relabeled_dims,
 >         time=da.time,
 >         voxel_to_world=swapped_voxel_to_world,
+>         # Relabeling voxel axes preserves the world frame and its named transforms.
+>         affines=da.vd.affines,
+>         units=da.vd.units,
 >         attrs=da.attrs,
 >         name=str(da.name) if da.name is not None else None,
 >     )
@@ -221,42 +223,12 @@ This dataset is stored with a spatial convention that differs from the [spatial 
 fusi_list = [_load_and_prepare_fusi(pwd_path) for pwd_path in pwd_paths]
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mKeyError[39m                                  Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[5][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m fusi_list = [_load_and_prepare_fusi(pwd_path) [38;5;28;01mfor[39;00m pwd_path [38;5;28;01min[39;00m pwd_paths]
-
-[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 70[39m, in [36m_load_and_prepare_fusi[39m[34m(pwd_path)[39m
-[32m     66[39m     [38;5;66;03m#    coordinates. This is the affine that settles which world row (z/y/x) each[39;00m
-[32m     67[39m     [38;5;66;03m#    voxel column ends up mapping to, so it is applied in full (rotation[39;00m
-[32m     68[39m     [38;5;66;03m#    included) -- the voxel-to-world index can represent rotations exactly,[39;00m
-[32m     69[39m     [38;5;66;03m#    unlike a plain z/y/x DataArray's independent 1D coordinates.[39;00m
-[32m---> [39m[32m70[39m     da.vd.apply(da.vd.affines[[33m"world_to_qform"[39m], inplace=[38;5;28;01mTrue[39;00m)
-[32m     71[39m 
-[32m     72[39m     [38;5;66;03m# 3. `world_to_qform` (checked empirically) lands elevation on world "x",[39;00m
-[32m     73[39m     [38;5;66;03m#    depth on world "z", and lateral on world "y" -- a 3-cycle, not a pairwise[39;00m
-
-[31mKeyError[39m: 'world_to_qform'
-```
-
 Averaging each run over time and then across runs gives a single, high-SNR power-Doppler volume. This averaged image carries no task information, but it is a clean anatomical reference that we use for registration in the next step.
 
 ```python
 average_fusi = xr.concat([fusi.mean("time") for fusi in fusi_list], dim="extra").mean(
     "extra"
 )
-```
-
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[6][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m average_fusi = xr.concat([fusi.mean("time") for fusi in fusi_list], dim="extra").mean(
-[32m      2[39m     [33m"extra"[39m
-[32m      3[39m )
-
-[31mNameError[39m: name 'fusi_list' is not defined
 ```
 
 ## Bring the data into a common anatomical space
@@ -291,22 +263,6 @@ _, template_to_fusi_transform, _ = cf.registration.register_volume(
 )
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[7][39m[32m, line 12[39m
-[32m      8[39m     ]
-[32m      9[39m )
-[32m     10[39m 
-[32m     11[39m _, template_to_fusi_transform, _ = cf.registration.register_volume(
-[32m---> [39m[32m12[39m     average_fusi,
-[32m     13[39m     template_pepe_mariani,
-[32m     14[39m     transform_type=[33m"affine"[39m,
-[32m     15[39m     learning_rate=[33m"auto"[39m,
-
-[31mNameError[39m: name 'average_fusi' is not defined
-```
-
 The estimated transform maps template scanner coordinates back onto the recording's world space. Compose it with the inverse scanner-to-Allen transform to obtain the atlas-to-recording mapping. With that affine in hand, `resample_like` reslices each volume onto the atlas grid. We resample the averaged image (for display) and every individual run (the GLM input).
 
 ```python
@@ -327,19 +283,6 @@ for fusi in fusi_list:
     resampled_fusi_list.append(resampled_fusi)
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[8][39m[32m, line 2[39m
-[32m      1[39m atlas = cf.datasets.fetch_brainglobe_atlas([33m"allen_mouse_100um"[39m)
-[32m----> [39m[32m2[39m atlas_to_fusi_transform = template_to_fusi_transform @ np.linalg.inv(
-[32m      3[39m     template_pepe_mariani.vd.affines[[33m"world_to_sform"[39m]
-[32m      4[39m )
-[32m      5[39m 
-
-[31mNameError[39m: name 'template_to_fusi_transform' is not defined
-```
-
 ## Choose a hemodynamic response function
 
 A stimulus does not produce an instantaneous change in the power Doppler signal: the vascular response is usually delayed through the neurovascular coupling. The GLM accounts for this by convolving the stimulation boxcar with a **hemodynamic response function (HRF)**. ConfUSIus offers different types of HRFs, some of them originally proposed for fMRI analysis. Here we use `claron2021_hrf`, an inverse-gamma HRF proposed for functional ultrasound, rather than a canonical BOLD HRF. We tune its `beta` scale parameter to `6.7` to obtain a faster peak response (around 2–3 seconds).
@@ -351,7 +294,7 @@ modified_claron2021 = partial(cf.glm.claron2021_hrf, beta=6.7)
 hrf_kernel = modified_claron2021(dt=1.0)
 hrf_time = np.linspace(0, 32, len(hrf_kernel))
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(hrf_time, hrf_kernel, color="#d93a54")
 ax.set_xlabel("Time since stimulus onset (s)")
 ax.set_ylabel("Response (a.u.)")
@@ -373,20 +316,6 @@ confounds = [
 ]
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[10][39m[32m, line 7[39m
-[32m      3[39m         fusi,
-[32m      4[39m         noise_mask=atlas.atlas.get_masks([33m"fiber tracts"[39m)[[32m0[39m],
-[32m      5[39m         n_components=[32m3[39m,
-[32m      6[39m     )
-[32m----> [39m[32m7[39m     [38;5;28;01mfor[39;00m fusi [38;5;28;01min[39;00m resampled_fusi_list
-[32m      8[39m ]
-
-[31mNameError[39m: name 'resampled_fusi_list' is not defined
-```
-
 ## Fit the first-level GLM
 
 We hand the model specification to `FirstLevelModel` up front: the HRF, the `"cosine"` drift model that high-pass filters slow scanner/physiological drifts below `0.01` Hz, and the AR(1) noise model that accounts for temporal autocorrelation in the residuals. `fit` then takes the runs together with the `events` table and the per-run CompCor `confounds`, assembles a design matrix for each run internally, and fits it to the data voxel by voxel. We apply a light Gaussian spatial smoothing (0.3 mm FWHM per axis) to boost SNR and fit every voxel, leaving the anatomical masking to the thresholding step below. Passing the list of runs together combines them with a fixed-effects model.
@@ -403,18 +332,42 @@ glm = cf.glm.FirstLevelModel(
 glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[11][39m[32m, line 9[39m
-[32m      5[39m     low_cutoff=[32m0.01[39m,
-[32m      6[39m     noise_model=[33m"ar1"[39m,
-[32m      7[39m     show_progress=[38;5;28;01mTrue[39;00m,
-[32m      8[39m )
-[32m----> [39m[32m9[39m glm.fit(resampled_fusi_list, events=events, confounds=confounds)
-
-[31mNameError[39m: name 'resampled_fusi_list' is not defined
 ```
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fbb403e9220>, beta=6.7),
+                show_progress=True, smoothing_fwhm=0.3)
+```
+
+**In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.  
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.**
+
+☑ FirstLevelModel
+
+iFitted
+
+**Parameters**
+
+|  |  |  |
+| --- | --- | --- |
+|  | hrf\_model | functools.par...20\>, beta=6.7) |
+|  | smoothing\_fwhm | 0.3 |
+|  | show\_progress | True |
+|  | drift\_model | 'cosine' |
+|  | low\_cutoff | 0.01 |
+|  | drift\_order | 1 |
+|  | fir\_delays | None |
+|  | noise\_model | 'ar1' |
+|  | minimize\_memory | True |
+|  | oversampling | 50 |
+|  | min\_onset | \-24.0 |
+|  | uniformity\_tolerance | 0.01 |
+|  | mask | None |
+
+**Fitted attributes**
+
+| Name | Type | Value |
+| --- | --- | --- |
+| design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
+| results\_ | list | \[\<confusius.gl...x7fbb30337750\>, \<confusius.gl...x7fbb3c8f8d60\>, \<confusius.gl...x7fbb29f3dc70\>, \<confusius.gl...x7fbb302e0e20\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -433,18 +386,6 @@ _ = cf.plotting.plot_design_matrix(
 )
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mAttributeError[39m                            Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[12][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m design_matrix = glm.design_matrices_[[32m0[39m]
-[32m      2[39m 
-[32m      3[39m _ = cf.plotting.plot_design_matrix(
-[32m      4[39m     design_matrix,
-
-[31mAttributeError[39m: 'FirstLevelModel' object has no attribute 'design_matrices_'
-```
-
 ## Compute and display the activation map
 
 `compute_contrast` turns the fitted model into a statistical map from a *contrast*: a weight vector over the design-matrix columns. Before computing it, we can look at the contrast itself with `plot_contrast_matrix`, which lays the weights over the design regressors and makes explicit that the `"active"` contrast simply selects the stimulation regressor while ignoring the CompCor, drift, and constant nuisance columns.
@@ -455,17 +396,6 @@ _ = cf.plotting.plot_contrast_matrix(
 )
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[13][39m[32m, line 2[39m
-[32m      1[39m _ = cf.plotting.plot_contrast_matrix(
-[32m----> [39m[32m2[39m     [33m"active"[39m, design_matrix, cmap=[33m"coolwarm"[39m, bg_color=bg_color
-[32m      3[39m )
-
-[31mNameError[39m: name 'design_matrix' is not defined
-```
-
 The `"active"` contrast then tests, at every voxel, whether that stimulation regressor has a non-zero effect, and returns a z-score map. We display it over a range of atlas slices with the region boundaries drawn on top for anatomical context.
 
 ```python
@@ -474,14 +404,12 @@ z_score = glm.compute_contrast("active")
 z_1d = resampled_average_in_atlas.z.isel(j=0, i=0).values
 slice_coords = z_1d[(z_1d > 5.5) & (z_1d < 9)][::4]
 
-cmap = "berlin" if is_dark_theme else None
 plotter = cf.plotting.plot_stat_map(
     z_score,
     slice_coords=slice_coords,
     nrows=3,
     vmax=10,
     bg_color=bg_color,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -490,43 +418,6 @@ _ = plotter.add_contours(
     slice_coords=slice_coords,
     alpha=0.4,
 )
-```
-
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mValueError[39m                                Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[14][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m z_score = glm.compute_contrast([33m"active"[39m)
-[32m      2[39m 
-[32m      3[39m z_1d = resampled_average_in_atlas.z.isel(j=[32m0[39m, i=[32m0[39m).values
-[32m      4[39m slice_coords = z_1d[(z_1d > [32m5.5[39m) & (z_1d < [32m9[39m)][::[32m4[39m]
-
-[36mFile [39m[32m~/work/confusius/confusius/src/confusius/glm/first_level.py:427[39m, in [36mFirstLevelModel.compute_contrast[39m[34m(self, contrast_def, stat_type, output_type, baseline)[39m
-[32m    389[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34mcompute_contrast[39m(
-[32m    390[39m     [38;5;28mself[39m,
-[32m    391[39m     contrast_def: [38;5;28mstr[39m | npt.NDArray[np.floating],
-[32m   (...)[39m[32m    396[39m     baseline: [38;5;28mfloat[39m = [32m0.0[39m,
-[32m    397[39m ) -> xr.DataArray:
-[32m    398[39m [38;5;250m    [39m[33;03m"""Compute a contrast and return a statistical map.[39;00m
-[32m    399[39m 
-[32m    400[39m [33;03m    Parameters[39;00m
-[32m   (...)[39m[32m    425[39m [33;03m        invalid.[39;00m
-[32m    426[39m [33;03m    """[39;00m
-[32m--> [39m[32m427[39m     [30;43mself[39;49m[30;43m.[39;49m[30;43m_check_is_fitted[39;49m[30;43m([39;49m[30;43m)[39;49m
-[32m    429[39m     contrast_obj = [38;5;28mself[39m._compute_contrast_across_runs(
-[32m    430[39m         contrast_def, stat_type, baseline=baseline
-[32m    431[39m     )
-[32m    432[39m     flat = select_contrast_map(contrast_obj, output_type)
-
-[36mFile [39m[32m~/work/confusius/confusius/src/confusius/glm/first_level.py:645[39m, in [36mFirstLevelModel._check_is_fitted[39m[34m(self)[39m
-[32m    643[39m [38;5;250m[39m[33;03m"""Raise if the model has not been fitted."""[39;00m
-[32m    644[39m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28mhasattr[39m([38;5;28mself[39m, [33m"[39m[33mresults_[39m[33m"[39m):
-[32m--> [39m[32m645[39m     [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
-[32m    646[39m         [33m"[39m[33mThis FirstLevelModel instance is not fitted yet. [39m[33m"[39m
-[32m    647[39m         [33m"[39m[33mCall [39m[33m'[39m[33mfit[39m[33m'[39m[33m before using [39m[33m'[39m[33mcompute_contrast[39m[33m'[39m[33m.[39m[33m"[39m
-[32m    648[39m     )
-
-[31mValueError[39m: This FirstLevelModel instance is not fitted yet. Call 'fit' before using 'compute_contrast'.
 ```
 
 ## Threshold for statistical significance
@@ -549,19 +440,6 @@ p_values.values = np.clip(2.0 * sps.norm.sf(np.abs(z_score)), 0.0, 1.0)
 adjusted_p_values = cf.stats.adjust_pvalues(
     p_values, mask=atlas.atlas.get_masks("root")[0], method="holm"
 )
-```
-
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[15][39m[32m, line 2[39m
-[32m      1[39m thresholded_zscore, threshold = cf.stats.apply_statistical_threshold(
-[32m----> [39m[32m2[39m     z_score,
-[32m      3[39m     mask=atlas.atlas.get_masks([33m"root"[39m)[[32m0[39m],
-[32m      4[39m     alpha=[32m0.01[39m,
-[32m      5[39m     method=[33m"holm"[39m,
-
-[31mNameError[39m: name 'z_score' is not defined
 ```
 
 > [!TIP]
@@ -589,7 +467,6 @@ plotter = cf.plotting.plot_stat_map(
     bg_kwargs={"vmin": -20, "vmax": 0},
     bg_color=bg_color,
     alpha=1 - adjusted_p_values,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -600,22 +477,9 @@ _ = plotter.add_contours(
 )
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[16][39m[32m, line 2[39m
-[32m      1[39m plotter = cf.plotting.plot_stat_map(
-[32m----> [39m[32m2[39m     z_score,
-[32m      3[39m     bg_volume=resampled_average_in_atlas.fusi.scale.db(),
-[32m      4[39m     slice_coords=slice_coords,
-[32m      5[39m     nrows=[32m3[39m,
-
-[31mNameError[39m: name 'z_score' is not defined
-```
-
 ---
 
-**Total running time:** 5.2 s
+**Total running time:** 160.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.ipynb>)
 

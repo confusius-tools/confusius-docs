@@ -3458,7 +3458,7 @@ operations.</p>
             <b><code><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt; (&lt;code&gt;confusius.multipose.consolidate_poses&lt;/code&gt;)" href="./#confusius.multipose.consolidate_poses">consolidate_poses</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Merge the <code>grid</code> dimension into the swept voxel dimension, ordered by position.</p>
+              <p>Merge the <code>pose</code> dimension into the swept voxel dimension, ordered by position.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -3509,8 +3509,8 @@ operations.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Merge the <code>grid</code> dimension into the swept voxel dimension, ordered by position.</p>
-<p>Per-<code>(grid, sweep_dim)</code> world positions are read directly from <code>da</code>'s own world
+        <p>Merge the <code>pose</code> dimension into the swept voxel dimension, ordered by position.</p>
+<p>Per-<code>(pose, sweep_dim)</code> world positions are read directly from <code>da</code>'s own world
 coordinates, which requires <code>da</code>'s primary voxel-to-world geometry to itself be
 pose-dependent (a <code>(npose, 4, 4)</code> affine stack, one affine per pose).
 This is the case for SCAN data, where lab space (a fixed scanner frame shared by
@@ -3519,7 +3519,7 @@ every pose) is the canonical world frame — see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses"><code>stack_poses</code></a> output. If <code>da</code>'s primary
 geometry is instead driven by a <em>secondary</em>, named affine in
 <code>da.vd.affines</code> (e.g. a stack of NIfTI DataArrays with their
-<code>world_to_qform</code> affines stacked, no grid-dependent primary geometry of their
+<code>world_to_qform</code> affines stacked, no pose-dependent primary geometry of their
 own), rebase onto it first with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply&lt;/span&gt;" href="../xarray/#voxeldata.accessors.VoxelDataAccessor.apply"><code>.vd.apply</code></a>, e.g.
 <code>da.vd.apply("world_to_qform")</code>, before calling this function.</p>
@@ -3535,10 +3535,10 @@ acquired with an Iconeus system using a purely translational probe sweep. In tha
 workflow, each pose corresponds to one probe position along the elevation axis
 (<code>k</code>/world <code>z</code>), and the VoxelData array is produced by
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../io/#confusius.io.load_scan"><code>load_scan</code></a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">scan_3d</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;recording.scan&quot;</span><span class="p">)</span>       <span class="c1"># dims: (grid, k, j, i)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">scan_3d</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;recording.scan&quot;</span><span class="p">)</span>       <span class="c1"># dims: (pose, k, j, i)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">volume</span>  <span class="o">=</span> <span class="n">consolidate_poses</span><span class="p">(</span><span class="n">scan_3d</span><span class="p">)</span>        <span class="c1"># dims: (k, j, i)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">scan_4d</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;recording_4d.scan&quot;</span><span class="p">)</span>    <span class="c1"># dims: (time, grid, k, j, i)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">scan_4d</span> <span class="o">=</span> <span class="n">load_scan</span><span class="p">(</span><span class="s2">&quot;recording_4d.scan&quot;</span><span class="p">)</span>    <span class="c1"># dims: (time, pose, k, j, i)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">volume</span>  <span class="o">=</span> <span class="n">consolidate_poses</span><span class="p">(</span><span class="n">scan_4d</span><span class="p">)</span>        <span class="c1"># dims: (time, k, j, i)</span>
 </span></code></pre></div>
 
@@ -3550,7 +3550,7 @@ workflow, each pose corresponds to one probe position along the elevation axis
 <a href="#confusius.multipose.consolidate_poses(da)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>VoxelData array with a <code>grid</code> dimension and pose-dependent primary
+            <p>VoxelData array with a <code>pose</code> dimension and pose-dependent primary
 voxel-to-world geometry. Typically produced by
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_scan&lt;/span&gt;" href="../io/#confusius.io.load_scan"><code>load_scan</code></a> for <code>3Dscan</code> or <code>4Dscan</code> files, or by
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses"><code>stack_poses</code></a>.</p>
@@ -3590,13 +3590,13 @@ with <code>rtol</code> as described above. If not provided, defaults to 5 um con
               <code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>
           –
           <div class="doc-md-description">
-            <p>VoxelData array with <code>grid</code> merged into the swept voxel dimension, sorted by
+            <p>VoxelData array with <code>pose</code> merged into the swept voxel dimension, sorted by
 world position. Every voxel keeps its world position: the output
 voxel-to-world affine carries over the input's non-swept columns (including
 any rotation), uses one regular step along the detected sweep axis for the
 swept column, and is anchored at the first sorted voxel. For inputs whose
 <code>time</code> coordinate is itself
-pose-dependent (<code>(time, grid)</code>-shaped -- see
+pose-dependent (<code>(time, pose)</code>-shaped -- see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses">stack_poses</a>), a consolidated <code>slice_time</code>
 with dims <code>("time", &lt;sweep_dim&gt;)</code> is included: each slice inherits the
 timestamp of the pose it came from.</p>
@@ -3611,7 +3611,7 @@ timestamp of the pose it came from.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>da</code> has no <code>grid</code> dimension, if <code>da</code>'s primary geometry is not
+            <p>If <code>da</code> has no <code>pose</code> dimension, if <code>da</code>'s primary geometry is not
 pose-dependent, if the rotation block of the affine is not constant across
 poses (non-translation sweep), if the swept voxel dimension cannot be
 detected (fewer than two poses, identical grid positions, or a degenerate
@@ -3680,8 +3680,8 @@ coordinate.</p>
 <li>Consolidated data: dims <code>(time, &lt;sweep_dim&gt;, ...)</code> with a <code>slice_time</code> coordinate
   with dims <code>(time, &lt;sweep_dim&gt;)</code>, typically produced by
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="./#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>.</li>
-<li>Unconsolidated data: dims <code>(time, grid, ...)</code> with a pose-dependent
-  <code>(time, grid)</code>-shaped <code>time</code> coordinate (see
+<li>Unconsolidated data: dims <code>(time, pose, ...)</code> with a pose-dependent
+  <code>(time, pose)</code>-shaped <code>time</code> coordinate (see
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;stack_poses&lt;/span&gt;" href="./#confusius.multipose.stack_poses">stack_poses</a>), holding each pose's own real
   timestamp directly. The result's <code>time</code> becomes a genuine 1D coordinate,
   computed the same way <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="./#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a>
@@ -3704,7 +3704,7 @@ may be freely chunked.</p>
           –
           <div class="doc-md-description">
             <p>VoxelData array with a <code>slice_time</code> coordinate, or a
-pose-dependent <code>(time, grid)</code>-shaped <code>time</code> coordinate, with dims
+pose-dependent <code>(time, pose)</code>-shaped <code>time</code> coordinate, with dims
 <code>(time, &lt;sweep_dim&gt;)</code>.</p>
           </div>
         </li>
@@ -3803,14 +3803,14 @@ dimension is chunked.</p>
 <a href="#confusius.multipose.stack_poses" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">stack_poses</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;poses&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.multipose.stack_poses(poses)&lt;/code&gt;)" href="./#confusius.multipose.stack_poses(poses)">poses</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;collections.abc.Sequence&lt;/code&gt;" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span><span class="p">],</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;grid&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.multipose.stack_poses(grid)&lt;/code&gt;)" href="./#confusius.multipose.stack_poses(grid)">grid</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;collections.abc.Sequence&lt;/code&gt;" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;collections.abc.Hashable&lt;/code&gt;" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable">Hashable</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;pose&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.multipose.stack_poses(pose)&lt;/code&gt;)" href="./#confusius.multipose.stack_poses(pose)">pose</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;collections.abc.Sequence&lt;/code&gt;" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;collections.abc.Hashable&lt;/code&gt;" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable">Hashable</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>Stack independently loaded single-pose VoxelData arrays into one pose-dependent array.</p>
-<p>Unlike a direct <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.concat.html#xarray.concat"><code>xr.concat(..., dim="grid")</code></a> call on
+<p>Unlike a direct <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.concat.html#xarray.concat"><code>xr.concat(..., dim="pose")</code></a> call on
 single-pose inputs, this function preserves each input's voxel-to-world affine
 in a pose-dependent <code>VoxelToWorldIndex</code>. The output's world coordinates
 (<code>z</code>/<code>y</code>/<code>x</code>) therefore reflect each probe position, with pose labels and
@@ -3825,16 +3825,16 @@ affines kept in input order.</p>
           –
           <div class="doc-md-description">
             <p>VoxelData arrays to stack, one per pose, in pose order. Each
-must have no existing <code>grid</code> dimension (see
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../validation/#confusius.validation.ensure_voxeldata">ensure_voxeldata</a>'s <code>allow_grid</code> parameter).
+must have no existing <code>pose</code> dimension (see
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../validation/#confusius.validation.ensure_voxeldata">ensure_voxeldata</a>'s <code>allow_pose</code> parameter).
 Voxel dimensions, shape, voxel-space (<code>k</code>/<code>j</code>/<code>i</code>) coordinate values, and any
 non-core dimensions must otherwise agree across poses, exactly as required to
 merge non-concatenated variables in any <code>xr.concat</code> call.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<h4 id="confusius.multipose.stack_poses(grid)" class="doc doc-heading doc-heading-parameter">              <b><code>grid</code></b>
-<a href="#confusius.multipose.stack_poses(grid)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="sequence">sequence</span>[<span title="hashable">hashable</span>]</code>, default:
+<h4 id="confusius.multipose.stack_poses(pose)" class="doc doc-heading doc-heading-parameter">              <b><code>pose</code></b>
+<a href="#confusius.multipose.stack_poses(pose)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><span title="sequence">sequence</span>[<span title="hashable">hashable</span>]</code>, default:
                   <code>None</code>
 )
           –
@@ -3852,16 +3852,16 @@ merge non-concatenated variables in any <code>xr.concat</code> call.</p>
               <code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>
           –
           <div class="doc-md-description">
-            <p>Stacked DataArray with a new <code>grid</code> dimension and pose-dependent
+            <p>Stacked DataArray with a new <code>pose</code> dimension and pose-dependent
 voxel-to-world geometry (an <code>(npose, 4, 4)</code> affine stack, one affine per
 input). If a <code>time</code> dimension is present and every pose shares identical
 <code>time</code> values, <code>time</code> stays an ordinary 1D dimension coordinate. If per-pose
 <code>time</code> values differ (poses acquired sequentially rather than
-simultaneously), <code>time</code> instead becomes a genuine <code>(time, grid)</code>-shaped
+simultaneously), <code>time</code> instead becomes a genuine <code>(time, pose)</code>-shaped
 coordinate holding each pose's own real timestamp directly -- there is no
-single answer for "the" time of a <code>(grid, k, j, i)</code> voxel any more than
+single answer for "the" time of a <code>(pose, k, j, i)</code> voxel any more than
 there is a single answer for its <code>z</code>/<code>y</code>/<code>x</code> position, so <code>time</code> requires a
-scalar <code>grid</code> selection first, exactly like world coordinates already do.
+scalar <code>pose</code> selection first, exactly like world coordinates already do.
 A 2D <code>time</code> is not itself an index (xarray dimension coordinates must be
 1D), so <code>.sel(time=...)</code> is unavailable until a pose is selected; after
 that, <code>.set_xindex("time")</code> promotes the resulting 1D <code>time</code> back into a
@@ -3877,8 +3877,8 @@ real, selectable index.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>poses</code> is empty, if <code>grid</code> does not have one label per entry of <code>poses</code>,
-if any pose already has a <code>grid</code> dimension, or if poses have mismatched
+            <p>If <code>poses</code> is empty, if <code>pose</code> does not have one label per entry of <code>poses</code>,
+if any pose already has a <code>pose</code> dimension, or if poses have mismatched
 <code>time</code> lengths.</p>
           </div>
         </li>

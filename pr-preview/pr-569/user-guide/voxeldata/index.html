@@ -3641,18 +3641,36 @@ VoxelData's flat <strong><code>.vd</code> accessor</strong>. Use <code>.vd</code
 <p>A <strong>VoxelData array</strong> satisfies these requirements:</p>
 <ol>
 <li>Dimensions <code>(*nonspatial_dims, k, j, i)</code>: spatial dimensions are mandatory and
-   last. Optional <code>time</code>, <code>grid</code>, and any other leading dimensions may appear in any
+   last. Optional <code>time</code>, <code>pose</code>, and any other leading dimensions may appear in any
    order.</li>
 <li>A <strong><code>VoxelToWorldIndex</code></strong>, supplied by VoxelData, attached to the derived world
-   coordinates <code>(z, y, x)</code>. Without <code>grid</code>, geometry is a single <code>(4, 4)</code> affine.
-   With <code>grid</code>, geometry is an <code>(ngrid, 4, 4)</code> stack, including for one grid.</li>
+   coordinates <code>(z, y, x)</code>. Geometry is a shared <code>(4, 4)</code> affine or a stack indexed
+   by ordered, nonspatial <code>geometry_dims</code>. Its batch shape matches those dimensions,
+   independently of the parent array order.</li>
 <li>For <abbr title="Functional Ultrasound Imaging">fUSI</abbr> time series, attributes <code>units</code>, <code>volume_acquisition_reference</code>, and
    <code>volume_acquisition_duration</code> on <code>time</code>. These acquisition requirements belong
    to ConfUSIus, not to the generic VoxelData model.</li>
 </ol>
-<p>Probe poses are represented by <strong><code>grid</code></strong>. Each grid's geometry applies across
-all time points and other leading dimensions. Grids need not have different
-affine values; <code>grid</code> selects geometry, rather than requiring distinct positions.</p>
+<p>ConfUSIus probe-pose APIs use <strong><code>pose</code></strong>. The ConfUSIus constructor interprets probe affine stacks as
+<code>geometry_dims=("pose",)</code> and apply across time and other leading dimensions.
+General VoxelData arrays may instead declare dependencies such as
+<code>geometry_dims=("time", "view")</code>, requiring <code>(ntime, nview, 4, 4)</code> affines. A shared
+matrix has <code>geometry_dims=()</code>, even with nonspatial dimensions. Identical matrices
+are allowed. Timestamp dependencies remain independent of geometry dependencies.</p>
+<div class="admonition warning">
+<p class="admonition-title">Geometry-axis reindexing is unsupported</p>
+<p>Use <code>.isel()</code> or <code>.sel()</code> to select/reorder dimensions listed in
+<code>data.vd.geometry_dims</code>, not native Xarray <code>.reindex()</code> or alignment that
+changes their labels. The world index is separate from their ordinary indexes;
+raw Xarray world-coordinate access can retain stale transform metadata.
+VoxelData access/validation detects mismatching indexed geometry labels.
+<code>.vd.reindex_voxels()</code> and <code>.vd.reindex_voxels_like()</code> explicitly rebuild geometry
+and remain supported.</p>
+</div>
+<p>Zarr saves preserve the ordered dependencies in <code>voxel_to_world_geometry_dims</code>,
+along with primary geometry and named frames, without storing dense world arrays.
+A shared mask may broadcast across geometry axes only when all corresponding
+affines describe the same physical grid; otherwise select a geometry first.</p>
 <h3 id="dimension-ordering">Dimension Ordering<a class="headerlink" href="#dimension-ordering" title="Permanent link">&para;</a></h3>
 <p>Only the trailing <code>(k, j, i)</code> order is required. Leading dimensions have these
 usual meanings, but their order is flexible:</p>
@@ -3682,7 +3700,7 @@ usual meanings, but their order is flexible:</p>
 <td>Thousands</td>
 </tr>
 <tr>
-<td><code>grid</code></td>
+<td><code>pose</code></td>
 <td>int</td>
 <td>Yes</td>
 <td>Probe poses</td>
@@ -3712,26 +3730,21 @@ usual meanings, but their order is flexible:</p>
 </tbody>
 </table>
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a> preserves the relative
-order of leading dimensions. Both <code>(time, grid, k, j, i)</code> and
-<code>(grid, time, k, j, i)</code> are valid, as are arrays with extra leading dimensions.
+order of leading dimensions. Both <code>(time, pose, k, j, i)</code> and
+<code>(pose, time, k, j, i)</code> are valid, as are arrays with extra leading dimensions.
 Validation checks validity without changing the order.</p>
-<p>When a stable order is useful, call <code>data.vd.canonicalize()</code> or
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a>. Canonical order is
-<code>(...extra_dims, grid, time, k, j, i)</code>, retaining the relative order of extra
-dimensions. Neither inserts an absent <code>grid</code> or <code>time</code> dimension. ConfUSIus's
-<code>ensure_voxeldata</code> additionally defaults and validates <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisition metadata;
-<code>data.vd.ensure()</code> only applies the generic VoxelData contract.</p>
-<div class="admonition note">
-<p class="admonition-title">Migrating existing data</p>
-<p>There are no <code>pose</code> dimension or <code>.fusi.affine</code> aliases. Older Zarr stores with
-a <code>pose</code> dimension or named frames in <code>attrs["affines"]</code> are rejected rather
-than silently losing their frames. Load them with xarray, rename <code>pose</code> to
-<code>grid</code>, rebuild the index with explicit <code>named_affines=</code>, and save again.</p>
-</div>
+<p>When a stable order is useful, ConfUSIus's
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> uses
+<code>(...extra_dims, pose, time, k, j, i)</code> and defaults and validates <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisition
+metadata. Generic <code>data.vd.canonicalize()</code> and <code>data.vd.ensure()</code> use
+<code>(...extra_dims, time, k, j, i)</code>; <code>pose</code> has no special meaning in VoxelData.
+Both preserve the relative order of extra dimensions and restore scalar-selected
+spatial dimensions without inserting absent nonspatial dimensions. Affine stacks
+passed directly to VoxelData must always name their <code>geometry_dims</code>.</p>
 <p>Keeping spatial dimensions last has practical benefits:</p>
 <ul>
 <li><strong>Spatial blocks:</strong> the last axes describe one volume. Use named selection such
-  as <code>data.isel(time=t, grid=g)</code> rather than assuming what the first array axis means.</li>
+  as <code>data.isel(time=t, pose=g)</code> rather than assuming what the first array axis means.</li>
 <li><strong><code>(samples, features)</code> for free:</strong> <code>data.stack(space=["k", "j", "i"])</code> reshapes to
   <code>(time, space)</code> without copy, matching the
   <a href="https://scikit-learn.org/stable/">scikit-learn</a>/
@@ -3799,7 +3812,7 @@ VoxelData array and want to check that it still satisfies the VoxelData model, u
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_voxeldata"><code>validate_voxeldata</code></a>.</p>
 <p>All ConfUSIus functions that expect a VoxelData array call
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.ensure_voxeldata"><code>ensure_voxeldata</code></a> on their input, which
-canonicalizes the DataArray first—reordering dimensions to <code>(...extra, time, grid, k,
+canonicalizes the DataArray first—reordering dimensions to <code>(...extra, pose, time, k,
 j, i)</code>, restoring a voxel dimension collapsed to a scalar coordinate by a prior
 <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.isel.html#xarray.DataArray.isel"><code>.isel</code></a>, and filling in missing <code>time</code> metadata with sensible
 defaults—before validating.</p>
@@ -3816,17 +3829,17 @@ every volume rather than treating <code>time</code> as an instantaneous sample.<
 data</a>, where poses making up one volume are swept through sequentially
 rather than acquired simultaneously.</p>
 <h3 id="unconsolidated-multi-pose-data">Unconsolidated Multi-Pose Data<a class="headerlink" href="#unconsolidated-multi-pose-data" title="Permanent link">&para;</a></h3>
-<p>While a VoxelData array still carries a <code>grid</code> dimension, <code>time</code> must be pose-dependent
-with shape <code>(time, grid)</code> instead of the plain 1D coordinate above. <code>time</code> then
+<p>While a VoxelData array still carries a <code>pose</code> dimension, <code>time</code> must be pose-dependent
+with shape <code>(time, pose)</code> instead of the plain 1D coordinate above. <code>time</code> then
 describes each pose's acquisition timestamp. </p>
 <p>In this shape, <code>volume_acquisition_duration</code> and <code>volume_acquisition_reference</code> describe
 <strong>one pose's own <code>(k, j, i)</code> acquisition window</strong>, not the time it takes to sweep
-through every pose. Resolving a single real timestamp requires selecting a scalar <code>grid</code>
+through every pose. Resolving a single real timestamp requires selecting a scalar <code>pose</code>
 first, which reduces <code>time</code> back to the plain 1D case.</p>
 <h3 id="consolidated-multi-pose-data">Consolidated Multi-Pose Data<a class="headerlink" href="#consolidated-multi-pose-data" title="Permanent link">&para;</a></h3>
-<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> merges <code>grid</code> into the
+<p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;consolidate_poses&lt;/span&gt;" href="../../api/multipose/#confusius.multipose.consolidate_poses"><code>consolidate_poses</code></a> merges <code>pose</code> into the
 sweep voxel dimension the poses were stepped along (<code>i</code>, <code>j</code>, or <code>k</code>, detected
-automatically), so the result has no <code>grid</code> dimension left. Two things happen to
+automatically), so the result has no <code>pose</code> dimension left. Two things happen to
 timing:</p>
 <ul>
 <li><code>time</code> becomes an ordinary whole-array 1D coordinate again, but
@@ -3869,7 +3882,7 @@ coordinate systems:</p>
 </ul>
 <p>For most recordings, one voxel-to-world affine defines one world grid for the whole
 DataArray. Multi-pose acquisitions are the main exception: they carry one affine per
-<code>grid</code>, so <code>(x, y, z)</code> become pose-dependent coordinates and a scalar <code>grid</code> selection
+<code>pose</code>, so <code>(x, y, z)</code> become pose-dependent coordinates and a scalar <code>pose</code> selection
 is required before selecting by world coordinate.</p>
 <p>Each space feeds the next: array position gets a voxel label, a voxel label gets a world
 coordinate, and a world coordinate can reach any number of reference spaces:</p>
@@ -3918,10 +3931,10 @@ positions</a> in Working with
 Xarray.</p>
 <h3 id="world-space">World Space<a class="headerlink" href="#world-space" title="Permanent link">&para;</a></h3>
 <p>The world space is defined by the DataArray's voxel-to-world affine transformation (or
-transformations, for multi-grid data) contained in the <code>VoxelToWorldIndex</code> and exposed
+transformations, for multi-pose data) contained in the <code>VoxelToWorldIndex</code> and exposed
 as coordinates <code>(x, y, z)</code>. For ordinary single-pose data these coordinates are arrays
-with shape <code>(k, j, i)</code>. For multi-pose data they are pose-dependent with shape <code>(grid,
-k, j, i)</code>, so selecting in world space requires a scalar <code>grid</code> first. The unit shared
+with shape <code>(k, j, i)</code>. For multi-pose data they are pose-dependent with shape <code>(pose,
+k, j, i)</code>, so selecting in world space requires a scalar <code>pose</code> first. The unit shared
 by <code>x</code>/<code>y</code>/<code>z</code> is exposed as <code>data.vd.units</code> and set with
 <code>data.vd.set_units(...)</code>; millimeters are the usual default for <abbr title="Functional Ultrasound Imaging">fUSI</abbr>
 recordings.</p>
@@ -3976,7 +3989,7 @@ Pass <code>coordinate_affine="sform"</code>/<code>"qform"</code> to force one ex
 <p>Hand-constructed DataArrays get whatever voxel-to-world affine the user provides via
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>.</p>
 <h4 id="voxel-to-world-affine">Voxel-to-World Affine<a class="headerlink" href="#voxel-to-world-affine" title="Permanent link">&para;</a></h4>
-<p>The voxel-to-world affine is a <code>(4, 4)</code> homogeneous matrix (or a <code>(grid, 4, 4)</code> stack
+<p>The voxel-to-world affine is a <code>(4, 4)</code> homogeneous matrix (or a <code>(pose, 4, 4)</code> stack
 for multi-pose data) mapping <code>(k, j, i)</code> voxel-space coordinates to <code>(z, y, x)</code>
 world-space coordinates:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[z, y, x, 1] = voxel_to_world @ [k_label, j_label, i_label, 1]
@@ -3992,7 +4005,7 @@ replaced outright with
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;set_voxel_to_world&lt;/span&gt;" href="../../api/xarray/#voxeldata.accessors.VoxelDataAccessor.set_voxel_to_world"><code>.vd.set_voxel_to_world</code></a>.</p>
 <p>Scalar spatial selection, such as <code>data.isel(k=0)</code>, removes a required voxel
 dimension. Before <code>.vd.apply()</code> or <code>.vd.reindex_voxels()</code>, restore it explicitly:
-<code>ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)</code>. A scalar-selected <code>grid</code> is
+<code>ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)</code>. A scalar-selected <code>pose</code> is
 not restored; it selects one probe pose and its geometry.</p>
 <p>That raw mapping is rarely what you want directly, though: most tools that consume
 world-space geometry think in <a href="#array-space">array space</a>, not in whatever labels the
@@ -4058,7 +4071,7 @@ them into the world space itself (see <a href="#switching-world-spaces">Switchin
 Spaces</a>). Each reference space is stored in <code>.vd.affines</code>
 as a homogeneous affine matrix in <code>(z, y, x)</code> convention that maps a world-space point
 to the corresponding point in the reference space. Most are plain <code>(4, 4)</code> matrices;
-for multi-pose data they may also be stacked <code>(grid, 4, 4)</code> affines with one entry per
+for multi-pose data they may also be stacked <code>(pose, 4, 4)</code> affines with one entry per
 pose.</p>
 <p>Several loaders populate <code>.vd.affines</code> automatically:</p>
 <ul>

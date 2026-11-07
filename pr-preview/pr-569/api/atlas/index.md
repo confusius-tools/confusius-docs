@@ -426,7 +426,7 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array defining the target grid. Only its `k`/`j`/`i` grid (`sizes`/`spacing`/`origin`/`direction`) is used, so a `time` dimension, if present, is ignored. Must not have a `grid` or extra non-spatial dimension.
+  VoxelData array defining the target grid. Only its `k`/`j`/`i` grid (`sizes`/`spacing`/`origin`/`direction`) is used, so a `time` dimension, if present, is ignored. Must not have a `pose` or extra non-spatial dimension.
 - ##### **`transform`**
 
   (`(4, 4) numpy.ndarray or xarray.DataArray`) –
@@ -453,7 +453,7 @@ Raises:
 
 - `ValueError` –
 
-  If `reference` has a `grid` or extra non-spatial dimension, or is not a VoxelData array.
+  If `reference` has a `pose` or extra non-spatial dimension, or is not a VoxelData array.
 
 #### search
 

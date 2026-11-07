@@ -14,7 +14,7 @@ Modules:
   Coordinate validation utilities.
 - **`mask`** –
 
-  Mask validation utilities.
+  Acquisition-aware validation layered on VoxelData's mask and label helpers.
 - **`registration`** –
 
   Validation helpers for registration transform DataArrays.
@@ -35,10 +35,10 @@ Functions:
   Restore a scalar-indexed VoxelData dimension and its geometry.
 - **`ensure_labels`** –
 
-  Canonicalize `labels` and `data`, then validate labels share data's grid.
+  Canonicalize and validate labels, including acquisition defaults.
 - **`ensure_mask`** –
 
-  Canonicalize `mask` and `data`, then validate that `mask` shares data's grid.
+  Canonicalize and validate a mask, including acquisition defaults.
 - **`ensure_time_aligned`** –
 
   Return `value` as a `(time, ...)` DataArray aligned with `signals`.
@@ -56,10 +56,10 @@ Functions:
   Raise ValueError if `da` is not a valid displacement field DataArray.
 - **`validate_labels`** –
 
-  Validate that a label map shares data's VoxelData grid.
+  Validate label geometry and ConfUSIus acquisition metadata.
 - **`validate_mask`** –
 
-  Validate that a mask shares data's VoxelData grid.
+  Validate a mask's voxel grid and ConfUSIus acquisition metadata.
 - **`validate_matching_coordinates`** –
 
   Validate that selected coordinates match between two DataArrays.
@@ -81,7 +81,7 @@ canonicalize_voxeldata(data: DataArray) -> DataArray
 
 Restore a scalar-indexed VoxelData dimension and its geometry.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, grid, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. This function does not otherwise validate the VoxelData model; use ensure\_voxeldata to canonicalize and validate.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, pose, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. This function does not otherwise validate the VoxelData model; use ensure\_voxeldata to canonicalize and validate.
 
 Parameters:
 
@@ -122,9 +122,7 @@ ensure_labels(
 ) -> DataArray
 ```
 
-Canonicalize `labels` and `data`, then validate labels share data's grid.
-
-Both `labels` and `data` are canonicalized via `ensure_voxeldata` (restoring any scalar-reduced voxel dims) before `validate_labels` checks them.
+Canonicalize and validate labels, including acquisition defaults.
 
 Parameters:
 
@@ -132,35 +130,32 @@ Parameters:
 
   (`DataArray`) –
 
-  Label map to validate. Must have integer dtype. Accepts two formats:
-
-  - **Flat label map**: Spatial dims only, e.g. `(k, j, i)`. Background voxels labeled `0`; each unique non-zero integer identifies a distinct, non-overlapping region. The `regions` coordinate of the output holds the integer label values.
-  - **Stacked mask format**: Has a leading `mask` dimension followed by spatial dims, e.g. `(mask, k, j, i)`. Each layer has values in `{0,   region_id}` and regions may overlap. The `region` coordinate of the output holds the `mask` coordinate values (e.g., region label).
+  Integer VoxelData labels, flat or stacked along `mask`.
 - #### **`data`**
 
   (`DataArray`) –
 
-  VoxelData array to validate labels against.
+  Reference VoxelData array.
 - #### **`labels_name`**
 
   (`str`, default: `"labels"` ) –
 
-  Name of the labels parameter (used in error messages).
+  Name of the labels parameter in errors.
 
 Returns:
 
 - `DataArray` –
 
-  The canonicalized `labels`.
+  Canonical integer label array on the reference voxel grid.
 
 Raises:
 
 - `TypeError` –
 
-  If `labels` is not an integer dtype DataArray.
+  If labels are not an integer DataArray.
 - `ValueError` –
 
-  If `labels` or `data` isn't a VoxelData array, or if `labels`'s voxel grid doesn't match `data`'s.
+  If model, voxel grid, or acquisition metadata are invalid.
 
 ### ensure\_mask
 
@@ -174,9 +169,9 @@ ensure_mask(
 ) -> DataArray
 ```
 
-Canonicalize `mask` and `data`, then validate that `mask` shares data's grid.
+Canonicalize and validate a mask, including acquisition defaults.
 
-Both `mask` and `data` are canonicalized via `ensure_voxeldata` (restoring any scalar-reduced voxel dims) before `validate_mask` checks them.
+Geometry, binary-mask validation, alignment, and coercion belong to VoxelData. ConfUSIus adds its acquisition validation and defaults before delegation.
 
 Parameters:
 
@@ -184,33 +179,33 @@ Parameters:
 
   (`DataArray`) –
 
-  Mask to validate. Must have boolean dtype, or binary numeric dtype (0 = background, at most one non-zero value = foreground). The latter format is produced by `get_masks`, and also covers masks written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks with values in `{0, 1}` or `{0.0, 1.0}`).
+  VoxelData mask with boolean or finite binary numeric values.
 - #### **`data`**
 
   (`DataArray`) –
 
-  VoxelData array to validate mask against.
+  Reference VoxelData array.
 - #### **`mask_name`**
 
   (`str`, default: `"mask"` ) –
 
-  Name of the mask parameter (used in error messages).
+  Name of the mask parameter in errors.
 - #### **`require_exact_dims`**
 
   (`bool`, default: `False` ) –
 
-  Whether `mask.dims` must match all non-`time` dimensions of `data` in the same order.
+  Whether to require all non-time dimensions in the same order as `data`.
 - #### **`coerce_bool`**
 
   (`bool`, default: `True` ) –
 
-  Whether to coerce the returned `mask` to boolean dtype. Binary numeric masks (`{0, x}`) become `{False, True}` so callers can index with the result without the non-zero value being misread as a positional index. When False, `mask` is returned with its original dtype unchanged.
+  Whether to coerce validated numeric foreground values to booleans.
 
 Returns:
 
 - `DataArray` –
 
-  The canonicalized `mask`, coerced to boolean dtype when `coerce_bool` is `True` (the default), otherwise returned with its original dtype.
+  Canonical mask, optionally coerced to boolean dtype.
 
 Raises:
 
@@ -219,7 +214,7 @@ Raises:
   If `mask` is not a boolean or binary numeric DataArray.
 - `ValueError` –
 
-  If `mask` or `data` isn't a VoxelData array, if `mask`'s voxel grid doesn't match `data`'s, or if `require_exact_dims` is set and `mask`'s dimensions don't match `data`'s.
+  If model, grid, dimensions, or acquisition metadata are invalid.
 
 ### ensure\_time\_aligned
 
@@ -244,7 +239,7 @@ Return `value` as a `(time, ...)` DataArray aligned with `signals`.
 
 `value` must have as many timepoints as `signals`. When both carry `time` coordinates these must match within the default coordinate-comparison tolerance (`rtol=1e-5`, `atol=1e-8`). When only `signals` does, `value` is assumed to be ordered like `signals` along `time` and takes its `time` coordinates, with a warning since alignment cannot be verified.
 
-`signals` with a pose-dependent `(time, grid)` `time` coordinate are represented by their consolidated time (see `consolidate_poses`).
+`signals` with a pose-dependent `(time, pose)` `time` coordinate are represented by their consolidated time (see `consolidate_poses`).
 
 Parameters:
 
@@ -308,7 +303,7 @@ ensure_voxeldata(
 
 Return a canonical, validated VoxelData array.
 
-This is the normal entry point for spatial inputs: it restores scalar-indexed native voxel dimensions and geometry, and orders dimensions as `(...extra_dims, grid, time, k, j, i)` with canonicalize\_voxeldata, then checks the resulting DataArray against the VoxelData model. Use validate\_voxeldata when the input must already follow that model.
+This is the normal entry point for spatial inputs: it restores scalar-indexed native voxel dimensions and geometry, and orders dimensions as `(...extra_dims, pose, time, k, j, i)` with canonicalize\_voxeldata, then checks the resulting DataArray against the VoxelData model. Use validate\_voxeldata when the input must already follow that model.
 
 Parameters:
 
@@ -442,9 +437,7 @@ validate_labels(
 ) -> None
 ```
 
-Validate that a label map shares data's VoxelData grid.
-
-`labels` and `data` must already be canonical VoxelData arrays (see `validate_voxeldata`) -- this does not canonicalize either. For a `labels`/`data` pair that may not already be canonical (e.g. a scalar-reduced voxel dim), use `ensure_labels` instead.
+Validate label geometry and ConfUSIus acquisition metadata.
 
 Parameters:
 
@@ -452,29 +445,26 @@ Parameters:
 
   (`DataArray`) –
 
-  Label map to validate. Must have integer dtype. Accepts two formats:
-
-  - **Flat label map**: Spatial dims only, e.g. `(k, j, i)`. Background voxels labeled `0`; each unique non-zero integer identifies a distinct, non-overlapping region. The `regions` coordinate of the output holds the integer label values.
-  - **Stacked mask format**: Has a leading `mask` dimension followed by spatial dims, e.g. `(mask, k, j, i)`. Each layer has values in `{0,   region_id}` and regions may overlap. The `region` coordinate of the output holds the `mask` coordinate values (e.g., region label).
+  Canonical integer VoxelData labels, flat or stacked along `mask`.
 - #### **`data`**
 
   (`DataArray`) –
 
-  VoxelData array to validate labels against.
+  Canonical reference VoxelData array.
 - #### **`labels_name`**
 
   (`str`, default: `"labels"` ) –
 
-  Name of the labels parameter (used in error messages).
+  Name of the labels parameter in errors.
 
 Raises:
 
 - `TypeError` –
 
-  If `labels` is not an integer dtype DataArray.
+  If labels are not an integer DataArray.
 - `ValueError` –
 
-  If `labels` or `data` isn't a valid VoxelData array, or if `labels`'s voxel grid doesn't match `data`'s.
+  If model, voxel grid, or acquisition metadata are invalid.
 
 ### validate\_mask
 
@@ -487,9 +477,7 @@ validate_mask(
 ) -> None
 ```
 
-Validate that a mask shares data's VoxelData grid.
-
-`mask` and `data` must already be canonical VoxelData arrays (see `validate_voxeldata`) -- this does not canonicalize either. For a `mask`/`data` pair that may not already be canonical (e.g. a scalar-reduced voxel dim), use `ensure_mask` instead.
+Validate a mask's voxel grid and ConfUSIus acquisition metadata.
 
 Parameters:
 
@@ -497,22 +485,22 @@ Parameters:
 
   (`DataArray`) –
 
-  Mask to validate. Must have boolean dtype, or binary numeric dtype (0 = background, at most one non-zero value = foreground). The latter format is produced by `get_masks`, and also covers masks written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks with values in `{0, 1}` or `{0.0, 1.0}`).
+  Canonical VoxelData mask with boolean or finite binary numeric values.
 - #### **`data`**
 
   (`DataArray`) –
 
-  VoxelData array to validate mask against.
+  Canonical reference VoxelData array.
 - #### **`mask_name`**
 
   (`str`, default: `"mask"` ) –
 
-  Name of the mask parameter (used in error messages).
+  Name of the mask parameter in errors.
 - #### **`require_exact_dims`**
 
   (`bool`, default: `False` ) –
 
-  Whether `mask.dims` must match all non-`time` dimensions of `data` in the same order.
+  Whether to require all non-time dimensions in the same order as `data`.
 
 Raises:
 
@@ -521,7 +509,7 @@ Raises:
   If `mask` is not a boolean or binary numeric DataArray.
 - `ValueError` –
 
-  If `mask` or `data` isn't a valid VoxelData array, if `mask`'s voxel grid doesn't match `data`'s, or if `require_exact_dims` is set and `mask`'s dimensions don't match `data`'s.
+  If model, grid, dimensions, or acquisition metadata are invalid.
 
 ### validate\_matching\_coordinates
 
@@ -715,7 +703,7 @@ validate_voxeldata(
     require_unchunked_time: bool = False,
     require_uniform_time: bool = False,
     uniformity_tolerance: float = 0.01,
-    allow_grid: bool = True,
+    allow_pose: bool = True,
     allow_extra_dims: bool = True,
     require_regular_spacing: bool = False,
     regular_spacing_tolerance: float = 0.01,
@@ -756,16 +744,16 @@ Parameters:
   (`float`, default: `1e-2` ) –
 
   Maximum relative variation allowed between consecutive time intervals.
-- #### **`allow_grid`**
+- #### **`allow_pose`**
 
   (`bool`, default: `True` ) –
 
-  Whether to allow a `grid` dimension.
+  Whether to allow a `pose` dimension.
 - #### **`allow_extra_dims`**
 
   (`bool`, default: `True` ) –
 
-  Whether to allow dimensions outside `time`, `grid`, `k`, `j`, and `i`.
+  Whether to allow dimensions outside `time`, `pose`, `k`, `j`, and `i`.
 - #### **`require_regular_spacing`**
 
   (`bool`, default: `False` ) –

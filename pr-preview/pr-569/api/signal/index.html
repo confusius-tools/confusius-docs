@@ -4091,7 +4091,7 @@ with <code>signals</code> cannot be verified.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>confounds</code> is given and <code>signals</code> has a <code>grid</code> dimension, since the same
+            <p>If <code>confounds</code> is given and <code>signals</code> has a <code>pose</code> dimension, since the same
 confounds are regressed from every pose.</p>
           </div>
         </li>
@@ -4100,7 +4100,7 @@ confounds are regressed from every pose.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>Signals with pose-dependent <code>(time, grid)</code> <code>time</code> coordinates are cleaned pose by
+  <p>Signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates are cleaned pose by
 pose along <code>time</code>. <code>confounds</code> and <code>sample_mask</code> are per-volume quantities and
 align with the whole-volume time (see
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;ensure_time_aligned&lt;/span&gt;" href="../validation/#confusius.validation.ensure_time_aligned"><code>ensure_time_aligned</code></a>), so the same
@@ -4946,7 +4946,7 @@ coordinates.</p>
   (<code>sample_mask=False</code>) are replaced with interpolated values.</li>
 <li>Uses <code>xarray.DataArray.interp</code> which handles coordinates and Dask arrays
   automatically.</li>
-<li>Signals with pose-dependent <code>(time, grid)</code> <code>time</code> coordinates are interpolated
+<li>Signals with pose-dependent <code>(time, pose)</code> <code>time</code> coordinates are interpolated
   pose by pose, each on its own timestamps, but using the same <code>sample_mask</code>.</li>
 </ul>
 </details>
@@ -5107,7 +5107,7 @@ mismatched time dimension or invalid shape.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#UserWarning">UserWarning</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>signals</code> has a <code>grid</code> dimension, since the same confounds are regressed
+            <p>If <code>signals</code> has a <code>pose</code> dimension, since the same confounds are regressed
 from every pose.</p>
           </div>
         </li>

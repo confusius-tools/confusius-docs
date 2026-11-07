@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43174/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24490/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f0e315dd590>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7ff2be76b240>
     ```
 - [ ] Attributes: (26)
 
@@ -661,18 +661,14 @@ connectivity = cf.connectivity.ConnectivityMatrix(kind="correlation").fit_transf
 )[0]
 ```
 
-`plot_matrix`'s `groups` parameter annotates contiguous blocks of regions with colored strips—handy here to keep track of which brain area each region belongs to without cluttering the plot with per-region colors. `group_colors` lets us reuse the atlas's own official colors for each area, computed above from `atlas.lookup`, instead of arbitrary ones. The default diverging colormap (`"coolwarm"`) can look washed out on a dark background, so we switch to the more perceptually uniform `"berlin"` colormap in dark mode.
+`plot_matrix`'s `groups` parameter annotates contiguous blocks of regions with colored strips—handy here to keep track of which brain area each region belongs to without cluttering the plot with per-region colors. `group_colors` lets us reuse the atlas's own official colors for each area, computed above from `atlas.lookup`, instead of arbitrary ones. The default diverging colormap follows `bg_color`: `"coolwarm"` on a light background, `"berlin"` on a dark one.
 
 ```python
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-cmap = "berlin" if is_dark_theme else None
-
 fig, ax = cf.plotting.plot_matrix(
     connectivity,
     labels=region_order,
     groups=group_labels,
     group_colors=group_colors,
-    cmap=cmap,
     vmax=0.8,
     cbar_label="Pearson correlation",
     title="Region correlation matrix",
@@ -682,7 +678,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.1 s
+**Total running time:** 13.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 

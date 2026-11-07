@@ -6,6 +6,9 @@ Plotting module for fUSI data.
 
 Modules:
 
+- **`colormap`** –
+
+  Colormaps built by the plotting functions.
 - **`image`** –
 
   Image visualization utilities for fUSI data.
@@ -21,6 +24,9 @@ Modules:
 
 Classes:
 
+- **`ThresholdedColormap`** –
+
+  Colormap with a gray band over the thresholded range of a norm.
 - **`VolumePlotter`** –
 
   Manager for volume slice plots with coordinate-based overlay support.
@@ -63,6 +69,71 @@ Functions:
 - **`plot_volume`** –
 
   Plot 2D slices of a volume using matplotlib.
+
+### ThresholdedColormap
+
+Bases: `LinearSegmentedColormap`
+
+Colormap with a gray band over the thresholded range of a norm.
+
+`VolumePlotter.add_volume` wraps every colormap it draws with in one of these, so that the part of the data masked by `threshold` reads as gray in the colorbar. The source colormap and the threshold are kept, so the same band can be rebuilt on another colormap with `with_source`; the docs gallery uses this to re-theme a drawn figure.
+
+Parameters:
+
+- #### **`source`**
+
+  (`Colormap`) –
+
+  Colormap the gray band is applied to.
+- #### **`norm`**
+
+  (`Normalize`) –
+
+  Norm positioning the band: it covers `norm(-threshold)` to `norm(threshold)` for `threshold_mode="lower"`, and everything outside that range for `threshold_mode="upper"`.
+- #### **`threshold`**
+
+  (`float`, default: `None` ) –
+
+  Threshold on the absolute data values. If not provided, no band is added and the colormap matches `source`.
+- #### **`threshold_mode`**
+
+  (`('lower', 'upper')`, default: `"lower"` ) –
+
+  Whether values below (`"lower"`) or above (`"upper"`) the threshold are grayed out.
+
+Raises:
+
+- `ValueError` –
+
+  If `norm.vmin` or `norm.vmax` is not finite.
+
+Methods:
+
+- **`with_source`** –
+
+  Return the same gray band applied to another colormap.
+
+#### with\_source
+
+```python
+with_source(source: str | Colormap) -> ThresholdedColormap
+```
+
+Return the same gray band applied to another colormap.
+
+Parameters:
+
+- ##### **`source`**
+
+  (`str or Colormap`) –
+
+  Colormap to apply the band to, by name or instance.
+
+Returns:
+
+- `ThresholdedColormap` –
+
+  A new colormap with this one's `norm`, `threshold` and `threshold_mode`.
 
 ### VolumePlotter
 
@@ -111,7 +182,7 @@ Parameters:
 
   (`(linear, nearest, bspline)`, default: `"linear"` ) –
 
-  Interpolation method used whenever oblique voxel-to-world data is resampled onto the axis-aligned world grid for display -- for the whole array upfront when `slice_mode` is spatial (`"z"`/`"y"`/`"x"`) or any other non-`grid` dim (e.g. `"region"`); per-panel, after slicing, when `slice_mode="grid"` (the only dimension that can vary the underlying voxel-to-world geometry). Applies to `add_volume`; mask data passed to `add_contours` always resamples with `"nearest"` regardless of this setting, since blending distinct integer labels together is never meaningful.
+  Interpolation method used whenever oblique voxel-to-world data is resampled onto the axis-aligned world grid for display -- for the whole array upfront when `slice_mode` is spatial (`"z"`/`"y"`/`"x"`) or any other non-`pose` dim (e.g. `"region"`); per-panel, after slicing, when `slice_mode="pose"` (the only dimension that can vary the underlying voxel-to-world geometry). Applies to `add_volume`; mask data passed to `add_contours` always resamples with `"nearest"` regardless of this setting, since blending distinct integer labels together is never meaningful.
 - #### **`resample_fill_value`**
 
   (`float`, default: `None` ) –
@@ -474,11 +545,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - ##### **`threshold`**
 
   (`float`, default: `None` ) –
@@ -815,7 +886,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`.
+  Input data array to display as the background image. Typically a time-averaged power Doppler frame, e.g. `data.mean("time")`. Select a single pose first for multipose data.
 - #### **`labels_layer_name`**
 
   (`str`, default: `"labels"` ) –
@@ -840,6 +911,12 @@ Returns:
 - **`labels_layer`** ( `Labels` ) –
 
   The empty Labels layer initialised to zeros. After the user paints labels in the viewer, pass this layer to `extract_labels_from_layer` to obtain an integer label map.
+
+Raises:
+
+- `ValueError` –
+
+  If `data` is not a VoxelData array or still has a `pose` dimension. Select one pose with `data.isel(pose=p)` before drawing labels.
 
 > [!NOTE]
 >
@@ -1749,11 +1826,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `matrix`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"`.
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"`.
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -1886,7 +1963,7 @@ plot_napari(
     | None = None,
     resample_fill_value: float | None = None,
     **layer_kwargs,
-) -> tuple[Viewer, Image | Labels]
+) -> tuple[Viewer, list[Image | Labels]]
 ```
 
 Display fUSI data using the napari viewer.
@@ -1897,7 +1974,7 @@ Parameters:
 
   (`DataArray`) –
 
-  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, grid, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations).
+  Input data array to visualize. Must carry a `VoxelToWorldIndex` (native voxel dimensions `(..., time, pose, k, j, i)` deriving world `z/y/x` coordinates). Use `dim_order` to specify a different displayed spatial ordering. Can be image data or label/mask data (e.g., ROIs, segmentations). Arrays with a `pose` dimension are split into one layer per pose, each positioned using its own voxel-to-world affine.
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -1937,16 +2014,16 @@ Parameters:
 
   –
 
-  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes.
+  Additional keyword arguments passed to the layer creation method (`napari.imshow` for images or `viewer.add_labels` for labels). For image layers, if `data.attrs` contains `"cmap"` and `"colormap"` is not in `layer_kwargs`, the attribute is used as the colormap. For labels layers, if `data.attrs` contains `"cmap"` and `"norm"` (as set by atlas functions) and `"colormap"` is not in `layer_kwargs`, a per-label color dict is built automatically from those attributes. An explicit `name` overrides `data.name`. Multipose layers append `" [pose {pose}]"` using each pose's coordinate value. Unnamed multipose arrays use `"data"` as the base name.
 
 Returns:
 
 - **`viewer`** ( `Viewer` ) –
 
   The napari viewer instance with the layer added.
-- **`layer`** ( `Image or Labels` ) –
+- **`layers`** ( `list of napari.layers.Image or napari.layers.Labels` ) –
 
-  The layer added to the viewer.
+  Layers added to the viewer, in pose order. Always a list, including when the input has no `pose` dimension or contains only one pose.
 
 > [!NOTE]
 >
@@ -1970,35 +2047,35 @@ Examples:
 >>> import confusius as cf
 >>> from confusius.plotting import plot_napari
 >>> data = cf.load("output.nii.gz")
->>> viewer, layer = plot_napari(data)
+>>> viewer, layers = plot_napari(data)
 ```
 
 ```pycon
 >>> # Custom contrast limits
->>> viewer, layer = plot_napari(data, contrast_limits=(0, 100))
+>>> viewer, layers = plot_napari(data, contrast_limits=(0, 100))
 ```
 
 ```pycon
 >>> # Different dimension ordering (e.g., depth, elevation, lateral)
->>> viewer, layer = plot_napari(data, dim_order=("y", "z", "x"))
+>>> viewer, layers = plot_napari(data, dim_order=("y", "z", "x"))
 ```
 
 ```pycon
 >>> # Add a second dataset as a new layer in an existing viewer
->>> viewer, layer = plot_napari(data1)
->>> viewer, layer = plot_napari(data2, viewer=viewer)
+>>> viewer, layers = plot_napari(data1)
+>>> viewer, layers = plot_napari(data2, viewer=viewer)
 ```
 
 ```pycon
 >>> # Display ROI labels (e.g., segmentation mask)
 >>> roi_mask = cf.load("roi_mask.nii.gz")
->>> viewer, layer = plot_napari(roi_mask, layer_type="labels")
+>>> viewer, layers = plot_napari(roi_mask, layer_type="labels")
 ```
 
 ```pycon
 >>> # Overlay labels on existing image
->>> viewer, layer = plot_napari(data)
->>> viewer, layer = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
+>>> viewer, layers = plot_napari(data)
+>>> viewer, layers = plot_napari(roi_mask, viewer=viewer, layer_type="labels")
 ```
 
 ### plot\_stat\_map
@@ -2106,11 +2183,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`alpha`**
 
   (`float or DataArray`, default: `None` ) –

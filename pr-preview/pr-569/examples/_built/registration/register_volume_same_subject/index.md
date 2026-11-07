@@ -240,7 +240,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f68ea5789d0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f75cbcf0e90>
     ```
 - [ ] Attributes: (22)
 
@@ -517,7 +517,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f68e98ddae0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f75dc55bbd0>
     ```
 - [ ] Attributes: (22)
 
@@ -658,7 +658,6 @@ Plotting the same fixed/moving overlay before and after registration makes the c
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], moving, "Before"),
@@ -676,7 +675,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics.metric})")
@@ -718,49 +716,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-4.562e-13 1.494e-13 1.05e-13 -2.937e-13 ... -661.9 -300.1 -95.66
+  \-1.895e-13 3.713e-14 1.413e-14 -2.422e-13 ... -3.462e+03 -578.5 -172.7
 
   ```
-  array([[[[-4.56246380e-13,  1.49357409e-13,  1.04981175e-13, ...,
-            -1.66927802e-12, -8.58871008e-13, -1.74768253e-14],
-           [-8.37293457e-14, -2.07794447e-15, -1.83383180e-14, ...,
-            -5.20748551e-13, -7.96036217e-14,  8.52410677e-15],
-           [-3.70641017e-13, -1.92129887e-13, -2.97637192e-13, ...,
-            -2.20375512e-13,  6.49552767e-14,  5.03314924e-14],
+  array([[[[-1.89500277e-13,  3.71275187e-14,  1.41330935e-14, ...,
+            -1.10864277e-12, -1.43788729e-12, -3.53701328e-10],
+           [-4.72116403e-14, -4.15669511e-15, -1.12621726e-14, ...,
+            -2.52240568e-13, -2.73025329e-13,  1.23021645e-15],
+           [-4.73367174e-13, -1.68185088e-13, -1.33506169e-13, ...,
+            -1.14081310e-13,  2.85014854e-14,  2.11724424e-14],
            ...,
-           [-2.19384114e-13, -1.09933102e-15,  6.45431231e-13, ...,
-             4.16228391e-13,  2.47103289e-13,  1.20891536e-13],
-           [ 6.87086891e-13,  2.62468712e-13,  4.26871540e-13, ...,
-             1.93075992e-13,  1.02586632e-13,  2.96535921e-14],
-           [ 3.77274362e-11,  4.77103807e-13,  6.23806324e-13, ...,
-             6.53334748e-13,  3.09790395e-13,  9.57096111e-14]],
+           [-1.77447961e-13, -1.34217449e-14,  3.90460134e-13, ...,
+             1.74812765e-13,  1.75463339e-13,  1.91967799e-14],
+           [ 3.51830943e-13,  1.50063230e-13,  2.70075579e-13, ...,
+             1.58648352e-13,  7.44232214e-14,  8.13891789e-15],
+           [ 2.71174468e-11,  8.23294114e-13,  5.77676699e-13, ...,
+             1.20149622e-12,  2.20060369e-13,  1.47277705e-13]],
 
-          [[-5.34637166e-16,  1.75019519e-16,  1.23018703e-16, ...,
-            -1.95608800e-15, -1.00643946e-15, -2.04796373e-17],
-           [-9.81154527e-17, -2.43497020e-18, -2.14891489e-17, ...,
-            -6.10221892e-16, -9.32808600e-17,  9.98869139e-18],
-           [-4.34323365e-16, -2.25141026e-16, -3.48776258e-16, ...,
-            -2.58239724e-16,  7.61156835e-17,  5.89792877e-17],
+          [[-2.22059605e-16,  4.35066495e-17,  1.65613962e-17, ...,
+            -1.29912621e-15, -1.68494046e-15, -4.14473167e-13],
+           [-5.53233925e-17, -4.87088509e-18, -1.31972029e-17, ...,
+            -2.95579731e-16, -3.19935664e-16,  1.44158829e-18],
+           [-5.54699600e-16, -1.97082109e-16, -1.56444770e-16, ...,
+            -1.33682394e-16,  3.33985191e-17,  2.48102233e-17],
   ...
-            -8.37978725e-02, -9.19177762e-02, -6.33380338e-03],
-           [ 2.49908650e-02,  1.83899589e-02,  1.70278992e-01, ...,
-            -1.93956245e-01, -1.25469354e-01, -4.12380926e-02],
-           [-1.61796922e-01,  6.68322592e-02, -5.13409676e-01, ...,
-            -7.75646383e-01, -3.51636997e-01, -1.12097886e-01]],
+            -8.00492098e-02, -7.04806466e-02, -1.40362996e-02],
+           [ 2.17943206e-02,  5.97608539e-02,  1.44556397e-01, ...,
+            -9.77423558e-02, -5.80323196e-02, -2.31569363e-02],
+           [ 1.60809192e-01,  6.47591077e-01,  1.19442156e-01, ...,
+            -4.05669236e+00, -6.77928990e-01, -2.02347800e-01]],
 
-          [[ 2.61287671e+04,  1.23458699e+03, -1.31915982e+03, ...,
-            -4.28397131e+02,  1.55438679e+02,  6.72625581e+03],
-           [-2.78498637e+02, -1.69524924e+01, -1.02553564e+02, ...,
-            -8.63828415e+01,  8.05330602e+01,  9.64425984e+01],
-           [-1.12211519e+03,  1.73877991e+02,  8.30182553e+01, ...,
-            -9.08987620e+01,  3.12738076e+01,  5.22752438e+00],
+          [[ 8.92880943e+03,  1.08804329e+03, -1.03578837e+03, ...,
+            -1.14409038e+03,  5.85104942e+01,  6.98898108e+02],
+           [-3.41114596e+01,  9.48382809e+00, -1.11308837e+02, ...,
+            -8.93124509e+01,  2.18012254e+01,  1.48232982e+02],
+           [-6.79319361e+02,  7.83151565e+01,  5.77917753e+01, ...,
+            -1.00887593e+02,  1.28941612e+01,  1.05811150e+01],
            ...,
-           [-1.43921416e+02,  6.95116767e+01,  2.80061687e+02, ...,
-            -7.15110703e+01, -7.84403990e+01, -5.40511400e+00],
-           [ 2.13265976e+01,  1.56935445e+01,  1.45311958e+02, ...,
-            -1.65517552e+02, -1.07072501e+02, -3.51915871e+01],
-           [-1.38073578e+02,  5.70330275e+01, -4.38131353e+02, ...,
-            -6.61917790e+02, -3.00078479e+02, -9.56616116e+01]]]],
+           [-2.97416155e+01,  8.01600580e+01,  2.27256014e+02, ...,
+            -6.83120526e+01, -6.01464729e+01, -1.19782374e+01],
+           [ 1.85987441e+01,  5.09984620e+01,  1.23360920e+02, ...,
+            -8.34109537e+01, -4.95233730e+01, -1.97615672e+01],
+           [ 1.37230663e+02,  5.52638506e+02,  1.01929037e+02, ...,
+            -3.46188276e+03, -5.78528135e+02, -1.72678728e+02]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -915,7 +913,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f68cc60e820>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f75afbac750>
     ```
 - [x] Attributes: (4)
 
@@ -946,12 +944,11 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8943
+Rigid + B-spline final metric: -0.8920
 ```
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], registered, "Rigid"),
@@ -967,7 +964,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics_bspline.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics_bspline.metric})")
@@ -1002,7 +998,6 @@ A quiver plot draws the in-plane displacement as arrows over the anatomy, so the
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(8, 3))
-fig.patch.set_facecolor(bg_color)
 
 for ax, background, field, title in [
     (axes[0], fixed, composite_inverse_field, "Approximate inverse combined warp"),
@@ -1035,7 +1030,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 55.2 s
+**Total running time:** 63.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_volume_same_subject.ipynb>)
 

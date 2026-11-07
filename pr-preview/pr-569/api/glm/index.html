@@ -4415,7 +4415,7 @@ Increase this value to tolerate slight timestamp jitter.</p>
           <div class="doc-md-description">
             <p>Full width at half maximum of the Gaussian smoothing kernel, in the world
 units of the spatial coordinates, applied to each run before model fitting. A
-scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>grid</code>
+scalar smooths all non-<code>time</code> dimensions (caution if the data has a <code>pose</code>
 dimension); a dict maps dimension names to per-dimension FWHM.
 Smoothing is delegated to <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;smooth_volume&lt;/span&gt;" href="../spatial/#confusius.spatial.smooth_volume"><code>smooth_volume</code></a>,
 which requires each smoothed dimension to have uniform coordinate spacing.</p>
@@ -4706,7 +4706,7 @@ given, <code>events</code>, <code>confounds</code>, and the design-related const
             <p>A single-run VoxelData array, or a list of per-run VoxelData arrays for
 multi-run data. Each array must have a <code>time</code> dimension; all other
 dimensions are treated as spatial (e.g. <code>(time, k, j, i)</code> or <code>(time,
-grid, k, j, i)</code>).</p>
+pose, k, j, i)</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

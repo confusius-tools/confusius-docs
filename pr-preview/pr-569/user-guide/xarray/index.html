@@ -3709,7 +3709,7 @@
 <h2 id="why-xarray">Why Xarray?<a class="headerlink" href="#why-xarray" title="Permanent link">&para;</a></h2>
 <p>A typical <abbr title="Functional Ultrasound Imaging">fUSI</abbr> recording is a 4D array indexed by time and native voxel dimensions (<code>i</code>,
 <code>j</code>, <code>k</code>). Some experimental paradigms acquire data at multiple probe poses, adding a
-<code>grid</code> dimension and making the recording 5D. World coordinates corresponding to the
+<code>pose</code> dimension and making the recording 5D. World coordinates corresponding to the
 voxel dimensions are (<code>x</code>, <code>y</code>, <code>z</code>). Storing this as a plain NumPy array means losing
 all of that structure: axes become anonymous integers, world coordinates must be tracked
 separately, and keeping them in sync with the data after slicing or averaging is
@@ -3875,9 +3875,9 @@ coordinate value:</p>
 </span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Multi-pose caveat</p>
-<p>For recordings with a <code>grid</code> dimension, world coordinates become pose-dependent.
+<p>For recordings with a <code>pose</code> dimension, world coordinates become pose-dependent.
 Select a single pose before slicing in world space:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">pose0</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>  <span class="c1"># OK</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">pose0</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">pose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>  <span class="c1"># OK</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">shallow</span> <span class="o">=</span> <span class="n">pose0</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
 </span></code></pre></div>
 <p>Likewise, pose-dependent <code>time</code> coordinates must be reduced to a single pose before
@@ -3905,7 +3905,7 @@ have a NumPy, Dask, or array-like object and want to create a VoxelData
 array. This is useful when you have raw data from a custom acquisition system or a
 non-standard file format. The function will attach VoxelData dimensions, coordinates,
 and metadata. Dimensions can be supplied in any order; the result is canonicalized to
-native <code>(..., time, grid, k, j, i)</code> order:</p>
+native <code>(..., time, pose, k, j, i)</code> order:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">recording</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
@@ -3931,12 +3931,12 @@ thickness in the missing dimension.</p>
 <p>Acquisition metadata that describes the whole recording belongs in the DataArray
 <code>attrs</code>. Coordinate metadata such as <code>units</code> is added automatically.</p>
 <h3 id="multi-pose-data">Multi-Pose Data<a class="headerlink" href="#multi-pose-data" title="Permanent link">&para;</a></h3>
-<p>For multi-pose data, <code>create_voxeldata</code> also accepts a <code>grid</code> dimension, a 2D <code>(time,
-grid)</code> time coordinate, a tuple <code>t0</code> time origin, and a stacked <code>(npose, 4, 4)</code>
+<p>For multi-pose data, <code>create_voxeldata</code> also accepts a <code>pose</code> dimension, a 2D <code>(time,
+pose)</code> time coordinate, a tuple <code>t0</code> time origin, and a stacked <code>(npose, 4, 4)</code>
 <code>voxel_to_world</code> affine:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">multipose</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">raw_power</span><span class="p">,</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">),</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;pose&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">),</span>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">dt</span><span class="o">=</span><span class="mf">2.4</span><span class="p">,</span>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">t0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">],</span>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">voxel_to_world</span><span class="o">=</span><span class="n">pose_affines</span><span class="p">,</span>
@@ -4183,7 +4183,7 @@ or a string key naming a reference frame already stored in <code>.vd.affines</co
   &lt;/span&gt;" href="../../api/xarray/#voxeldata.accessors.VoxelDataAccessor.bounding_box"><code>bounding_box</code></a> gives the extent of
 the data in world space, enclosing the full extent of every voxel (half a voxel beyond
 the outermost voxel centers). It is computed from the affine alone (exact for oblique
-geometry, and one bounding box per grid when the geometry is grid-dependent):</p>
+geometry, and one bounding box per pose when the geometry is pose-dependent):</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">bbox</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">vd</span><span class="o">.</span><span class="n">bounding_box</span>  <span class="c1"># Dims (bound, component), e.g. (&quot;max&quot;, &quot;x&quot;).</span>
 </span></code></pre></div>
 <p>To replace a DataArray's voxel-to-world geometry outright (e.g. after computing a new
@@ -4287,7 +4287,7 @@ seed-based correlation maps, wrapping
 <p>The <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-class-name&quot;&gt;FUSIPlotAccessor&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.FUSIPlotAccessor"><code>.fusi.plot</code></a> accessor provides easy access to
 visualization functions for quick data inspection and quality control.</p>
 <p>For example, to display data in <a href="https://napari.org/">napari</a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Or to show standardized time series in a carpet plot, useful for quality control:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">registered</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">carpet</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
@@ -4320,7 +4320,7 @@ spatial affine:</p>
 </span><span id="__span-36-14"><a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a><span class="p">)</span>
 </span><span id="__span-36-15"><a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a>
 </span><span id="__span-36-16"><a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="c1"># 3. Inspect in napari.</span>
-</span><span id="__span-36-17"><a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-36-17"><a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </span><span id="__span-36-18"><a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a>
 </span><span id="__span-36-19"><a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a><span class="c1"># 4. Motion correction.</span>
 </span><span id="__span-36-20"><a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a><span class="n">registered</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">register</span><span class="o">.</span><span class="n">volumewise</span><span class="p">()</span>

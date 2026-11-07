@@ -302,7 +302,7 @@ Parameters:
 
   (`float or dict[str, float]`, default: `None` ) –
 
-  Full width at half maximum of the Gaussian smoothing kernel, in the world units of the spatial coordinates, applied to each run before model fitting. A scalar smooths all non-`time` dimensions (caution if the data has a `grid` dimension); a dict maps dimension names to per-dimension FWHM. Smoothing is delegated to `smooth_volume`, which requires each smoothed dimension to have uniform coordinate spacing.
+  Full width at half maximum of the Gaussian smoothing kernel, in the world units of the spatial coordinates, applied to each run before model fitting. A scalar smooths all non-`time` dimensions (caution if the data has a `pose` dimension); a dict maps dimension names to per-dimension FWHM. Smoothing is delegated to `smooth_volume`, which requires each smoothed dimension to have uniform coordinate spacing.
 
   > **Warning**
   >
@@ -451,7 +451,7 @@ Parameters:
 
   (`xarray.DataArray or list of xarray.DataArray`) –
 
-  A single-run VoxelData array, or a list of per-run VoxelData arrays for multi-run data. Each array must have a `time` dimension; all other dimensions are treated as spatial (e.g. `(time, k, j, i)` or `(time, grid, k, j, i)`).
+  A single-run VoxelData array, or a list of per-run VoxelData arrays for multi-run data. Each array must have a `time` dimension; all other dimensions are treated as spatial (e.g. `(time, k, j, i)` or `(time, pose, k, j, i)`).
 - ##### **`events`**
 
   (`pandas.DataFrame or list of pandas.DataFrame`, default: `None` ) –

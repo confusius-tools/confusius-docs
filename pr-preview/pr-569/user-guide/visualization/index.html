@@ -4144,17 +4144,22 @@ the controls and features.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Xarray accessor</label><label for="__tabbed_1_2">Function API</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">()</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
+<p>Both APIs always return <code>(viewer, layers)</code>, where <code>layers</code> is a list. Arrays with
+a <code>pose</code> dimension open as one layer per pose, positioned using each pose's
+voxel-to-world affine and named <code>&lt;data name&gt; [pose &lt;pose value&gt;]</code>. An explicit
+<code>name=</code> overrides the data name. To unpack a single-layer result, use
+<code>viewer, [layer] = ...</code>.</p>
 <p>This opens a napari viewer with a scale bar, colorbar, and correct world scaling
 across axes. The viewer is fully interactive: you can zoom, pan, and scroll through time
 and elevation slices with the sliders or mouse wheel.</p>
@@ -4182,7 +4187,7 @@ data, or <code>layer_type="labels"</code> to explicitly select a labels layer. T
 <p>By default napari auto-scales contrast to the data range. For power Doppler, working
 in decibel scale with explicit limits is often more informative:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># dB-scaled power Doppler with fixed contrast window.</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">pwd</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">(),</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;hot&quot;</span><span class="p">,</span>
@@ -4195,13 +4200,13 @@ in decibel scale with explicit limits is often more informative:</p>
 ideal for visualizing an atlas alongside your power Doppler data. With the Nunez-Elizalde
 dataset, you can use the precomputed Allen segmentation in <code>derivatives/allenccf_align</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Load power Doppler mean volume and open viewer.</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">mean_vol</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">scale</span><span class="o">.</span><span class="n">db</span><span class="p">(),</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">contrast_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Add pre-registered Allen labels as a labels layer.</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layer</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">labels_layers</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_napari</span><span class="p">(</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">atlas_labels</span><span class="p">,</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">,</span>
 </span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">layer_type</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span>
@@ -4216,8 +4221,8 @@ dataset, you can use the precomputed Allen segmentation in <code>derivatives/all
 <p>The <code>viewer</code> argument works for any <code>plot_napari</code> call, letting you load two image
 datasets into the same viewer for direct comparison; for example, before and after
 motion correction:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd_before</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Before correction&quot;</span><span class="p">)</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd_after</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;After correction&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">pwd_before</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Before correction&quot;</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">pwd_after</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">viewer</span><span class="o">=</span><span class="n">viewer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;After correction&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 <h3 id="slicing-across-different-spatial-dimensions">Slicing Across Different Spatial Dimensions<a class="headerlink" href="#slicing-across-different-spatial-dimensions" title="Permanent link">&para;</a></h3>
@@ -4226,7 +4231,7 @@ dimensions (e.g., <code>time</code>, <code>z</code>) as sliders. If you prefer a
 axis—for example slicing along <code>y</code> (depth) instead of <code>z</code> (elevation)—use
 <code>dim_order</code> to reorder the spatial axes:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Swap z and y: depth becomes the slider axis.</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">pwd_3d</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">dim_order</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">viewer</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">pwd_3d</span><span class="o">.</span><span class="n">fusi</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">napari</span><span class="p">(</span><span class="n">dim_order</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
 </span></code></pre></div>
 <h3 id="3d-rendering">3D Rendering<a class="headerlink" href="#3d-rendering" title="Permanent link">&para;</a></h3>
 <p>For volumetric datasets, napari can render the data in full 3D using volume rendering
@@ -4355,7 +4360,7 @@ details).</p>
 <a class="glightbox" data-gallery="dark" data-title="Three selected elevation slices of the angiography volume" data-type="image" href="../../images/visualization/plot-sliced-volume-3d-dark.png#only-dark"><img alt="Three selected elevation slices of the angiography volume" src="../../images/visualization/plot-sliced-volume-3d-dark.png#only-dark" /></a></p>
 <h3 id="slicing-over-a-non-spatial-dimension">Slicing Over a Non-Spatial Dimension<a class="headerlink" href="#slicing-over-a-non-spatial-dimension" title="Permanent link">&para;</a></h3>
 <p><code>slice_mode</code> can be a world axis (<code>z</code>/<code>y</code>/<code>x</code>) or any extra non-voxel dim, e.g.
-<code>time</code>, <code>grid</code>, or a <code>region</code> dim such as the one a seed-based connectivity map is
+<code>time</code>, <code>pose</code>, or a <code>region</code> dim such as the one a seed-based connectivity map is
 stacked along (see <a href="#statistical-maps">below</a> and the <a href="../../examples/_built/connectivity/atlas_seed_map/">seed-based connectivity
 example</a>). Native voxel dims
 (<code>k</code>/<code>j</code>/<code>i</code>) are not valid slice modes. Each requested coordinate along that dim
@@ -4418,7 +4423,8 @@ picks a suitable range + default colormap automatically:</p>
 <ul>
 <li>Both positive and negative values: diverging, symmetric <code>[-m, m]</code> range
   (<code>m = max(|vmin|, |vmax|)</code> over the bounds you pass, or the largest magnitude in
-  <code>stat_map</code> when you pass neither), with <code>cmap="coolwarm"</code> by default.</li>
+  <code>stat_map</code> when you pass neither), with <code>cmap="coolwarm"</code> by default on light backgrounds and
+  <code>cmap="berlin"</code> on dark ones (judged from <code>bg_color</code>).</li>
 <li>Only non-negative values (for example R² or F-statistics): sequential <code>[0, vmax]</code>
   range, with <code>cmap="viridis"</code> by default.</li>
 <li>Only non-positive values: sequential <code>[vmin, 0]</code> range, with <code>cmap="viridis_r"</code>
@@ -4671,7 +4677,7 @@ upper—by calling <code>plot_matrix</code> twice with complementary <code>trian
 </span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    <span class="n">labels</span><span class="o">=</span><span class="n">region_order</span><span class="p">,</span>
 </span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="n">groups</span><span class="o">=</span><span class="n">group_labels</span><span class="p">,</span>
 </span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="n">group_colors</span><span class="o">=</span><span class="n">group_colors</span><span class="p">,</span>
-</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="n">pose</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
 </span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="n">cbar_label</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
 </span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="p">)</span>
 </span></code></pre></div>
