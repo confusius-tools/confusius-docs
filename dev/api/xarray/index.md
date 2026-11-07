@@ -3352,7 +3352,7 @@ Parameters:
 
   (`sequence[float]`, default: `None` ) –
 
-  World spacing in `z/y/x` order. Mutually exclusive with `voxel_to_world`.
+  World spacing in `k/j/i` order. Mutually exclusive with `voxel_to_world`.
 - #### **`origin`**
 
   (`sequence[float]`, default: `None` ) –
