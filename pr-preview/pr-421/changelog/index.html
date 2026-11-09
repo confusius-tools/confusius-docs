@@ -4884,6 +4884,11 @@
 <li>Load <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> NIfTI chunks together using <code>{chunk}</code> in the filename, stacking
   them along <code>pose</code> in numeric chunk order while preserving geometry and timing
   (<a href="https://github.com/confusius-tools/confusius/pull/564">#564</a>).</li>
+<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;from_nifti&lt;/span&gt;" href="../api/io/#confusius.io.from_nifti"><code>from_nifti</code></a>/<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;to_nifti&lt;/span&gt;" href="../api/io/#confusius.io.to_nifti"><code>to_nifti</code></a> to
+  convert directly between a VoxelData array and an in-memory
+  <code>nibabel.Nifti1Image</code>/<code>nibabel.Nifti2Image</code>, with no file I/O, for interoperating
+  with libraries such as nilearn
+  (<a href="https://github.com/confusius-tools/confusius/pull/421">#421</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -5107,12 +5112,6 @@
   (0 and at most one non-zero value, e.g. <code>{0, 1}</code> or <code>{0.0, 5.0}</code>) is now accepted
   and coerced to boolean, covering masks written by tools without a boolean dtype
   (e.g. FSL/NiBabel NIfTI masks stored as float)
-  (<a href="https://github.com/confusius-tools/confusius/issues/382">#382</a>).</li>
-<li>Added <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;from_nifti&lt;/span&gt;" href="../api/io/#confusius.io.from_nifti"><code>from_nifti</code></a>/<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;to_nifti&lt;/span&gt;" href="../api/io/#confusius.io.to_nifti"><code>to_nifti</code></a> to
-  convert directly between a VoxelData array and an in-memory
-  <code>nibabel.Nifti1Image</code>/<code>nibabel.Nifti2Image</code>, with no file I/O, for interoperating
-  with libraries such as nilearn
-  (<a href="https://github.com/confusius-tools/confusius/issues/372">#372</a>).
   (<a href="https://github.com/confusius-tools/confusius/pull/418">#418</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;register_volumewise&lt;/span&gt;" href="../api/registration/#confusius.registration.register_volumewise"><code>register_volumewise</code></a> and
   <code>data.fusi.register.volumewise</code> accept a <code>fixed</code> VoxelData volume (for example the

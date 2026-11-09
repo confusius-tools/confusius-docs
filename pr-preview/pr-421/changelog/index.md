@@ -15,6 +15,7 @@ Current development version for the next ConfUSIus release.
 
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
+- Added `from_nifti`/`to_nifti` to convert directly between a VoxelData array and an in-memory `nibabel.Nifti1Image`/`nibabel.Nifti2Image`, with no file I/O, for interoperating with libraries such as nilearn ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 🐛 Fixes
 
@@ -97,8 +98,7 @@ Released 2026-10-13.
 ### ✨ Enhancements
 
 - `load_scan` now supports SCAN v2 `4Dscan` recordings acquired with the Iconeus IcoPrime-4D MultiArray probe, preserving multi-pose geometry and acquisition timing ([\#478](<https://github.com/confusius-tools/confusius/pull/478>)).
-- Masks are no longer required to be strictly boolean dtype: any binary numeric mask (0 and at most one non-zero value, e.g. `{0, 1}` or `{0.0, 5.0}`) is now accepted and coerced to boolean, covering masks written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks stored as float) ([\#382](<https://github.com/confusius-tools/confusius/issues/382>)).
-- Added `from_nifti`/`to_nifti` to convert directly between a VoxelData array and an in-memory `nibabel.Nifti1Image`/`nibabel.Nifti2Image`, with no file I/O, for interoperating with libraries such as nilearn ([\#372](<https://github.com/confusius-tools/confusius/issues/372>)). ([\#418](<https://github.com/confusius-tools/confusius/pull/418>)).
+- Masks are no longer required to be strictly boolean dtype: any binary numeric mask (0 and at most one non-zero value, e.g. `{0, 1}` or `{0.0, 5.0}`) is now accepted and coerced to boolean, covering masks written by tools without a boolean dtype (e.g. FSL/NiBabel NIfTI masks stored as float) ([\#418](<https://github.com/confusius-tools/confusius/pull/418>)).
 - `register_volumewise` and `data.fusi.register.volumewise` accept a `fixed` VoxelData volume (for example the mean of a few low-motion frames) to register every frame to, as an alternative to `reference_time` ([\#436](<https://github.com/confusius-tools/confusius/pull/436>)).
 - `FirstLevelModel` accepts `show_progress=True` to display a progress bar over the runs being fitted ([\#442](<https://github.com/confusius-tools/confusius/pull/442>)).
 - New `get_bounding_box`, also available as `data.fusi.affine.bounding_box`, returning a VoxelData array's world-space bounding box enclosing the full extent of its voxels, one per pose for pose-dependent geometry ([\#446](<https://github.com/confusius-tools/confusius/pull/446>)).

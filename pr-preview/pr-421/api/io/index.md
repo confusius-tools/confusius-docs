@@ -658,12 +658,15 @@ from_nifti(
     coordinate_affine: Literal[
         "auto", "sform", "qform"
     ] = "auto",
+    sidecar: dict[str, Any] | None = None,
 ) -> DataArray
 ```
 
 Convert an in-memory NiBabel NIfTI image to a VoxelData array.
 
-This is the no-file-I/O counterpart to `load_nifti`: it reuses the same header geometry, dtype, and timing reconstruction, but reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and consults no BIDS JSON sidecar (a bare NiBabel image carries none). Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
+This is the no-file-I/O counterpart to `load_nifti`, which opens the file, reads its BIDS JSON sidecars, and delegates to this function. It reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and never looks for a sidecar on disk: sidecar metadata is used only when passed through `sidecar`. Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
+
+An image backed by a file on disk (e.g. from `nibabel.load`, whose `img.dataobj` is a NiBabel `ArrayProxy`) stays lazy: voxel data is read from that file only when the returned array is computed, so the file must still exist at that point.
 
 Parameters:
 
@@ -682,6 +685,11 @@ Parameters:
   (`(auto, sform, qform)`, default: `"auto"` ) –
 
   Header affine to use as the primary coordinate-defining geometry. See `load_nifti` for the selection rules.
+- #### **`sidecar`**
+
+  (`dict[str, Any]`, default: `None` ) –
+
+  Sidecar metadata using ConfUSIus (snake\_case) attribute names. Entries override the header-derived attributes and feed the geometry, timing, and extra-dimension reconstruction, as sidecars do in `load_nifti`. Convert a BIDS JSON sidecar with `confusius.bids.from_bids` first. If not provided, only the NIfTI header is used.
 
 Returns:
 
