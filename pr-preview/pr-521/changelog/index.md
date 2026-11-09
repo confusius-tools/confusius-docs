@@ -37,7 +37,6 @@ Current development version for the next ConfUSIus release.
 - Videos open in a separate, time-synchronized viewer with their own layer list. Load recordings and videos from **Data I/O** ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
-- Preserve custom video playback intervals when changing the frame step ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 
 ### 🖼 Napari plugin
 
