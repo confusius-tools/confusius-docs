@@ -20,10 +20,8 @@ from remotezip import RemoteZip
 import confusius as cf
 from confusius.glm import FirstLevelModel, gamma_hrf
 
-# Adapt colors to the current Matplotlib style.
+# Adapt the background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-stat_cmap = "berlin" if is_dark_theme else None
 
 # Keep notebook output compact for large DataArray displays.
 _ = xr.set_options(display_expand_attrs=False, display_expand_data=False)
@@ -335,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f72c90ab820>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d6445e8b0>
     ```
   - time
 
@@ -616,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f72c0c89130>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d60569c70>
     ```
 - [ ] Attributes: (6)
 
@@ -642,7 +640,7 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
 ## Plot the GLM map
 
@@ -655,7 +653,6 @@ active_voxels = z_map > active_threshold
 plotter = z_map.fusi.plot.stat_map(
     bg_volume=mean_doppler,
     threshold=active_threshold,
-    cmap=stat_cmap,
     cbar_label="task z-score",
     bg_color=bg_color,
 )
@@ -668,7 +665,7 @@ We average the Doppler traces from those task-positive voxels. This gives a quic
 ```python
 active_signal = scaled.where(active_voxels).mean(("k", "j", "i"))
 mean_signal = scaled.mean(("k", "j", "i"))
-fig, ax = plt.subplots(figsize=(9, 4), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(9, 4))
 mean_signal.plot(ax=ax, color="#808080", label="Whole-plane mean")
 active_signal.plot(ax=ax, color="#d93a54", label="Top task-positive voxels")
 for idx, event in enumerate(events.itertuples()):
@@ -676,7 +673,7 @@ for idx, event in enumerate(events.itertuples()):
     ax.axvspan(
         event.onset,
         event.onset + event.duration,
-        color="#3ad9a4",
+        color="#27906d",
         alpha=0.12,
         label=label,
     )
@@ -689,7 +686,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 45.8 s
+**Total running time:** 34.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 

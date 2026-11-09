@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6d18bd4d60>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f583ce9be10>
     ```
 - [ ] Attributes: (27)
 
@@ -440,7 +440,6 @@ The initialization was already close, so the refinement is small. Comparing the 
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 for ax, moving_view, title in [
     (axes[0], initialized, "Manual initialization"),
     (axes[1], registered, "Affine registration refinement"),
@@ -491,7 +490,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 50.0 s
+**Total running time:** 65.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 

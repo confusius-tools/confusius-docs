@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a025eead0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f87cd92d810>
     ```
 - [ ] Attributes: (21)
 
@@ -486,7 +486,6 @@ ConfUSIus provides the function `plot_motion_diagnostics` to plot `motion_params
 
 ```python
 fig, axes = cf.plotting.plot_motion_diagnostics(motion_df)
-fig.patch.set_facecolor(bg_color)
 ```
 
 ## Compare a representative time series before and after registration
@@ -507,7 +506,6 @@ units = highest_std_voxel.x.units
 xy_position = f"(x, y) = ({x_value:.2f}, {y_value:.2f}) {units}"
 
 fig, axs = plt.subplots(1, 2, figsize=(9, 3.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 
 plotter = (
     data.mean("time")
@@ -535,7 +533,6 @@ raster_before = data.fusi.scale.db().sel(z=0, x=x_value)
 raster_after = registered.fusi.scale.db().sel(z=0, x=x_value)
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True, sharey=True)
-fig.patch.set_facecolor(bg_color)
 
 vmin = float(np.nanpercentile(raster_before, 2))
 vmax = float(np.nanpercentile(raster_before, 99.8))
@@ -568,7 +565,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 34.3 s
+**Total running time:** 26.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.ipynb>)
 

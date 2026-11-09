@@ -36,7 +36,6 @@ import confusius as cf
 
 # Adapt background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 
 # Keep notebook output compact for large DataArray displays. The coordinates section is
 # left expanded on purpose; `display_expand_data` alone does not cover the attributes.
@@ -292,7 +291,7 @@ modified_claron2021 = partial(cf.glm.claron2021_hrf, beta=6.7)
 hrf_kernel = modified_claron2021(dt=1.0)
 hrf_time = np.linspace(0, 32, len(hrf_kernel))
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(hrf_time, hrf_kernel, color="#d93a54")
 ax.set_xlabel("Time since stimulus onset (s)")
 ax.set_ylabel("Response (a.u.)")
@@ -331,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f30a5d7d6f0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fea9835d170>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -346,7 +345,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...f0\>, beta=6.7) |
+|  | hrf\_model | functools.par...70\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -365,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f30a53a3b10\>, \<confusius.gl...x7f30a520df30\>, \<confusius.gl...x7f30a5897bf0\>, \<confusius.gl...x7f30a5257460\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fea806df890\>, \<confusius.gl...x7fea8112eb10\>, \<confusius.gl...x7fea81380710\>, \<confusius.gl...x7fea813b2690\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -402,14 +401,12 @@ z_score = glm.compute_contrast("active")
 z_1d = resampled_average_in_atlas.z.isel(j=0, i=0).values
 slice_coords = z_1d[(z_1d > 5.5) & (z_1d < 9)][::4]
 
-cmap = "berlin" if is_dark_theme else None
 plotter = cf.plotting.plot_stat_map(
     z_score,
     slice_coords=slice_coords,
     nrows=3,
     vmax=10,
     bg_color=bg_color,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -467,7 +464,6 @@ plotter = cf.plotting.plot_stat_map(
     bg_kwargs={"vmin": -20, "vmax": 0},
     bg_color=bg_color,
     alpha=1 - adjusted_p_values,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -480,7 +476,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 97.8 s
+**Total running time:** 78.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.ipynb>)
 

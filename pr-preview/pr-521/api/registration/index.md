@@ -95,7 +95,7 @@ Functions:
 
 Plot registration progress in real time.
 
-Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt).
+Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt). Draws on a black background.
 
 Parameters:
 

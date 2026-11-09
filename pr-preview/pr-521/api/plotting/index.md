@@ -6,6 +6,9 @@ Plotting module for fUSI data.
 
 Modules:
 
+- **`colormap`** –
+
+  Colormaps built by the plotting functions.
 - **`image`** –
 
   Image visualization utilities for fUSI data.
@@ -21,6 +24,9 @@ Modules:
 
 Classes:
 
+- **`ThresholdedColormap`** –
+
+  Colormap with a gray band over the thresholded range of a norm.
 - **`VolumePlotter`** –
 
   Manager for volume slice plots with coordinate-based overlay support.
@@ -63,6 +69,71 @@ Functions:
 - **`plot_volume`** –
 
   Plot 2D slices of a volume using matplotlib.
+
+### ThresholdedColormap
+
+Bases: `LinearSegmentedColormap`
+
+Colormap with a gray band over the thresholded range of a norm.
+
+`VolumePlotter.add_volume` wraps every colormap it draws with in one of these, so that the part of the data masked by `threshold` reads as gray in the colorbar. The source colormap and the threshold are kept, so the same band can be rebuilt on another colormap with `with_source`; the docs gallery uses this to re-theme a drawn figure.
+
+Parameters:
+
+- #### **`source`**
+
+  (`Colormap`) –
+
+  Colormap the gray band is applied to.
+- #### **`norm`**
+
+  (`Normalize`) –
+
+  Norm positioning the band: it covers `norm(-threshold)` to `norm(threshold)` for `threshold_mode="lower"`, and everything outside that range for `threshold_mode="upper"`.
+- #### **`threshold`**
+
+  (`float`, default: `None` ) –
+
+  Threshold on the absolute data values. If not provided, no band is added and the colormap matches `source`.
+- #### **`threshold_mode`**
+
+  (`('lower', 'upper')`, default: `"lower"` ) –
+
+  Whether values below (`"lower"`) or above (`"upper"`) the threshold are grayed out.
+
+Raises:
+
+- `ValueError` –
+
+  If `norm.vmin` or `norm.vmax` is not finite.
+
+Methods:
+
+- **`with_source`** –
+
+  Return the same gray band applied to another colormap.
+
+#### with\_source
+
+```python
+with_source(source: str | Colormap) -> ThresholdedColormap
+```
+
+Return the same gray band applied to another colormap.
+
+Parameters:
+
+- ##### **`source`**
+
+  (`str or Colormap`) –
+
+  Colormap to apply the band to, by name or instance.
+
+Returns:
+
+- `ThresholdedColormap` –
+
+  A new colormap with this one's `norm`, `threshold` and `threshold_mode`.
 
 ### VolumePlotter
 
@@ -474,11 +545,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - ##### **`threshold`**
 
   (`float`, default: `None` ) –
@@ -1755,11 +1826,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `matrix`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"`.
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"`.
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -2112,11 +2183,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`alpha`**
 
   (`float or DataArray`, default: `None` ) –

@@ -338,7 +338,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1bc3ace850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd885855590>
     ```
 - [ ] Attributes: (25)
 
@@ -577,7 +577,6 @@ Looking at both together is more informative than either alone. The maps show th
 ```python
 n_show = 6
 fig = plt.figure(figsize=(10.5, 8.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -695,7 +694,6 @@ As in temporal mode, we inspect maps and corresponding time courses jointly.
 ```python
 n_show = 6
 fig = plt.figure(figsize=(10.5, 8.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -732,7 +730,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 227.2 s
+**Total running time:** 164.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.ipynb>)
 

@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd689112850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdca7069590>
     ```
 - [ ] Attributes: (25)
 
@@ -565,7 +565,6 @@ Looking at the spatial maps and the associated time courses side by side is a us
 ```python
 n_show = 10
 fig = plt.figure(figsize=(11.5, 12.0), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1.4, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -692,7 +691,6 @@ As in temporal mode, we inspect the positive and negative spatial maps and their
 ```python
 n_show = 10
 fig = plt.figure(figsize=(11.5, 12.0), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1.4, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -732,7 +730,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 244.2 s
+**Total running time:** 181.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.ipynb>)
 

@@ -2487,7 +2487,7 @@ Attributes:
     beamforming_sound_velocity:           1540.0
     units:                                m/s
     long_name:                            Axial velocity
-    cmap:                                 coolwarm
+    cmap:                                 berlin
     clutter_filters:                      Index-based SVD [50, +inf[
     clutter_filter_window_duration:       0.4
     clutter_filter_window_stride:         0.3999999999999999
@@ -2932,7 +2932,7 @@ plotter = cf.plotting.plot_stat_map(t_map, bg_volume=pwd, slice_mode="z", thresh
 
 By default, `vmin` and `vmax` are taken from the full `stat_map`, and `auto_range=True` picks a suitable range + default colormap automatically:
 
-- Both positive and negative values: diverging, symmetric `[-m, m]` range (`m = max(|vmin|, |vmax|)` over the bounds you pass, or the largest magnitude in `stat_map` when you pass neither), with `cmap="coolwarm"` by default.
+- Both positive and negative values: diverging, symmetric `[-m, m]` range (`m = max(|vmin|, |vmax|)` over the bounds you pass, or the largest magnitude in `stat_map` when you pass neither), with `cmap="coolwarm"` by default on light backgrounds and `cmap="berlin"` on dark ones (judged from `bg_color`).
 - Only non-negative values (for example R² or F-statistics): sequential `[0, vmax]` range, with `cmap="viridis"` by default.
 - Only non-positive values: sequential `[vmin, 0]` range, with `cmap="viridis_r"` by default.
 
@@ -6699,7 +6699,7 @@ Attributes:
   Extracted (and cleaned) seed region signals when `seed_masks` is used, or the supplied signals (possibly transposed to `(time, region)` order) when `seed_signals` is used. Set after `fit`.
 - **`maps_`** (`(region, ...) xarray.DataArray`) –
 
-  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"coolwarm"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
+  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"berlin"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
 
 Examples:
 
@@ -13968,6 +13968,9 @@ Plotting module for fUSI data.
 
 Modules:
 
+- **`colormap`** –
+
+  Colormaps built by the plotting functions.
 - **`image`** –
 
   Image visualization utilities for fUSI data.
@@ -13983,6 +13986,9 @@ Modules:
 
 Classes:
 
+- **`ThresholdedColormap`** –
+
+  Colormap with a gray band over the thresholded range of a norm.
 - **`VolumePlotter`** –
 
   Manager for volume slice plots with coordinate-based overlay support.
@@ -14025,6 +14031,71 @@ Functions:
 - **`plot_volume`** –
 
   Plot 2D slices of a volume using matplotlib.
+
+### ThresholdedColormap
+
+Bases: `LinearSegmentedColormap`
+
+Colormap with a gray band over the thresholded range of a norm.
+
+`VolumePlotter.add_volume` wraps every colormap it draws with in one of these, so that the part of the data masked by `threshold` reads as gray in the colorbar. The source colormap and the threshold are kept, so the same band can be rebuilt on another colormap with `with_source`; the docs gallery uses this to re-theme a drawn figure.
+
+Parameters:
+
+- #### **`source`**
+
+  (`Colormap`) –
+
+  Colormap the gray band is applied to.
+- #### **`norm`**
+
+  (`Normalize`) –
+
+  Norm positioning the band: it covers `norm(-threshold)` to `norm(threshold)` for `threshold_mode="lower"`, and everything outside that range for `threshold_mode="upper"`.
+- #### **`threshold`**
+
+  (`float`, default: `None` ) –
+
+  Threshold on the absolute data values. If not provided, no band is added and the colormap matches `source`.
+- #### **`threshold_mode`**
+
+  (`('lower', 'upper')`, default: `"lower"` ) –
+
+  Whether values below (`"lower"`) or above (`"upper"`) the threshold are grayed out.
+
+Raises:
+
+- `ValueError` –
+
+  If `norm.vmin` or `norm.vmax` is not finite.
+
+Methods:
+
+- **`with_source`** –
+
+  Return the same gray band applied to another colormap.
+
+#### with\_source
+
+```python
+with_source(source: str | Colormap) -> ThresholdedColormap
+```
+
+Return the same gray band applied to another colormap.
+
+Parameters:
+
+- ##### **`source`**
+
+  (`str or Colormap`) –
+
+  Colormap to apply the band to, by name or instance.
+
+Returns:
+
+- `ThresholdedColormap` –
+
+  A new colormap with this one's `norm`, `threshold` and `threshold_mode`.
 
 ### VolumePlotter
 
@@ -14436,11 +14507,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - ##### **`threshold`**
 
   (`float`, default: `None` ) –
@@ -15717,11 +15788,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `matrix`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"`.
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `matrix` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"`.
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`show_colorbar`**
 
   (`bool`, default: `True` ) –
@@ -16074,11 +16145,11 @@ Parameters:
 
   Whether to pick the colormap range and default colormap automatically based on the sign of `stat_map`:
 
-  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` — the right choice for diverging statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
+  - Both positive and negative values: diverging, symmetric `[-m, m]` range where `m = max(|vmin|, |vmax|)` over the bounds actually provided, falling back to the largest magnitude in `stat_map` when neither is given, with `cmap` defaulting to `"coolwarm"` on light backgrounds and `"berlin"` on dark ones (judged from `bg_color`), both diverging colormaps for statistics where the sign is meaningful (e.g. t-statistics, correlation coefficients, PCA/ICA component maps).
   - Only non-negative values: sequential `[0, vmax]` range, with `cmap` defaulting to `"viridis"` — the right choice for non-diverging statistics where only magnitude matters (e.g. R², F-statistics).
   - Only non-positive values: sequential `[vmin, 0]` range, with `cmap` defaulting to `"viridis_r"` (reversed, so that values near zero map to the same end of the colormap in both the non-negative and non-positive cases).
 
-  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to `"coolwarm"` regardless of sign).
+  Set to `False` to use the resolved `vmin`/`vmax` directly with no zero-anchoring (`cmap` then defaults to the same background-dependent diverging colormap regardless of sign).
 - #### **`alpha`**
 
   (`float or DataArray`, default: `None` ) –
@@ -16881,7 +16952,7 @@ Functions:
 
 Plot registration progress in real time.
 
-Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt).
+Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt). Draws on a black background.
 
 Parameters:
 
@@ -24281,7 +24352,7 @@ Parameters:
 
   (`sequence[float]`, default: `None` ) –
 
-  World spacing in `z/y/x` order. Mutually exclusive with `voxel_to_world`.
+  World spacing in `k/j/i` order. Mutually exclusive with `voxel_to_world`.
 - #### **`origin`**
 
   (`sequence[float]`, default: `None` ) –
@@ -24674,7 +24745,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_43492/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24252/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -24891,7 +24962,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f69661e17b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1ea17d9040>
     ```
 - [ ] Attributes: (27)
 
@@ -25278,18 +25349,14 @@ connectivity = cf.connectivity.ConnectivityMatrix(kind="correlation").fit_transf
 )[0]
 ```
 
-`plot_matrix`'s `groups` parameter annotates contiguous blocks of regions with colored strips—handy here to keep track of which brain area each region belongs to without cluttering the plot with per-region colors. `group_colors` lets us reuse the atlas's own official colors for each area, computed above from `atlas.lookup`, instead of arbitrary ones. The default diverging colormap (`"coolwarm"`) can look washed out on a dark background, so we switch to the more perceptually uniform `"berlin"` colormap in dark mode.
+`plot_matrix`'s `groups` parameter annotates contiguous blocks of regions with colored strips—handy here to keep track of which brain area each region belongs to without cluttering the plot with per-region colors. `group_colors` lets us reuse the atlas's own official colors for each area, computed above from `atlas.lookup`, instead of arbitrary ones. The default diverging colormap follows `bg_color`: `"coolwarm"` on a light background, `"berlin"` on a dark one.
 
 ```python
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-cmap = "berlin" if is_dark_theme else None
-
 fig, ax = cf.plotting.plot_matrix(
     connectivity,
     labels=region_order,
     groups=group_labels,
     group_colors=group_colors,
-    cmap=cmap,
     vmax=0.8,
     cbar_label="Pearson correlation",
     title="Region correlation matrix",
@@ -25299,7 +25366,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.7 s
+**Total running time:** 9.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25368,7 +25435,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_46565/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_25774/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25636,7 +25703,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f853eb06c90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffa146baf30>
     ```
   - region
 
@@ -25755,35 +25822,31 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f853ea56270\>
+  \<matplotlib.colors.Normalize object at 0x7ffa148c3e00\>
 
 ## Plot the seed maps
 
 Each seed's map is plotted with `plot_stat_map` over the resampled Allen template volume, with `vmax=0.8` fixing the colormap to a shared range so the four seeds are directly comparable. `mapper.maps_` stacks all four seed maps along a `region` dimension, so a single `plot_stat_map` call with `slice_mode="region"` plots one panel per seed as long as the background is broadcast to the same `region` dimension first. We outline each seed's own ROI with `VolumePlotter.add_contours`, leaving `colors` unset so each region is drawn in its canonical Allen color (read from the atlas mask's `attrs["cmap"]`/`attrs["norm"]`, the same convention used by `get_masks` elsewhere).
 
 ```python
-# coolwarm's white midpoint reads as a washed-out hole on a dark background, so switch
-# to berlin (Crameri's perceptually uniform diverging colormap, black midpoint) when the
-# current Matplotlib style is dark.
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-cmap = "berlin" if is_dark_theme else None
+# The default diverging colormap follows `bg_color`: coolwarm on a light background,
+# berlin (black midpoint) on a dark one, where coolwarm's white midpoint would read
+# as a washed-out hole.
 
 # Broadcast the shared background and brain outline across a "region" dimension
 # matching mapper.maps_, so plot_stat_map can slice both by region in one call.
 bg_by_region = atlas_native.template.expand_dims(region=mapper.maps_.region)
 
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 
 plotter = cf.plotting.plot_stat_map(
     mapper.maps_,
     bg_volume=bg_by_region,
     slice_mode="region",
-    cmap=cmap,
     vmax=0.8,
     threshold=0.2,
     cbar_label="Pearson correlation",
@@ -25799,7 +25862,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.2 s
+**Total running time:** 10.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26143,7 +26206,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2790f579d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb9f8b2b4d0>
     ```
 - [ ] Attributes: (21)
 
@@ -26540,7 +26603,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f278424be70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb9f472a6d0>
     ```
 - [ ] Attributes: (23)
 
@@ -26651,10 +26714,6 @@ z_scores = glm.compute_contrast("speed")
 The searchlight reports a cross-validated coefficient of determination, so values at or below zero mean the local neighborhood predicts the speed regressor no better than the fold mean; we clip the color scale at zero. The GLM reports a z-score for the speed contrast. Both maps cover the whole plane.
 
 ```python
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-searchlight_cmap = "inferno" if is_dark_theme else "inferno_r"
-glm_cmap = "berlin" if is_dark_theme else "coolwarm"
-
 background_data = data.mean("time").fusi.scale.db()
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 3), constrained_layout=True)
@@ -26662,7 +26721,7 @@ fig, axes = plt.subplots(1, 2, figsize=(10, 3), constrained_layout=True)
 searchlight.scores_.fusi.plot.stat_map(
     bg_volume=background_data,
     axes=axes[0],
-    cmap=searchlight_cmap,
+    cmap="inferno_r",
     vmin=0,
     auto_range=False,
     cbar_label="Cross-validated $R^2$",
@@ -26674,7 +26733,6 @@ axes[0].set_title("Searchlight decoding of speed")
 z_scores.where(mask).fusi.plot.stat_map(
     bg_volume=background_data,
     axes=axes[1],
-    cmap=glm_cmap,
     cbar_label="z-score",
     show_titles=False,
     bg_color=bg_color,
@@ -26709,7 +26767,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 66.3 s
+**Total running time:** 46.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27057,7 +27115,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f84895b6850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc1f2e7d590>
     ```
 - [ ] Attributes: (25)
 
@@ -27268,7 +27326,6 @@ Plotting the spatial mixing weights alongside the independent time courses gives
 ```python
 n_show = 10
 fig = plt.figure(figsize=(14, 20), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -27392,7 +27449,6 @@ xarray.DataArray
 ```python
 n_show = 10
 fig = plt.figure(figsize=(14, 20), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -27429,7 +27485,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 230.1 s
+**Total running time:** 166.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27771,7 +27827,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd689112850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fdca7069590>
     ```
 - [ ] Attributes: (25)
 
@@ -28004,7 +28060,6 @@ Looking at the spatial maps and the associated time courses side by side is a us
 ```python
 n_show = 10
 fig = plt.figure(figsize=(11.5, 12.0), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1.4, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -28131,7 +28186,6 @@ As in temporal mode, we inspect the positive and negative spatial maps and their
 ```python
 n_show = 10
 fig = plt.figure(figsize=(11.5, 12.0), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1.4, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -28171,7 +28225,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 244.2 s
+**Total running time:** 181.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28519,7 +28573,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1bc3ace850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd885855590>
     ```
 - [ ] Attributes: (25)
 
@@ -28758,7 +28812,6 @@ Looking at both together is more informative than either alone. The maps show th
 ```python
 n_show = 6
 fig = plt.figure(figsize=(10.5, 8.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -28876,7 +28929,6 @@ As in temporal mode, we inspect maps and corresponding time courses jointly.
 ```python
 n_show = 6
 fig = plt.figure(figsize=(10.5, 8.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 gs = fig.add_gridspec(n_show, 2, width_ratios=[1, 3])
 
 axes_tc = [fig.add_subplot(gs[i, 1]) for i in range(n_show)]
@@ -28913,7 +28965,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 227.2 s
+**Total running time:** 164.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -28959,7 +29011,6 @@ import confusius as cf
 
 # Adapt background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 
 # Keep notebook output compact for large DataArray displays. The coordinates section is
 # left expanded on purpose; `display_expand_data` alone does not cover the attributes.
@@ -29215,7 +29266,7 @@ modified_claron2021 = partial(cf.glm.claron2021_hrf, beta=6.7)
 hrf_kernel = modified_claron2021(dt=1.0)
 hrf_time = np.linspace(0, 32, len(hrf_kernel))
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(hrf_time, hrf_kernel, color="#d93a54")
 ax.set_xlabel("Time since stimulus onset (s)")
 ax.set_ylabel("Response (a.u.)")
@@ -29254,7 +29305,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f30a5d7d6f0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7fea9835d170>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29269,7 +29320,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...f0\>, beta=6.7) |
+|  | hrf\_model | functools.par...70\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29288,7 +29339,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f30a53a3b10\>, \<confusius.gl...x7f30a520df30\>, \<confusius.gl...x7f30a5897bf0\>, \<confusius.gl...x7f30a5257460\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7fea806df890\>, \<confusius.gl...x7fea8112eb10\>, \<confusius.gl...x7fea81380710\>, \<confusius.gl...x7fea813b2690\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29325,14 +29376,12 @@ z_score = glm.compute_contrast("active")
 z_1d = resampled_average_in_atlas.z.isel(j=0, i=0).values
 slice_coords = z_1d[(z_1d > 5.5) & (z_1d < 9)][::4]
 
-cmap = "berlin" if is_dark_theme else None
 plotter = cf.plotting.plot_stat_map(
     z_score,
     slice_coords=slice_coords,
     nrows=3,
     vmax=10,
     bg_color=bg_color,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -29390,7 +29439,6 @@ plotter = cf.plotting.plot_stat_map(
     bg_kwargs={"vmin": -20, "vmax": 0},
     bg_color=bg_color,
     alpha=1 - adjusted_p_values,
-    cmap=cmap,
     fontsize=20,
 )
 _ = plotter.add_contours(
@@ -29403,7 +29451,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 97.8 s
+**Total running time:** 78.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level.ipynb>)
 
@@ -29438,7 +29486,6 @@ import confusius as cf
 
 # Adapt background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
 
 # Keep notebook output compact for large DataArray displays. The coordinates section is
 # left expanded on purpose; `display_expand_data` alone does not cover the attributes.
@@ -29771,7 +29818,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fbce75da850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6320491590>
     ```
 - [ ] Attributes: (21)
 
@@ -29895,7 +29942,7 @@ speed = (
 )
 speed = speed.interp(time=data.time, method="linear").ffill("time")
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(speed.time, speed, color="#d93a54")
 ax.set_xlabel("Time (s)")
 _ = ax.set_ylabel("Animal speed (cm/s)")
@@ -29994,12 +30041,10 @@ thresholded_zscore, threshold = cf.stats.apply_statistical_threshold(
     cluster_threshold=30,
 )
 
-cmap = "berlin" if is_dark_theme else None
 _ = thresholded_zscore.fusi.plot.stat_map(
     bg_volume=data.mean("time").fusi.scale.db().expand_dims(lag=z_score.lag),
     slice_mode="lag",
     nrows=3,
-    cmap=cmap,
     threshold=threshold,
     bg_color=bg_color,
     fontsize=20,
@@ -30008,7 +30053,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 21.7 s
+**Total running time:** 18.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30276,7 +30321,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5a35b69e80>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6325e4d400>
     ```
 - [ ] Attributes: (25)
 
@@ -30702,7 +30747,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5a700c1bd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f63542b9a90>
     ```
 - [ ] Attributes: (25)
 
@@ -31062,7 +31107,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5a34fa1e50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6323444f50>
     ```
 - [ ] Attributes: (25)
 
@@ -31362,10 +31407,10 @@ The resulting 1D DataArray keeps the time coordinate from the original recording
 ```python
 roi_trace_smooth = roi_trace.rolling(time=15, center=True).mean()
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 
 roi_trace.plot(ax=ax, color="#d93a54", label="ROI mean")
-roi_trace_smooth.plot(ax=ax, color="#3ad9a4", label="Rolling mean (15 samples)")
+roi_trace_smooth.plot(ax=ax, color="#27906d", label="Rolling mean (15 samples)")
 
 ax.set_title("Mean power Doppler intensity in a central ROI")
 ax.set_xlabel("Time (s)")
@@ -31409,7 +31454,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.3 s
+**Total running time:** 7.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31437,10 +31482,8 @@ from remotezip import RemoteZip
 import confusius as cf
 from confusius.glm import FirstLevelModel, gamma_hrf
 
-# Adapt colors to the current Matplotlib style.
+# Adapt the background color to the current Matplotlib style.
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-stat_cmap = "berlin" if is_dark_theme else None
 
 # Keep notebook output compact for large DataArray displays.
 _ = xr.set_options(display_expand_attrs=False, display_expand_data=False)
@@ -31752,7 +31795,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f72c90ab820>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d6445e8b0>
     ```
   - time
 
@@ -32033,7 +32076,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f72c0c89130>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0d60569c70>
     ```
 - [ ] Attributes: (6)
 
@@ -32059,7 +32102,7 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
 ## Plot the GLM map
 
@@ -32072,7 +32115,6 @@ active_voxels = z_map > active_threshold
 plotter = z_map.fusi.plot.stat_map(
     bg_volume=mean_doppler,
     threshold=active_threshold,
-    cmap=stat_cmap,
     cbar_label="task z-score",
     bg_color=bg_color,
 )
@@ -32085,7 +32127,7 @@ We average the Doppler traces from those task-positive voxels. This gives a quic
 ```python
 active_signal = scaled.where(active_voxels).mean(("k", "j", "i"))
 mean_signal = scaled.mean(("k", "j", "i"))
-fig, ax = plt.subplots(figsize=(9, 4), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(9, 4))
 mean_signal.plot(ax=ax, color="#808080", label="Whole-plane mean")
 active_signal.plot(ax=ax, color="#d93a54", label="Top task-positive voxels")
 for idx, event in enumerate(events.itertuples()):
@@ -32093,7 +32135,7 @@ for idx, event in enumerate(events.itertuples()):
     ax.axvspan(
         event.onset,
         event.onset + event.duration,
-        color="#3ad9a4",
+        color="#27906d",
         alpha=0.12,
         label=label,
     )
@@ -32106,7 +32148,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 45.8 s
+**Total running time:** 34.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32231,7 +32273,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.7 s
+**Total running time:** 3.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32663,7 +32705,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6e641dd0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f73f208e390>
     ```
 - [ ] Attributes: (25)
 
@@ -32782,7 +32824,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 11.5 s
+**Total running time:** 10.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/io/load_multipose_recordings.ipynb>)
 
@@ -33065,7 +33107,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f6d18bd4d60>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f583ce9be10>
     ```
 - [ ] Attributes: (27)
 
@@ -33230,7 +33272,6 @@ The initialization was already close, so the refinement is small. Comparing the 
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 for ax, moving_view, title in [
     (axes[0], initialized, "Manual initialization"),
     (axes[1], registered, "Affine registration refinement"),
@@ -33281,7 +33322,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 50.0 s
+**Total running time:** 65.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33529,7 +33570,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7f249c180>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f849c512780>
     ```
 - [ ] Attributes: (23)
 
@@ -33810,7 +33851,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7f4a4bd50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f849c6f7150>
     ```
 - [ ] Attributes: (23)
 
@@ -33955,7 +33996,6 @@ Plotting the same fixed/moving overlay before and after registration makes the c
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], moving, "Before"),
@@ -33973,7 +34013,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics.metric})")
@@ -34015,49 +34054,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-5.757e-13 1.21e-13 3.824e-14 -2.162e-13 ... -536.8 -429.9 -470.2
+  \-1.433e-12 1.309e-13 1.433e-14 -1.455e-12 ... -913.8 -536.7 -607.5
 
   ```
-  array([[[[-5.75695858e-13,  1.21039307e-13,  3.82442136e-14, ...,
-            -1.35790665e-12, -1.67945923e-13, -8.21383891e-15],
-           [-1.20282246e-13,  1.17079062e-14, -1.47903508e-14, ...,
-            -3.19005243e-13, -4.25555949e-14,  9.47847175e-15],
-           [-2.59219609e-13, -1.43467922e-13, -1.78999814e-13, ...,
-            -1.28565339e-13,  4.82087947e-14,  3.43887348e-14],
+  array([[[[-1.43275513e-12,  1.30891545e-13,  1.43349889e-14, ...,
+            -6.72151018e-13, -2.81657551e-13, -1.87572447e-13],
+           [-1.82708749e-13, -2.51084557e-15, -1.13753297e-14, ...,
+            -3.13725153e-13, -7.26290873e-14,  1.58384556e-14],
+           [-2.47466155e-13, -1.33749758e-13, -1.64174009e-13, ...,
+            -1.24940497e-13,  3.87509973e-14,  2.24065479e-14],
            ...,
-           [-2.88183708e-13, -9.45753058e-15,  4.36409578e-13, ...,
-             2.16057082e-13,  2.20290635e-13,  7.12932897e-14],
-           [ 2.87767322e-13,  9.02932913e-14,  6.41893149e-13, ...,
-             1.51363407e-13,  7.30550167e-14,  1.33864389e-14],
-           [ 5.10424620e-13,  1.33084222e-13,  1.09676934e-12, ...,
-             3.65073987e-13,  1.57099647e-13,  3.58552933e-14]],
+           [-3.58950081e-13,  1.83820843e-14,  4.04067934e-13, ...,
+             1.77606052e-13,  1.47233418e-13,  1.14775844e-13],
+           [ 6.25142893e-13,  1.14396943e-13,  3.04007051e-13, ...,
+             2.08022617e-13,  6.11251516e-14,  6.73463081e-15],
+           [ 2.28517507e-12,  1.85221446e-13,  3.44974188e-13, ...,
+             1.29213436e-12,  2.54277883e-13,  2.90938780e-14]],
 
-          [[-6.74610068e-16,  1.41835892e-16,  4.48152114e-17, ...,
-            -1.59121780e-15, -1.96801852e-16, -9.62511431e-18],
-           [-1.40948755e-16,  1.37195211e-17, -1.73315813e-17, ...,
-            -3.73815698e-16, -4.98673604e-17,  1.11070323e-17],
-           [-3.03757889e-16, -1.68118119e-16, -2.09754986e-16, ...,
-            -1.50655022e-16,  5.64918748e-17,  4.02972966e-17],
+          [[-1.67892651e-15,  1.53380910e-16,  1.67979806e-17, ...,
+            -7.87637845e-16, -3.30051046e-16, -2.19800543e-16],
+           [-2.14101178e-16, -2.94225099e-18, -1.33298023e-17, ...,
+            -3.67628400e-16, -8.51079835e-17,  1.85597681e-17],
+           [-2.89984995e-16, -1.56730212e-16, -1.92381859e-16, ...,
+            -1.46407371e-16,  4.54090690e-17,  2.62563690e-17],
   ...
-            -9.61001962e-02, -6.94678448e-02, -3.62310889e-03],
-           [ 8.03014817e-02,  6.16141686e-02,  1.59749249e-01, ...,
-            -1.53685936e-01, -1.25917841e-01, -2.69482463e-02],
-           [ 1.84643355e-01,  1.99752073e-01,  1.39019112e-01, ...,
-            -6.29047649e-01, -5.03785360e-01, -5.50998761e-01]],
+            -8.62656361e-02, -9.66925598e-02, -1.21246408e-02],
+           [ 4.11975880e-02,  5.39808346e-02,  1.33752091e-01, ...,
+            -1.33061228e-01, -1.11555367e-01, -1.70813745e-01],
+           [ 1.24835349e-01,  1.82622446e-01,  1.34048324e-01, ...,
+            -1.07075014e+00, -6.28943204e-01, -7.11894907e-01]],
 
-          [[ 6.31424896e+03,  1.14940360e+03, -1.96725744e+03, ...,
-            -2.06925658e+02, -4.77559599e+00,  3.43473212e+01],
-           [-6.13381207e+01,  2.25927833e+01, -8.38930964e+01, ...,
-            -7.67590193e+01,  1.02398760e+01,  2.41042128e+01],
-           [-9.44697685e+02,  1.14368983e+02,  1.05528036e+02, ...,
-            -1.03602998e+02,  1.06399516e+01,  1.73454254e+01],
+          [[ 1.02508917e+04,  1.67213875e+02, -3.95926235e+02, ...,
+            -1.47260092e+02, -4.74158964e+00,  2.65872515e+03],
+           [-1.03926587e+02,  4.70355138e+00, -1.07342379e+02, ...,
+            -5.91584351e+01,  2.37839570e+01,  5.48467225e+01],
+           [-8.45551663e+02,  1.02215483e+02,  6.11599728e+01, ...,
+            -1.03583227e+02,  1.15956009e+01,  7.79481258e+00],
            ...,
-           [-9.61252639e+00,  8.10132314e+01,  2.45504543e+02, ...,
-            -8.20095748e+01, -5.92821725e+01, -3.09187317e+00],
-           [ 6.85273361e+01,  5.25800358e+01,  1.36326132e+02, ...,
-            -1.31151847e+02, -1.07455229e+02, -2.29969791e+01],
-           [ 1.57570163e+02,  1.70463571e+02,  1.18635535e+02, ...,
-            -5.36813995e+02, -4.29918197e+02, -4.70208926e+02]]]],
+           [-2.16705764e+02,  9.61513747e+01,  2.37979260e+02, ...,
+            -7.36169998e+01, -8.25150834e+01, -1.03468742e+01],
+           [ 3.51570213e+01,  4.60659339e+01,  1.14140788e+02, ...,
+            -1.13551222e+02, -9.51986422e+01, -1.45768306e+02],
+           [ 1.06531457e+02,  1.55845562e+02,  1.14393585e+02, ...,
+            -9.13752173e+02, -5.36724864e+02, -6.07513812e+02]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34212,7 +34251,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7d75c7bf0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f84802cc7d0>
     ```
 - [x] Attributes: (4)
 
@@ -34243,12 +34282,11 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8950
+Rigid + B-spline final metric: -0.8922
 ```
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], registered, "Rigid"),
@@ -34264,7 +34302,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics_bspline.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics_bspline.metric})")
@@ -34299,7 +34336,6 @@ A quiver plot draws the in-plane displacement as arrows over the anatomy, so the
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(8, 3))
-fig.patch.set_facecolor(bg_color)
 
 for ax, background, field, title in [
     (axes[0], fixed, composite_inverse_field, "Approximate inverse combined warp"),
@@ -34332,7 +34368,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 82.4 s
+**Total running time:** 39.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34698,7 +34734,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2a025eead0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f87cd92d810>
     ```
 - [ ] Attributes: (21)
 
@@ -34826,7 +34862,6 @@ ConfUSIus provides the function `plot_motion_diagnostics` to plot `motion_params
 
 ```python
 fig, axes = cf.plotting.plot_motion_diagnostics(motion_df)
-fig.patch.set_facecolor(bg_color)
 ```
 
 ## Compare a representative time series before and after registration
@@ -34847,7 +34882,6 @@ units = highest_std_voxel.x.units
 xy_position = f"(x, y) = ({x_value:.2f}, {y_value:.2f}) {units}"
 
 fig, axs = plt.subplots(1, 2, figsize=(9, 3.5), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 
 plotter = (
     data.mean("time")
@@ -34875,7 +34909,6 @@ raster_before = data.fusi.scale.db().sel(z=0, x=x_value)
 raster_after = registered.fusi.scale.db().sel(z=0, x=x_value)
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True, sharey=True)
-fig.patch.set_facecolor(bg_color)
 
 vmin = float(np.nanpercentile(raster_before, 2))
 vmax = float(np.nanpercentile(raster_before, 99.8))
@@ -34908,7 +34941,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 34.3 s
+**Total running time:** 26.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -34926,15 +34959,19 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
+- Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 - Python 3.11 is no longer supported; ConfUSIus now requires Python 3.12 or newer, following BrainGlobe's move to Python 3.12-3.14 and [SPEC 0](<https://scientific-python.org/specs/spec-0000/>) ([\#561](<https://github.com/confusius-tools/confusius/pull/561>)).
 
 ### ✨ Enhancements
 
+- New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 
 ### 🐛 Fixes
 
+- `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 
 ### 📚 Documentation
@@ -34943,6 +34980,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🔧 Maintenance
 
+- The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
 - Use the released xarray 2026.9.0 instead of a git pin now that it ships the required fixes ([\#559](<https://github.com/confusius-tools/confusius/pull/559>)).
@@ -34952,6 +34990,7 @@ Current development version for the next ConfUSIus release.
 - Videos open in a separate, time-synchronized viewer with their own layer list. Load recordings and videos from **Data I/O** ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- Preserve custom video playback intervals when changing the frame step ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 
 ### 🖼 Napari plugin
 

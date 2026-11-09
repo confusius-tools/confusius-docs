@@ -240,7 +240,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7f249c180>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f849c512780>
     ```
 - [ ] Attributes: (23)
 
@@ -521,7 +521,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7f4a4bd50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f849c6f7150>
     ```
 - [ ] Attributes: (23)
 
@@ -666,7 +666,6 @@ Plotting the same fixed/moving overlay before and after registration makes the c
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], moving, "Before"),
@@ -684,7 +683,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics.metric})")
@@ -726,49 +724,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-5.757e-13 1.21e-13 3.824e-14 -2.162e-13 ... -536.8 -429.9 -470.2
+  \-1.433e-12 1.309e-13 1.433e-14 -1.455e-12 ... -913.8 -536.7 -607.5
 
   ```
-  array([[[[-5.75695858e-13,  1.21039307e-13,  3.82442136e-14, ...,
-            -1.35790665e-12, -1.67945923e-13, -8.21383891e-15],
-           [-1.20282246e-13,  1.17079062e-14, -1.47903508e-14, ...,
-            -3.19005243e-13, -4.25555949e-14,  9.47847175e-15],
-           [-2.59219609e-13, -1.43467922e-13, -1.78999814e-13, ...,
-            -1.28565339e-13,  4.82087947e-14,  3.43887348e-14],
+  array([[[[-1.43275513e-12,  1.30891545e-13,  1.43349889e-14, ...,
+            -6.72151018e-13, -2.81657551e-13, -1.87572447e-13],
+           [-1.82708749e-13, -2.51084557e-15, -1.13753297e-14, ...,
+            -3.13725153e-13, -7.26290873e-14,  1.58384556e-14],
+           [-2.47466155e-13, -1.33749758e-13, -1.64174009e-13, ...,
+            -1.24940497e-13,  3.87509973e-14,  2.24065479e-14],
            ...,
-           [-2.88183708e-13, -9.45753058e-15,  4.36409578e-13, ...,
-             2.16057082e-13,  2.20290635e-13,  7.12932897e-14],
-           [ 2.87767322e-13,  9.02932913e-14,  6.41893149e-13, ...,
-             1.51363407e-13,  7.30550167e-14,  1.33864389e-14],
-           [ 5.10424620e-13,  1.33084222e-13,  1.09676934e-12, ...,
-             3.65073987e-13,  1.57099647e-13,  3.58552933e-14]],
+           [-3.58950081e-13,  1.83820843e-14,  4.04067934e-13, ...,
+             1.77606052e-13,  1.47233418e-13,  1.14775844e-13],
+           [ 6.25142893e-13,  1.14396943e-13,  3.04007051e-13, ...,
+             2.08022617e-13,  6.11251516e-14,  6.73463081e-15],
+           [ 2.28517507e-12,  1.85221446e-13,  3.44974188e-13, ...,
+             1.29213436e-12,  2.54277883e-13,  2.90938780e-14]],
 
-          [[-6.74610068e-16,  1.41835892e-16,  4.48152114e-17, ...,
-            -1.59121780e-15, -1.96801852e-16, -9.62511431e-18],
-           [-1.40948755e-16,  1.37195211e-17, -1.73315813e-17, ...,
-            -3.73815698e-16, -4.98673604e-17,  1.11070323e-17],
-           [-3.03757889e-16, -1.68118119e-16, -2.09754986e-16, ...,
-            -1.50655022e-16,  5.64918748e-17,  4.02972966e-17],
+          [[-1.67892651e-15,  1.53380910e-16,  1.67979806e-17, ...,
+            -7.87637845e-16, -3.30051046e-16, -2.19800543e-16],
+           [-2.14101178e-16, -2.94225099e-18, -1.33298023e-17, ...,
+            -3.67628400e-16, -8.51079835e-17,  1.85597681e-17],
+           [-2.89984995e-16, -1.56730212e-16, -1.92381859e-16, ...,
+            -1.46407371e-16,  4.54090690e-17,  2.62563690e-17],
   ...
-            -9.61001962e-02, -6.94678448e-02, -3.62310889e-03],
-           [ 8.03014817e-02,  6.16141686e-02,  1.59749249e-01, ...,
-            -1.53685936e-01, -1.25917841e-01, -2.69482463e-02],
-           [ 1.84643355e-01,  1.99752073e-01,  1.39019112e-01, ...,
-            -6.29047649e-01, -5.03785360e-01, -5.50998761e-01]],
+            -8.62656361e-02, -9.66925598e-02, -1.21246408e-02],
+           [ 4.11975880e-02,  5.39808346e-02,  1.33752091e-01, ...,
+            -1.33061228e-01, -1.11555367e-01, -1.70813745e-01],
+           [ 1.24835349e-01,  1.82622446e-01,  1.34048324e-01, ...,
+            -1.07075014e+00, -6.28943204e-01, -7.11894907e-01]],
 
-          [[ 6.31424896e+03,  1.14940360e+03, -1.96725744e+03, ...,
-            -2.06925658e+02, -4.77559599e+00,  3.43473212e+01],
-           [-6.13381207e+01,  2.25927833e+01, -8.38930964e+01, ...,
-            -7.67590193e+01,  1.02398760e+01,  2.41042128e+01],
-           [-9.44697685e+02,  1.14368983e+02,  1.05528036e+02, ...,
-            -1.03602998e+02,  1.06399516e+01,  1.73454254e+01],
+          [[ 1.02508917e+04,  1.67213875e+02, -3.95926235e+02, ...,
+            -1.47260092e+02, -4.74158964e+00,  2.65872515e+03],
+           [-1.03926587e+02,  4.70355138e+00, -1.07342379e+02, ...,
+            -5.91584351e+01,  2.37839570e+01,  5.48467225e+01],
+           [-8.45551663e+02,  1.02215483e+02,  6.11599728e+01, ...,
+            -1.03583227e+02,  1.15956009e+01,  7.79481258e+00],
            ...,
-           [-9.61252639e+00,  8.10132314e+01,  2.45504543e+02, ...,
-            -8.20095748e+01, -5.92821725e+01, -3.09187317e+00],
-           [ 6.85273361e+01,  5.25800358e+01,  1.36326132e+02, ...,
-            -1.31151847e+02, -1.07455229e+02, -2.29969791e+01],
-           [ 1.57570163e+02,  1.70463571e+02,  1.18635535e+02, ...,
-            -5.36813995e+02, -4.29918197e+02, -4.70208926e+02]]]],
+           [-2.16705764e+02,  9.61513747e+01,  2.37979260e+02, ...,
+            -7.36169998e+01, -8.25150834e+01, -1.03468742e+01],
+           [ 3.51570213e+01,  4.60659339e+01,  1.14140788e+02, ...,
+            -1.13551222e+02, -9.51986422e+01, -1.45768306e+02],
+           [ 1.06531457e+02,  1.55845562e+02,  1.14393585e+02, ...,
+            -9.13752173e+02, -5.36724864e+02, -6.07513812e+02]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -923,7 +921,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd7d75c7bf0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f84802cc7d0>
     ```
 - [x] Attributes: (4)
 
@@ -954,12 +952,11 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8950
+Rigid + B-spline final metric: -0.8922
 ```
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-fig.patch.set_facecolor(bg_color)
 
 for ax, moving_view, title in [
     (axes[0], registered, "Rigid"),
@@ -975,7 +972,6 @@ _ = fig.suptitle("Fixed (red) / moving (cyan)")
 
 ```python
 fig, ax = plt.subplots(figsize=(7, 3))
-fig.patch.set_facecolor(bg_color)
 ax.plot(diagnostics_bspline.metric_values, color="#d93a54")
 ax.set_xlabel("Iteration")
 ax.set_ylabel(f"Similarity metric ({diagnostics_bspline.metric})")
@@ -1010,7 +1006,6 @@ A quiver plot draws the in-plane displacement as arrows over the anatomy, so the
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(8, 3))
-fig.patch.set_facecolor(bg_color)
 
 for ax, background, field, title in [
     (axes[0], fixed, composite_inverse_field, "Approximate inverse combined warp"),
@@ -1043,7 +1038,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 82.4 s
+**Total running time:** 39.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/napari-video-viewer?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-521/examples/_built/registration/register_volume_same_subject.ipynb>)
 
