@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe1ce2e1590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7784499590>
     ```
 - [ ] Attributes: (25)
 
@@ -710,7 +710,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 283.0 s
+**Total running time:** 290.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/update/pre-commit-update?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-577/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-577/examples/_built/decomposition/fastica_single_recording.ipynb>)
 

@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb6184fd810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f404b439810>
     ```
 - [ ] Attributes: (21)
 
@@ -565,7 +565,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 43.1 s
+**Total running time:** 43.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/update/pre-commit-update?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-577/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-577/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
