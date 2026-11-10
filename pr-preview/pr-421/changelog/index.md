@@ -15,7 +15,7 @@ Current development version for the next ConfUSIus release.
 
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
-- Added `from_nifti`/`to_nifti` to convert directly between a VoxelData array and an in-memory `nibabel.Nifti1Image`/`nibabel.Nifti2Image`, with no file I/O, for interoperating with libraries such as nilearn ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- Added `from_nifti`/`to_nifti` to convert directly between a VoxelData array and an in-memory `nibabel.Nifti1Image`/`nibabel.Nifti2Image`, with no file I/O, for interoperating with libraries such as nilearn. `to_nifti` is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 🐛 Fixes
 

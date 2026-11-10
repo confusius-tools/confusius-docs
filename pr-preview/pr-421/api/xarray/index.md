@@ -122,6 +122,9 @@ Methods:
 - **`save`** –
 
   Save the DataArray to file, dispatching by extension.
+- **`to_nifti`** –
+
+  Convert the VoxelData array to an in-memory NiBabel NIfTI image.
 
 Attributes:
 
@@ -463,6 +466,73 @@ Examples:
 ...     np.zeros((10, 32, 1, 64)), dims=["time", "k", "j", "i"]
 ... )
 >>> data.fusi.save("recording.nii.gz")
+```
+
+#### to\_nifti
+
+```python
+to_nifti(
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+) -> Nifti1Image | Nifti2Image
+```
+
+Convert the VoxelData array to an in-memory NiBabel NIfTI image.
+
+Builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the image object instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. Metadata that only the sidecar carries (e.g. `SliceTiming`, extra-dim names) is not represented on the returned image. This is a convenience wrapper around `to_nifti`.
+
+Parameters:
+
+- ##### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- ##### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI qform. If not provided, `"world_to_qform"` is used if present; otherwise qform falls back to the coordinate-defining voxel geometry (`voxel_to_world`) directly.
+
+  If the coordinate-defining affine contains shear, qform writing is disabled because the NIfTI qform cannot represent shear. In that case, the geometry is written to sform instead.
+- ##### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI sform. If not provided, `"world_to_sform"` is used if present; otherwise sform also falls back to `voxel_to_world` directly (like qform), unless disabled via `sform_code=0` or `attrs["sform_code"] = 0`.
+- ##### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. Takes precedence over `attrs["qform_code"]`. If not provided, the value from `attrs["qform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. Takes precedence over `attrs["sform_code"]`. If not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+
+Returns:
+
+- `Nifti1Image or Nifti2Image` –
+
+  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius as cf
+>>> data = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img = data.fusi.to_nifti()
 ```
 
 ### FUSIAffineAccessor

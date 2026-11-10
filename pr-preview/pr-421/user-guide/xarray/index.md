@@ -243,6 +243,7 @@ The `.fusi` accessor is organized into focused sub-accessors, plus a set of glob
 | Accessor | Description |
 | --- | --- |
 | `.fusi.save` | Save data to file (NIfTI or Zarr), dispatching by extension. |
+| `.fusi.to_nifti` | Convert data to an in-memory NiBabel NIfTI image, with no file I/O. |
 | `.fusi.iq` | Process beamformed IQ into power Doppler or axial velocity volumes. |
 | `.fusi.scale` | Scaling transformations: decibel, log, and power scaling. |
 | `.fusi.affine` | Inspect and apply voxel-to-world and world-to-reference affine transforms. |
