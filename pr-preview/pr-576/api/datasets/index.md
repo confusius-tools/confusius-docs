@@ -589,6 +589,8 @@ Returns:
 
 ```python
 fetch_sample_beamformed_iq(
+    data_dir: str | Path | None = None,
+    refresh: bool = False,
     print_citation: bool = True,
 ) -> DataArray
 ```
@@ -599,6 +601,16 @@ The Landemard et al. (2026) awake ALD019 recording is a Zarr store. Data chunks 
 
 Parameters:
 
+- #### **`data_dir`**
+
+  (`str or Path`, default: `None` ) –
+
+  Directory in which to cache release metadata. Defaults to the platform cache directory, overridable via the `CONFUSIUS_DATA` environment variable. IQ chunks are not cached locally.
+- #### **`refresh`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to resolve the latest published release instead of reusing cached release metadata. Opening the Zarr store still requires network access.
 - #### **`print_citation`**
 
   (`bool`, default: `True` ) –

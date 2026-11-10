@@ -80,6 +80,6 @@ plt.show()
 
 ---
 
-**Total running time:** 10.4 s
+**Total running time:** 13.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/05_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/process_beamformed_iq.ipynb>)
