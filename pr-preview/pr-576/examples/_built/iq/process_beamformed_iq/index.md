@@ -242,7 +242,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f82342cdbe0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f10a7e66660>
     ```
 - [x] Attributes: (9)
 
@@ -313,12 +313,8 @@ tissue_velocity = abs(
 ).mean("time")
 with threadpool_limits(limits=1, user_api="blas"):
     bmode, pwd, blood_velocity, tissue_velocity = dask.compute(
-        bmode, pwd, blood_velocity, tissue_velocity, scheduler="threads"
+        bmode, pwd, blood_velocity, tissue_velocity
     )
-assert all(
-    np.isfinite(image.values).all()
-    for image in (bmode, pwd, blood_velocity, tissue_velocity)
-)
 ```
 
 ## Plot average maps
@@ -352,6 +348,6 @@ plt.show()
 
 ---
 
-**Total running time:** 10.3 s
+**Total running time:** 12.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.ipynb>)
