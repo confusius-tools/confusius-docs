@@ -333,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f02334f68b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff37e06a9e0>
     ```
   - time
 
@@ -614,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f022f5deab0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff37a232b70>
     ```
 - [ ] Attributes: (6)
 
@@ -686,7 +686,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 46.9 s
+**Total running time:** 59.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
