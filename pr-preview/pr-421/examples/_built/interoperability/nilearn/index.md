@@ -4,11 +4,13 @@ This example shows how to pass data between ConfUSIus and [nilearn](<https://nil
 
 We use nilearn to find the clusters of a statistical map from [Cybis Pereira *et al.* 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-421/examples/_built/interoperability/nilearn/#collection]. Then we plot these clusters with ConfUSIus.
 
-!!! warning "nilearn is not a dependency of ConfUSIus" ConfUSIus does not install nilearn. If nilearn is not in your environment, install it before you run this example:
-
-````text
-```bash pip install nilearn ```
-````
+> [!WARNING]
+>
+> **nilearn is not a dependency of ConfUSIus**
+>
+> ConfUSIus does not install nilearn. If nilearn is not in your environment, install it before you run this example:
+>
+> `bash pip install nilearn`
 
 ## Load a statistical map
 
@@ -58,7 +60,7 @@ system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
 ```
 
 ```text
-/tmp/ipykernel_28183/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
+/tmp/ipykernel_27258/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
   - DelayAfterTrigger: Input should be greater than or equal to 0
   stat = cf.load(stat_path).sel(time=2, method="nearest")
 ```
@@ -273,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f084c92a0f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3e94d260f0>
     ```
 - [ ] Attributes: (2)
 
@@ -315,7 +317,7 @@ _ = ax.legend()
 
 ---
 
-**Total running time:** 6.8 s
+**Total running time:** 4.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/08_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.ipynb>)
 
