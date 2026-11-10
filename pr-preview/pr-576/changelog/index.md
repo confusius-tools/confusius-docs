@@ -13,6 +13,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load` ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 
