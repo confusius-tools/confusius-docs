@@ -1,3 +1,5 @@
+# Use nilearn on a VoxelData array
+
 This example shows how to pass data between ConfUSIus and [nilearn](<https://nilearn.github.io>). `to_nifti` converts a VoxelData array to an in-memory NIfTI image. `from_nifti` converts a NIfTI image back to a VoxelData array.
 
 We use nilearn to find the clusters of a statistical map from [Cybis Pereira *et al.* 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-421/examples/_built/interoperability/nilearn/#collection]. Then we plot these clusters with ConfUSIus.
@@ -56,7 +58,7 @@ system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
 ```
 
 ```text
-/tmp/ipykernel_29944/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
+/tmp/ipykernel_28183/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
   - DelayAfterTrigger: Input should be greater than or equal to 0
   stat = cf.load(stat_path).sel(time=2, method="nearest")
 ```
@@ -271,7 +273,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ff172d0dfd0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f084c92a0f0>
     ```
 - [ ] Attributes: (2)
 
@@ -313,7 +315,7 @@ _ = ax.legend()
 
 ---
 
-**Total running time:** 5.8 s
+**Total running time:** 6.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/08_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.ipynb>)
 
