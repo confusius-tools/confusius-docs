@@ -2121,7 +2121,9 @@ This nested approach allows independent control over:
 
 Beamformed IQ datasets are typically very large (tens to hundreds of GB). ConfUSIus relies on the Dask backend for Xarray to enable out-of-core processing, allowing you to work with datasets larger than available RAM. Dask uses **lazy evaluation**, meaning data stays on disk until you explicitly compute results. This allows you to build complex processing pipelines that only execute when needed.
 
-For optimal performance, **always start a Dask distributed `Client`** before running computations. Even for local processing (single machine), the distributed scheduler provides significantly better performance than the default scheduler, along with task monitoring and a web-based dashboard to track progress:
+A Dask distributed `Client` provides worker management, task monitoring, and a web-based dashboard. It can help with larger workloads, but worker startup and data transfer add overhead; it is not necessarily faster for small in-memory segments. When using the threaded scheduler, limiting BLAS threads can avoid oversubscription between Dask tasks and linear algebra. See [Processing beamformed IQ recordings](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq/index.md>) for a small worked example.
+
+To start a local distributed scheduler:
 
 ```python
 from dask.distributed import Client
@@ -24803,7 +24805,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24705/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24677/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25020,7 +25022,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fb7ae2f5040>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc219bc9040>
     ```
 - [ ] Attributes: (27)
 
@@ -25424,7 +25426,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.9 s
+**Total running time:** 11.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25493,7 +25495,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26227/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26201/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25761,7 +25763,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc26c51b2f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f84543c3230>
     ```
   - region
 
@@ -25884,7 +25886,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7fc26c420050\>
+  \<matplotlib.colors.Normalize object at 0x7f8454298050\>
 
 ## Plot the seed maps
 
@@ -25920,7 +25922,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.3 s
+**Total running time:** 11.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26264,7 +26266,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd50fea34d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f09a92ff4d0>
     ```
 - [ ] Attributes: (21)
 
@@ -26661,7 +26663,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd50694a6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f099fe458d0>
     ```
 - [ ] Attributes: (23)
 
@@ -26825,7 +26827,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 70.2 s
+**Total running time:** 55.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27173,7 +27175,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f673884d590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f94c6f19590>
     ```
 - [ ] Attributes: (25)
 
@@ -27543,7 +27545,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 233.8 s
+**Total running time:** 186.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -27885,7 +27887,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0247255590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe666ab9590>
     ```
 - [ ] Attributes: (25)
 
@@ -28283,7 +28285,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 246.2 s
+**Total running time:** 208.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -28631,7 +28633,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fe796769590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffb3bdad590>
     ```
 - [ ] Attributes: (25)
 
@@ -29023,7 +29025,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 229.3 s
+**Total running time:** 185.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29363,7 +29365,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f7b82105170>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f6c6f589170>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29397,7 +29399,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f7b683f3890\>, \<confusius.gl...x7f7b7bddac40\>, \<confusius.gl...x7f7b8eb8e210\>, \<confusius.gl...x7f7b66afbf00\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f6c5590f390\>, \<confusius.gl...x7f6c695aec40\>, \<confusius.gl...x7f6c6642a9f0\>, \<confusius.gl...x7f6c5585bce0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29509,7 +29511,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 101.5 s
+**Total running time:** 87.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.ipynb>)
 
@@ -29876,7 +29878,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7feadf36d590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3e22a51590>
     ```
 - [ ] Attributes: (21)
 
@@ -30111,7 +30113,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 23.6 s
+**Total running time:** 20.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30379,7 +30381,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcfe8a11550>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f70a4435550>
     ```
 - [ ] Attributes: (25)
 
@@ -30805,7 +30807,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd016cc5a90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f70d27c5a90>
     ```
 - [ ] Attributes: (25)
 
@@ -31165,7 +31167,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fcfe605cf50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f70a1a30f50>
     ```
 - [ ] Attributes: (25)
 
@@ -31512,7 +31514,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 9.1 s
+**Total running time:** 7.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -31853,7 +31855,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7efda47fe8b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2efc7368b0>
     ```
   - time
 
@@ -32134,7 +32136,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7efda07d8e30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f2ef8719c70>
     ```
 - [ ] Attributes: (6)
 
@@ -32206,7 +32208,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 46.3 s
+**Total running time:** 37.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32331,7 +32333,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.3 s
+**Total running time:** 4.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32763,7 +32765,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fedec88a630>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f47dc89e630>
     ```
 - [ ] Attributes: (25)
 
@@ -32882,33 +32884,35 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 12.6 s
+**Total running time:** 10.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/03_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/load_multipose_recordings.ipynb>)
 
 [^/pr-preview/pr-576/examples/_built/io/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
-# From beamformed IQ to ultrasound images
+# Processing beamformed IQ recordings
 
-Compute B-mode, power Doppler, and axial velocity from a few blocks of the [Landemard et al. (2026)](<https://doi.org/10.1038/s41586-026-10350-9>) sample. The four temporal-average maps follow the ConfUSIus paper's IQ panel, using a much shorter segment. The recording is licensed under CC BY-NC 4.0.
+This example shows how to compute B-mode, power Doppler, and axial velocity from beamformed in-phase and quadrature (IQ) data. We use a short segment of an awake mouse recording from [Landemard et al. (2026)](<https://doi.org/10.1038/s41586-026-10350-9>) and compare the temporal-average maps, as in the ConfUSIus paper's IQ panel.
 
 ```python
+import dask
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from threadpoolctl import threadpool_limits
 
 import confusius as cf
 
 bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
 ```
 
-## Read three blocks
+## Load an IQ recording
 
-The fetcher opens the remote Zarr store lazily. Select three 300-frame chunks before computing, so only this segment (about 72 MB uncompressed) enters memory. Keep its chunking for the processing windows and reuse the in-memory IQ data across all four calculations rather than downloading it repeatedly.
+`fetch_sample_beamformed_iq` opens the recording lazily from the public S3 collection. The IQ array is backed by Dask: opening it reads metadata and coordinates, but not the IQ samples.
 
 ```python
-iq = cf.datasets.fetch_sample_beamformed_iq().isel(time=slice(0, 900))
-iq = iq.compute().chunk({"time": 300})
+iq = cf.datasets.fetch_sample_beamformed_iq()
+print(iq)
 ```
 
 ```
@@ -32918,38 +32922,83 @@ Landemard, A., Krumin, M., Harris, K. D., & Carandini, M. (2026). Brainwide bloo
 populations. Nature. https://doi.org/10.1038/s41586-026-10350-9
 ```
 
-## Compute temporal averages
+```text
+<xarray.DataArray 'iq' (time: 1130900, k: 1, j: 125, i: 80)> Size: 90GB
+dask.array<open_dataset-iq, shape=(1130900, 1, 125, 80), dtype=complex64, chunksize=(300, 1, 125, 80), chunktype=numpy.ndarray>
+Coordinates:
+  * time     (time) float64 9MB 6.757 6.759 6.761 ... 2.27e+03 2.27e+03 2.27e+03
+  * k        (k) int64 8B 0
+  * j        (j) int64 1kB 0 1 2 3 4 5 6 7 8 ... 117 118 119 120 121 122 123 124
+  * i        (i) int64 640B 0 1 2 3 4 5 6 7 8 9 ... 71 72 73 74 75 76 77 78 79
+  * z        (k, j, i) float64 80kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0
+  * y        (k, j, i) float64 80kB 0.0 0.0 0.0 0.0 ... 5.992 5.992 5.992 5.992
+  * x        (k, j, i) float64 80kB 2.4 2.5 2.6 2.7 2.8 ... 10.0 10.1 10.2 10.3
+Indexes:
+  ┌ z        VoxelToWorldIndex
+  │ y
+  └ x
+Attributes:
+    transmit_frequency:           15625000.0
+    probe_number_of_elements:     128
+    probe_pitch:                  0.1
+    beamforming_sound_velocity:   1510.0
+    plane_wave_angles:            [-10.0, -7.9, -5.8, -3.6999999999999993, -1...
+    compound_sampling_frequency:  500.0
+    pulse_repetition_frequency:   5000.0
+    beamforming_method:           Fourier
+    citation:                     Landemard, A., Krumin, M., Harris, K. D., &...
+```
 
-With the default SVD-index filter, `low_cutoff=40` removes the first 40 modes to emphasize blood signals. Conversely, `high_cutoff=40` retains the tissue modes. As in the paper, average the absolute tissue velocity to avoid cancellation; blood axial velocity remains signed. These cutoffs are recording-specific.
+## Work with chunks
+
+Zarr stores the IQ samples in independently readable chunks of 300 frames. Dask uses chunks to build a lazy task graph: selecting a segment does not read its IQ data until we compute it. We load three chunks (about 72 MB uncompressed) into memory so all four calculations reuse the data without downloading it again.
+
+Storage chunks and processing windows are distinct. Below, we explicitly use 300-frame windows for B-mode and clutter filtering; loading into memory with `compute()` does not preserve Dask chunking.
 
 ```python
-bmode = cf.iq.process_iq_to_bmode(iq).mean("time").compute()
-power = cf.iq.process_iq_to_power_doppler(iq, low_cutoff=40).mean("time").compute()
-blood_velocity = (
-    cf.iq.process_iq_to_axial_velocity(iq, low_cutoff=40, spatial_kernel=1)
-    .mean("time")
-    .compute()
-)
-tissue_velocity = (
-    abs(cf.iq.process_iq_to_axial_velocity(iq, high_cutoff=40)).mean("time").compute()
-)
+iq = iq.isel(time=slice(0, 900)).compute()
+```
+
+Dask tasks and BLAS linear algebra can each use multiple threads. For this small example, we limit BLAS to one thread during computation to avoid competing thread pools. For larger workloads, a `dask.distributed.Client` offers worker management and a dashboard; see the [IQ processing guide](<https://confusius.tools/pr-preview/pr-576/user-guide/beamformed-iq/#memory-and-performance-optimization>). Performance depends on the workload and worker configuration.
+
+## Compute B-mode, power Doppler, and axial velocity
+
+B-mode represents the IQ amplitude, while power Doppler measures signal power after clutter filtering. With the default SVD-index filter, `low_cutoff=40` removes the first 40 modes to suppress tissue clutter; `high_cutoff=40` retains these modes to estimate tissue motion. These cutoffs are specific to this recording.
+
+We average each output over time. For tissue velocity, we take the absolute value before averaging to avoid cancellation between opposite directions of motion. Blood axial velocity remains signed.
+
+```python
+bmode = cf.iq.process_iq_to_bmode(iq, bmode_window_width=300).mean("time")
+pwd = cf.iq.process_iq_to_power_doppler(
+    iq, clutter_window_width=300, low_cutoff=40
+).mean("time")
+blood_velocity = cf.iq.process_iq_to_axial_velocity(
+    iq, clutter_window_width=300, low_cutoff=40, spatial_kernel=1
+).mean("time")
+tissue_velocity = abs(
+    cf.iq.process_iq_to_axial_velocity(iq, clutter_window_width=300, high_cutoff=40)
+).mean("time")
+with threadpool_limits(limits=1, user_api="blas"):
+    bmode, pwd, blood_velocity, tissue_velocity = dask.compute(
+        bmode, pwd, blood_velocity, tissue_velocity, scheduler="threads"
+    )
 assert all(
     np.isfinite(image.values).all()
-    for image in (bmode, power, blood_velocity, tissue_velocity)
+    for image in (bmode, pwd, blood_velocity, tissue_velocity)
 )
 ```
 
-## Compare the maps
+## Plot average maps
 
-Convert the mean B-mode amplitude and power Doppler to relative decibels, and velocities from m/s to µm/s (tissue) or mm/s (blood). The signed blood map shows the direction of motion along the ultrasound beam, not total flow speed.
+We display the mean B-mode amplitude and power Doppler in relative decibels, and convert velocities from m/s to µm/s (tissue) or mm/s (blood). The signed blood velocity map shows motion along the ultrasound beam, not the total flow speed.
 
 ```python
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
 panels = (
     ("B-mode", bmode.fusi.scale.db(factor=20), "gray", -60, 0, "dB"),
     ("Tissue velocity", tissue_velocity * 1e6, "inferno", 0, 5, "µm/s"),
-    ("Power Doppler", power.fusi.scale.db(), "gray", -20, 0, "dB"),
-    ("Blood axial velocity", blood_velocity * 1e3, "berlin", -10, 10, "mm/s"),
+    ("Power Doppler", pwd.fusi.scale.db(), "gray", -20, 0, "dB"),
+    ("Blood axial velocity", blood_velocity * 1e3, "coolwarm", -10, 10, "mm/s"),
 )
 for ax, (title, image, cmap, vmin, vmax, unit) in zip(axes.flat, panels, strict=True):
     cf.plotting.plot_volume(
@@ -32970,9 +33019,9 @@ plt.show()
 
 ---
 
-**Total running time:** 13.0 s
+**Total running time:** 10.6 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/05_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/process_beamformed_iq.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.ipynb>)
 
 # Register a recording to an Allen fUSI template
 
@@ -33251,7 +33300,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc2a9f03e10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f576879fe10>
     ```
 - [ ] Attributes: (27)
 
@@ -33466,7 +33515,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 93.0 s
+**Total running time:** 75.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -33714,7 +33763,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fab2c7ee9e0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8d399229e0>
     ```
 - [ ] Attributes: (23)
 
@@ -33995,7 +34044,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fab2cb2be50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8d39b07550>
     ```
 - [ ] Attributes: (23)
 
@@ -34198,49 +34247,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-1.301e-12 7.051e-14 8.895e-14 -4.014e-13 ... -444.1 -665.5 -49.94
+  2.402e-10 1.493e-12 2.916e-13 ... -663.9 -1.641e+03 -1.099e+04
 
   ```
-  array([[[[-1.30115183e-12,  7.05075872e-14,  8.89485802e-14, ...,
-            -4.02750771e-13, -1.57933415e-13, -4.99801152e-15],
-           [-3.57843668e-13, -2.25397456e-15, -7.11393215e-15, ...,
-            -1.86222132e-13, -2.86132920e-14,  4.86064121e-15],
-           [-9.98615622e-13, -1.61728189e-13, -1.34023538e-13, ...,
-            -8.68540388e-14,  3.98445812e-14,  1.99789567e-14],
+  array([[[[ 2.40177977e-10,  1.49344964e-12,  2.91603547e-13, ...,
+            -1.05848537e-12, -8.98228298e-12, -1.86641091e-12],
+           [ 1.01184995e-12,  1.89541590e-13,  2.89220982e-14, ...,
+            -4.49267389e-13, -2.60193379e-13,  4.53623882e-14],
+           [-1.59989862e-12, -3.06007668e-13, -2.10355942e-13, ...,
+            -2.15198315e-13,  6.47586157e-14,  9.80301960e-14],
            ...,
-           [-4.76054922e-13, -1.82558359e-14,  3.04290532e-13, ...,
-             1.70332061e-13,  9.58232453e-14,  1.03582911e-14],
-           [ 4.68968118e-13,  1.96246370e-13,  2.80416076e-13, ...,
-             1.34088870e-13,  6.21120498e-14,  1.13766045e-14],
-           [ 5.47730729e-11,  2.62786787e-13,  3.07329466e-13, ...,
-             3.17745151e-13,  2.51102477e-13,  5.63778296e-14]],
+           [-3.35651479e-13, -4.47680390e-14,  5.06613086e-13, ...,
+             3.11476013e-13,  1.83180067e-13,  6.76734705e-14],
+           [ 2.25071511e-13,  2.41610248e-13,  5.89463000e-13, ...,
+             2.11466512e-13,  1.40520993e-13,  3.33713447e-14],
+           [ 1.29015258e-10,  2.39775922e-12,  4.38572991e-12, ...,
+             9.60135337e-13,  3.31965782e-12,  9.86359281e-13]],
 
-          [[-1.52471155e-15,  8.26219742e-17,  1.04231439e-16, ...,
-            -4.71950114e-16, -1.85069027e-16, -5.85675379e-18],
-           [-4.19327217e-16, -2.64124523e-18, -8.33622510e-18, ...,
-            -2.18218220e-16, -3.35295358e-17,  5.69578095e-18],
-           [-1.17019455e-15, -1.89515806e-16, -1.57051032e-16, ...,
-            -1.01777020e-16,  4.66905491e-17,  2.34116768e-17],
+          [[ 2.81444586e-13,  1.75004936e-15,  3.41705932e-16, ...,
+            -1.24035092e-15, -1.05255900e-14, -2.18709163e-15],
+           [ 1.18570275e-15,  2.22108017e-16,  3.38914001e-17, ...,
+            -5.26459068e-16, -3.04898969e-16,  5.31564079e-17],
+           [-1.87478805e-15, -3.58584922e-16, -2.46498624e-16, ...,
+            -2.52172998e-16,  7.58852329e-17,  1.14873429e-16],
   ...
-            -9.54554021e-02, -1.03739204e-01, -1.52397276e-02],
-           [ 1.04985861e-01,  8.26589317e-02,  1.40419922e-01, ...,
-            -1.26478166e-01, -6.93077956e-02, -7.12946055e-03],
-           [ 3.75722613e-01,  2.94116921e-01,  1.39220824e-01, ...,
-            -5.20348745e-01, -7.79799302e-01, -5.85186290e-02]],
+            -8.73861747e-02, -8.08813579e-02, -6.14043977e-03],
+           [ 8.27406251e-03,  3.51380083e-02,  1.59841377e-01, ...,
+            -1.90693266e-01, -2.60847030e-01, -1.20490746e-01],
+           [ 2.35677379e-03,  6.40736228e-02,  1.27769757e-02, ...,
+            -7.78010550e-01, -1.92281547e+00, -1.28777785e+01]],
 
-          [[ 1.95517006e+04,  2.42067270e+02, -4.13718504e+02, ...,
-            -4.12006111e+02, -1.14538082e+01,  5.94773703e+01],
-           [-1.16473229e+02, -1.16739748e+00, -9.72266088e+01, ...,
-            -6.30403955e+01,  7.22222593e+00,  2.80800748e+01],
-           [-7.54395976e+02,  1.02159719e+02,  7.12773311e+01, ...,
-            -9.38793642e+01,  7.09226598e+00,  1.00721277e+01],
+          [[ 5.68277040e+03,  2.47586503e+02, -5.65532133e+02, ...,
+            -4.01092016e+03, -1.03883354e+02, -1.77104384e+02],
+           [ 3.65440649e+02,  4.15096038e+01, -1.35876722e+02, ...,
+            -9.71051815e+01,  1.72058718e+01,  8.40623172e+00],
+           [-1.46163734e+03,  1.76490085e+02,  7.03398560e+01, ...,
+            -8.80125767e+01,  2.28567120e+01, -9.37513631e+00],
            ...,
-           [-3.26944331e+01,  6.63515585e+01,  2.49811064e+02, ...,
-            -8.14593230e+01, -8.85285186e+01, -1.30052139e+01],
-           [ 8.95923847e+01,  7.05391257e+01,  1.19830953e+02, ...,
-            -1.07933397e+02, -5.91455905e+01, -6.08410865e+00],
-           [ 3.20632477e+02,  2.50992235e+02,  1.18807672e+02, ...,
-            -4.44052987e+02, -6.65461810e+02, -4.99383844e+01]]]],
+           [-2.36202378e+02,  1.43895389e+02,  2.57521095e+02, ...,
+            -7.45732404e+01, -6.90221874e+01, -5.24010223e+00],
+           [ 7.06088408e+00,  2.99859234e+01,  1.36404751e+02, ...,
+            -1.62733004e+02, -2.22600524e+02, -1.02823878e+02],
+           [ 2.01121356e+00,  5.46788743e+01,  1.09035609e+01, ...,
+            -6.63935319e+02, -1.64088405e+03, -1.09895857e+04]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -34395,7 +34444,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fab11520230>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f8d34ac4890>
     ```
 - [x] Attributes: (4)
 
@@ -34426,7 +34475,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8913
+Rigid + B-spline final metric: -0.8956
 ```
 
 ```python
@@ -34512,7 +34561,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 53.6 s
+**Total running time:** 71.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -34878,7 +34927,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f05b1b85810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fa6332dd810>
     ```
 - [ ] Attributes: (21)
 
@@ -35085,7 +35134,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 35.7 s
+**Total running time:** 30.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/volumewise_motion_correction.ipynb>)
 

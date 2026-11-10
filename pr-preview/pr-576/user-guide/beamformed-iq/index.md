@@ -175,7 +175,9 @@ This nested approach allows independent control over:
 
 Beamformed IQ datasets are typically very large (tens to hundreds of GB). ConfUSIus relies on the Dask backend for Xarray to enable out-of-core processing, allowing you to work with datasets larger than available RAM. Dask uses **lazy evaluation**, meaning data stays on disk until you explicitly compute results. This allows you to build complex processing pipelines that only execute when needed.
 
-For optimal performance, **always start a Dask distributed `Client`** before running computations. Even for local processing (single machine), the distributed scheduler provides significantly better performance than the default scheduler, along with task monitoring and a web-based dashboard to track progress:
+A Dask distributed `Client` provides worker management, task monitoring, and a web-based dashboard. It can help with larger workloads, but worker startup and data transfer add overhead; it is not necessarily faster for small in-memory segments. When using the threaded scheduler, limiting BLAS threads can avoid oversubscription between Dask tasks and linear algebra. See [Processing beamformed IQ recordings](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq/index.md>) for a small worked example.
+
+To start a local distributed scheduler:
 
 ```python
 from dask.distributed import Client
