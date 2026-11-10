@@ -204,7 +204,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f0227aa4f50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f66515039d0>
     ```
 - [ ] Attributes: (4)
 
@@ -548,7 +548,7 @@ array([[  0.3       ,   0.        ,   0.        ,  -5.57043712],
 
 ---
 
-**Total running time:** 15.1 s
+**Total running time:** 27.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/io/transforms_101.ipynb>)
 

@@ -28,7 +28,7 @@ With `uvx`, no prior installation is needed:
 uvx -p 3.13 confusius
 ```
 
-The ConfUSIus sidebar contains six collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#data-io-panel>), [Video](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#video-panel>), [Signals](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
+The ConfUSIus sidebar contains five collapsible panels—[Data I/O](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#data-io-panel>), [Signals](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#signals-panel>), [Events](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#events-panel>), [QC](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#qc-panel>), and [Registration](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#registration-panel>)—that can each be expanded or collapsed independently. If you want a quick walkthrough inside napari itself, click **Take a Tour** in the upper-right corner of the sidebar header.
 
 > [!TIP]
 >
@@ -72,7 +72,7 @@ ConfUSIus also registers native napari file readers for NIfTI, Iconeus SCAN and 
 
 ### Recommended: Data I/O Panel
 
-The [Data I/O Panel](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#saving-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
+The [Data I/O Panel](<https://confusius.tools/pr-preview/pr-556/gui/plugin/#exporting-data>) save section lets you export any layer to NIfTI or Zarr. Select the layer, optionally pick a template layer to borrow physical coordinates from, enter an output path, and click **Save**.
 
 > [!WARNING]
 >

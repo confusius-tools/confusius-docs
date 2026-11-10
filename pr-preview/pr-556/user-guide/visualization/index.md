@@ -343,7 +343,7 @@ plotter = cf.plotting.plot_stat_map(t_map, bg_volume=pwd, slice_mode="z", thresh
 
 By default, `vmin` and `vmax` are taken from the full `stat_map`, and `auto_range=True` picks a suitable range + default colormap automatically:
 
-- Both positive and negative values: diverging, symmetric `[-m, m]` range (`m = max(|vmin|, |vmax|)` over the bounds you pass, or the largest magnitude in `stat_map` when you pass neither), with `cmap="coolwarm"` by default.
+- Both positive and negative values: diverging, symmetric `[-m, m]` range (`m = max(|vmin|, |vmax|)` over the bounds you pass, or the largest magnitude in `stat_map` when you pass neither), with `cmap="coolwarm"` by default on light backgrounds and `cmap="berlin"` on dark ones (judged from `bg_color`).
 - Only non-negative values (for example R² or F-statistics): sequential `[0, vmax]` range, with `cmap="viridis"` by default.
 - Only non-positive values: sequential `[vmin, 0]` range, with `cmap="viridis_r"` by default.
 

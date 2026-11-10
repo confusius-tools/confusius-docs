@@ -61,7 +61,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_46171/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26347/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -329,7 +329,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f9ecc65f410>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f7410bd3650>
     ```
   - region
 
@@ -448,35 +448,31 @@ xarray.DataArray
 
   **cmap :**
 
-  coolwarm
+  berlin
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f9ecc642270\>
+  \<matplotlib.colors.Normalize object at 0x7f7410d97e00\>
 
 ## Plot the seed maps
 
 Each seed's map is plotted with `plot_stat_map` over the resampled Allen template volume, with `vmax=0.8` fixing the colormap to a shared range so the four seeds are directly comparable. `mapper.maps_` stacks all four seed maps along a `region` dimension, so a single `plot_stat_map` call with `slice_mode="region"` plots one panel per seed as long as the background is broadcast to the same `region` dimension first. We outline each seed's own ROI with `VolumePlotter.add_contours`, leaving `colors` unset so each region is drawn in its canonical Allen color (read from the atlas mask's `attrs["cmap"]`/`attrs["norm"]`, the same convention used by `get_masks` elsewhere).
 
 ```python
-# coolwarm's white midpoint reads as a washed-out hole on a dark background, so switch
-# to berlin (Crameri's perceptually uniform diverging colormap, black midpoint) when the
-# current Matplotlib style is dark.
-is_dark_theme = sum(mpl.colors.to_rgb(bg_color)) / 3 < 0.5
-cmap = "berlin" if is_dark_theme else None
+# The default diverging colormap follows `bg_color`: coolwarm on a light background,
+# berlin (black midpoint) on a dark one, where coolwarm's white midpoint would read
+# as a washed-out hole.
 
 # Broadcast the shared background and brain outline across a "region" dimension
 # matching mapper.maps_, so plot_stat_map can slice both by region in one call.
 bg_by_region = atlas_native.template.expand_dims(region=mapper.maps_.region)
 
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
-fig.patch.set_facecolor(bg_color)
 
 plotter = cf.plotting.plot_stat_map(
     mapper.maps_,
     bg_volume=bg_by_region,
     slice_mode="region",
-    cmap=cmap,
     vmax=0.8,
     threshold=0.2,
     cbar_label="Pearson correlation",
@@ -492,7 +488,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.2 s
+**Total running time:** 14.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/transform-api?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-556/examples/_built/connectivity/atlas_seed_map.ipynb>)
 

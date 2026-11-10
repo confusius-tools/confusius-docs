@@ -8,7 +8,7 @@ Modules:
 
 - **`affines`** –
 
-  Affine matrix utilities and world-space translate, rotate and zoom helpers.
+  Affine matrix decomposition and composition utilities.
 - **`bspline`** –
 
   B-spline transform helpers for fUSI registration.
@@ -51,15 +51,6 @@ Classes:
 
 Functions:
 
-- **`apply_rotation`** –
-
-  Rotate a VoxelData array in world space.
-- **`apply_translation`** –
-
-  Translate a VoxelData array in world space.
-- **`apply_zoom`** –
-
-  Rescale a VoxelData array in world space.
 - **`compose_affine`** –
 
   Compose translations, rotations, zooms, and shears into an affine matrix.
@@ -104,7 +95,7 @@ Functions:
 
 Plot registration progress in real time.
 
-Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt).
+Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt). Draws on a black background.
 
 Parameters:
 
@@ -324,213 +315,6 @@ Parameters:
   (`RegistrationDiagnostics`) –
 
   Diagnostics collected for the completed frame.
-
-### apply\_rotation
-
-```python
-apply_rotation(
-    data: DataArray,
-    angle: ArrayLike,
-    axis: str | ArrayLike,
-    *,
-    center: TransformCenter = "origin",
-    degrees: bool = True,
-    inplace: bool = False,
-) -> DataArray
-```
-
-Rotate a VoxelData array in world space.
-
-Only the voxel-to-world geometry changes: data values and voxel coordinates are untouched, and any `attrs["affines"]` entries are re-expressed accordingly. Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates, so a rotation of +90 degrees about `x` maps `+z` onto `+y`. With `axis="zyx"`, the angles match the rotations reported by extract\_motion\_parameters.
-
-Parameters:
-
-- #### **`data`**
-
-  (`DataArray`) –
-
-  VoxelData array to rotate.
-- #### **`angle`**
-
-  (`float or (N,) array-like`) –
-
-  Rotation angle, or one angle per name when `axis` names several axes.
-- #### **`axis`**
-
-  (`str or (3,) array-like`) –
-
-  Rotation axis. Either one or more world dimension names among `"z"`, `"y"` and `"x"`, or a vector in world `(z, y, x)` order, which is normalized. Several names rotate in sequence from left to right about the fixed world axes, so `"zyx"` rotates about `z` first. Names may repeat, as in `"zyz"`, and their order changes the result.
-- #### **`center`**
-
-  (`(origin, geometry)`, default: `"origin"` ) –
-
-  Fixed point of the rotation. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin.
-- #### **`degrees`**
-
-  (`bool`, default: `True` ) –
-
-  Whether to read `angle` in degrees rather than radians.
-- #### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify `data` in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The rotated VoxelData array. This is `data` itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `angle` is not finite, if it does not hold one value per axis name, if `axis` is neither world dimension names nor a non-zero finite `(3,)` vector, if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, or if `data` is not a VoxelData array.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.registration import apply_rotation, extract_motion_parameters
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
-... )
->>> rotated = apply_rotation(data, 90.0, "x")
->>> np.round(rotated.fusi.affine.voxel_to_world[:3, :3])
-array([[ 0., -1.,  0.],
-       [ 1.,  0.,  0.],
-       [ 0.,  0.,  1.]])
->>> tilted = apply_rotation(data, (30.0, 20.0, 10.0), "zyx")
->>> params = extract_motion_parameters([tilted.fusi.affine.voxel_to_world])
->>> np.round(np.rad2deg(params[0, :3]))
-array([30., 20., 10.])
-```
-
-### apply\_translation
-
-```python
-apply_translation(
-    data: DataArray,
-    translation: ArrayLike,
-    *,
-    inplace: bool = False,
-) -> DataArray
-```
-
-Translate a VoxelData array in world space.
-
-Only the voxel-to-world geometry changes: data values and voxel coordinates are untouched, and any `attrs["affines"]` entries are re-expressed accordingly.
-
-Parameters:
-
-- #### **`data`**
-
-  (`DataArray`) –
-
-  VoxelData array to translate.
-- #### **`translation`**
-
-  (`(3,) array-like`) –
-
-  Translation in world `(z, y, x)` order, in units of `data.fusi.affine.units`.
-- #### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify `data` in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The translated VoxelData array. This is `data` itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `translation` is not a finite `(3,)` vector, or if `data` is not a VoxelData array.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.registration import apply_translation
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
-... )
->>> shifted = apply_translation(data, (0.0, 0.0, 1.5))
->>> shifted.fusi.affine.voxel_to_world[:3, 3]
-array([0. , 0. , 1.5])
-```
-
-### apply\_zoom
-
-```python
-apply_zoom(
-    data: DataArray,
-    zoom: ArrayLike,
-    *,
-    center: TransformCenter = "origin",
-    inplace: bool = False,
-) -> DataArray
-```
-
-Rescale a VoxelData array in world space.
-
-Only the voxel-to-world geometry changes: data values and voxel coordinates are untouched, and any `attrs["affines"]` entries are re-expressed accordingly.
-
-Parameters:
-
-- #### **`data`**
-
-  (`DataArray`) –
-
-  VoxelData array to rescale.
-- #### **`zoom`**
-
-  (`float or (3,) array-like`) –
-
-  Scale factor, either a scalar applied to all axes or per-axis factors in world `(z, y, x)` order. Negative factors reflect the volume along that axis. Unequal factors shear the voxel grid when it is oblique to the world axes, so rotating then zooming differs from zooming then rotating.
-- #### **`center`**
-
-  (`(origin, geometry)`, default: `"origin"` ) –
-
-  Fixed point of the rescaling. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin.
-- #### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify `data` in place instead of returning a copy.
-
-Returns:
-
-- `DataArray` –
-
-  The rescaled VoxelData array. This is `data` itself if `inplace` is `True`.
-
-Raises:
-
-- `ValueError` –
-
-  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if `data` is not a VoxelData array, or if a per-axis `zoom` is applied to pose-stacked geometry whose poses are not parallel (all pose affines must share equal spatial scale magnitudes).
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.registration import apply_zoom
->>> from confusius.xarray import create_voxeldata
->>> data = create_voxeldata(
-...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
-... )
->>> zoomed = apply_zoom(data, 2.0)
->>> np.diag(zoomed.fusi.affine.voxel_to_world)
-array([2., 2., 2., 1.])
-```
 
 ### compose\_affine
 
