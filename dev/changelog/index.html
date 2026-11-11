@@ -3206,17 +3206,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#napari-plugin_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-         Napari plugin
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -3290,7 +3279,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_2" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -3373,7 +3362,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_3" class="md-nav__link">
+  <a href="#napari-plugin_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -3423,7 +3412,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_4" class="md-nav__link">
+  <a href="#napari-plugin_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4147,17 +4136,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#napari-plugin_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-         Napari plugin
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -4231,7 +4209,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_2" class="md-nav__link">
+  <a href="#napari-plugin_1" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4314,7 +4292,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_3" class="md-nav__link">
+  <a href="#napari-plugin_2" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4364,7 +4342,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#napari-plugin_4" class="md-nav__link">
+  <a href="#napari-plugin_3" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
          Napari plugin
@@ -4971,9 +4949,12 @@
   colormap stat maps are drawn with, which remembers its source colormap and
   threshold and can be rebuilt on another colormap with <code>with_source</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/518">#518</a>).</li>
-<li>Load fUSI-BIDS NIfTI chunks together using <code>{chunk}</code> in the filename, stacking
-  them along <code>pose</code> in numeric chunk order while preserving geometry and timing
+<li>Load multi-pose arrays split into several NIfTI files using <code>{chunk}</code> in the filename,
+  stacking them along <code>pose</code> in numeric chunk order while preserving geometry and timing
   (<a href="https://github.com/confusius-tools/confusius/pull/564">#564</a>).</li>
+<li>Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a
+  <code>{chunk}</code> filename template, preserving each pose's geometry and timing
+  (<a href="https://github.com/confusius-tools/confusius/pull/579">#579</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
@@ -5015,9 +4996,6 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/521">#521</a>).</li>
 <li>Fix video synchronization with recordings timed in milliseconds or microseconds
   (<a href="https://github.com/confusius-tools/confusius/pull/521">#521</a>).</li>
-</ul>
-<h3 id="napari-plugin_1"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_1" title="Permanent link">&para;</a></h3>
-<ul>
 <li>Open multipose arrays as one positioned layer per pose in <code>plot_napari</code>, its
   xarray accessors, and the CLI, with pose values in layer names
   (<a href="https://github.com/confusius-tools/confusius/pull/562">#562</a>).</li>
@@ -5134,7 +5112,7 @@
   and a "Copy as Markdown" button in the page header
   (<a href="https://github.com/confusius-tools/confusius/pull/513">#513</a>).</li>
 </ul>
-<h3 id="napari-plugin_2"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_2" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_1"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Boolean arrays open as labels layers
   (<a href="https://github.com/confusius-tools/confusius/pull/504">#504</a>).</li>
@@ -5296,7 +5274,7 @@
   <code>confusius.xarray</code> subpackage
   (<a href="https://github.com/confusius-tools/confusius/pull/500">#500</a>).</li>
 </ul>
-<h3 id="napari-plugin_3"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_3" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_2"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Renaming a layer now immediately updates selectors in Registration, Signals,
   Quality Control, Video, and Data → Save without changing the selected layer
@@ -5341,7 +5319,7 @@
   gzip-compressed NIfTI files
   (<a href="https://github.com/confusius-tools/confusius/pull/441">#441</a>).</li>
 </ul>
-<h3 id="napari-plugin_4"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_4" title="Permanent link">&para;</a></h3>
+<h3 id="napari-plugin_3"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Scrolling the sidebar with the mouse wheel no longer gets hijacked by whichever
   combo box or spin box the cursor happens to be over

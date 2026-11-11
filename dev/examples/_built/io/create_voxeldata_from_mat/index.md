@@ -333,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f807a6468b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f979bf4a9e0>
     ```
   - time
 
@@ -614,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f80767d89b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f979816af30>
     ```
 - [ ] Attributes: (6)
 
@@ -686,7 +686,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 57.4 s
+**Total running time:** 60.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
