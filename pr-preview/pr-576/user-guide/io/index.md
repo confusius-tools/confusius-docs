@@ -505,7 +505,7 @@ iq = cf.create_voxeldata(
 validate_voxeldata(iq, require_velocity_attrs=True)
 ```
 
-See [Processing Beamformed IQ Data](<https://confusius.tools/pr-preview/pr-576/user-guide/beamformed-iq/#expected-data-structure>) for the required dimensions, metadata fields, and processing assumptions.
+See [Processing Beamformed IQ Data](<https://confusius.tools/pr-preview/pr-576/user-guide/beamformed-iq/#data-format-and-metadata>) for the required dimensions, metadata fields, and processing assumptions.
 
 ## Saving Data
 
