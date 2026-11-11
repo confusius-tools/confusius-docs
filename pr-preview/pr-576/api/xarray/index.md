@@ -446,7 +446,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path. The extension determines the format.
+  Output path. The extension determines the format. For NIfTI, use `{chunk}` in the filename to save one file and JSON sidecar per pose, using non-negative integer `pose` labels as chunk indices.
 - ##### **`**kwargs`**
 
   (`Any`, default: `{}` ) –

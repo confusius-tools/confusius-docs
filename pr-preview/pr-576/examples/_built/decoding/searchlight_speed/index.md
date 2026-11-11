@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f93fa73f390>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4e4d7d74d0>
     ```
 - [ ] Attributes: (21)
 
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f93f53792b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f4e4838a6d0>
     ```
 - [ ] Attributes: (23)
 
@@ -897,8 +897,8 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 64.3 s
+**Total running time:** 88.4 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/08_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.ipynb>)
 
 [^/pr-preview/pr-576/examples/_built/decoding/searchlight_speed/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

@@ -1142,7 +1142,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path. The extension determines the format.
+  Output path. The extension determines the format. For NIfTI, a `{chunk}` placeholder in the filename saves one file and JSON sidecar per pose, using non-negative integer `pose` labels as chunk indices.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -1236,7 +1236,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path for the NIfTI file, with `.nii` or `.nii.gz` extension. If `.nii.gz` is used, the file will be saved in compressed format.
+  Output path for the NIfTI file, with `.nii` or `.nii.gz` extension. If `.nii.gz` is used, the file will be saved in compressed format. A single `{chunk}` placeholder in the filename saves each pose to a separate file and JSON sidecar, using its non-negative integer `pose` label as the chunk index. Without a placeholder, select a single pose before saving.
 - #### **`nifti_version`**
 
   (`(1, 2)`, default: `1` ) –
@@ -1264,6 +1264,12 @@ Parameters:
   (`int`, default: `None` ) –
 
   NIfTI sform code to write. When provided, takes precedence over `data_array.attrs["sform_code"]`. When not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+
+Raises:
+
+- `ValueError` –
+
+  If the array is not valid VoxelData, the output extension is unsupported, or a `pose` dimension is present without a `{chunk}` template. Also raised if the template does not contain exactly one filename placeholder, has no `pose` dimension, or pose labels are not unique non-negative integers.
 
 > [!NOTE]
 >
