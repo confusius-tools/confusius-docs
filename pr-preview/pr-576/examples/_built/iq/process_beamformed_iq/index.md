@@ -241,7 +241,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f43fe43dbe0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f77b9f12510>
     ```
 - [x] Attributes: (9)
 
@@ -315,7 +315,7 @@ bmode = cf.iq.process_iq_to_bmode(iq, bmode_window_width=300)
 # filter. This cutoff was chosen manually and may not be optimal for all recordings.
 pwd = cf.iq.process_iq_to_power_doppler(iq, clutter_window_width=300, low_cutoff=40)
 blood_vel = cf.iq.process_iq_to_axial_velocity(
-    iq, clutter_window_width=300, low_cutoff=40, spatial_kernel=1
+    iq, clutter_window_width=300, low_cutoff=40
 )
 tissue_vel = cf.iq.process_iq_to_axial_velocity(
     iq, clutter_window_width=300, high_cutoff=40
@@ -372,6 +372,6 @@ plt.show()
 
 ---
 
-**Total running time:** 13.8 s
+**Total running time:** 13.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.ipynb>)

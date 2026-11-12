@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f35e71c5550>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f52ff79d550>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f36154ada90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f532da91a90>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f35e4808f50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f52fcdf4f50>
     ```
 - [ ] Attributes: (25)
 
@@ -1393,7 +1393,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.5 s
+**Total running time:** 10.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.ipynb>)
 

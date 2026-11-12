@@ -330,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f4eb8d39170>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f430d2b5170>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -364,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f4e94dcefd0\>, \<confusius.gl...x7f4e94e6dcd0\>, \<confusius.gl...x7f4eaac50b90\>, \<confusius.gl...x7f4e9cb8b020\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f42fc747890\>, \<confusius.gl...x7f4306f9ec40\>, \<confusius.gl...x7f42feb668d0\>, \<confusius.gl...x7f42fd34d590\>, ...\] |
 
 ## Inspect the design matrix
 
