@@ -1204,7 +1204,7 @@ process_to_axial_velocity(
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
 ) -> DataArray
 ```
 
@@ -1271,7 +1271,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - ##### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 

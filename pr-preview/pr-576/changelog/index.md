@@ -6,6 +6,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- `compute_axial_velocity_volume`, `process_iq_to_axial_velocity`, and the corresponding xarray accessor now default `spatial_kernel` to `1`, disabling spatial median filtering unless requested ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
@@ -25,6 +26,7 @@ Current development version for the next ConfUSIus release.
 
 ### 📚 Documentation
 
+- Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 
 ### 🔧 Maintenance
