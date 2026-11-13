@@ -58,10 +58,10 @@ multipose
 ```
 
 ```text
-sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-3_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-1_pwd.nii.gz
-sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
+sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-3_pwd.nii.gz
+sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
 ```
 
 xarray.DataArray
@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1ca88d6820>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd478f46820>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f1c93dbb110>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fd463392b70>
     ```
 - [ ] Attributes: (25)
 
@@ -844,7 +844,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 17.2 s
+**Total running time:** 17.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/02_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.ipynb>)
 

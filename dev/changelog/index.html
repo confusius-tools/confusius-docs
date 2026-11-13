@@ -2183,6 +2183,8 @@
       
         
       
+        
+      
     
     
     
@@ -2298,6 +2300,33 @@
     
   
   The ConfUSIus Dataset Collection
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/_built/io/transforms_101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transforms 101
 
     
   </span>
@@ -4924,6 +4953,17 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_bounding_box&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_bounding_box"><code>get_bounding_box</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;bounding_box&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.bounding_box"><code>.fusi.affine.bounding_box</code></a> now
+  return a dictionary mapping world coordinate names to <code>(min, max)</code> bounds instead
+  of a DataArray. Access bounds with <code>bbox["z"]</code> instead of <code>.sel</code>; pose-dependent
+  data now returns one box enclosing all poses, so select a pose first for its own
+  box (<a href="https://github.com/confusius-tools/confusius/pull/556">#556</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a> default to the <code>"berlin"</code>
   colormap for signed data on dark backgrounds (<code>"coolwarm"</code> stays the default on
@@ -4952,6 +4992,22 @@
 <li>Load multi-pose arrays split into several NIfTI files using <code>{chunk}</code> in the filename,
   stacking them along <code>pose</code> in numeric chunk order while preserving geometry and timing
   (<a href="https://github.com/confusius-tools/confusius/pull/564">#564</a>).</li>
+<li>Add <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_translation&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_translation"><code>apply_translation</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_rotation&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_rotation"><code>apply_rotation</code></a>,
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_zoom&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_zoom"><code>apply_zoom</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;apply_flip&lt;/span&gt;" href="../api/xarray/#confusius.xarray.apply_flip"><code>apply_flip</code></a>, plus the matching <code>.fusi.translate()</code>,
+  <code>.fusi.rotate()</code>, <code>.fusi.zoom()</code> and <code>.fusi.flip()</code> accessor methods, to move
+  VoxelData in world space without resampling
+  (<a href="https://github.com/confusius-tools/confusius/pull/556">#556</a>).</li>
+<li>Add <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_geometry_center&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_geometry_center"><code>get_geometry_center</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;geometry_center&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.geometry_center"><code>.fusi.affine.geometry_center</code></a>
+  to get the world-space center of a VoxelData array
+  (<a href="https://github.com/confusius-tools/confusius/pull/556">#556</a>).</li>
 <li>Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a
   <code>{chunk}</code> filename template, preserving each pose's geometry and timing
   (<a href="https://github.com/confusius-tools/confusius/pull/579">#579</a>).</li>
@@ -4972,6 +5028,9 @@
 <li>Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software
   archive, and simplify dataset and template citations
   (<a href="https://github.com/confusius-tools/confusius/pull/565">#565</a>).</li>
+<li>Add the <a href="../examples/_built/io/transforms_101/">Transforms 101</a> example,
+  which shows how to translate, rotate and zoom a VoxelData array and what the <code>center</code>
+  argument does (<a href="https://github.com/confusius-tools/confusius/pull/556">#556</a>).</li>
 </ul>
 <h3 id="maintenance"><img alt="🔧" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f527.svg" title=":wrench:" /> Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h3>
 <ul>
