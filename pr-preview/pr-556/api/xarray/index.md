@@ -66,6 +66,9 @@ Functions:
 - **`apply_affine`** –
 
   Apply a world-space affine to a DataArray's world coordinates.
+- **`apply_flip`** –
+
+  Reflect a VoxelData array along world axes without resampling.
 - **`apply_rotation`** –
 
   Rotate a VoxelData array in world space.
@@ -131,18 +134,21 @@ array([-60., -40., -20.,   0.])
 
 Methods:
 
+- **`flip`** –
+
+  Reflect a VoxelData array along world axes without resampling.
 - **`rotate`** –
 
-  Rotate a DataArray in world space.
+  Rotate a VoxelData array in world space.
 - **`save`** –
 
   Save the DataArray to file, dispatching by extension.
 - **`translate`** –
 
-  Translate a DataArray in world space.
+  Translate a VoxelData array in world space.
 - **`zoom`** –
 
-  Rescale a DataArray in world space.
+  Rescale a VoxelData array in world space.
 
 Attributes:
 
@@ -448,6 +454,51 @@ Examples:
 {'k': 0.2, 'j': 0.1, 'i': 0.05}
 ```
 
+#### flip
+
+```python
+flip(
+    axis: str,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Reflect a VoxelData array along world axes without resampling.
+
+Only the voxel-to-world geometry changes. See apply\_flip for details.
+
+Parameters:
+
+- ##### **`axis`**
+
+  (`str`) –
+
+  One or more distinct world dimension names among `"z"`, `"y"` and `"x"`, such as `"x"` or `"yx"`. Order does not matter.
+- ##### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Fixed point of the reflection. `"geometry"` is the center of the bounding box; `"origin"` is the first sampled voxel's world position and requires a scalar pose. Otherwise a world point in `(z, y, x)` order, in `.fusi.affine.units`, or a mapping containing `z`, `y`, and `x` keys; other keys are ignored.
+- ##### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in place instead of returning a copy.
+
+Returns:
+
+- `DataArray` –
+
+  The reflected VoxelData array. This is the wrapped array itself if `inplace` is `True`.
+
+Raises:
+
+- `ValueError` –
+
+  If `axis` is not a non-empty string of distinct world dimension names, if `center` is invalid, if `center` is `"geometry"` and a voxel dim has irregular coordinates, or if the DataArray is not a VoxelData array.
+
 #### rotate
 
 ```python
@@ -455,13 +506,13 @@ rotate(
     angle: ArrayLike,
     axis: str | ArrayLike,
     *,
-    center: TransformCenter = "origin",
+    center: TransformCenter = "geometry",
     degrees: bool = True,
     inplace: bool = False,
 ) -> DataArray
 ```
 
-Rotate a DataArray in world space.
+Rotate a VoxelData array in world space.
 
 Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates, so a rotation of +90 degrees about `x` maps `+z` onto `+y`. Only the voxel-to-world geometry changes. See apply\_rotation for details.
 
@@ -481,7 +532,7 @@ Parameters:
 
   (`('origin', 'geometry')`, default: `"origin"` ) –
 
-  Fixed point of the rotation. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
+  Fixed point of the rotation. `"origin"` is the first sampled voxel's world position and requires selecting a scalar pose for pose-dependent data. `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin. A mapping must contain `z`, `y`, and `x` keys; other keys are ignored, so `.fusi.origin` can be passed directly.
 - ##### **`degrees`**
 
   (`bool`, default: `True` ) –
@@ -497,7 +548,7 @@ Returns:
 
 - `DataArray` –
 
-  The rotated DataArray. This is the DataArray itself if `inplace` is `True`.
+  The rotated VoxelData array. This is the wrapped array itself if `inplace` is `True`.
 
 Raises:
 
@@ -516,7 +567,7 @@ Examples:
 ... )
 >>> rotated = data.fusi.rotate(90.0, "z", center=(0.0, 0.0, 0.0))
 >>> box = rotated.fusi.affine.bounding_box
->>> round(float(box.sel(bound="max", component="x")), 6)
+>>> round(box["x"][1], 6)
 3.0
 >>> tilted = data.fusi.rotate((30.0, 20.0, 10.0), "zyx")
 ```
@@ -540,7 +591,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path. The extension determines the format.
+  Output path. The extension determines the format. For NIfTI, use `{chunk}` in the filename to save one file and JSON sidecar per pose, using non-negative integer `pose` labels as chunk indices.
 - ##### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -567,7 +618,7 @@ translate(
 ) -> DataArray
 ```
 
-Translate a DataArray in world space.
+Translate a VoxelData array in world space.
 
 `translation` is given in world `(z, y, x)` order. Only the voxel-to-world geometry changes. See apply\_translation for details.
 
@@ -588,7 +639,7 @@ Returns:
 
 - `DataArray` –
 
-  The translated DataArray. This is the DataArray itself if `inplace` is `True`.
+  The translated VoxelData array. This is the wrapped array itself if `inplace` is `True`.
 
 Raises:
 
@@ -609,7 +660,7 @@ Examples:
 ...     5.0, "x"
 ... )
 >>> box = moved.fusi.affine.bounding_box
->>> round(float(box.sel(bound="max", component="x")), 6)
+>>> round(box["x"][1], 6)
 2.0
 ```
 
@@ -619,12 +670,12 @@ Examples:
 zoom(
     zoom: ArrayLike,
     *,
-    center: TransformCenter = "origin",
+    center: TransformCenter = "geometry",
     inplace: bool = False,
 ) -> DataArray
 ```
 
-Rescale a DataArray in world space.
+Rescale a VoxelData array in world space.
 
 Only the voxel-to-world geometry changes. See apply\_zoom for details.
 
@@ -639,7 +690,7 @@ Parameters:
 
   (`('origin', 'geometry')`, default: `"origin"` ) –
 
-  Fixed point of the rescaling. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin.
+  Fixed point of the rescaling. `"origin"` is the first sampled voxel's world position and requires selecting a scalar pose for pose-dependent data. `"geometry"` is geometry\_center, the center of the bounding box. Otherwise a world point in `(z, y, x)` order, in the DataArray's world units (`.fusi.affine.units`), such as `(0, 0, 0)` for the world origin. A mapping must contain `z`, `y`, and `x` keys; other keys are ignored, so `.fusi.origin` can be passed directly.
 - ##### **`inplace`**
 
   (`bool`, default: `False` ) –
@@ -650,13 +701,13 @@ Returns:
 
 - `DataArray` –
 
-  The rescaled DataArray. This is the DataArray itself if `inplace` is `True`.
+  The rescaled VoxelData array. This is the wrapped array itself if `inplace` is `True`.
 
 Raises:
 
 - `ValueError` –
 
-  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if the DataArray is not a VoxelData array, or if a per-axis `zoom` is applied to pose-stacked geometry whose poses are not parallel (all pose affines must share equal spatial scale magnitudes).
+  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if the DataArray is not a VoxelData array, or if the transformed pose affines no longer share equal spatial scale magnitudes.
 
 Examples:
 
@@ -668,7 +719,7 @@ Examples:
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
 ... )
 >>> zoomed = data.fusi.zoom(2.0, center="geometry")
->>> float(zoomed.fusi.affine.bounding_box.sel(bound="max", component="x"))
+>>> zoomed.fusi.affine.bounding_box["x"][1]
 4.0
 ```
 
@@ -709,10 +760,10 @@ Methods:
 
 Attributes:
 
-- **`bounding_box`** (`DataArray`) –
+- **`bounding_box`** (`dict[str, tuple[float, float]]`) –
 
   World-space bounding box of the wrapped VoxelData array.
-- **`geometry_center`** (`DataArray`) –
+- **`geometry_center`** (`dict[str, float]`) –
 
   World-space center of the wrapped VoxelData array.
 - **`units`** (`str`) –
@@ -725,18 +776,18 @@ Attributes:
 #### bounding\_box
 
 ```python
-bounding_box: DataArray
+bounding_box: dict[str, tuple[float, float]]
 ```
 
 World-space bounding box of the wrapped VoxelData array.
 
-Encloses the full extent of every voxel (half a voxel beyond the outermost voxel centers), see get\_bounding\_box for details.
+Encloses the full extent of every voxel (half a voxel beyond the outermost voxel centers). For pose-dependent geometry, the box encloses every pose; select a pose first for its own box. See get\_bounding\_box for details.
 
 Returns:
 
-- `(2, 3) xarray.DataArray` –
+- `dict[str, tuple[float, float]]` –
 
-  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Pose-dependent geometry adds a leading `pose` dim carrying the input's `pose` coordinate, one bounding box per pose.
+  World coordinate names `z`, `y`, `x` mapped to `(min, max)` bounds in `.fusi.affine.units`.
 
 Raises:
 
@@ -753,14 +804,14 @@ Examples:
 >>> data = create_voxeldata(
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
 ... )
->>> data.fusi.affine.bounding_box.sel(bound="max", component="x").item()
+>>> data.fusi.affine.bounding_box["x"][1]
 2.0
 ```
 
 #### geometry\_center
 
 ```python
-geometry_center: DataArray
+geometry_center: dict[str, float]
 ```
 
 World-space center of the wrapped VoxelData array.
@@ -769,9 +820,9 @@ The midpoint of bounding\_box. Pose-dependent geometry yields a single point, th
 
 Returns:
 
-- `(3,) xarray.DataArray` –
+- `dict[str, float]` –
 
-  Center with dim `component`, where `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index.
+  Center keyed by `z`, `y`, `x`, in `.fusi.affine.units`.
 
 Raises:
 
@@ -788,7 +839,7 @@ Examples:
 >>> data = create_voxeldata(
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
 ... )
->>> data.fusi.affine.geometry_center.sel(component="y").item()
+>>> data.fusi.affine.geometry_center["y"]
 1.5
 ```
 
@@ -3495,6 +3546,70 @@ Examples:
 10.0
 ```
 
+### apply\_flip
+
+```python
+apply_flip(
+    data: DataArray,
+    axis: str,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Reflect a VoxelData array along world axes without resampling.
+
+Only the voxel-to-world geometry changes: data values and voxel coordinates are untouched, and any `attrs["affines"]` entries are re-expressed accordingly. This is equivalent to negative zoom factors along the selected world axes, not reversing the voxel array along native `k`, `j`, or `i` dimensions.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to reflect.
+- #### **`axis`**
+
+  (`str`) –
+
+  One or more distinct world dimension names among `"z"`, `"y"` and `"x"`, such as `"x"` or `"yx"`. Order does not matter.
+- #### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Fixed point of the reflection. `"geometry"` is the center of the bounding box; `"origin"` is the first sampled voxel's world position and requires a scalar pose. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, or a mapping containing `z`, `y`, and `x` keys; other keys are ignored.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify `data` in place instead of returning a copy.
+
+Returns:
+
+- `DataArray` –
+
+  The reflected VoxelData array. This is `data` itself if `inplace` is `True`.
+
+Raises:
+
+- `ValueError` –
+
+  If `axis` is not a non-empty string of distinct world dimension names, if `center` is invalid, if `center` is `"geometry"` and a voxel dim has irregular coordinates, or if `data` is not a VoxelData array.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> from confusius.xarray import apply_flip, create_voxeldata
+>>> data = create_voxeldata(
+...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
+... )
+>>> flipped = apply_flip(data, "x")
+>>> flipped.fusi.affine.voxel_to_world[2]
+array([ 0.,  0., -1.,  3.])
+```
+
 ### apply\_rotation
 
 ```python
@@ -3503,7 +3618,7 @@ apply_rotation(
     angle: ArrayLike,
     axis: str | ArrayLike,
     *,
-    center: TransformCenter = "origin",
+    center: TransformCenter = "geometry",
     degrees: bool = True,
     inplace: bool = False,
 ) -> DataArray
@@ -3534,7 +3649,7 @@ Parameters:
 
   (`(origin, geometry)`, default: `"origin"` ) –
 
-  Fixed point of the rotation. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin.
+  Fixed point of the rotation. `"origin"` is the first sampled voxel's world position and requires selecting a scalar pose for pose-dependent data. `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin. A mapping must contain `z`, `y`, and `x` keys; other keys are ignored.
 - #### **`degrees`**
 
   (`bool`, default: `True` ) –
@@ -3643,7 +3758,7 @@ apply_zoom(
     data: DataArray,
     zoom: ArrayLike,
     *,
-    center: TransformCenter = "origin",
+    center: TransformCenter = "geometry",
     inplace: bool = False,
 ) -> DataArray
 ```
@@ -3668,7 +3783,7 @@ Parameters:
 
   (`(origin, geometry)`, default: `"origin"` ) –
 
-  Fixed point of the rescaling. `"origin"` is the grid origin, the world position of the first sampled voxel (of the first pose for pose-stacked geometry). `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin.
+  Fixed point of the rescaling. `"origin"` is the first sampled voxel's world position and requires selecting a scalar pose for pose-dependent data. `"geometry"` is the center of the bounding box, see get\_geometry\_center. Otherwise a world point in `(z, y, x)` order, in units of `data.fusi.affine.units`, such as `(0, 0, 0)` for the world origin. A mapping must contain `z`, `y`, and `x` keys; other keys are ignored.
 - #### **`inplace`**
 
   (`bool`, default: `False` ) –
@@ -3685,7 +3800,7 @@ Raises:
 
 - `ValueError` –
 
-  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if `data` is not a VoxelData array, or if a per-axis `zoom` is applied to pose-stacked geometry whose poses are not parallel (all pose affines must share equal spatial scale magnitudes).
+  If `zoom` is not a finite scalar or `(3,)` vector, if any factor is zero (singular affine), if `center` is neither `"origin"`, `"geometry"` nor a finite `(3,)` vector, if `center` is `"geometry"` and a voxel dim has irregular coordinates, if `data` is not a VoxelData array, or if the transformed pose affines no longer share equal spatial scale magnitudes.
 
 Examples:
 
@@ -3895,12 +4010,14 @@ Examples:
 ### get\_bounding\_box
 
 ```python
-get_bounding_box(data: DataArray) -> DataArray
+get_bounding_box(
+    data: DataArray,
+) -> dict[str, tuple[float, float]]
 ```
 
 Return the world-space bounding box of a VoxelData array.
 
-The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `fusi.spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box.
+The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `fusi.spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box. For pose-dependent geometry, the box encloses every pose; select a pose first for its own box.
 
 Parameters:
 
@@ -3912,9 +4029,9 @@ Parameters:
 
 Returns:
 
-- `(2, 3) xarray.DataArray` –
+- `dict[str, tuple[float, float]]` –
 
-  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Pose-dependent geometry adds a leading `pose` dim carrying the input's `pose` coordinate, one bounding box per pose.
+  World coordinate names `z`, `y`, `x` mapped to `(min, max)` bounds in the DataArray's world units (`.fusi.affine.units`).
 
 Raises:
 
@@ -3929,13 +4046,13 @@ Examples:
 
 ```pycon
 >>> bbox = get_bounding_box(volume)
->>> bbox.sel(bound="min", component="z").item()
+>>> bbox["z"][0]
 ```
 
 ### get\_geometry\_center
 
 ```python
-get_geometry_center(data: DataArray) -> DataArray
+get_geometry_center(data: DataArray) -> dict[str, float]
 ```
 
 Return the world-space center of a VoxelData array.
@@ -3952,9 +4069,9 @@ Parameters:
 
 Returns:
 
-- `(3,) xarray.DataArray` –
+- `dict[str, float]` –
 
-  Center with dim `component`, where `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index.
+  Center keyed by `z`, `y`, `x`, in the DataArray's world units (`.fusi.affine.units`).
 
 Raises:
 
@@ -3973,8 +4090,8 @@ Examples:
 >>> data = create_voxeldata(
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), voxel_to_world=np.eye(4)
 ... )
->>> get_geometry_center(data).values
-array([0.5, 1. , 1.5])
+>>> get_geometry_center(data)
+{'z': 0.5, 'y': 1.0, 'x': 1.5}
 ```
 
 ### get\_relative\_affine
