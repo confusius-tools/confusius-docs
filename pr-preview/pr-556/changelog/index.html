@@ -4953,6 +4953,17 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;get_bounding_box&lt;/span&gt;" href="../api/xarray/#confusius.xarray.get_bounding_box"><code>get_bounding_box</code></a> and
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-attribute-name&quot;&gt;bounding_box&lt;/span&gt;
+
+
+  &lt;span class=&quot;doc doc-labels&quot;&gt;
+      &lt;small class=&quot;doc doc-label doc-label-property&quot;&gt;&lt;code&gt;property&lt;/code&gt;&lt;/small&gt;
+  &lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAffineAccessor.bounding_box"><code>.fusi.affine.bounding_box</code></a> now
+  return a dictionary mapping world coordinate names to <code>(min, max)</code> bounds instead
+  of a DataArray. Access bounds with <code>bbox["z"]</code> instead of <code>.sel</code>; pose-dependent
+  data now returns one box enclosing all poses, so select a pose first for its own
+  box (<a href="https://github.com/confusius-tools/confusius/pull/556">#556</a>).</li>
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_stat_map&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_stat_map"><code>plot_stat_map</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;plot_matrix&lt;/span&gt;" href="../api/plotting/#confusius.plotting.plot_matrix"><code>plot_matrix</code></a> default to the <code>"berlin"</code>
   colormap for signed data on dark backgrounds (<code>"coolwarm"</code> stays the default on

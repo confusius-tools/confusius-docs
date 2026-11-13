@@ -805,7 +805,7 @@ Examples:
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
 ... )
 >>> data.fusi.affine.bounding_box["x"][1]
-2.0
+(-2.0, 2.0)
 ```
 
 #### geometry\_center

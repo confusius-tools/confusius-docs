@@ -21860,7 +21860,7 @@ Examples:
 ...     np.zeros((2, 3, 4)), dims=("k", "j", "i"), spacing=(1.0, 1.0, 1.0)
 ... )
 >>> data.fusi.affine.bounding_box["x"][1]
-2.0
+(-2.0, 2.0)
 ```
 
 #### geometry\_center
@@ -36547,6 +36547,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- `get_bounding_box` and `.fusi.affine.bounding_box` now return a dictionary mapping world coordinate names to `(min, max)` bounds instead of a DataArray. Access bounds with `bbox["z"]` instead of `.sel`; pose-dependent data now returns one box enclosing all poses, so select a pose first for its own box ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
