@@ -3564,7 +3564,12 @@ v2 file that helped guide the implementation of the experimental SCAN v2 loader.
 <h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <p>Documentation is built on GitHub Actions and deployed to a separate GitHub Pages
 repository (<a href="https://github.com/confusius-tools/confusius-docs">confusius-tools/confusius-docs</a>).
-Every pull request gets an automatic preview, with a link posted as a comment on the PR.
+Documentation is built and checked for every pull request. To publish a preview,
+add the <strong><code>docs-preview</code> GitHub label</strong> to the PR. The latest successful Docs build
+for its current commit is deployed, and subsequent successful builds refresh the
+preview automatically. A bot posts the preview URL and commit on the PR. Remove
+the label to stop updates (the existing preview remains until the PR closes).
+Build artifacts expire after 14 days; rerun the PR's Docs workflow if needed.
 The preview is cleaned up automatically when the PR is closed.</p>
 <p>To build and serve the docs locally:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>just<span class="w"> </span>sd

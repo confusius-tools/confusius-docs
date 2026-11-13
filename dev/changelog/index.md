@@ -32,6 +32,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🔧 Maintenance
 
+- Documentation deployments share identical images across versions and previews. PR previews are now opt-in via the `docs-preview` GitHub label and refresh automatically after successful documentation builds ([\#581](<https://github.com/confusius-tools/confusius/pull/581>)).
 - The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).

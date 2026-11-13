@@ -36573,6 +36573,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🔧 Maintenance
 
+- Documentation deployments share identical images across versions and previews. PR previews are now opt-in via the `docs-preview` GitHub label and refresh automatically after successful documentation builds ([\#581](<https://github.com/confusius-tools/confusius/pull/581>)).
 - The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
@@ -37048,7 +37049,7 @@ just pre-commit
 
 ### Documentation
 
-Documentation is built on GitHub Actions and deployed to a separate GitHub Pages repository ([confusius-tools/confusius-docs](<https://github.com/confusius-tools/confusius-docs>)). Every pull request gets an automatic preview, with a link posted as a comment on the PR. The preview is cleaned up automatically when the PR is closed.
+Documentation is built on GitHub Actions and deployed to a separate GitHub Pages repository ([confusius-tools/confusius-docs](<https://github.com/confusius-tools/confusius-docs>)). Documentation is built and checked for every pull request. To publish a preview, add the **`docs-preview` GitHub label** to the PR. The latest successful Docs build for its current commit is deployed, and subsequent successful builds refresh the preview automatically. A bot posts the preview URL and commit on the PR. Remove the label to stop updates (the existing preview remains until the PR closes). Build artifacts expire after 14 days; rerun the PR's Docs workflow if needed. The preview is cleaned up automatically when the PR is closed.
 
 To build and serve the docs locally:
 
