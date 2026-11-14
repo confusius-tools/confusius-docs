@@ -35,7 +35,7 @@ Only the trailing `(k, j, i)` order is required. Leading dimensions have these u
 
 `create_voxeldata` preserves the relative order of leading dimensions. Both `(time, pose, k, j, i)` and `(pose, time, k, j, i)` are valid, as are arrays with extra leading dimensions. Validation checks validity without changing the order.
 
-When a stable order is useful, ConfUSIus's `ensure_voxeldata` uses `(...extra_dims, pose, time, k, j, i)` and defaults and validates fUSI acquisition metadata. Generic `data.vd.canonicalize()` and `data.vd.ensure()` use `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
+When a stable order is useful, ConfUSIus's `canonicalize_voxeldata` uses `(...extra_dims, pose, time, k, j, i)` and defaults and validates fUSI acquisition metadata and validates the result. Generic `data.vd.canonicalize()` uses `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
 
 Keeping spatial dimensions last has practical benefits:
 
@@ -54,19 +54,19 @@ The `units`, `volume_acquisition_reference`, and `volume_acquisition_duration` a
 | `volume_acquisition_reference` | Which point of the acquisition window each `time` value marks: `"start"`, `"center"`, or `"end"`. |
 | `volume_acquisition_duration` | Duration to acquire the whole `(k, j, i)` grid, in the same units as `time`. |
 
-Additionally, the `VoxelToWorldIndex` attached to `(z, y, x)` carries its own `units` attribute, which is the physical unit of the world coordinates (millimeters is typical). It is accessed through the `.vd.units` property and set with `.vd.set_units(...)`.
+Additionally, the `VoxelToWorldIndex` attached to `(z, y, x)` carries its own `units` attribute, which is the physical unit of the world coordinates (millimeters is typical). It is accessed through the `.vd.world_units` property and set with `.vd.set_world_units(...)`.
 
 > [!WARNING]
 >
 > **Don't set attributes on world coordinates directly**
 >
-> World coordinates `(z, y, x)` are always derived fresh from the `VoxelToWorldIndex`; any operation that touches the index (`.isel`, `.assign_coords`, etc.) regenerates them, including their `.attrs`, from the index's own state. Mutating `data.coords["z"].attrs[...]` directly is unsupported: the mutation is silently discarded the next time the coordinate is rebuilt. The index does write `units` onto each world coordinate's `.attrs` too, purely so external packages that read it from there still see it — but some xarray operations that combine several arrays (e.g. `xr.where`, which only keeps attrs from its `x` argument) can drop that copy from the result without touching the index's own `units`. Always trust `.vd.units`, never `.coords["z"].attrs["units"]`, when correctness matters.
+> World coordinates `(z, y, x)` are always derived fresh from the `VoxelToWorldIndex`; any operation that touches the index (`.isel`, `.assign_coords`, etc.) regenerates them, including their `.attrs`, from the index's own state. Mutating `data.coords["z"].attrs[...]` directly is unsupported: the mutation is silently discarded the next time the coordinate is rebuilt. The index does write `units` onto each world coordinate's `.attrs` too, purely so external packages that read it from there still see it — but some xarray operations that combine several arrays (e.g. `xr.where`, which only keeps attrs from its `x` argument) can drop that copy from the result without touching the index's own `units`. Always trust `.vd.world_units`, never `.coords["z"].attrs["units"]`, when correctness matters.
 
 ### Creating and Validating VoxelData Arrays
 
 To build a VoxelData array from raw arrays (NumPy, CuPy, etc.), use `create_voxeldata`. If you then modified a VoxelData array and want to check that it still satisfies the VoxelData model, use `validate_voxeldata`.
 
-All ConfUSIus functions that expect a VoxelData array call `ensure_voxeldata` on their input, which canonicalizes the DataArray first—reordering dimensions to `(...extra, pose, time, k, j, i)`, restoring a voxel dimension collapsed to a scalar coordinate by a prior `.isel`, and filling in missing `time` metadata with sensible defaults—before validating.
+All ConfUSIus functions that expect a VoxelData array call `canonicalize_voxeldata` on their input, which canonicalizes the DataArray first—reordering dimensions to `(...extra, pose, time, k, j, i)`, restoring a voxel dimension collapsed to a scalar coordinate by a prior `.isel`, and filling in missing `time` metadata with sensible defaults—before validating.
 
 ## Temporal Conventions
 
@@ -85,7 +85,7 @@ In this shape, `volume_acquisition_duration` and `volume_acquisition_reference` 
 `consolidate_poses` merges `pose` into the sweep voxel dimension the poses were stepped along (`i`, `j`, or `k`, detected automatically), so the result has no `pose` dimension left. Two things happen to timing:
 
 - `time` becomes an ordinary whole-array 1D coordinate again, but `volume_acquisition_duration`/`volume_acquisition_reference` are recomputed to describe the full sweep across every pose—from the earliest pose's onset to the latest pose's offset—rather than one pose's window.
-- Each slice's own real timestamp survives separately as a new `slice_time` coordinate, with dims `(time, <sweep_dim>)` (or a single dim when `time` is scalar or absent), inheriting the pre-consolidation `time`'s `volume_acquisition_duration`/ `volume_acquisition_reference`. `slice_time` requires the same three attributes as `time` and `ensure_voxeldata` fills in missing ones the same way, defaulting `volume_acquisition_duration` from the median consecutive gap between slices along `<sweep_dim>`.
+- Each slice's own real timestamp survives separately as a new `slice_time` coordinate, with dims `(time, <sweep_dim>)` (or a single dim when `time` is scalar or absent), inheriting the pre-consolidation `time`'s `volume_acquisition_duration`/ `volume_acquisition_reference`. `slice_time` requires the same three attributes as `time` and `canonicalize_voxeldata` fills in missing ones the same way, defaulting `volume_acquisition_duration` from the median consecutive gap between slices along `<sweep_dim>`.
 
 `validate_voxeldata` checks that every slice's `slice_time` falls within its own volume's acquisition window, as defined by `time` and its `volume_acquisition_duration`/`volume_acquisition_reference`.
 
@@ -152,7 +152,7 @@ Use `reindex_voxels` to rebase voxel labels back to dense array-space positions�
 
 ### World Space
 
-The world space is defined by the DataArray's voxel-to-world affine transformation (or transformations, for multi-pose data) contained in the `VoxelToWorldIndex` and exposed as coordinates `(x, y, z)`. For ordinary single-pose data these coordinates are arrays with shape `(k, j, i)`. For multi-pose data they are pose-dependent with shape `(pose, k, j, i)`, so selecting in world space requires a scalar `pose` first. The unit shared by `x`/`y`/`z` is exposed as `data.vd.units` and set with `data.vd.set_units(...)`; millimeters are the usual default for fUSI recordings.
+The world space is defined by the DataArray's voxel-to-world affine transformation (or transformations, for multi-pose data) contained in the `VoxelToWorldIndex` and exposed as coordinates `(x, y, z)`. For ordinary single-pose data these coordinates are arrays with shape `(k, j, i)`. For multi-pose data they are pose-dependent with shape `(pose, k, j, i)`, so selecting in world space requires a scalar `pose` first. The unit shared by `x`/`y`/`z` is exposed as `data.vd.world_units` and set with `data.vd.set_world_units(...)`; millimeters are the usual default for fUSI recordings.
 
 > [!WARNING]
 >
@@ -192,7 +192,7 @@ The voxel-to-world affine is a `(4, 4)` homogeneous matrix (or a `(pose, 4, 4)` 
 
 The voxel-to-world affine can be read with `.vd.voxel_to_world`, or replaced outright with `.vd.set_voxel_to_world`.
 
-Scalar spatial selection, such as `data.isel(k=0)`, removes a required voxel dimension. Before `.vd.apply()` or `.vd.reindex_voxels()`, restore it explicitly: `ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)`. A scalar-selected `pose` is not restored; it selects one probe pose and its geometry.
+Scalar spatial selection, such as `data.isel(k=0)`, removes a required voxel dimension. Before `.vd.apply()` or `.vd.reindex_voxels()`, restore it explicitly: `canonicalize_voxeldata(data.isel(k=0)).vd.apply(matrix)`. A scalar-selected `pose` is not restored; it selects one probe pose and its geometry.
 
 That raw mapping is rarely what you want directly, though: most tools that consume world-space geometry think in [array space](<#array-space>), not in whatever labels the `(k, j, i)` coordinates happen to carry after upstream cropping or striding. If you specifically need the affine mapping array space to world space (that packages like NiBabel or the NIfTI format expect) call `reindex_voxels` first: it rebases the voxel space to the array space and updates `voxel_to_world` to match, so the affine you then read off directly maps dense array positions instead of labels.
 
@@ -212,7 +212,7 @@ world = origin + direction @ (spacing * array_position)
 
 ### Reference Spaces
 
-ConfUSIus stores affine transformations relating the DataArray's current world space to any number of other named spaces on the VoxelData index. Read them through `data.vd.affines` or `data.vd.get_affine(name)`; add or remove them with `data.vd.set_affine(name, matrix)` and `data.vd.remove_affine(name)`. Mutators return a new DataArray unless `inplace=True` is specified. Named frames never live in DataArray attributes. Reference spaces can be an atlas space, a scanner or lab space, another recording's world space, or a space the data has already moved away from (e.g. the raw probe-relative space a recording started in).
+ConfUSIus stores affine transformations relating the DataArray's current world space to any number of other named spaces on the VoxelData index. Read them through `data.vd.affines` (or `data.vd.affines[name]` for one frame); add or remove them with `data.vd.set_affine(name, matrix)` and `data.vd.remove_affine(name)`. Mutators return a new DataArray unless `inplace=True` is specified. Named frames never live in DataArray attributes. Reference spaces can be an atlas space, a scanner or lab space, another recording's world space, or a space the data has already moved away from (e.g. the raw probe-relative space a recording started in).
 
 A space counts as a "reference space" rather than *the* world space only because reaching it currently takes an affine. `.vd.apply` can turn any one of them into the world space itself (see [Switching World Spaces](<#switching-world-spaces>)). Each reference space is stored in `.vd.affines` as a homogeneous affine matrix in `(z, y, x)` convention that maps a world-space point to the corresponding point in the reference space. Most are plain `(4, 4)` matrices; for multi-pose data they may also be stacked `(pose, 4, 4)` affines with one entry per pose.
 
@@ -266,4 +266,4 @@ array([-1., -1., -1., -1.,  0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
        [0., 0., 0., 1.]])}
 ```
 
-See [Affine Transforms](<https://confusius.tools/pr-preview/pr-569/user-guide/xarray/#affine-transforms>) in Working with Xarray for the rest of the `.vd` API (`voxel_to_world`, `set_voxel_to_world`, `to`).
+See [Affine Transforms](<https://confusius.tools/pr-preview/pr-569/user-guide/xarray/#affine-transforms>) in Working with Xarray for the rest of the `.vd` API (`voxel_to_world`, `set_voxel_to_world`, `get_relative_affine`, `translate`, `rotate`, `zoom`, and `flip`).

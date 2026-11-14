@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f7896b57230>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf93e2660>
     ```
 - [ ] Attributes: (24)
 
@@ -367,10 +367,7 @@ data.vd.spacing
 ```
 
 ```text
-{'time': None,
- 'k': 0.4000000059604645,
- 'j': 0.04831999912858009,
- 'i': 0.10000000149011612}
+{'k': 0.4000000059604645, 'j': 0.04831999912858009, 'i': 0.10000000149011612}
 ```
 
 ## Lazy loading and when to compute
@@ -682,7 +679,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f78d05cd950>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdd345bd950>
     ```
 - [ ] Attributes: (24)
 
@@ -1038,7 +1035,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f789401d1d0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf6be56d0>
     ```
 - [ ] Attributes: (24)
 
@@ -1380,7 +1377,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.3 s
+**Total running time:** 10.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.ipynb>)
 

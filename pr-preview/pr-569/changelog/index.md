@@ -6,10 +6,14 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Geometry now comes from the external `voxeldata>=0.0.4` package. Use the flat `.vd` accessor instead of `.fusi.affine`, `.fusi.spacing`, `.fusi.origin`, or `.fusi.direction`. Named world frames live on the VoxelData index and are managed with `.vd.set_affine`/`.vd.get_affine`, not DataArray attributes.
+- Zarr loading requires `variable=` for stores with multiple data variables. Incremental Zarr writes are rejected to avoid inconsistent geometry metadata; save the complete array instead ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Geometry and Zarr persistence now come from the external `voxeldata[io]>=0.0.5` package. Use the flat `.vd` accessor instead of `.fusi.affine`, `.fusi.spacing`, `.fusi.origin`, or `.fusi.direction`. Named world frames live on the VoxelData index and are managed with `.vd.set_affine` and read with `.vd.affines[name]`, not DataArray attributes.
 - Probe positions use `pose` with `geometry_dims=("pose",)`. Leading dimensions may appear in any order; optional canonicalization uses `(...extra, pose, time, k, j, i)` ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
-- Canonicalize scalar-selected spatial dimensions before `.vd` geometry mutators, for example `ensure_voxeldata(data.isel(k=0)).vd.apply(matrix)`.
-- Import extraction functions from `confusius.extract`, not its former `mask`, `labels`, or `reconstruction` submodules. These are direct VoxelData re-exports: extraction preserves timing metadata but no longer adds acquisition defaults or validates fUSI timing semantics. Use ConfUSIus `ensure_voxeldata` explicitly when acquisition-aware canonicalization/validation is required.
+- World transforms now use VoxelData's flat `.vd.translate`, `.vd.rotate`, `.vd.zoom`, and `.vd.flip` methods, not `.fusi` transform wrappers. Module-level affine functions are direct VoxelData re-exports. Bounds and centers return world-axis dictionaries enclosing all grids; select a geometry for grid-specific values. Use `.vd.world_units` / `.vd.set_world_units`, and `.vd.dt` for time sampling; `.vd.origin` and `.vd.spacing` describe spatial dimensions only ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Use VoxelData's `.vd.extract_with_mask`, `.vd.extract_with_labels`, and `.vd.unmask` instead of `.fusi.extract`. `FUSIExtractAccessor` and `confusius.xarray.extract` are removed; module-level `confusius.extract` function re-exports remain available ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- `canonicalize_voxeldata` now normalizes and validates in one call, replacing `ensure_voxeldata`; its `.vd.canonicalize()` counterpart replaces `.vd.ensure()`. Use `.vd.get_relative_affine(other, via=...)` instead of `.vd.to(...)`, and `.vd.affines[name]` instead of `.vd.get_affine(name)`. Redundant accessor properties `world_dims`, `voxel_dims`, `fixed_voxel_coords`, and `scalings` are removed; advanced geometry state remains available through `.vd.index` ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- World transforms restore scalar-selected voxel dimensions automatically unless using `inplace=True`; canonicalize before other geometry mutators when needed.
+- Import extraction functions from `confusius.extract`, not its former `mask`, `labels`, or `reconstruction` submodules. These are direct VoxelData re-exports: extraction preserves timing metadata but no longer adds acquisition defaults or validates fUSI timing semantics. Use ConfUSIus `canonicalize_voxeldata` explicitly when acquisition-aware canonicalization/validation is required.
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `plot_napari` and its xarray accessors always return `(viewer, layers)`; use `viewer, [layer] = ...` for single-layer results ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
@@ -20,20 +24,26 @@ Current development version for the next ConfUSIus release.
 - Define arbitrary named affine dependencies with `geometry_dims`, independently of acquisition timestamps. Zarr round-trips retain dependency names, order, and named frames. Mask and label extraction support shared geometry across independent nonspatial axes; select a geometry first when their physical grids differ. Native Xarray `.reindex()` on geometry axes remains unsupported; use `.isel()` or `.sel()` instead ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load fUSI-BIDS NIfTI chunks together using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
+- Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
+- Move VoxelData in world space without resampling using `apply_translation`, `apply_rotation`, `apply_zoom`, and `apply_flip`, re-exported from VoxelData. Their accessor methods are `.vd.translate`, `.vd.rotate`, `.vd.zoom`, and `.vd.flip` ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Get a world-axis center dictionary using `get_geometry_center` or `.vd.geometry_center` ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 
 ### 🐛 Fixes
 
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - The first-level GLM example preserves named NIfTI frames when relabeling voxel axes, allowing its `world_to_qform` correction and full analysis to complete ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
-- Scalar-indexed VoxelData geometry was restored automatically before the external VoxelData integration. Explicit canonicalization is now required before applying or reindexing geometry on these arrays (see breaking changes above) ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
+- World-space affine application restores scalar-selected voxel dimensions in non-inplace results. Other geometry operations such as voxel reindexing may still require explicit canonicalization (see breaking changes above) ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 
 ### 📚 Documentation
 
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
+- Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101/index.md>) example, showing translation, rotation, zoom, reflection, and transform pivots ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 
 ### 🔧 Maintenance
 
-- Re-export extraction and reconstruction directly from VoxelData, retaining `.fusi.extract` methods but not acquisition-defaulting extraction wrappers. Acquisition-aware mask/label validators, constructors, and loaders remain in ConfUSIus. Named timestamps support any number of nonspatial dependencies; `slice_time` stays consumer-defined in VoxelData and interpreted by ConfUSIus. VoxelData provides extraction out of the box through Xarray, with independent `accel` (flox), `lazy` (Dask), and combined `all` extras ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Share ordinary Zarr array persistence with VoxelData, retaining ConfUSIus's Dask-backed loading default, acquisition validation, and atlas color restoration ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Re-export extraction and reconstruction directly from VoxelData; accessor methods live on the flat `.vd` accessor, without acquisition-defaulting wrappers. Acquisition-aware mask/label validators, constructors, and loaders remain in ConfUSIus. Named timestamps support any number of nonspatial dependencies; `slice_time` stays consumer-defined in VoxelData and interpreted by ConfUSIus. VoxelData provides extraction out of the box through Xarray, with independent `accel` (flox), `lazy` (Dask), and combined `all` extras ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Documentation deployments share identical images across versions and previews. PR previews are now opt-in via the `docs-preview` GitHub label and refresh automatically after successful documentation builds ([\#581](<https://github.com/confusius-tools/confusius/pull/581>)).
 - The examples gallery runs each example once and renders its light and dark figures from that single run ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `fetch_brainglobe_atlas` now uses BrainGlobe's public lazy-loading API instead of reimplementing its Zarr internals, so atlas arrays stay lazy without depending on private upstream code ([\#377](<https://github.com/confusius-tools/confusius/issues/377>)).
 - Test that every function in the napari plugin manifest can be imported ([\#555](<https://github.com/confusius-tools/confusius/pull/555>)).
@@ -41,6 +51,9 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
+- Videos open in a separate, time-synchronized viewer with their own layer list. Load recordings and videos from **Data I/O** ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
+- Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
 
 ## 0.9.0

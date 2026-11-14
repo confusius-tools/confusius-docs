@@ -32,7 +32,7 @@ Functions:
 
 - **`canonicalize_voxeldata`** –
 
-  Restore a scalar-indexed VoxelData dimension and its geometry.
+  Return a canonical, acquisition-validated VoxelData array.
 - **`ensure_labels`** –
 
   Canonicalize and validate labels, including acquisition defaults.
@@ -42,9 +42,6 @@ Functions:
 - **`ensure_time_aligned`** –
 
   Return `value` as a `(time, ...)` DataArray aligned with `signals`.
-- **`ensure_voxeldata`** –
-
-  Return a canonical, validated VoxelData array.
 - **`validate_atlas`** –
 
   Validate that a Dataset is a well-formed atlas.
@@ -76,12 +73,14 @@ Functions:
 ### canonicalize\_voxeldata
 
 ```python
-canonicalize_voxeldata(data: DataArray) -> DataArray
+canonicalize_voxeldata(
+    data: DataArray, **validate_kwargs: Any
+) -> DataArray
 ```
 
-Restore a scalar-indexed VoxelData dimension and its geometry.
+Return a canonical, acquisition-validated VoxelData array.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, pose, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. This function does not otherwise validate the VoxelData model; use ensure\_voxeldata to canonicalize and validate.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, pose, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. The result is checked with validate\_voxeldata, including any consumer-specific requirements passed through `validate_kwargs`.
 
 Parameters:
 
@@ -89,13 +88,18 @@ Parameters:
 
   (`DataArray`) –
 
-  DataArray to canonicalize.
+  DataArray to canonicalize and validate.
+- #### **`**validate_kwargs`**
+
+  (`Any`, default: `{}` ) –
+
+  Keyword arguments forwarded to validate\_voxeldata.
 
 Returns:
 
 - `DataArray` –
 
-  Canonicalized DataArray with all native voxel dimensions present.
+  Canonicalized VoxelData array satisfying the requested checks.
 
 Raises:
 
@@ -104,7 +108,7 @@ Raises:
   If `data` is not an `xarray.DataArray`.
 - `ValueError` –
 
-  If a native voxel dimension is absent and has no scalar coordinate from which to restore it, or its same-named coordinate is not scalar.
+  If a native voxel dimension is absent and has no scalar coordinate from which to restore it, its same-named coordinate is not scalar, or validation fails.
 
 Warns:
 
@@ -292,46 +296,6 @@ Warns:
 - `UserWarning` –
 
   If the per-pose timing metadata of pose-dependent `signals` are insufficient to infer their whole-volume time, in which case the first pose's timestamps are used.
-
-### ensure\_voxeldata
-
-```python
-ensure_voxeldata(
-    data: DataArray, **validate_kwargs: Any
-) -> DataArray
-```
-
-Return a canonical, validated VoxelData array.
-
-This is the normal entry point for spatial inputs: it restores scalar-indexed native voxel dimensions and geometry, and orders dimensions as `(...extra_dims, pose, time, k, j, i)` with canonicalize\_voxeldata, then checks the resulting DataArray against the VoxelData model. Use validate\_voxeldata when the input must already follow that model.
-
-Parameters:
-
-- #### **`data`**
-
-  (`DataArray`) –
-
-  DataArray to canonicalize and validate.
-- #### **`**validate_kwargs`**
-
-  (`Any`, default: `{}` ) –
-
-  Keyword arguments forwarded to validate\_voxeldata.
-
-Returns:
-
-- `DataArray` –
-
-  Canonicalized VoxelData array that satisfies the requested validation checks.
-
-Raises:
-
-- `TypeError` –
-
-  If `data` is not an `xarray.DataArray`.
-- `ValueError` –
-
-  If canonicalization or validation fails.
 
 ### validate\_atlas
 
@@ -598,7 +562,7 @@ Raises:
 
 - `ValueError` –
 
-  If any input lacks voxel-to-world geometry, or if any two inputs disagree on their `.vd.units`.
+  If any input lacks voxel-to-world geometry, or if any two inputs disagree on their `.vd.world_units`.
 
 ### validate\_time\_series
 
@@ -715,7 +679,7 @@ validate_voxeldata(
 
 Validate a DataArray against the VoxelData model without modifying it.
 
-This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, and a matching `VoxelToWorldIndex` (which carries the world-space `units` shared by `z`/`y`/`x`, exposed via `.vd.units`), and dimensions ordered as `(*nonspatial_dims, k, j, i)`, with any leading order. It also validates every dimension coordinate. When `time` is present, its acquisition metadata and `units` are required. The optional flags add requirements needed by a particular consumer. Use ensure\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
+This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, and a matching `VoxelToWorldIndex` (which carries the world-space `units` shared by `z`/`y`/`x`, exposed via `.vd.world_units`), and dimensions ordered as `(*nonspatial_dims, k, j, i)`, with any leading order. It also validates every dimension coordinate. When `time` is present, its acquisition metadata and `units` are required. The optional flags add requirements needed by a particular consumer. Use canonicalize\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
 
 Parameters:
 

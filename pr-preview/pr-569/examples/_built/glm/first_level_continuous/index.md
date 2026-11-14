@@ -359,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f55c5999810>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fea1edd9d10>
     ```
 - [ ] Attributes: (20)
 
@@ -561,7 +561,7 @@ def run_lagged_glm(
 lags = range(9)
 z_scores = run_lagged_glm(data, glm, design_matrix, lags=lags)
 z_score = xr.concat(z_scores, dim="lag").assign_coords(
-    lag=data.vd.spacing["time"] * np.asarray(lags)
+    lag=data.vd.dt * np.asarray(lags)
 )
 z_score.lag.attrs["units"] = data.time.units
 ```
@@ -590,7 +590,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 31.3 s
+**Total running time:** 31.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level_continuous.ipynb>)
 

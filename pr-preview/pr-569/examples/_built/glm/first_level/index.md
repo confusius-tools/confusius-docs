@@ -164,7 +164,7 @@ This dataset is stored with a spatial convention that differs from the [spatial 
 >         voxel_to_world=swapped_voxel_to_world,
 >         # Relabeling voxel axes preserves the world frame and its named transforms.
 >         affines=da.vd.affines,
->         units=da.vd.units,
+>         units=da.vd.world_units,
 >         attrs=da.attrs,
 >         name=str(da.name) if da.name is not None else None,
 >     )
@@ -214,7 +214,7 @@ This dataset is stored with a spatial convention that differs from the [spatial 
 >     m_to_mm = np.eye(4)
 >     m_to_mm[:3, :3] *= 1e3
 >     da.vd.apply(m_to_mm, inplace=True)
->     da.vd.set_units("mm", inplace=True)
+>     da.vd.set_world_units("mm", inplace=True)
 >
 >     return da
 > ```
@@ -333,7 +333,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f7590dfd220>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f973b3a6f00>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -348,7 +348,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...20\>, beta=6.7) |
+|  | hrf\_model | functools.par...00\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -367,7 +367,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f7581df2850\>, \<confusius.gl...x7f758d2acb00\>, \<confusius.gl...x7f758867d490\>, \<confusius.gl...x7f7581a17020\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f971e79fed0\>, \<confusius.gl...x7f97351748a0\>, \<confusius.gl...x7f9731042210\>, \<confusius.gl...x7f97214ab8a0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -479,7 +479,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 143.0 s
+**Total running time:** 157.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.ipynb>)
 

@@ -195,7 +195,7 @@ Parameters:
 
   (`sequence[DataArray]`) –
 
-  VoxelData arrays to stack, one per pose, in pose order. Each must have no existing `pose` dimension (see ensure\_voxeldata's `allow_pose` parameter). Voxel dimensions, shape, voxel-space (`k`/`j`/`i`) coordinate values, and any non-core dimensions must otherwise agree across poses, exactly as required to merge non-concatenated variables in any `xr.concat` call.
+  VoxelData arrays to stack, one per pose, in pose order. Each must have no existing `pose` dimension (see canonicalize\_voxeldata's `allow_pose` parameter). Voxel dimensions, shape, voxel-space (`k`/`j`/`i`) coordinate values, and any non-core dimensions must otherwise agree across poses, exactly as required to merge non-concatenated variables in any `xr.concat` call.
 - #### **`pose`**
 
   (`sequence[hashable]`, default: `None` ) –

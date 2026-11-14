@@ -1,6 +1,6 @@
 # `confusius.extract`
 
-Mask extraction, label aggregation, and reconstruction are direct re-exports from the standalone VoxelData package. The public functions and `.fusi.extract` methods remain available. They preserve existing timing metadata without adding acquisition defaults or validating fUSI timing semantics. ConfUSIus constructors, loaders, and explicit acquisition-aware validation retain that responsibility.
+Mask extraction, label aggregation, and reconstruction are direct re-exports from the standalone VoxelData package. Use the public functions or the flat accessor methods `.vd.extract_with_mask`, `.vd.extract_with_labels`, and `.vd.unmask`; `.fusi.extract` is removed. They preserve existing timing metadata without adding acquisition defaults or validating fUSI timing semantics. ConfUSIus constructors, loaders, and explicit acquisition-aware validation retain that responsibility.
 
 Extraction works out of the box in VoxelData using Xarray. Flox acceleration and Dask-backed lazy arrays are optional backends there; ConfUSIus continues to install its existing analysis dependencies. VoxelData offers independent `accel` (flox) and `lazy` (Dask) extras, or `all` for both; no extra is needed for extraction.
 

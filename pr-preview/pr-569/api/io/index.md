@@ -1,5 +1,13 @@
 # `confusius.io`
 
+## Zarr persistence
+
+The generic `load` and `save` functions delegate Zarr array persistence to VoxelData, sharing its geometry, native voxel labels, units, and named-frame representation. ConfUSIus retains acquisition-aware validation before saving and atlas colormap restoration after loading. NIfTI and acquisition formats remain ConfUSIus implementations; NetCDF is available through VoxelData directly, not through this dispatcher.
+
+ConfUSIus keeps Dask-backed Zarr loading by default (`chunks="auto"`). Pass `chunks=None` for backend lazy indexing without Dask arrays. Stores containing multiple data variables require an explicit `variable` selection. Incremental Zarr writes (`append_dim`, `region`, or modes `a`, `a-`, `r+`) are rejected by VoxelData to avoid inconsistent geometry metadata; save the complete array.
+
+Atlas Dataset persistence and streaming AUTC conversion retain their specialized storage layouts and are not routed through VoxelData's single-array writer.
+
 ## io
 
 Loading and saving utilities for fUSI data.
@@ -660,7 +668,7 @@ Supported formats:
 - **SCAN** (`.scan`): loaded via `load_scan`.
 - **EchoFrame DAT** (`.dat`): loaded via `load_echoframe_dat`. If no metadata path is provided, `load_echoframe_dat` looks for `ScanParameters.mat` next to the DAT file.
 - **Iconeus RAW** (`.raw`): loaded via `load_iconeus_raw`. If no metadata path is provided, `load_iconeus_raw` looks for the matching `.hraw` sidecar next to the RAW file.
-- **Zarr** (`.zarr`): opened via `xarray.open_zarr` and a single variable is extracted. Must be a store previously written by `save` (identified by `attrs["voxel_to_world"]`); for an arbitrary/foreign Zarr store, use `xarray.open_zarr` directly and build a VoxelData array yourself (e.g. via `create_voxeldata`).
+- **Zarr** (`.zarr`): opened via VoxelData's `load_array`, which restores spatial geometry and named frames. Must be a store previously written by `save` or VoxelData (identified by `attrs["voxel_to_world"]`); for an arbitrary/foreign Zarr store, use `xarray.open_zarr` directly and build a VoxelData array yourself (e.g. via `create_voxeldata`).
 
 If `attrs["rgb_lookup"]` is present but `attrs["cmap"]`/`attrs["norm"]` are missing (as happens after a save/load round-trip, since matplotlib colormap/norm objects are not JSON-serializable and are dropped on save), the colormap and normalization are rebuilt from the RGB lookup table so atlas-derived masks and annotations keep their canonical colors after reload.
 
@@ -677,12 +685,12 @@ Parameters:
 
   (`str`, default: `None` ) –
 
-  Zarr only. Name of the variable to extract as a DataArray. If not provided, the first variable in the dataset is returned.
+  Zarr only. Name of the variable to extract as a DataArray. Required for datasets with multiple data variables; a single variable is selected automatically.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
 
-  Additional keyword arguments forwarded to the underlying loader.
+  Additional keyword arguments forwarded to the underlying loader. Zarr defaults to `chunks="auto"` for Dask-backed loading; pass `chunks=None` for backend lazy indexing without Dask arrays.
 
 Returns:
 
@@ -694,7 +702,7 @@ Raises:
 
 - `ValueError` –
 
-  If the file extension is not supported, or the Zarr store at `path` wasn't written by `save` (no `attrs["voxel_to_world"]`).
+  If the file extension is not supported, the Zarr store lacks `attrs["voxel_to_world"]`, or multiple variables require an explicit choice.
 
 > [!NOTE]
 >
@@ -1129,7 +1137,7 @@ Save a VoxelData array to file, dispatching by extension.
 Supported formats:
 
 - **NIfTI** (`.nii`, `.nii.gz`): saved via `save_nifti`.
-- **Zarr** (`.zarr`): saved via `xarray.DataArray.to_zarr`. Voxel-to-world geometry is stored as `attrs["voxel_to_world"]` rather than dense `z`/`y`/`x` coordinate arrays, since those are cheaply derived from the affine on load and, for oblique geometry, would otherwise duplicate a full dense array per axis.
+- **Zarr** (`.zarr`): saved via VoxelData's `save`. Voxel-to-world geometry is stored as `attrs["voxel_to_world"]` rather than dense `z`/`y`/`x` coordinate arrays, since those are cheaply derived from the affine on load and, for oblique geometry, would otherwise duplicate a full dense array per axis.
 
 Parameters:
 
@@ -1142,7 +1150,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path. The extension determines the format.
+  Output path. The extension determines the format. For NIfTI, a `{chunk}` placeholder in the filename saves one file and JSON sidecar per pose, using non-negative integer `pose` labels as chunk indices.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -1236,7 +1244,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Output path for the NIfTI file, with `.nii` or `.nii.gz` extension. If `.nii.gz` is used, the file will be saved in compressed format.
+  Output path for the NIfTI file, with `.nii` or `.nii.gz` extension. If `.nii.gz` is used, the file will be saved in compressed format. A single `{chunk}` placeholder in the filename saves each pose to a separate file and JSON sidecar, using its non-negative integer `pose` label as the chunk index. Without a placeholder, select a single pose before saving.
 - #### **`nifti_version`**
 
   (`(1, 2)`, default: `1` ) –
@@ -1264,6 +1272,12 @@ Parameters:
   (`int`, default: `None` ) –
 
   NIfTI sform code to write. When provided, takes precedence over `data_array.attrs["sform_code"]`. When not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+
+Raises:
+
+- `ValueError` –
+
+  If the array is not valid VoxelData, the output extension is unsupported, or a `pose` dimension is present without a `{chunk}` template. Also raised if the template does not contain exactly one filename placeholder, has no `pose` dimension, or pose labels are not unique non-negative integers.
 
 > [!NOTE]
 >

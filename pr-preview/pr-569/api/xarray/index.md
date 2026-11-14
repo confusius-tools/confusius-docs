@@ -11,16 +11,13 @@ Modules:
   Xarray accessor for fUSI-specific operations.
 - **`affine`** –
 
-  Affine operations re-exported from VoxelData.
+  World-space transforms and geometry summaries re-exported from VoxelData.
 - **`connectivity`** –
 
   Xarray accessor for connectivity analysis.
 - **`create`** –
 
   ConfUSIus constructor defaults layered on the standalone VoxelData model.
-- **`extract`** –
-
-  Xarray accessor for signal extraction.
 - **`iq`** –
 
   Xarray accessor for IQ processing.
@@ -42,9 +39,6 @@ Classes:
 - **`FUSIConnectivityAccessor`** –
 
   Xarray accessor for seed-based functional connectivity analysis.
-- **`FUSIExtractAccessor`** –
-
-  Xarray accessor for signal extraction operations.
 - **`FUSIIQAccessor`** –
 
   Accessor for IQ processing operations on fUSI data.
@@ -63,6 +57,18 @@ Functions:
 - **`apply_affine`** –
 
   Apply a world-space affine to a DataArray's world coordinates.
+- **`apply_flip`** –
+
+  Reflect world geometry without reversing or resampling the voxel array.
+- **`apply_rotation`** –
+
+  Rotate world geometry without resampling.
+- **`apply_translation`** –
+
+  Translate world geometry without resampling or changing voxel labels.
+- **`apply_zoom`** –
+
+  Rescale world geometry without resampling.
 - **`create_voxeldata`** –
 
   Build a VoxelData array from a raw array.
@@ -72,6 +78,9 @@ Functions:
 - **`get_bounding_box`** –
 
   Return the world-space bounding box of a VoxelData array.
+- **`get_geometry_center`** –
+
+  Return the midpoint of the world-space box enclosing all grids.
 - **`get_relative_affine`** –
 
   Return the affine mapping `da`'s world space into `other`'s.
@@ -87,6 +96,25 @@ Functions:
 - **`reindex_voxels_like`** –
 
   Rebase voxel coordinates onto `reference`'s voxel labels.
+
+Attributes:
+
+- **`TransformCenter`** (`TypeAlias`) –
+
+  Transform pivot: a named point or an explicit world `(z, y, x)` point.
+
+### TransformCenter
+
+```python
+TransformCenter: TypeAlias = (
+    Literal["origin", "geometry"]
+    | Sequence[float]
+    | Mapping[str, float]
+    | np.ndarray
+)
+```
+
+Transform pivot: a named point or an explicit world `(z, y, x)` point.
 
 ### FUSIAccessor
 
@@ -125,9 +153,6 @@ Attributes:
 - **`connectivity`** (`FUSIConnectivityAccessor`) –
 
   Access connectivity analysis operations.
-- **`extract`** (`FUSIExtractAccessor`) –
-
-  Access signal extraction operations.
 - **`iq`** (`FUSIIQAccessor`) –
 
   Access IQ processing operations.
@@ -164,31 +189,6 @@ Examples:
 >>> data = xr.open_zarr("recording.zarr")["power_doppler"]
 >>> seed_masks = xr.open_zarr("seed_masks.zarr")["masks"]
 >>> mapper = data.fusi.connectivity.seed_map(seed_masks=seed_masks)
-```
-
-#### extract
-
-```python
-extract: FUSIExtractAccessor
-```
-
-Access signal extraction operations.
-
-Returns:
-
-- `FUSIExtractAccessor` –
-
-  Accessor for extracting signals from fUSI data and reconstructing fUSI data from processed signals.
-
-Examples:
-
-```pycon
->>> import xarray as xr
->>> data = xr.open_zarr("output.zarr")["power_doppler"]
->>> mask = xr.open_zarr("brain_mask.zarr")["mask"]
->>> signals = data.fusi.extract.with_mask(mask)
->>> # ... process signals ...
->>> restored = signals.fusi.extract.unmask(mask)
 ```
 
 #### iq
@@ -407,223 +407,6 @@ Examples:
 >>> data = xr.open_zarr("recording.zarr")["power_doppler"]
 >>> seed_masks = xr.open_zarr("seed_masks.zarr")["masks"]
 >>> mapper = data.fusi.connectivity.seed_map(seed_masks=seed_masks)
-```
-
-### FUSIExtractAccessor
-
-Xarray accessor for signal extraction operations.
-
-Provides convenient methods for extracting signals from VoxelData arrays by flattening spatial dimensions, and reconstructing VoxelData arrays from processed signals. These methods call VoxelData's generic functions; they preserve timing metadata without applying ConfUSIus acquisition defaults or validation.
-
-Parameters:
-
-- #### **`xarray_obj`**
-
-  (`DataArray`) –
-
-  DataArray to wrap. Extraction methods expect a VoxelData array; `unmask` expects an already-extracted signals array.
-
-Examples:
-
-```pycon
->>> import numpy as np
->>> from confusius.xarray import create_voxeldata
->>>
->>> # 3D+t data: (time, k, j, i), native voxel dims with world z/y/x derived
->>> # from the attached VoxelToWorldIndex.
->>> data = create_voxeldata(
-...     np.random.randn(100, 10, 20, 30),
-...     dims=("time", "k", "j", "i"),
-...     dt=1.0,
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>> mask = create_voxeldata(
-...     np.random.rand(10, 20, 30) > 0.5,
-...     dims=("k", "j", "i"),
-...     spacing=(1.0, 1.0, 1.0),
-... )
->>>
->>> # Extract signals
->>> signals = data.fusi.extract.with_mask(mask)
->>> signals.dims
-('time', 'space')
->>>
->>> # Reconstruct full spatial volume from signals
->>> reconstructed = signals.fusi.extract.unmask(mask)
->>> reconstructed.dims
-('time', 'k', 'j', 'i')
-```
-
-Methods:
-
-- **`unmask`** –
-
-  Reconstruct N-D volume from masked signals.
-- **`with_labels`** –
-
-  Extract region-aggregated signals using an integer label map.
-- **`with_mask`** –
-
-  Extract signals using a boolean or binary numeric mask.
-
-#### unmask
-
-```python
-unmask(
-    mask: DataArray, fill_value: float = 0.0
-) -> DataArray
-```
-
-Reconstruct N-D volume from masked signals.
-
-Reconstructs the full spatial volume from a DataArray of signals, which must have a `space` dimension. This is a convenience wrapper around `confusius.extract.unmask()`.
-
-Parameters:
-
-- ##### **`mask`**
-
-  (`DataArray`) –
-
-  Boolean VoxelData mask array used for the original extraction. Provides native voxel dimensions and VoxelData geometry for reconstruction.
-- ##### **`fill_value`**
-
-  (`float`, default: `0.0` ) –
-
-  Value to fill in non-masked voxels.
-
-Returns:
-
-- `DataArray` –
-
-  Reconstructed VoxelData array with shape `(..., k, j, i)` where native voxel dimensions and VoxelData geometry come from the mask.
-
-Examples:
-
-```pycon
->>> signals = data.fusi.extract.with_mask(mask)
->>> signals.dims
-('time', 'space')
->>> reconstructed = signals.fusi.extract.unmask(mask)
->>> reconstructed.dims
-('time', 'k', 'j', 'i')
-```
-
-#### with\_labels
-
-```python
-with_labels(
-    labels: DataArray,
-    reduction: Literal[
-        "mean", "sum", "median", "min", "max", "var", "std"
-    ] = "mean",
-) -> DataArray
-```
-
-Extract region-aggregated signals using an integer label map.
-
-Parameters:
-
-- ##### **`labels`**
-
-  (`DataArray`) –
-
-  Integer label map in one of two formats:
-
-  - **Flat label map**: Spatial dims only, e.g. `(k, j, i)`. Background voxels labeled `0`; each unique non-zero integer identifies a distinct, non-overlapping region. The `regions` coordinate of the output holds the integer label values.
-  - **Stacked mask format**: Has a leading `mask` dimension followed by spatial dims, e.g. `(mask, k, j, i)`. Each layer has values in `{0,   region_id}` and regions may overlap. The `region` coordinate of the output holds the `mask` coordinate values (e.g., region label).
-- ##### **`reduction`**
-
-  (`(mean, sum, median, min, max, var, std)`, default: `"mean"` ) –
-
-  Aggregation function applied across voxels in each region:
-
-  - `"mean"`: arithmetic mean.
-  - `"sum"`: sum of values.
-  - `"median"`: median value.
-  - `"min"`: minimum value.
-  - `"max"`: maximum value.
-  - `"var"`: variance.
-  - `"std"`: standard deviation.
-
-Returns:
-
-- `DataArray` –
-
-  Array with spatial dimensions replaced by a `region` dimension. The `region` dimension has integer coordinates corresponding to each unique non-zero label in `labels`. All non-spatial dimensions are preserved.
-
-  For example:
-
-  - `(time, k, j, i)` → `(time, region)`
-  - `(time, pose, k, j, i)` → `(time, pose, region)`
-  - `(k, j, i)` → `(region,)`
-
-Raises:
-
-- `ValueError` –
-
-  If `labels` dimensions don't match `data`'s spatial dimensions, if coordinates don't match, or if `reduction` is not a valid option.
-- `TypeError` –
-
-  If `labels` is not integer dtype.
-
-Examples:
-
-```pycon
->>> signals = data.fusi.extract.with_labels(labels)
->>> signals.dims
-("time", "region")
->>> signals.coords["region"].values
-array([1, 2, 3])
->>>
->>> # Sum per region instead of mean.
->>> sums = data.fusi.extract.with_labels(labels, reduction="sum")
-```
-
-#### with\_mask
-
-```python
-with_mask(mask: DataArray) -> DataArray
-```
-
-Extract signals using a boolean or binary numeric mask.
-
-Parameters:
-
-- ##### **`mask`**
-
-  (`DataArray`) –
-
-  Mask defining which voxels to extract. Its dimensions define the spatial dimensions that will be flattened. Must have boolean dtype, or binary numeric dtype (0 = background, at most one non-zero value = foreground). The latter format is produced by `get_masks`. Coordinates must match data.
-
-Returns:
-
-- `DataArray` –
-
-  Array with spatial dimensions flattened into a `space` dimension. All non-spatial dimensions are preserved. The `space` dimension has a MultiIndex storing spatial coordinates.
-
-  For simple round-trip reconstruction, use `.unstack("space")` which re-creates the original DataArray using the smallest bounding box. For full mask shape reconstruction, use `.fusi.extract.unmask()`.
-
-Raises:
-
-- `ValueError` –
-
-  If `mask` dimensions don't match `data`'s spatial dimensions.
-- `TypeError` –
-
-  If `mask` is not boolean dtype.
-
-Examples:
-
-```pycon
->>> signals = data.fusi.extract.with_mask(mask)
->>> signals.dims
-("time", "space")
->>>
->>> # Quick bounding box reconstruction
->>> bbox = signals.unstack("space")
->>>
->>> # Full mask shape reconstruction
->>> full = signals.fusi.extract.unmask(mask)
 ```
 
 ### FUSIIQAccessor
@@ -2677,7 +2460,7 @@ apply_affine(
 
 Apply a world-space affine to a DataArray's world coordinates.
 
-The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame. `attrs["affines"]` entries are ignored entirely.
+The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame.
 
 Parameters:
 
@@ -2695,7 +2478,7 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place, requiring all native voxel dims.
 - #### **`geometry_dims`**
 
   (`tuple[str, ...]`, default: `None` ) –
@@ -2706,13 +2489,13 @@ Returns:
 
 - `DataArray` –
 
-  `da` with updated spatial coordinates and updated named affine frames. No frame is removed: when `affine` is a string, that frame is kept as the identity, since the world frame now is that named space.
+  `da` with updated spatial coordinates and updated named affine frames. No frame is removed: when `affine` is a string, that frame is kept as the identity, since the world frame now is that named space. Scalar-selected voxel dimensions are restored unless modifying in place.
 
 Raises:
 
 - `ValueError` –
 
-  If `da` lacks voxel-to-world geometry or if `affine`'s shape does not match the DataArray's voxel-to-world affine.
+  If `da` lacks voxel-to-world geometry, if `affine` is invalid or has an incompatible shape, or if in-place mutation would restore voxel dimensions.
 - `KeyError` –
 
   If `affine` is a string not present among the index's named affines.
@@ -2731,6 +2514,210 @@ Examples:
 >>> float(result.coords["x"].isel(k=0, j=0, i=0))
 10.0
 ```
+
+### apply\_flip
+
+```python
+apply_flip(
+    data: DataArray,
+    axis: str,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Reflect world geometry without reversing or resampling the voxel array.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- #### **`axis`**
+
+  (`str`) –
+
+  Distinct world axis names, such as `"x"` or `"yx"`. Order is irrelevant.
+- #### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot: the center of the box enclosing all grids, the first sampled voxel (`"origin"`, requiring selection of all geometry dependencies), or an explicit world point in `(z, y, x)` order. Mappings require `z`, `y`, `x` keys; extra keys are ignored. Coordinates use `data.vd.world_units`.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Reflected array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If axes are empty, repeated, or invalid, or center or geometry is invalid. A geometry center requires regular voxel coordinates.
+
+### apply\_rotation
+
+```python
+apply_rotation(
+    data: DataArray,
+    angle: ArrayLike,
+    axis: str | ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    degrees: bool = True,
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rotate world geometry without resampling.
+
+Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates: +90 degrees about `x` maps `+z` onto `+y`.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- #### **`angle`**
+
+  (`float or (N,) array-like`) –
+
+  Angle, or one angle per axis name.
+- #### **`axis`**
+
+  (`str or (3,) array-like`) –
+
+  World axis names, such as `"x"` or `"zyx"`, or a nonzero world vector. Names rotate left to right about fixed world axes and may repeat.
+- #### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot in world units. `"geometry"` is the midpoint of the box enclosing all grids. `"origin"` is the first sampled voxel and requires selecting all geometry dependencies first. An explicit `(z, y, x)` point or mapping with `z`, `y`, `x` keys also gives a shared pivot. Extra mapping keys are ignored.
+- #### **`degrees`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to interpret angles in degrees rather than radians.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rotated array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If angles, axes, center, or geometry are invalid. A geometry center requires regular voxel coordinates.
+
+### apply\_translation
+
+```python
+apply_translation(
+    data: DataArray,
+    translation: ArrayLike,
+    *,
+    inplace: bool = False,
+) -> DataArray
+```
+
+Translate world geometry without resampling or changing voxel labels.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- #### **`translation`**
+
+  (`(3,) array-like`) –
+
+  Translation in world `(z, y, x)` order, in `data.vd.world_units`.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Translated array, with named frames re-expressed in the new world frame. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If translation is not a finite real vector or geometry is invalid.
+
+### apply\_zoom
+
+```python
+apply_zoom(
+    data: DataArray,
+    zoom: ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rescale world geometry without resampling.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- #### **`zoom`**
+
+  (`float or (3,) array-like`) –
+
+  Nonzero finite scale factors in world `(z, y, x)` order. A scalar scales every axis. Negative factors reflect; unequal factors can shear an oblique voxel grid. Rotation and anisotropic zoom do not generally commute.
+- #### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot: the center of the box enclosing all grids, the first sampled voxel (`"origin"`, requiring selection of all geometry dependencies), or an explicit world point in `(z, y, x)` order. Mappings require `z`, `y`, `x` keys; extra keys are ignored. Coordinates use `data.vd.world_units`.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rescaled array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If factors are zero or invalid, or center or geometry is invalid. A geometry center requires regular voxel coordinates.
 
 ### create\_voxeldata
 
@@ -2939,12 +2926,14 @@ Examples:
 ### get\_bounding\_box
 
 ```python
-get_bounding_box(data: DataArray) -> DataArray
+get_bounding_box(
+    data: DataArray,
+) -> dict[str, tuple[float, float]]
 ```
 
 Return the world-space bounding box of a VoxelData array.
 
-The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `get_voxel_to_world_index_spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box.
+The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `get_array_spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box. For stacked geometry, the box encloses all grids. Select geometry dependencies first for a grid-specific bounding box.
 
 Parameters:
 
@@ -2952,13 +2941,13 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array, normalized with ensure\_voxeldata (scalar-indexed voxel dims are restored as singletons before computing the bounds).
+  VoxelData array, normalized with canonicalize\_voxeldata (scalar-indexed voxel dims are restored as singletons before computing the bounds).
 
 Returns:
 
-- `(2, 3) xarray.DataArray` –
+- `dict[str, tuple[float, float]]` –
 
-  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Geometry-dependent dimensions are prepended in affine-axis order, giving one bounding box per geometry.
+  World coordinate names `z`, `y`, `x` mapped to `(min, max)` bounds in `.vd.world_units`. The bounds enclose all geometries.
 
 Raises:
 
@@ -2973,8 +2962,36 @@ Examples:
 
 ```pycon
 >>> bbox = get_bounding_box(volume)
->>> bbox.sel(bound="min", component="z").item()
+>>> bbox["z"][0]
 ```
+
+### get\_geometry\_center
+
+```python
+get_geometry_center(data: DataArray) -> dict[str, float]
+```
+
+Return the midpoint of the world-space box enclosing all grids.
+
+Parameters:
+
+- #### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array, including cropped or scalar-selected voxel dimensions.
+
+Returns:
+
+- `dict[str, float]` –
+
+  Shared center keyed by `z`, `y`, `x`, in `.vd.world_units`. Select geometry dependencies first for a grid-specific center.
+
+Raises:
+
+- `ValueError` –
+
+  If the array is invalid or voxel coordinates are irregular.
 
 ### get\_relative\_affine
 
@@ -3193,13 +3210,19 @@ Methods:
   Apply a world-space affine to the world coordinates.
 - **`canonicalize`** –
 
-  Return a canonical VoxelData array.
-- **`ensure`** –
+  Return a canonical, validated VoxelData array.
+- **`extract_with_labels`** –
 
-  Canonicalize and validate in one step.
-- **`get_affine`** –
+  Aggregate samples by integer regions or overlapping mask layers.
+- **`extract_with_mask`** –
 
-  Return a named affine frame.
+  Flatten selected mask samples into a `space` dimension.
+- **`flip`** –
+
+  Reflect world geometry without reversing the voxel array.
+- **`get_relative_affine`** –
+
+  Return the affine mapping this world frame into `other`'s.
 - **`reindex_voxels`** –
 
   Rebase voxel coordinates to dense positions.
@@ -3209,36 +3232,48 @@ Methods:
 - **`remove_affine`** –
 
   Remove a named affine frame from the index.
+- **`rotate`** –
+
+  Rotate world geometry without resampling.
 - **`set_affine`** –
 
   Store a named affine frame on the index.
-- **`set_units`** –
-
-  Change the world coordinate unit.
 - **`set_voxel_to_world`** –
 
   Attach a new voxel-to-world affine.
-- **`to`** –
+- **`set_world_units`** –
 
-  Return the affine mapping this world frame into `other`'s.
+  Change the world coordinate unit.
+- **`translate`** –
+
+  Translate world geometry without resampling.
+- **`unmask`** –
+
+  Reconstruct the full mask grid from positional `space` samples.
 - **`validate`** –
 
   Validate that this DataArray follows the VoxelData model.
+- **`zoom`** –
+
+  Rescale world geometry without resampling.
 
 Attributes:
 
 - **`affines`** (`dict[str, ndarray]`) –
 
   Named affine frames stored on the index.
-- **`bounding_box`** (`DataArray`) –
+- **`bounding_box`** (`dict[str, tuple[float, float]]`) –
 
-  World-space bounding box enclosing every voxel.
+  World-space bounding box enclosing every voxel across all grids.
 - **`direction`** (`ndarray`) –
 
   World-space direction matrix.
-- **`fixed_voxel_coords`** (`dict[str, float]`) –
+- **`dt`** (`float | None`) –
 
-  Voxel coordinates pinned by a prior scalar selection.
+  Sampling interval of a shared time coordinate.
+- **`geometry_center`** (`dict[str, float]`) –
+
+  Midpoint of the world-space bounding box enclosing all grids.
 - **`geometry_dims`** (`tuple[str, ...]`) –
 
   Named affine dependencies, in affine batch-axis order.
@@ -3250,25 +3285,16 @@ Attributes:
   Whether the voxel-to-world affine is axis-aligned.
 - **`origin`** (`dict[str, float]`) –
 
-  Origin metadata for all dimensions.
-- **`scalings`** (`dict[str, float]`) –
-
-  World distance per voxel-space unit along each voxel axis.
+  World position of the first sampled voxel.
 - **`spacing`** (`dict[str, float | None]`) –
 
-  Coordinate spacing for all dimensions.
-- **`units`** (`str`) –
-
-  Physical unit of the world coordinates.
-- **`voxel_dims`** (`tuple[str, ...]`) –
-
-  Active voxel dimensions.
+  Physical sample spacing along native voxel axes only.
 - **`voxel_to_world`** (`ndarray`) –
 
   Voxel-to-world affine.
-- **`world_dims`** (`tuple[str, ...]`) –
+- **`world_units`** (`str`) –
 
-  World coordinate names.
+  Physical unit of the world coordinates.
 
 ### affines
 
@@ -3282,21 +3308,21 @@ Returns:
 
 - `dict[str, ndarray]` –
 
-  Named frames mapping the current world frame to each named frame.
+  Shallow dictionary copy of named frames mapping the current world frame to each named frame. Use `set_affine` and `remove_affine` to update the index; assigning or deleting dictionary entries only changes this copy. Matrix arrays are shared with the index.
 
 ### bounding\_box
 
 ```python
-bounding_box: DataArray
+bounding_box: dict[str, tuple[float, float]]
 ```
 
-World-space bounding box enclosing every voxel.
+World-space bounding box enclosing every voxel across all grids.
 
 Returns:
 
-- `DataArray` –
+- `dict[str, tuple[float, float]]` –
 
-  Bounding-box bounds in world coordinates.
+  World axis names mapped to `(min, max)` bounds in `.vd.world_units`. Select geometry dependencies first for grid-specific bounds.
 
 ### direction
 
@@ -3312,19 +3338,39 @@ Returns:
 
   Unit world direction of each voxel axis; identity for axis-aligned data.
 
-### fixed\_voxel\_coords
+### dt
 
 ```python
-fixed_voxel_coords: dict[str, float]
+dt: float | None
 ```
 
-Voxel coordinates pinned by a prior scalar selection.
+Sampling interval of a shared time coordinate.
+
+Returns:
+
+- `float or None` –
+
+  Median time interval in the time coordinate's units, normally seconds. Sampling is uniform when every interval differs from the median by at most 1%. Irregular sampling or fewer than two timestamps returns `None`. Signal data is not evaluated.
+
+Raises:
+
+- `ValueError` –
+
+  If geometry or the time coordinate is missing, additional timestamp dependencies remain unselected, or timestamps are not finite, real, and strictly increasing.
+
+### geometry\_center
+
+```python
+geometry_center: dict[str, float]
+```
+
+Midpoint of the world-space bounding box enclosing all grids.
 
 Returns:
 
 - `dict[str, float]` –
 
-  Pinned voxel-space coordinates keyed by dimension name.
+  Shared center keyed by world axis name, in `.vd.world_units`. Select geometry dependencies first for a grid-specific center.
 
 ### geometry\_dims
 
@@ -3380,29 +3426,19 @@ Returns:
 origin: dict[str, float]
 ```
 
-Origin metadata for all dimensions.
-
-Non-spatial dimensions report their first coordinate value; `z`/`y`/`x` report the world location of the first sampled voxel.
+World position of the first sampled voxel.
 
 Returns:
 
 - `dict[str, float]` –
 
-  Origin per non-spatial dimension followed by world coordinates.
+  Spatial origin keyed by `z`, `y`, `x`, in `.vd.world_units`. Retained voxel labels account for cropping and striding.
 
-### scalings
+Raises:
 
-```python
-scalings: dict[str, float]
-```
+- `ValueError` –
 
-World distance per voxel-space unit along each voxel axis.
-
-Returns:
-
-- `dict[str, float]` –
-
-  Column norms of the affine's linear part, keyed by voxel dimension.
+  If geometry is missing or geometry dependencies remain unselected.
 
 ### spacing
 
@@ -3410,43 +3446,19 @@ Returns:
 spacing: dict[str, float | None]
 ```
 
-Coordinate spacing for all dimensions.
-
-Voxel dimensions report their world step length; other dimensions report their 1D coordinate step when defined.
+Physical sample spacing along native voxel axes only.
 
 Returns:
 
 - `dict[str, float or None]` –
 
-  Spacing per dimension, or `None` when undefined or non-uniform.
+  World-space step lengths keyed by active voxel dimensions `k`, `j`, `i`. Irregular voxel labels have undefined spacing (`None`). Time sampling is exposed separately through `.vd.dt`.
 
-### units
+Raises:
 
-```python
-units: str
-```
+- `ValueError` –
 
-Physical unit of the world coordinates.
-
-Returns:
-
-- `str` –
-
-  World coordinate unit.
-
-### voxel\_dims
-
-```python
-voxel_dims: tuple[str, ...]
-```
-
-Active voxel dimensions.
-
-Returns:
-
-- `tuple[str, ...]` –
-
-  Active voxel dimension names in affine column order.
+  If geometry is missing or spatial scalings differ across geometries.
 
 ### voxel\_to\_world
 
@@ -3462,19 +3474,19 @@ Returns:
 
   Affine mapping active voxel dimensions to world coordinates, shared or stacked along `geometry_dims`.
 
-### world\_dims
+### world\_units
 
 ```python
-world_dims: tuple[str, ...]
+world_units: str
 ```
 
-World coordinate names.
+Physical unit of the world coordinates.
 
 Returns:
 
-- `tuple[str, ...]` –
+- `str` –
 
-  World coordinate names in affine row order.
+  World coordinate unit.
 
 ### apply
 
@@ -3505,35 +3517,21 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place, requiring all native voxel dims.
 
 Returns:
 
 - `DataArray` –
 
-  DataArray with updated world coordinates and named frames.
+  DataArray with updated world coordinates and named frames. Scalar-selected voxel dims are restored unless modifying in place.
 
 ### canonicalize
 
 ```python
-canonicalize() -> DataArray
+canonicalize(**kwargs: Any) -> DataArray
 ```
 
-Return a canonical VoxelData array.
-
-Returns:
-
-- `DataArray` –
-
-  Canonical form with reinstated core dimensions and canonical order.
-
-### ensure
-
-```python
-ensure(**kwargs: Any) -> DataArray
-```
-
-Canonicalize and validate in one step.
+Return a canonical, validated VoxelData array.
 
 Parameters:
 
@@ -3541,7 +3539,7 @@ Parameters:
 
   (`Any`, default: `{}` ) –
 
-  Forwarded to ensure\_voxeldata.
+  Forwarded to canonicalize\_voxeldata.
 
 Returns:
 
@@ -3549,33 +3547,149 @@ Returns:
 
   Canonical, validated VoxelData array.
 
-### get\_affine
+### extract\_with\_labels
 
 ```python
-get_affine(name: str) -> ndarray
+extract_with_labels(
+    labels: DataArray,
+    reduction: Literal[
+        "mean", "sum", "median", "min", "max", "var", "std"
+    ] = "mean",
+) -> DataArray
 ```
 
-Return a named affine frame.
+Aggregate samples by integer regions or overlapping mask layers.
 
 Parameters:
 
-- #### **`name`**
+- #### **`labels`**
 
-  (`str`) –
+  (`DataArray`) –
 
-  Frame name.
+  Spatial integer VoxelData label map, optionally stacked along `mask`. Background zero is excluded. Physical grids must agree.
+- #### **`reduction`**
+
+  (`('mean', 'sum', 'median', 'min', 'max', 'var', 'std')`, default: `"mean"` ) –
+
+  Reduction applied to voxel samples in each region.
 
 Returns:
 
-- `(4, 4) numpy.ndarray or (*geometry_shape, 4, 4) numpy.ndarray` –
+- `DataArray` –
 
-  The named frame.
+  Samples with voxel dimensions replaced by `region`, retaining nonspatial dimensions. Dask-backed signal data remain lazy.
 
 Raises:
 
-- `KeyError` –
+- `TypeError` –
 
-  If `name` is not a stored frame.
+  If labels do not have integer dtype.
+- `ValueError` –
+
+  If grids, dimensions, reduction, labels, or backend chunks are invalid.
+
+**See Also**
+
+voxeldata.extract.extract\_with\_labels : Module-level aggregation function.
+
+### extract\_with\_mask
+
+```python
+extract_with_mask(mask: DataArray) -> DataArray
+```
+
+Flatten selected mask samples into a `space` dimension.
+
+Parameters:
+
+- #### **`mask`**
+
+  (`DataArray`) –
+
+  Boolean or binary numeric VoxelData mask on the same physical grid. All mask dimensions are flattened, including extra feature axes.
+
+Returns:
+
+- `DataArray` –
+
+  Extracted samples with a `space` MultiIndex of native labels. Dask-backed signal data remain lazy.
+
+Raises:
+
+- `TypeError` –
+
+  If the mask is not boolean or binary numeric.
+- `ValueError` –
+
+  If geometry, dimensions, or coordinates are incompatible.
+
+**See Also**
+
+voxeldata.extract.extract\_with\_mask : Module-level extraction function.
+
+### flip
+
+```python
+flip(
+    axis: str,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Reflect world geometry without reversing the voxel array.
+
+Parameters:
+
+- #### **`axis`**
+
+  (`str`) –
+
+  Distinct world axis names, such as `"x"` or `"yx"`.
+- #### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Shared enclosing-box center or explicit world point in `(z, y, x)` order (or a mapping with those keys). `"origin"` uses the first sampled voxel and requires selecting all geometry dependencies first.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Reflected array. See apply\_flip.
+
+### get\_relative\_affine
+
+```python
+get_relative_affine(other: DataArray, via: str) -> ndarray
+```
+
+Return the affine mapping this world frame into `other`'s.
+
+Parameters:
+
+- #### **`other`**
+
+  (`DataArray`) –
+
+  Target VoxelData array.
+- #### **`via`**
+
+  (`str`) –
+
+  Shared named affine frame.
+
+Returns:
+
+- `(4, 4) numpy.ndarray` –
+
+  Affine mapping this DataArray's world coordinates to `other`'s.
 
 ### reindex\_voxels
 
@@ -3671,6 +3785,55 @@ Raises:
 
   If `name` is not a stored frame.
 
+### rotate
+
+```python
+rotate(
+    angle: ArrayLike,
+    axis: str | ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    degrees: bool = True,
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rotate world geometry without resampling.
+
+Parameters:
+
+- #### **`angle`**
+
+  (`float or (N,) array-like`) –
+
+  Angle, or one angle per axis name.
+- #### **`axis`**
+
+  (`str or (3,) array-like`) –
+
+  World names or vector in `(z, y, x)` order. Names rotate left to right about fixed world axes, following the right-hand rule in this order.
+- #### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Shared enclosing-box center or explicit world point in `(z, y, x)` order (or a mapping with those keys). `"origin"` uses the first sampled voxel and requires selecting all geometry dependencies first.
+- #### **`degrees`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to interpret angles in degrees rather than radians.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rotated array. See apply\_rotation.
+
 ### set\_affine
 
 ```python
@@ -3705,35 +3868,6 @@ Returns:
 
   DataArray with the new named frame.
 
-### set\_units
-
-```python
-set_units(
-    units: str, *, inplace: bool = False
-) -> DataArray
-```
-
-Change the world coordinate unit.
-
-Parameters:
-
-- #### **`units`**
-
-  (`str`) –
-
-  New world coordinate unit.
-- #### **`inplace`**
-
-  (`bool`, default: `False` ) –
-
-  Whether to modify the DataArray in-place.
-
-Returns:
-
-- `DataArray` –
-
-  DataArray with the new unit.
-
 ### set\_voxel\_to\_world
 
 ```python
@@ -3749,7 +3883,7 @@ set_voxel_to_world(
 
 Attach a new voxel-to-world affine.
 
-This is the only operation allowed on a plain DataArray (one without a voxel-to-world index). If the DataArray already carries named affine frames and `named_affines` is not provided, those frames are dropped with a warning: they are expressed relative to the old world frame and cannot be carried over automatically. Use `apply` to change the world frame while preserving them.
+This bootstraps geometry on a plain DataArray (one without a voxel-to-world index). Reconstruction through `.vd.unmask` also accepts geometry-free signals, using the mask's geometry instead. If the DataArray already carries named affine frames and `named_affines` is not provided, those frames are dropped with a warning: they are expressed relative to the old world frame and cannot be carried over automatically. Use `apply` to change the world frame while preserving them.
 
 Parameters:
 
@@ -3785,32 +3919,107 @@ Returns:
 
   DataArray carrying the new voxel-to-world geometry.
 
-### to
+### set\_world\_units
 
 ```python
-to(other: DataArray, via: str) -> ndarray
+set_world_units(
+    units: str, *, inplace: bool = False
+) -> DataArray
 ```
 
-Return the affine mapping this world frame into `other`'s.
+Change the world coordinate unit.
 
 Parameters:
 
-- #### **`other`**
-
-  (`DataArray`) –
-
-  Target VoxelData array.
-- #### **`via`**
+- #### **`units`**
 
   (`str`) –
 
-  Shared named affine frame.
+  New world coordinate unit.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the DataArray in-place.
 
 Returns:
 
-- `(4, 4) numpy.ndarray` –
+- `DataArray` –
 
-  Affine mapping this DataArray's world coordinates to `other`'s.
+  DataArray with the new unit.
+
+### translate
+
+```python
+translate(
+    translation: ArrayLike, *, inplace: bool = False
+) -> DataArray
+```
+
+Translate world geometry without resampling.
+
+Parameters:
+
+- #### **`translation`**
+
+  (`(3,) array-like`) –
+
+  World `(z, y, x)` translation in `.vd.world_units`.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Translated array. See apply\_translation.
+
+### unmask
+
+```python
+unmask(
+    mask: DataArray, fill_value: float = 0.0
+) -> DataArray
+```
+
+Reconstruct the full mask grid from positional `space` samples.
+
+Available on geometry-free signals arrays; the mask supplies the output geometry. No acquisition metadata defaults or validation are applied.
+
+Parameters:
+
+- #### **`mask`**
+
+  (`DataArray`) –
+
+  Original boolean or binary numeric VoxelData mask. Supplies native labels, extra feature axes, units, geometry, and named frames.
+- #### **`fill_value`**
+
+  (`float`, default: `0.0` ) –
+
+  Value outside the mask, cast to the signal dtype.
+
+Returns:
+
+- `DataArray` –
+
+  Eager reconstructed VoxelData array. Leading signal coordinates and timestamp attributes are preserved; samples are not label-realigned.
+
+Raises:
+
+- `TypeError` –
+
+  If the mask is not boolean or binary numeric.
+- `ValueError` –
+
+  If mask geometry or signal dimensions/count are invalid.
+
+**See Also**
+
+voxeldata.extract.unmask : Module-level reconstruction function.
 
 ### validate
 
@@ -3834,6 +4043,43 @@ Returns:
 
   Validation raises on failure.
 
+### zoom
+
+```python
+zoom(
+    zoom: ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rescale world geometry without resampling.
+
+Parameters:
+
+- #### **`zoom`**
+
+  (`float or (3,) array-like`) –
+
+  Nonzero finite world scale factors. Negative values reflect.
+- #### **`center`**
+
+  (`('origin', 'geometry')`, default: `"origin"` ) –
+
+  Shared enclosing-box center or explicit world point in `(z, y, x)` order (or a mapping with those keys). `"origin"` uses the first sampled voxel and requires selecting all geometry dependencies first.
+- #### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rescaled array. See apply\_zoom.
+
 ### Module-level geometry operations
 
 ## apply\_affine
@@ -3850,7 +4096,7 @@ apply_affine(
 
 Apply a world-space affine to a DataArray's world coordinates.
 
-The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame. `attrs["affines"]` entries are ignored entirely.
+The transform is composed into the DataArray's `VoxelToWorldIndex`, derived world coordinates are regenerated, and named affine frames on that index are re-expressed against the new world frame.
 
 Parameters:
 
@@ -3868,7 +4114,7 @@ Parameters:
 
   (`bool`, default: `False` ) –
 
-  Whether to modify the DataArray in-place.
+  Whether to modify the DataArray in-place, requiring all native voxel dims.
 - ### **`geometry_dims`**
 
   (`tuple[str, ...]`, default: `None` ) –
@@ -3879,13 +4125,13 @@ Returns:
 
 - `DataArray` –
 
-  `da` with updated spatial coordinates and updated named affine frames. No frame is removed: when `affine` is a string, that frame is kept as the identity, since the world frame now is that named space.
+  `da` with updated spatial coordinates and updated named affine frames. No frame is removed: when `affine` is a string, that frame is kept as the identity, since the world frame now is that named space. Scalar-selected voxel dimensions are restored unless modifying in place.
 
 Raises:
 
 - `ValueError` –
 
-  If `da` lacks voxel-to-world geometry or if `affine`'s shape does not match the DataArray's voxel-to-world affine.
+  If `da` lacks voxel-to-world geometry, if `affine` is invalid or has an incompatible shape, or if in-place mutation would restore voxel dimensions.
 - `KeyError` –
 
   If `affine` is a string not present among the index's named affines.
@@ -3905,15 +4151,18 @@ Examples:
 10.0
 ```
 
-## get\_bounding\_box
+## apply\_translation
 
 ```python
-get_bounding_box(data: DataArray) -> DataArray
+apply_translation(
+    data: DataArray,
+    translation: ArrayLike,
+    *,
+    inplace: bool = False,
+) -> DataArray
 ```
 
-Return the world-space bounding box of a VoxelData array.
-
-The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `get_voxel_to_world_index_spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box.
+Translate world geometry without resampling or changing voxel labels.
 
 Parameters:
 
@@ -3921,13 +4170,216 @@ Parameters:
 
   (`DataArray`) –
 
-  VoxelData array, normalized with ensure\_voxeldata (scalar-indexed voxel dims are restored as singletons before computing the bounds).
+  VoxelData array to transform.
+- ### **`translation`**
+
+  (`(3,) array-like`) –
+
+  Translation in world `(z, y, x)` order, in `data.vd.world_units`.
+- ### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
 
 Returns:
 
-- `(2, 3) xarray.DataArray` –
+- `DataArray` –
 
-  Bounding box with dims `(bound, component)`, where `bound` is `["min", "max"]` and `component` is `["z", "y", "x"]`, and a `units` attr from the voxel-to-world index. Geometry-dependent dimensions are prepended in affine-axis order, giving one bounding box per geometry.
+  Translated array, with named frames re-expressed in the new world frame. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If translation is not a finite real vector or geometry is invalid.
+
+## apply\_rotation
+
+```python
+apply_rotation(
+    data: DataArray,
+    angle: ArrayLike,
+    axis: str | ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    degrees: bool = True,
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rotate world geometry without resampling.
+
+Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates: +90 degrees about `x` maps `+z` onto `+y`.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- ### **`angle`**
+
+  (`float or (N,) array-like`) –
+
+  Angle, or one angle per axis name.
+- ### **`axis`**
+
+  (`str or (3,) array-like`) –
+
+  World axis names, such as `"x"` or `"zyx"`, or a nonzero world vector. Names rotate left to right about fixed world axes and may repeat.
+- ### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot in world units. `"geometry"` is the midpoint of the box enclosing all grids. `"origin"` is the first sampled voxel and requires selecting all geometry dependencies first. An explicit `(z, y, x)` point or mapping with `z`, `y`, `x` keys also gives a shared pivot. Extra mapping keys are ignored.
+- ### **`degrees`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to interpret angles in degrees rather than radians.
+- ### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rotated array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If angles, axes, center, or geometry are invalid. A geometry center requires regular voxel coordinates.
+
+## apply\_zoom
+
+```python
+apply_zoom(
+    data: DataArray,
+    zoom: ArrayLike,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Rescale world geometry without resampling.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- ### **`zoom`**
+
+  (`float or (3,) array-like`) –
+
+  Nonzero finite scale factors in world `(z, y, x)` order. A scalar scales every axis. Negative factors reflect; unequal factors can shear an oblique voxel grid. Rotation and anisotropic zoom do not generally commute.
+- ### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot: the center of the box enclosing all grids, the first sampled voxel (`"origin"`, requiring selection of all geometry dependencies), or an explicit world point in `(z, y, x)` order. Mappings require `z`, `y`, `x` keys; extra keys are ignored. Coordinates use `data.vd.world_units`.
+- ### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Rescaled array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If factors are zero or invalid, or center or geometry is invalid. A geometry center requires regular voxel coordinates.
+
+## apply\_flip
+
+```python
+apply_flip(
+    data: DataArray,
+    axis: str,
+    *,
+    center: TransformCenter = "geometry",
+    inplace: bool = False,
+) -> DataArray
+```
+
+Reflect world geometry without reversing or resampling the voxel array.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array to transform.
+- ### **`axis`**
+
+  (`str`) –
+
+  Distinct world axis names, such as `"x"` or `"yx"`. Order is irrelevant.
+- ### **`center`**
+
+  (`(origin, geometry)`, default: `"origin"` ) –
+
+  Shared pivot: the center of the box enclosing all grids, the first sampled voxel (`"origin"`, requiring selection of all geometry dependencies), or an explicit world point in `(z, y, x)` order. Mappings require `z`, `y`, `x` keys; extra keys are ignored. Coordinates use `data.vd.world_units`.
+- ### **`inplace`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to modify the original array, requiring all native voxel dims.
+
+Returns:
+
+- `DataArray` –
+
+  Reflected array with unchanged samples and labels, and re-expressed frames. Scalar-selected voxel dims are restored unless modifying in place.
+
+Raises:
+
+- `ValueError` –
+
+  If axes are empty, repeated, or invalid, or center or geometry is invalid. A geometry center requires regular voxel coordinates.
+
+## get\_bounding\_box
+
+```python
+get_bounding_box(
+    data: DataArray,
+) -> dict[str, tuple[float, float]]
+```
+
+Return the world-space bounding box of a VoxelData array.
+
+The box encloses the full extent of every voxel, not just the voxel centers: the voxel-coordinate range of each `k`/`j`/`i` dim is extended by half a voxel at both ends before mapping through the voxel-to-world affine. The voxel size is `get_array_spacing` (so a singleton dim spans one voxel, and irregular voxel coordinates are rejected). The result is exact for any affine, including oblique ones, without materializing the lazily derived world coordinates: each world coordinate is an affine function of the voxel coordinates, so its extremes over the grid are attained at the corners of the (extended) voxel-coordinate box. For stacked geometry, the box encloses all grids. Select geometry dependencies first for a grid-specific bounding box.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array, normalized with canonicalize\_voxeldata (scalar-indexed voxel dims are restored as singletons before computing the bounds).
+
+Returns:
+
+- `dict[str, tuple[float, float]]` –
+
+  World coordinate names `z`, `y`, `x` mapped to `(min, max)` bounds in `.vd.world_units`. The bounds enclose all geometries.
 
 Raises:
 
@@ -3942,8 +4394,36 @@ Examples:
 
 ```pycon
 >>> bbox = get_bounding_box(volume)
->>> bbox.sel(bound="min", component="z").item()
+>>> bbox["z"][0]
 ```
+
+## get\_geometry\_center
+
+```python
+get_geometry_center(data: DataArray) -> dict[str, float]
+```
+
+Return the midpoint of the world-space box enclosing all grids.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array, including cropped or scalar-selected voxel dimensions.
+
+Returns:
+
+- `dict[str, float]` –
+
+  Shared center keyed by `z`, `y`, `x`, in `.vd.world_units`. Select geometry dependencies first for a grid-specific center.
+
+Raises:
+
+- `ValueError` –
+
+  If the array is invalid or voxel coordinates are irregular.
 
 ## get\_relative\_affine
 
@@ -4065,15 +4545,49 @@ Raises:
 
   If `data` or `reference` lacks voxel-to-world geometry, if their voxel dimensions or shapes differ, or if their world coordinates do not match within `atol`.
 
-## get\_voxel\_to\_world\_index\_spacing
+## get\_array\_origin
 
 ```python
-get_voxel_to_world_index_spacing(
+get_array_origin(data: DataArray) -> dict[str, float]
+```
+
+Return the world location of the first sampled voxel.
+
+Parameters:
+
+- ### **`data`**
+
+  (`DataArray`) –
+
+  VoxelData array.
+
+Returns:
+
+- `dict[str, float]` –
+
+  World origin keyed by world coordinate name.
+
+Raises:
+
+- `ValueError` –
+
+  If `data` carries geometry with named dependencies (a stacked affine); select a scalar values on all geometry dimensions first.
+
+> [!NOTE]
+>
+> **Notes**
+>
+> This returns the world location of array index `(0, ..., 0)`, i.e. the first sampled voxel, not necessarily the affine translation at voxel-space `(0, ..., 0)`. The two coincide only when the voxel coordinates themselves start at zero.
+
+## get\_array\_spacing
+
+```python
+get_array_spacing(
     data: DataArray,
 ) -> dict[str, float | None]
 ```
 
-Return world spacing per voxel-space axis for a VoxelData array.
+Return physical spacing between adjacent array positions along voxel axes.
 
 Parameters:
 
@@ -4087,7 +4601,7 @@ Returns:
 
 - `dict[str, float | None]` –
 
-  World spacing keyed by voxel-space dimension.
+  World-space step lengths keyed by native voxel dimension. Retained voxel labels account for striding; irregular labels have undefined spacing.
 
 ### Generic validation
 
@@ -4112,7 +4626,7 @@ validate_voxeldata(
 
 Validate a DataArray against the VoxelData model without modifying it.
 
-This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, a matching `VoxelToWorldIndex` carrying world `z`/`y`/`x` coordinates, and dimensions ordered as `(*nonspatial_dims, k, j, i)`. Nonspatial dimensions, including optional `time`, may appear in any order. Every dimension coordinate is validated. Optional flags add requirements needed by a particular consumer. Use ensure\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
+This requires non-empty native voxel dimensions (`k`, `j`, `i`), their coordinates, a matching `VoxelToWorldIndex` carrying world `z`/`y`/`x` coordinates, and dimensions ordered as `(*nonspatial_dims, k, j, i)`. Nonspatial dimensions, including optional `time`, may appear in any order. Every dimension coordinate is validated. Optional flags add requirements needed by a particular consumer. Use canonicalize\_voxeldata when scalar indexing may have removed a voxel dimension and the input should be canonicalized first.
 
 Parameters:
 
@@ -4174,47 +4688,14 @@ Raises:
 ## canonicalize\_voxeldata
 
 ```python
-canonicalize_voxeldata(data: DataArray) -> DataArray
-```
-
-Restore scalar-indexed VoxelData dimensions and order them canonically.
-
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored.
-
-Parameters:
-
-- ### **`data`**
-
-  (`DataArray`) –
-
-  DataArray to canonicalize.
-
-Returns:
-
-- `DataArray` –
-
-  Canonicalized DataArray with all native voxel dimensions present.
-
-Raises:
-
-- `TypeError` –
-
-  If `data` is not an `xarray.DataArray`.
-- `ValueError` –
-
-  If a native voxel dimension is absent and has no scalar coordinate from which to restore it, or its same-named coordinate is not scalar.
-
-## ensure\_voxeldata
-
-```python
-ensure_voxeldata(
+canonicalize_voxeldata(
     data: DataArray, **validate_kwargs: Any
 ) -> DataArray
 ```
 
 Return a canonical, validated VoxelData array.
 
-This restores scalar-indexed native voxel dimensions, orders dimensions as `(...extra_dims, time, k, j, i)`, preserving the relative order of extra dimensions, then validates the result with validate\_voxeldata.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored. The normalized result is validated with validate\_voxeldata.
 
 Parameters:
 
@@ -4242,4 +4723,4 @@ Raises:
   If `data` is not an `xarray.DataArray`.
 - `ValueError` –
 
-  If canonicalization or validation fails.
+  If a native voxel dimension is absent and has no scalar coordinate from which to restore it, its same-named coordinate is not scalar, or validation fails.

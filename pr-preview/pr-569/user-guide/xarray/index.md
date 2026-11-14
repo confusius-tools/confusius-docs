@@ -247,7 +247,7 @@ The available accessors separate geometry from fUSI analysis. `.vd` is a flat ro
 | `.fusi.scale` | Scaling transformations: decibel, log, and power scaling. |
 | `.vd` | Inspect and apply voxel-to-world and world-to-reference affine transforms. |
 | `.fusi.register` | Motion correction via volumewise image registration. |
-| `.fusi.extract` | Extract and reconstruct signals using spatial masks. |
+| `.vd.extract_with_mask`, `.vd.extract_with_labels`, `.vd.unmask` | Generic mask extraction, label aggregation, and reconstruction. |
 | `.fusi.plot` | Visualization with napari and carpet plots. |
 | `.fusi.connectivity` | Seed-based functional connectivity maps. |
 
@@ -257,20 +257,20 @@ The sub-accessors offer the same functions as the module-level API, but with an 
 
 VoxelData supplies `.vd.origin`, `.vd.spacing`, and `.vd.direction`. These are not properties of `.fusi`. Together they describe the DataArray's voxel-to-world affine—see [The voxel-to-world affine](<https://confusius.tools/pr-preview/pr-569/user-guide/voxeldata/#world-space>) in The VoxelData Model for how the three combine:
 
-- `.vd.spacing`, which returns the step size along each dimension as a dictionary:
+- `.vd.spacing`, which returns the step size along each native voxel dimension as a dictionary in world units:
 
 ```pycon
 >>> pwd.vd.spacing
-{'time': 0.6, 'k': 0.4, 'j': 0.049, 'i': 0.091}
+{'k': 0.4, 'j': 0.049, 'i': 0.091}
 ```
 
-This is particularly useful for sanity-checking voxel sizes or sampling periods before passing data to functions that require regular spacing (e.g., temporal filters, affine registration). Spatial dimensions (`k`/`j`/`i`) always have their spacing derived from the voxel-to-world affine, even for a singleton dimension. A singleton `time` dimension falls back to the `volume_acquisition_duration` attribute when present. Otherwise, `None` is returned with a warning when spacing cannot be determined: non-uniform coordinates, a single coordinate point, or no coordinate at all.
+This is useful for checking voxel sizes before spatial processing. Spacing is derived from the affine and native voxel labels, even for singleton voxel axes; irregular voxel labels return `None`. Use `.vd.dt` for time sampling: select additional timestamp dependencies first. It returns `None` for irregular time sampling or fewer than two timestamps and never substitutes acquisition duration.
 
-- `.vd.origin`, which returns the coordinate values at the origin along each dimension as a dictionary:
+- `.vd.origin`, which returns the coordinate world position of the first sampled voxel as a dictionary:
 
 ```pycon
 >>> pwd.vd.origin
-{'time': 0.299, 'z': 0.0, 'y': 5.664, 'x': -3.583}
+{'z': 0.0, 'y': 5.664, 'x': -3.583}
 ```
 
 This is typically used for computing the affine transformation corresponding to the world coordinates of the DataArray, for example when saving to NIfTI. For multi-pose data, select a scalar pose first.
@@ -374,10 +374,12 @@ registered_to_qform = pwd.vd.apply("world_to_qform")
 shifted = pwd.vd.apply(my_affine)
 ```
 
-`bounding_box` gives the extent of the data in world space, enclosing the full extent of every voxel (half a voxel beyond the outermost voxel centers). It is computed from the affine alone (exact for oblique geometry, and one bounding box per pose when the geometry is pose-dependent):
+`bounding_box` gives the extent of the data in world space, enclosing the full extent of every voxel (half a voxel beyond the outermost voxel centers). It is computed from the affine alone (exact for oblique geometry), enclosing all grids for pose-dependent data. The midpoint is `.vd.geometry_center`; both properties return world-axis dictionaries in `.vd.world_units`. Select a pose first for grid-specific results.
 
 ```python
-bbox = pwd.vd.bounding_box  # Dims (bound, component), e.g. ("max", "x").
+bbox = pwd.vd.bounding_box
+xmin, xmax = bbox["x"]
+center = pwd.vd.geometry_center
 ```
 
 To replace a DataArray's voxel-to-world geometry outright (e.g. after computing a new affine by hand), use `set_voxel_to_world`:
@@ -386,12 +388,27 @@ To replace a DataArray's voxel-to-world geometry outright (e.g. after computing 
 pwd = pwd.vd.set_voxel_to_world(new_voxel_to_world)
 ```
 
-#### Relating two DataArrays
+#### World-space transforms without resampling
 
-To compute the affine relating two DataArrays' world spaces through a named affine they both carry in `.vd.affines` (e.g. a shared `"world_to_lab"` key from two poses of the same acquisition), use `to`:
+VoxelData owns the transform API. Use its flat accessor rather than `.fusi`:
 
 ```python
-moving_to_fixed = moving.vd.to(fixed, via="world_to_lab")
+shifted = pwd.vd.translate((0, 0, 1.5))
+rotated = pwd.vd.rotate((30, 20, 10), "zyx")
+zoomed = pwd.vd.zoom((1, 2, 2))
+flipped = pwd.vd.flip("x")
+```
+
+Only geometry changes: samples, native labels, and lazy signal data are untouched. Named frames are re-expressed in the new world frame. Rotation, zoom, and flip use the center of the box enclosing all grids by default. Pass `center="origin"` for the first sampled voxel (select geometry dependencies first), an explicit world `(z, y, x)` point, or an axis-keyed mapping such as `.vd.origin` or `.vd.geometry_center`. Rotations follow the right-hand rule in ordered world `(z, y, x)` coordinates; axis names apply left to right about fixed world axes. Use `degrees=False` for radians. Translations and pivots use `.vd.world_units`.
+
+These operations return a new array unless `inplace=True`, which requires all native voxel dimensions. Without in-place mutation, scalar-selected voxel axes are restored automatically. See the [Transforms 101 example](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101/index.md>) for geometric intuition.
+
+#### Relating two DataArrays
+
+To compute the affine relating two DataArrays' world spaces through a named affine they both carry in `.vd.affines` (e.g. a shared `"world_to_lab"` key from two poses of the same acquisition), use `get_relative_affine`:
+
+```python
+moving_to_fixed = moving.vd.get_relative_affine(fixed, via="world_to_lab")
 ```
 
 #### Rebasing voxel coordinates to dense positions
@@ -424,7 +441,7 @@ aligned = data.vd.reindex_voxels_like(reference)
 
 ### Signal Extraction
 
-The `.fusi.extract` accessor provides access to signal extraction and reconstruction functions, making it easy to pass fUSI data to scikit-learn, pandas, or other tools that expect a 2D matrix of shape `(samples, features)`.
+VoxelData's flat `.vd` accessor provides extraction and reconstruction methods, making it easy to pass fUSI data to scikit-learn, pandas, or other tools that expect a 2D matrix of shape `(samples, features)`.
 
 #### Mask-based extraction
 
@@ -434,14 +451,14 @@ The `.fusi.extract` accessor provides access to signal extraction and reconstruc
 mask = cf.load("brain_mask.zarr")
 
 # signals has dims (time, space).
-signals = registered.fusi.extract.with_mask(mask)
+signals = registered.vd.extract_with_mask(mask)
 ```
 
-For a quick round-trip, [`.unstack("space")`](<https://docs.xarray.dev/en/stable/generated/xarray.DataArray.unstack.html>) reconstructs the spatial dimensions within the bounding box of the mask. To reconstruct the full spatial volume, use `.fusi.extract.unmask()` with the original mask:
+For a quick round-trip, [`.unstack("space")`](<https://docs.xarray.dev/en/stable/generated/xarray.DataArray.unstack.html>) reconstructs the spatial dimensions within the bounding box of the mask. To reconstruct the full spatial volume, use `.vd.unmask()` with the original mask:
 
 ```python
 # reconstructed is a VoxelData array.
-reconstructed = signals.fusi.extract.unmask(mask)
+reconstructed = signals.vd.unmask(mask)
 ```
 
 #### Label-based extraction
@@ -456,10 +473,10 @@ reconstructed = signals.fusi.extract.unmask(mask)
 label_map = cf.load("atlas_labels.zarr")
 
 # region_signals has dims (time, region).
-region_signals = registered.fusi.extract.with_labels(label_map)
+region_signals = registered.vd.extract_with_labels(label_map)
 
 # Use a different aggregation (default is "mean").
-region_signals = registered.fusi.extract.with_labels(label_map, reduction="sum")
+region_signals = registered.vd.extract_with_labels(label_map, reduction="sum")
 ```
 
 ### Functional Connectivity
@@ -534,7 +551,7 @@ fig, ax = registered.fusi.plot.carpet(mask=brain_mask)
 registered.fusi.save("sub-01_task-awake_pwd.nii.gz")
 
 # 7. Extract global signal using the (boolean) brain mask.
-global_signal = registered.fusi.extract.with_mask(brain_mask).mean("space")
+global_signal = registered.vd.extract_with_mask(brain_mask).mean("space")
 
 # 8. Denoise and standardize power Doppler signals.
 pwd_denoised = cf.signal.clean(
