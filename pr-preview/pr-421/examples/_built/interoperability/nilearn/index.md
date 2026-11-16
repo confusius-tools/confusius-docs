@@ -60,7 +60,7 @@ system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
 ```
 
 ```text
-/tmp/ipykernel_27258/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
+/tmp/ipykernel_29982/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
   - DelayAfterTrigger: Input should be greater than or equal to 0
   stat = cf.load(stat_path).sel(time=2, method="nearest")
 ```
@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f3e94d260f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f10db775d90>
     ```
 - [ ] Attributes: (2)
 
@@ -317,7 +317,7 @@ _ = ax.legend()
 
 ---
 
-**Total running time:** 4.5 s
+**Total running time:** 4.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/08_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.ipynb>)
 

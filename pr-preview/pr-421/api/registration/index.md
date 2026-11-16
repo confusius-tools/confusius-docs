@@ -324,7 +324,7 @@ compose_affine(
     R: NDArray[floating],
     Z: NDArray[floating],
     S: NDArray[floating] | None = None,
-) -> NDArray[floating]
+) -> NDArray[float64]
 ```
 
 Compose translations, rotations, zooms, and shears into an affine matrix.
@@ -603,7 +603,7 @@ Raises:
 
 - `ValueError` –
 
-  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`).
+  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`), or if a voxel dim has irregular coordinates.
 
 ### invert\_displacement\_field
 
