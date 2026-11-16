@@ -359,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc42270e5d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7cf24980f610>
     ```
 - [ ] Attributes: (21)
 
@@ -594,8 +594,8 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 19.3 s
+**Total running time:** 27.6 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/06_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/glm/first_level_continuous.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/07_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/glm/first_level_continuous.ipynb>)
 
 [^/pr-preview/pr-421/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-421/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

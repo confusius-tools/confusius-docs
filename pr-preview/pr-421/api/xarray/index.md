@@ -145,7 +145,7 @@ Methods:
   Save the DataArray to file, dispatching by extension.
 - **`to_nifti`** –
 
-  Convert the VoxelData array to an in-memory NiBabel NIfTI image.
+  Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
 - **`translate`** –
 
   Translate a VoxelData array in world space.
@@ -623,12 +623,12 @@ to_nifti(
     sform: str | None = None,
     qform_code: int | None = None,
     sform_code: int | None = None,
-) -> Nifti1Image | Nifti2Image
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
 ```
 
-Convert the VoxelData array to an in-memory NiBabel NIfTI image.
+Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
 
-Builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the image object instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. Metadata that only the sidecar carries (e.g. `SliceTiming`, extra-dim names) is not represented on the returned image. This is a convenience wrapper around `to_nifti`.
+Builds the same image and metadata as `save_nifti` without writing files. Pass the metadata as `sidecar` to `convert_from_nifti` to preserve timing and named extra dimensions. This is a convenience wrapper around `convert_to_nifti`.
 
 Parameters:
 
@@ -662,9 +662,12 @@ Parameters:
 
 Returns:
 
-- `Nifti1Image or Nifti2Image` –
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
 
-  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
+  In-memory NIfTI image with spacings, qform/sform, and units in the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
 
 Examples:
 
@@ -677,7 +680,7 @@ Examples:
 ...     dt=0.5,
 ...     spacing=(0.4, 0.1, 0.1),
 ... )
->>> img = data.fusi.to_nifti()
+>>> img, metadata = data.fusi.to_nifti()
 ```
 
 #### translate

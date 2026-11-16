@@ -54,9 +54,12 @@ Functions:
 - **`convert_autc_dats_to_zarr`** –
 
   Convert AUTC DAT files to Zarr format compatible with Xarray.
-- **`from_nifti`** –
+- **`convert_from_nifti`** –
 
   Convert an in-memory NiBabel NIfTI image to a VoxelData array.
+- **`convert_to_nifti`** –
+
+  Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
 - **`load`** –
 
   Load a VoxelData array from file, dispatching by extension.
@@ -93,9 +96,6 @@ Functions:
 - **`save_nifti`** –
 
   Save a VoxelData array to NIfTI format.
-- **`to_nifti`** –
-
-  Convert a VoxelData array to an in-memory NiBabel NIfTI image.
 
 ### AUTCDAT
 
@@ -648,10 +648,10 @@ Raises:
 >
 > Correctly computing elevation (`spacing[0]`) spacing requires the elevation beam width, which itself needs the elevation aperture and elevation focus; that computation isn't implemented here, so pass `spacing[0]` explicitly if that information is known, or an intentional placeholder (e.g. `0.4`) otherwise.
 
-### from\_nifti
+### convert\_from\_nifti
 
 ```python
-from_nifti(
+convert_from_nifti(
     img: Nifti1Image | Nifti2Image,
     chunks: int | tuple[int, ...] | str | None = "auto",
     *,
@@ -689,7 +689,7 @@ Parameters:
 
   (`dict[str, Any]`, default: `None` ) –
 
-  Sidecar metadata using ConfUSIus (snake\_case) attribute names. Entries override the header-derived attributes and feed the geometry, timing, and extra-dimension reconstruction, as sidecars do in `load_nifti`. Convert a BIDS JSON sidecar with `confusius.bids.from_bids` first. If not provided, only the NIfTI header is used.
+  Metadata using fUSI-BIDS field names and units, as returned by `convert_to_nifti` or read from a BIDS JSON sidecar. Entries override header-derived attributes and feed timing and extra-dimension reconstruction. If not provided, only the NIfTI header is used.
 
 Returns:
 
@@ -702,6 +702,9 @@ Raises:
 - `TypeError` –
 
   If `img` is not a `nibabel.Nifti1Image` or `nibabel.Nifti2Image`.
+- `ValueError` –
+
+  If the chunk specification, requested coordinate affine, or reconstructed VoxelData geometry is invalid.
 
 Examples:
 
@@ -710,9 +713,89 @@ Examples:
 >>> import numpy as np
 >>> import confusius as cf
 >>> img = nib.Nifti1Image(np.random.rand(64, 64, 32).astype(np.float32), np.eye(4))
->>> da = cf.io.from_nifti(img)
+>>> da = cf.io.convert_from_nifti(img)
 >>> print(da.dims)
 ("k", "j", "i")
+```
+
+### convert\_to\_nifti
+
+```python
+convert_to_nifti(
+    data_array: DataArray,
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
+```
+
+Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
+
+This is the no-file-I/O counterpart to `save_nifti`: it builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the `nibabel.Nifti1Image`/`nibabel.Nifti2Image` object directly instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. The returned metadata carries sidecar-only information such as `SliceTiming` and extra-dimension names. Pass it as `sidecar` to `convert_from_nifti` to preserve that information.
+
+Parameters:
+
+- #### **`data_array`**
+
+  (`DataArray`) –
+
+  VoxelData array to convert.
+- #### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- #### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI qform. See `save_nifti` for the fallback and shear-handling rules.
+- #### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI sform. See `save_nifti` for the fallback rules.
+- #### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. See `save_nifti` for the default rules.
+- #### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. See `save_nifti` for the default rules.
+
+Returns:
+
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
+
+  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
+
+Raises:
+
+- `ValueError` –
+
+  If the input is not valid VoxelData, has a `pose` dimension, exceeds NIfTI's dimension limit, or requests an invalid affine or transform code.
+
+Examples:
+
+```pycon
+>>> import confusius as cf
+>>> import numpy as np
+>>> da = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img, metadata = cf.io.convert_to_nifti(da)
 ```
 
 ### load
@@ -1366,75 +1449,4 @@ Examples:
 >>> cf.io.save_nifti(da, "output.nii.gz")
 >>> da.attrs["affines"] = {"world_to_template": np.eye(4)}
 >>> cf.io.save_nifti(da, "output.nii.gz", sform="world_to_template")
-```
-
-### to\_nifti
-
-```python
-to_nifti(
-    data_array: DataArray,
-    nifti_version: NiftiVersion = 1,
-    *,
-    qform: str | None = None,
-    sform: str | None = None,
-    qform_code: int | None = None,
-    sform_code: int | None = None,
-) -> Nifti1Image | Nifti2Image
-```
-
-Convert a VoxelData array to an in-memory NiBabel NIfTI image.
-
-This is the no-file-I/O counterpart to `save_nifti`: it builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the `nibabel.Nifti1Image`/`nibabel.Nifti2Image` object directly instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. Metadata that only `save_nifti` writes to the sidecar (e.g. `SliceTiming`, extra-dim names) is not represented on the returned image, since a bare NiBabel image carries no sidecar.
-
-Parameters:
-
-- #### **`data_array`**
-
-  (`DataArray`) –
-
-  VoxelData array to convert.
-- #### **`nifti_version`**
-
-  (`(1, 2)`, default: `1` ) –
-
-  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
-- #### **`qform`**
-
-  (`str`, default: `None` ) –
-
-  Key in `data_array.attrs["affines"]` to write into the NIfTI qform. See `save_nifti` for the fallback and shear-handling rules.
-- #### **`sform`**
-
-  (`str`, default: `None` ) –
-
-  Key in `data_array.attrs["affines"]` to write into the NIfTI sform. See `save_nifti` for the fallback rules.
-- #### **`qform_code`**
-
-  (`int`, default: `None` ) –
-
-  NIfTI qform code to write. See `save_nifti` for the default rules.
-- #### **`sform_code`**
-
-  (`int`, default: `None` ) –
-
-  NIfTI sform code to write. See `save_nifti` for the default rules.
-
-Returns:
-
-- `Nifti1Image or Nifti2Image` –
-
-  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
-
-Examples:
-
-```pycon
->>> import confusius as cf
->>> import numpy as np
->>> da = cf.xarray.create_voxeldata(
-...     np.random.rand(10, 1, 32, 64),
-...     dims=("time", "k", "j", "i"),
-...     dt=0.5,
-...     spacing=(0.4, 0.1, 0.1),
-... )
->>> img = cf.io.to_nifti(da)
 ```

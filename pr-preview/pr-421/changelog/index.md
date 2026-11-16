@@ -16,7 +16,7 @@ Current development version for the next ConfUSIus release.
 
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
-- Added `from_nifti`/`to_nifti` to convert directly between a VoxelData array and an in-memory `nibabel.Nifti1Image`/`nibabel.Nifti2Image`, with no file I/O, for interoperating with libraries such as nilearn. `to_nifti` is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and in-memory NiBabel NIfTI images, with no file I/O. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
@@ -30,7 +30,7 @@ Current development version for the next ConfUSIus release.
 
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-421/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
-- Added the [Use nilearn on a VoxelData array](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `from_nifti`/`to_nifti` for easier interporability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- Added the [Use nilearn on a VoxelData array](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `convert_from_nifti` and `convert_to_nifti` for easier interoperability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 🔧 Maintenance
 
