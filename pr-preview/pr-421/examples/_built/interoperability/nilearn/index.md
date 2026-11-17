@@ -10,7 +10,7 @@ We use nilearn to find the clusters of a statistical map from [Cybis Pereira *et
 >
 > ConfUSIus does not install nilearn. If nilearn is not in your environment, install it before you run this example:
 >
-> `bash pip install nilearn`
+> `pip install nilearn`
 
 ## Load a statistical map
 
@@ -60,7 +60,7 @@ system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
 ```
 
 ```text
-/tmp/ipykernel_8164/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
+/tmp/ipykernel_7985/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:
   - DelayAfterTrigger: Input should be greater than or equal to 0
   stat = cf.load(stat_path).sel(time=2, method="nearest")
 ```
@@ -75,19 +75,7 @@ In this file, the `qform` points to the probe space. In that space, the imaging 
 stat = stat.fusi.affine.apply("world_to_qform")
 stat.attrs["sform_code"] = 0
 
-img, metadata = stat.fusi.to_nifti
-```
-
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mTypeError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[3][39m[32m, line 4[39m
-[32m      1[39m stat = stat.fusi.affine.apply([33m"world_to_qform"[39m)
-[32m      2[39m stat.attrs[[33m"sform_code"[39m] = [32m0[39m
-[32m      3[39m 
-[32m----> [39m[32m4[39m img, metadata = stat.fusi.to_nifti
-
-[31mTypeError[39m: cannot unpack non-iterable method object
+img, metadata = stat.fusi.to_nifti()
 ```
 
 ## Find the clusters with nilearn
@@ -106,18 +94,14 @@ table, label_maps = get_clusters_table(
 table
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 2[39m
-[32m      1[39m table, label_maps = get_clusters_table(
-[32m----> [39m[32m2[39m     img,
-[32m      3[39m     stat_threshold=[32m5[39m,
-[32m      4[39m     return_label_maps=[38;5;28;01mTrue[39;00m,
-[32m      5[39m )
-
-[31mNameError[39m: name 'img' is not defined
-```
+|  | Cluster ID | X | Y | Z | Peak Stat | Cluster Size (mm3) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | \-0.055 | 7.85824 | \-8.881784e-16 | 43.928615 | 6 |
+| 1 | 2 | \-5.445 | 10.42080 | \-8.881784e-16 | 24.196712 | 0 |
+| 2 | 3 | \-5.775 | 8.74528 | \-8.881784e-16 | 20.813019 | 0 |
+| 3 | 4 | 2.805 | 6.08416 | \-8.881784e-16 | 15.179721 | 0 |
+| 4 | 5 | 2.255 | 10.71648 | \-8.881784e-16 | 11.706382 | 0 |
+| 5 | 6 | 1.485 | 5.98560 | \-8.881784e-16 | 11.415170 | 0 |
 
 ## Convert the cluster labels to a VoxelData array
 
@@ -128,15 +112,180 @@ labels = cf.io.convert_from_nifti(label_maps[0])
 labels
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[5][39m[32m, line 1[39m
-[32m----> [39m[32m1[39m labels = cf.io.convert_from_nifti(label_maps[[32m0[39m])
-[32m      2[39m labels
+xarray.DataArray
 
-[31mNameError[39m: name 'label_maps' is not defined
-```
+- k: 1
+- j: 112
+- i: 128
+
+- [ ]
+
+  dask.array\<chunksize=(1, 112, 128), meta=np.ndarray\>
+
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 56.00 kiB </td>                         <td> 56.00 kiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1, 112, 128) </td>                         <td> (1, 112, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 1 chunks in 2 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> int32 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+- [x] Coordinates: (6)
+
+  - k
+
+    (k)
+
+    int64
+
+    0
+
+    ☐ ☐
+
+    ```
+    array([0])
+    ```
+  - j
+
+    (j)
+
+    int64
+
+    0 1 2 3 4 5 ... 107 108 109 110 111
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111])
+    ```
+  - i
+
+    (i)
+
+    int64
+
+    0 1 2 3 4 5 ... 123 124 125 126 127
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+           112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125,
+           126, 127])
+    ```
+  - z
+
+    (k, j, i)
+
+    float64
+
+    \-8.882e-16 ... -8.882e-16
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+  - y
+
+    (k, j, i)
+
+    float64
+
+    5.0 5.0 5.0 ... 15.94 15.94 15.94
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+  - x
+
+    (k, j, i)
+
+    float64
+
+    \-6.985 -6.875 ... 6.875 6.985
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+- [ ] Indexes: (4)
+
+  - k
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([0], dtype='int64', name='k'))
+    ```
+  - j
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           102, 103, 104, 105, 106, 107, 108, 109, 110, 111],
+          dtype='int64', name='j', length=112))
+    ```
+  - i
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           118, 119, 120, 121, 122, 123, 124, 125, 126, 127],
+          dtype='int64', name='i', length=128))
+    ```
+  - z  
+    y  
+    x
+
+    VoxelToWorldIndex
+
+    ☐ ☐
+
+    ```
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x747cfaf50050>
+    ```
+- [ ] Attributes: (2)
+
+  **qform\_code :**
+
+  1
+
+  **affines :**
+
+  {'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\])}
 
 ## Plot the clusters
 
@@ -169,22 +318,9 @@ for _, row in peaks.iterrows():
 _ = ax.legend()
 ```
 
-```text
-[31m---------------------------------------------------------------------------[39m
-[31mNameError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[6][39m[32m, line 2[39m
-[32m      1[39m [38;5;66;03m# Subpeak IDs such as "1a" belong to an existing cluster, not a new label.[39;00m
-[32m----> [39m[32m2[39m peaks = table[table[[33m"Cluster ID"[39m].astype(str).str.fullmatch([33mr"\d+"[39m)]
-[32m      3[39m colors = {
-[32m      4[39m     int(row[[33m"Cluster ID"[39m]): mpl.colors.to_hex(mpl.colormaps[[33m"tab10"[39m](i % [32m10[39m))
-[32m      5[39m     [38;5;28;01mfor[39;00m i, (_, row) [38;5;28;01min[39;00m enumerate(peaks.iterrows())
-
-[31mNameError[39m: name 'table' is not defined
-```
-
 ---
 
-**Total running time:** 4.8 s
+**Total running time:** 5.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/02_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn.ipynb>)
 
