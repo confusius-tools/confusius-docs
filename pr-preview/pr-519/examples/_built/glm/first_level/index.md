@@ -291,7 +291,7 @@ modified_claron2021 = partial(cf.glm.claron2021_hrf, beta=6.7)
 hrf_kernel = modified_claron2021(dt=1.0)
 hrf_time = np.linspace(0, 32, len(hrf_kernel))
 
-fig, ax = plt.subplots(figsize=(7, 3), facecolor=bg_color)
+fig, ax = plt.subplots(figsize=(7, 3))
 ax.plot(hrf_time, hrf_kernel, color="#d93a54")
 ax.set_xlabel("Time since stimulus onset (s)")
 ax.set_ylabel("Response (a.u.)")
@@ -330,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f96f27d3d70>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7ac2b41594e0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -345,7 +345,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...70\>, beta=6.7) |
+|  | hrf\_model | functools.par...e0\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -364,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f96f03a11d0\>, \<confusius.gl...x7f96f053b5c0\>, \<confusius.gl...x7f96f06668d0\>, \<confusius.gl...x7f96f03c38a0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7ac2b740ad50\>, \<confusius.gl...x7ac2b75a7950\>, \<confusius.gl...x7ac2a83b04d0\>, \<confusius.gl...x7ac2b4496030\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -476,8 +476,6 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 103.6 s
-
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/zallery-workspace?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-519/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-519/examples/_built/glm/first_level.ipynb>)
+**Total running time:** 96.2 s
 
 [^/pr-preview/pr-519/examples/_built/glm/first_level/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

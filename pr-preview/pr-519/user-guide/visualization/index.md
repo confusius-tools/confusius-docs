@@ -101,14 +101,16 @@ ConfUSIus relies on [napari](<https://napari.org>) for interactive visualization
 ### Basic Usage
 
 ```python
-viewer, layer = pwd.fusi.plot.napari()
+viewer, layers = pwd.fusi.plot.napari()
 ```
 
 ```python
 import confusius as cf
 
-viewer, layer = cf.plotting.plot_napari(pwd)
+viewer, layers = cf.plotting.plot_napari(pwd)
 ```
+
+Both APIs always return `(viewer, layers)`, where `layers` is a list. Arrays with a `pose` dimension open as one layer per pose, positioned using each pose's voxel-to-world affine and named `<data name> [pose <pose value>]`. An explicit `name=` overrides the data name. To unpack a single-layer result, use `viewer, [layer] = ...`.
 
 This opens a napari viewer with a scale bar, colorbar, and correct world scaling across axes. The viewer is fully interactive: you can zoom, pan, and scroll through time and elevation slices with the sliders or mouse wheel.
 
@@ -126,7 +128,7 @@ By default napari auto-scales contrast to the data range. For power Doppler, wor
 
 ```python
 # dB-scaled power Doppler with fixed contrast window.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     pwd.fusi.scale.db(),
     contrast_limits=(-20, 0),
     colormap="hot",
@@ -141,13 +143,13 @@ Napari's **labels** layer renders integer-labeled masks as filled or contoured r
 
 ```python
 # Load power Doppler mean volume and open viewer.
-viewer, layer = cf.plotting.plot_napari(
+viewer, layers = cf.plotting.plot_napari(
     mean_vol.fusi.scale.db(),
     contrast_limits=(-20, 0),
 )
 
 # Add pre-registered Allen labels as a labels layer.
-viewer, labels_layer = cf.plotting.plot_napari(
+viewer, labels_layers = cf.plotting.plot_napari(
     atlas_labels,
     viewer=viewer,
     layer_type="labels",
@@ -164,8 +166,8 @@ viewer, labels_layer = cf.plotting.plot_napari(
 > The `viewer` argument works for any `plot_napari` call, letting you load two image datasets into the same viewer for direct comparison; for example, before and after motion correction:
 >
 > ```python
-> viewer, layer = pwd_before.fusi.plot.napari(name="Before correction")
-> viewer, layer = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
+> viewer, layers = pwd_before.fusi.plot.napari(name="Before correction")
+> viewer, layers = pwd_after.fusi.plot.napari(viewer=viewer, name="After correction")
 > ```
 
 ### Slicing Across Different Spatial Dimensions
@@ -174,7 +176,7 @@ By default, napari shows the last two spatial dimensions as a 2D plane and the r
 
 ```python
 # Swap z and y: depth becomes the slider axis.
-viewer, layer = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
+viewer, layers = pwd_3d.fusi.plot.napari(dim_order=("y", "z", "x"))
 ```
 
 ### 3D Rendering

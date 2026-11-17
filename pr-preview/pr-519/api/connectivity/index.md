@@ -431,7 +431,7 @@ Attributes:
   Extracted (and cleaned) seed region signals when `seed_masks` is used, or the supplied signals (possibly transposed to `(time, region)` order) when `seed_signals` is used. Set after `fit`.
 - **`maps_`** (`(region, ...) xarray.DataArray`) –
 
-  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"coolwarm"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
+  Voxel-wise Pearson r maps, one per seed region, set after `fit`. `region` is the leading dimension; the remaining dimensions match the spatial dimensions of the data passed to `fit`. If a single region is present the `region` dimension is squeezed out. `attrs["cmap"]` is set to `"berlin"`, `attrs["norm"]` to `Normalize(vmin=-1, vmax=1)`, and `attrs["long_name"]` to `"Pearson r"` so that plotting functions pick up sensible defaults automatically.
 
 Examples:
 

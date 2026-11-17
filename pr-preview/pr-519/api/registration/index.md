@@ -95,7 +95,7 @@ Functions:
 
 Plot registration progress in real time.
 
-Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt).
+Displays an optimizer metric curve, a composite fixed/moving overlay, or both, updated at every iteration. Works in both a Jupyter notebook and an interactive matplotlib backend (e.g. Qt). Draws on a black background.
 
 Parameters:
 
@@ -324,7 +324,7 @@ compose_affine(
     R: NDArray[floating],
     Z: NDArray[floating],
     S: NDArray[floating] | None = None,
-) -> NDArray[floating]
+) -> NDArray[float64]
 ```
 
 Compose translations, rotations, zooms, and shears into an affine matrix.
@@ -603,7 +603,7 @@ Raises:
 
 - `ValueError` –
 
-  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`).
+  If either input is not a VoxelData array with a time-free, pose-free, 3D voxel-to-world grid (see `confusius.validation.ensure_voxeldata`), or if a voxel dim has irregular coordinates.
 
 ### invert\_displacement\_field
 
@@ -944,7 +944,7 @@ Parameters:
 
   - `"center_geometry"`: aligns image centers.
   - `"center_moments"`: aligns centers of mass.
-  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform.
+  - `(N+1, N+1)` homogeneous affine matrix: uses a precomputed affine transform, held fixed while optimizing the requested `transform_type`.
   - `None`: uses the identity transform.
 
   For `transform_type="bspline"`, centering modes are ignored but affine initialization is supported.
@@ -952,7 +952,7 @@ Parameters:
 
   (`list of float`, default: `None` ) –
 
-  Per-parameter weights applied on top of the auto-estimated world shift scales. `None` uses identity weights (all ones). A list is passed directly to SimpleITK's `SetOptimizerWeights`; its length must match the number of transform parameters (6 for rigid, 12 for affine). The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
+  Per-parameter weights applied on top of the auto-estimated world shift scales. `None` uses identity weights (all ones). A list is passed directly to SimpleITK's `SetOptimizerWeights`; its length must match the number of refinement parameters (3 for translation, 6 for rigid, 12 for affine in 3D), including with matrix initialization. The weight for each parameter is multiplied into the effective step size: `0` freezes a parameter entirely, values in `(0, 1)` slow it down, and `1` leaves it unchanged. For the 3D Euler transform the parameter order is `[angleX, angleY, angleZ, tx, ty, tz]`; to disable rotations around x and y set weights to `[0, 0, 1, 1, 1, 1]`.
 - #### **`mesh_size`**
 
   (`tuple of int`, default: `(10, 10, 10)` ) –
