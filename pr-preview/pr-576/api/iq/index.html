@@ -2419,6 +2419,8 @@
       
         
       
+        
+      
     
     
     
@@ -2534,6 +2536,33 @@
     
   
   The ConfUSIus Dataset Collection
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                
+              
+                
+                  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/_built/io/transforms_101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Transforms 101
 
     
   </span>
@@ -4224,8 +4253,8 @@ instabilities.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked voxels. If not provided, all
-voxels are used.</p>
+            <p>Boolean mask selecting at least one voxel. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked
+voxels. If not provided, all voxels are used.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4368,8 +4397,8 @@ instabilities.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked voxels. If not provided, all
-voxels are used.</p>
+            <p>Boolean mask selecting at least one voxel. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked
+voxels. If not provided, all voxels are used.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4503,13 +4532,13 @@ instabilities.</p>
         </li>
         <li class="doc-section-item field-body">
 <h4 id="confusius.iq.clutter_filter_svd_from_indices(mask)" class="doc doc-heading doc-heading-parameter">              <b><code>mask</code></b>
-<a href="#confusius.iq.clutter_filter_svd_from_indices(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(z, y x) numpy.ndarray</code>, default:
+<a href="#confusius.iq.clutter_filter_svd_from_indices(mask)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code>(k, j, i) numpy.ndarray</code>, default:
                   <code>None</code>
 )
           –
           <div class="doc-md-description">
-            <p>Boolean mask. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked voxels. If not provided, all
-voxels are used.</p>
+            <p>Boolean mask selecting at least one voxel. <abbr title="Singular Value Decomposition">SVD</abbr> is computed only from masked
+voxels. If not provided, all voxels are used.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5316,7 +5345,8 @@ after computing.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>singular_value_index</code> is less than 1 or greater than <code>window_width - 1</code>.</p>
+            <p>If <code>singular_value_index</code> is less than 1 or greater than <code>window_width - 1</code>,
+or if <code>clutter_mask</code> selects no voxels.</p>
           </div>
         </li>
     </ul>
@@ -5747,7 +5777,8 @@ to <code>window_width</code>. If not provided, equals <code>window_width</code>.
 nested sliding windows. A first sliding window is used for clutter filtering. Inside
 each clutter-filtered window, axial velocity volumes are computed using a second
 sliding window. See the notes section for an illustration of the nested sliding
-window approach.</p>
+window approach. Butterworth filtering requires regular sampling at the same rate
+in every clutter window (1% tolerance); gaps between windows are allowed.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -6074,7 +6105,8 @@ is the number of sliding windows.</p>
 nested sliding windows. A first sliding window is used for clutter filtering. Inside
 each clutter-filtered window, power Doppler volumes are computed using a second
 sliding window. See the notes section for an illustration of the nested sliding
-window approach.</p>
+window approach. Butterworth filtering requires regular sampling at the same rate in
+every clutter window (1% tolerance); gaps between windows are allowed.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>

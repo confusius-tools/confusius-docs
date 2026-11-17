@@ -190,7 +190,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -258,7 +258,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -322,9 +322,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`mask`**
 
-  (`(z, y x) numpy.ndarray`, default: `None` ) –
+  (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int`, default: `None` ) –
@@ -759,7 +759,7 @@ Raises:
 
 - `ValueError` –
 
-  If `singular_value_index` is less than 1 or greater than `window_width - 1`.
+  If `singular_value_index` is less than 1 or greater than `window_width - 1`, or if `clutter_mask` selects no voxels.
 
 > [!NOTE]
 >
@@ -982,7 +982,7 @@ process_iq_to_axial_velocity(
 
 Process blocks of beamformed IQ into axial velocity volumes using sliding windows.
 
-This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
 
 Parameters:
 
@@ -1167,7 +1167,7 @@ process_iq_to_power_doppler(
 
 Process blocks of beamformed IQ into power Doppler volumes using sliding windows.
 
-This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
 
 Parameters:
 
