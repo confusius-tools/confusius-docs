@@ -359,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75fc714cd6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a25b14bd450>
     ```
 - [ ] Attributes: (21)
 
@@ -594,6 +594,10 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 22.1 s
+**Total running time:** 25.6 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `make_first_level_design_matrix` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `load` `VolumePlotter` `compute_compcor_confounds` `apply_statistical_threshold` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

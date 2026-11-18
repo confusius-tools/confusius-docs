@@ -75,6 +75,7 @@ The gallery is built by [zallery](<https://github.com/confusius-tools/zallery>) 
 - Pass the background to the plotting functions rather than relying on their `"black"` default: `bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])`. A figure left on pure black (the registration progress plot, a plotting call that makes its own figure without `bg_color`) is themed as a whole for both pages, pure-white data colors included.
 - Leave `cmap` unset on `plot_stat_map` and `plot_matrix` so the library's background-aware default applies.
 - For brand-colored lines, draw with the light-page variants `#d93a54` (red) and `#27906d` (turquoise); the dark rendering switches them to `#e94b5f` and `#3ad9a4`. Default-cycle colors switch to Matplotlib's `dark_background` cycle, also in scatter plots and filled areas and when named explicitly (`"tab:blue"`), and `inferno_r` becomes `inferno`. These pairs are the data of the `Figures` class in `tools/gallery.py`, a zallery [integration class](<https://github.com/confusius-tools/zallery/blob/main/docs/user-guide/integrations.md>); editing it invalidates the gallery cache.
+- Nothing to write for the API links: each example page ends with the ConfUSIus functions and classes its cells use, linked to the API reference, and each of those API entries lists the example back under "Used in the examples". Only objects held by a name in a cell are found, so a method called on the result of another call (`cf.load(path).mean()`) is not listed.
 
 ### Reporting Issues
 

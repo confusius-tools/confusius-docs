@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb4085dbe0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd4ab42900>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb70b4e490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd70cb2350>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb13b6a990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd1d9dc050>
     ```
 - [ ] Attributes: (25)
 
@@ -1393,6 +1393,10 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.4 s
+**Total running time:** 10.1 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `load` `VolumePlotter` `plot_volume` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.save` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/io/confusius_xarray_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

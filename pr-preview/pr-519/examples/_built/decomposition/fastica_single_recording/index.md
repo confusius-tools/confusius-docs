@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f14760756d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79748974d450>
     ```
 - [ ] Attributes: (25)
 
@@ -710,7 +710,11 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 231.8 s
+**Total running time:** 181.8 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `FastICA` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/fastica_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

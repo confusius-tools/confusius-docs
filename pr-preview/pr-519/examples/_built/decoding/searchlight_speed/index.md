@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f58344aa350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc4417a20d0>
     ```
 - [ ] Attributes: (21)
 
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5822e72cf0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc434266970>
     ```
 - [ ] Attributes: (23)
 
@@ -897,6 +897,10 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 67.3 s
+**Total running time:** 68.2 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `SearchLight` `SearchLight.fit` `make_first_level_design_matrix` `claron2021_hrf` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `load` `compute_compcor_confounds` `clean` `smooth_volume` `FUSIAccessor` `FUSIAccessor.plot`
 
 [^/pr-preview/pr-519/examples/_built/decoding/searchlight_speed/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

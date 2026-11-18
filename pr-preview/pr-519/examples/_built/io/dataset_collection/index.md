@@ -115,4 +115,8 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.8 s
+**Total running time:** 4.7 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `list_datasets` `load` `VolumePlotter` `FUSIAccessor` `FUSIAccessor.affine` `FUSIAccessor.scale`

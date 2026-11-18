@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc7de6fd300>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c4e3193d0>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc7b0ac5490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c3cb29b50>
     ```
 - [ ] Attributes: (25)
 
@@ -844,6 +844,10 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.4 s
+**Total running time:** 13.7 s
+
+## API used in this example
+
+`fetch_pepe_mariani_2026` `load` `consolidate_poses` `VolumePlotter` `plot_volume` `FUSIAccessor` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/multipose/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

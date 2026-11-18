@@ -25412,7 +25412,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24611/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_22110/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25629,7 +25629,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f58939ef790>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c01139df790>
     ```
 - [ ] Attributes: (27)
 
@@ -26033,7 +26033,11 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.5 s
+**Total running time:** 10.8 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.get_masks` `AtlasAccessor.lookup` `AtlasAccessor.resample_like` `ConnectivityMatrix` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `extract_with_labels` `load` `plot_matrix` `RegistrationDiagnostics` `register_volume` `compute_compcor_confounds` `clean` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/connectivity/atlas_correlation_matrix/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -26100,7 +26104,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26137/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_23634/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26368,7 +26372,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79fdeea10e30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x783594af5250>
     ```
   - region
 
@@ -26491,7 +26495,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x79fdeea04050\>
+  \<matplotlib.colors.Normalize object at 0x783594b906e0\>
 
 ## Plot the seed maps
 
@@ -26527,9 +26531,38 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.1 s
+**Total running time:** 11.8 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.get_masks` `AtlasAccessor.resample_like` `SeedBasedMaps` `SeedBasedMaps.fit` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `load` `VolumePlotter` `VolumePlotter.add_contours` `plot_stat_map` `RegistrationDiagnostics` `register_volume` `compute_compcor_confounds` `smooth_volume` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/connectivity/atlas_seed_map/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Functional Connectivity
+
+Computing functional connectivity (FC) measures from fUSI data using brain region parcellations or data-driven approaches.
+
+- This example shows an end-to-end regional functional connectivity (FC) analysis: briefly register a single-slice fUSI recording to an Allen-space template, bring the Allen Mouse Brain Atlas into the recording's native space, extract region-averaged signals, and visualize their pairwise correlation with `plot_matrix`.
+
+  ---
+
+  **[Atlas-based region correlation matrix](<https://confusius.tools/pr-preview/pr-519/examples/_built/connectivity/atlas_correlation_matrix/index.md>)**
+- This example computes voxel-wise seed-based functional connectivity maps: register a single-slice fUSI recording to an Allen-space template, bring an Allen Mouse Brain Atlas into the recording's native space, pick four atlas regions of interest as seeds, and correlate each seed's signal against every voxel with `SeedBasedMaps`. Each resulting map is displayed with `plot_stat_map`, using the resampled Allen template volume as background.
+
+  ---
+
+  **[Atlas-based seed connectivity maps](<https://confusius.tools/pr-preview/pr-519/examples/_built/connectivity/atlas_seed_map/index.md>)**
+
+# Decoding
+
+Mapping which brain regions carry information about a behavioral or experimental variable, using cross-validated multivariate models.
+
+- This example maps which parts of a fUSI recording carry information about how fast a rat is moving with a searchlight: a small cross-validated model run over the local neighborhood of every voxel. Unlike a GLM, which asks voxel by voxel whether one voxel's signal tracks the regressor, the searchlight asks whether the local pattern around each voxel can predict it, picking up information carried jointly by neighboring voxels rather than by any one alone.
+
+  ---
+
+  **[Searchlight decoding of a continuous variable](<https://confusius.tools/pr-preview/pr-519/examples/_built/decoding/searchlight_speed/index.md>)**
 
 # Searchlight decoding of a continuous variable
 
@@ -26869,7 +26902,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f58344aa350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc4417a20d0>
     ```
 - [ ] Attributes: (21)
 
@@ -27266,7 +27299,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f5822e72cf0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc434266970>
     ```
 - [ ] Attributes: (23)
 
@@ -27430,7 +27463,11 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 67.3 s
+**Total running time:** 68.2 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `SearchLight` `SearchLight.fit` `make_first_level_design_matrix` `claron2021_hrf` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `load` `compute_compcor_confounds` `clean` `smooth_volume` `FUSIAccessor` `FUSIAccessor.plot`
 
 [^/pr-preview/pr-519/examples/_built/decoding/searchlight_speed/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -27776,7 +27813,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f14760756d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79748974d450>
     ```
 - [ ] Attributes: (25)
 
@@ -28146,11 +28183,35 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 231.8 s
+**Total running time:** 181.8 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `FastICA` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/fastica_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
 [^/pr-preview/pr-519/examples/_built/decomposition/fastica_single_recording/#1]: Hyvärinen, A., and Oja, E. (2000). "Independent component analysis: algorithms and applications". *Neural Networks*, 13(4-5), 411-430.
+
+# Decomposition
+
+Extracting spatiotemporal structure from fUSI recordings using dimensionality reduction techniques such as PCA, FastICA, and NMF.
+
+- This example shows how to use principal component analysis (PCA) to decompose a fUSI recording into principal axes of variance.
+
+  ---
+
+  **[PCA on a single fUSI recording](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/pca_single_recording/index.md>)**
+- This example shows how to use FastICA to decompose a fUSI recording into independent components.
+
+  ---
+
+  **[FastICA on a single fUSI recording](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/fastica_single_recording/index.md>)**
+- This example shows how to use non-negative matrix factorization (NMF) to decompose a fUSI recording into non-negative spatial maps and their associated non-negative time courses. It complements the PCA and FastICA examples in the same gallery.
+
+  ---
+
+  **[NMF on a single fUSI recording](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/nmf_single_recording/index.md>)**
 
 # NMF on a single fUSI recording
 
@@ -28486,7 +28547,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bcac3ce96d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76713e909450>
     ```
 - [ ] Attributes: (25)
 
@@ -28884,7 +28945,11 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 245.4 s
+**Total running time:** 188.5 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `NMF` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/nmf_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -29230,7 +29295,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74016f0cd6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77c7ec2d5450>
     ```
 - [ ] Attributes: (25)
 
@@ -29622,7 +29687,11 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 227.6 s
+**Total running time:** 178.9 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `PCA` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/pca_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -29960,7 +30029,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7ac2b41594e0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7a03ea2be140>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29975,7 +30044,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...e0\>, beta=6.7) |
+|  | hrf\_model | functools.par...40\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29994,7 +30063,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7ac2b740ad50\>, \<confusius.gl...x7ac2b75a7950\>, \<confusius.gl...x7ac2a83b04d0\>, \<confusius.gl...x7ac2b4496030\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7a03ec015590\>, \<confusius.gl...x7a03ec006520\>, \<confusius.gl...x7a04011c8050\>, \<confusius.gl...x7a03fce7f790\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -30106,7 +30175,11 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 96.2 s
+**Total running time:** 109.3 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.get_masks` `fetch_brainglobe_atlas` `fetch_khallaf_2026` `fetch_template_pepe_mariani_2026` `claron2021_hrf` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `load` `VolumePlotter` `VolumePlotter.add_contours` `plot_stat_map` `plot_contrast_matrix` `plot_design_matrix` `RegistrationDiagnostics` `resample_like` `register_volume` `compute_compcor_confounds` `adjust_pvalues` `apply_statistical_threshold` `FUSIAccessor` `FUSIAccessor.scale` `create_voxeldata`
 
 [^/pr-preview/pr-519/examples/_built/glm/first_level/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -30471,7 +30544,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75fc714cd6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a25b14bd450>
     ```
 - [ ] Attributes: (21)
 
@@ -30706,9 +30779,28 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 22.1 s
+**Total running time:** 25.6 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `make_first_level_design_matrix` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `load` `VolumePlotter` `compute_compcor_confounds` `apply_statistical_threshold` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# GLM
+
+Fit voxel-wise General Linear Models to fUSI recordings to map stimulus-driven activation.
+
+- The General Linear Model (GLM) is the workhorse of task-based neuroimaging analysis. It treats every voxel independently and asks a simple question: how much of this voxel's time course can be explained by the experimental paradigm, once we account for nuisance signals such as slow drifts and physiological noise? Fitting that model voxel-by-voxel turns a fUSI recording into a statistical map that highlights where the brain responded to the stimulus.
+
+  ---
+
+  **[First-level GLM analysis of fUSI data](<https://confusius.tools/pr-preview/pr-519/examples/_built/glm/first_level/index.md>)**
+- This example reproduces the lagged-GLM analysis reported by Cybis Pereira *et al.* 2026\[^collection\], which uses functional ultrasound imaging of a freely moving rat exploring an open field with its body position tracked from video. Unlike the block-design task in the First-level GLM analysis of fUSI data example, the regressor of interest is a *continuous* variable measured throughout the recording, the animal's locomotion speed, and we ask at every voxel how much of the power Doppler time course tracks it at different lags.
+
+  ---
+
+  **[Lagged first-level GLM analysis of fUSI data with a continuous regressor](<https://confusius.tools/pr-preview/pr-519/examples/_built/glm/first_level_continuous/index.md>)**
 
 # ConfUSIus and Xarray 101
 
@@ -30972,7 +31064,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb4085dbe0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd4ab42900>
     ```
 - [ ] Attributes: (25)
 
@@ -31398,7 +31490,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb70b4e490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd70cb2350>
     ```
 - [ ] Attributes: (25)
 
@@ -31758,7 +31850,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fb13b6a990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd1d9dc050>
     ```
 - [ ] Attributes: (25)
 
@@ -32105,7 +32197,11 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.4 s
+**Total running time:** 10.1 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `load` `VolumePlotter` `plot_volume` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.save` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/io/confusius_xarray_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -32444,7 +32540,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e884e088510>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c30cea0770>
     ```
   - time
 
@@ -32725,7 +32821,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e88403dc050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c304208d70>
     ```
 - [ ] Attributes: (6)
 
@@ -32797,7 +32893,11 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 45.5 s
+**Total running time:** 38.6 s
+
+## API used in this example
+
+`gamma_hrf` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `VolumePlotter` `smooth_volume` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.register` `create_voxeldata`
 
 [^/pr-preview/pr-519/examples/_built/io/create_voxeldata_from_mat/#collection]: This example downloads an external archive, not a collection release. See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for the fUSI-BIDS studies and templates hosted by ConfUSIus.
 
@@ -32920,7 +33020,36 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.8 s
+**Total running time:** 4.7 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `list_datasets` `load` `VolumePlotter` `FUSIAccessor` `FUSIAccessor.affine` `FUSIAccessor.scale`
+
+# Getting Started
+
+First steps with ConfUSIus: loading a recording, working with Xarray-backed data, and building simple summaries and visualizations.
+
+- This example demonstrates how to use ConfUSIus to load and handle fUSI data as DataArray instances. We will use a small subset of the Nunez-Elizalde 2022 dataset\[^collection\] and use a few basic Xarray operations to inspect, subset, and summarize the data.
+
+  ---
+
+  **[ConfUSIus and Xarray 101](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/confusius_xarray_101/index.md>)**
+- This example downloads a power Doppler MAT file from the public dataset accompanying Rabut *et al.* (2024)^1 and wraps it in a VoxelData array with `create_voxeldata`.
+
+  ---
+
+  **[Create a VoxelData array from a MAT file](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/create_voxeldata_from_mat/index.md>)**
+- ConfUSIus provides access to public fUSI datasets and brain templates from several studies. The datasets user guide describes the available data, fetchers, and source publications; the collection repository documents preparation recipes, provenance, and per-source licenses.
+
+  ---
+
+  **[The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>)**
+- A VoxelData array stores values on a voxel grid positioned in world space by a voxel-to-world affine. The `.fusi` accessor lets you translate, rotate, zoom, and flip that grid by updating its affine. **The data values are not resampled**: resampling occurs when plotting (e.g., `plot_volume`) or when requested explicitly (e.g., `resample_like`).
+
+  ---
+
+  **[Transforms 101](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/transforms_101/index.md>)**
 
 # Transforms 101
 
@@ -33130,7 +33259,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c029f2d4b90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x776d4c65c910>
     ```
 - [ ] Attributes: (5)
 
@@ -33538,9 +33667,23 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 24.3 s
+**Total running time:** 24.5 s
+
+## API used in this example
+
+`fetch_template_pepe_mariani_2026` `VolumePlotter` `FUSIAccessor` `FUSIAccessor.affine` `FUSIAccessor.flip` `FUSIAccessor.origin` `FUSIAccessor.plot` `FUSIAccessor.rotate` `FUSIAccessor.translate` `FUSIAccessor.zoom`
 
 [^/pr-preview/pr-519/examples/_built/io/transforms_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Multi-Pose
+
+Loading, saving, and processing fUSI recordings acquired across multiple probe positions.
+
+- This example shows how to load and save multi-pose fUSI recordings split into several NIfTI files.
+
+  ---
+
+  **[Load and save multi-pose recordings](<https://confusius.tools/pr-preview/pr-519/examples/_built/multipose/load_multipose_recordings/index.md>)**
 
 # Load and save multi-pose recordings
 
@@ -33827,7 +33970,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc7de6fd300>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c4e3193d0>
     ```
 - [ ] Attributes: (25)
 
@@ -34269,7 +34412,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc7b0ac5490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c3cb29b50>
     ```
 - [ ] Attributes: (25)
 
@@ -34388,9 +34531,33 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.4 s
+**Total running time:** 13.7 s
+
+## API used in this example
+
+`fetch_pepe_mariani_2026` `load` `consolidate_poses` `VolumePlotter` `plot_volume` `FUSIAccessor` `FUSIAccessor.spacing`
 
 [^/pr-preview/pr-519/examples/_built/multipose/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Registration
+
+Aligning fUSI recordings across sessions, subjects, or to a reference anatomy with ConfUSIus's volume registration tools.
+
+- This example shows how to align two power Doppler images acquired from the same subject in different sessions. We use `register_volume` with a rigid transform, which is appropriate when the imaged anatomy is the same but the probe placement differs slightly between the two recordings.
+
+  ---
+
+  **[Registration of two sessions from the same subject](<https://confusius.tools/pr-preview/pr-519/examples/_built/registration/register_volume_same_subject/index.md>)**
+- This example shows how to correct volume-to-volume brain motion in one fUSI recording with `register_volumewise`. For this example, we use a short subset of an open-field 2D+t recording from the Cybis Pereira 2026 dataset\[^collection\]. After volumewise registration, we inspect three things that are useful in practice:
+
+  ---
+
+  **[Motion correction of a single recording](<https://confusius.tools/pr-preview/pr-519/examples/_built/registration/volumewise_motion_correction/index.md>)**
+- This example shows the full workflow for aligning a single-slice fUSI recording to one of ConfUSIus's Allen-space fUSI templates: fetch the recording and the template, initialize and refine the registration, inspect diagnostic overlays, resample the Allen Mouse Brain Atlas onto the recording's native grid, and save the aligned atlas for reuse.
+
+  ---
+
+  **[Register a recording to an Allen fUSI template](<https://confusius.tools/pr-preview/pr-519/examples/_built/registration/register_to_allen_fusi_template/index.md>)**
 
 # Register a recording to an Allen fUSI template
 
@@ -34669,7 +34836,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e5a92868050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b00d9872b10>
     ```
 - [ ] Attributes: (27)
 
@@ -34884,7 +35051,11 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 87.6 s
+**Total running time:** 91.3 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.resample_like` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `get_datasets_dir` `load_atlas` `save_atlas` `load` `VolumePlotter` `VolumePlotter.add_contours` `plot_composite` `plot_volume` `RegistrationDiagnostics` `resample_like` `register_volume` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/registration/register_to_allen_fusi_template/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -35130,7 +35301,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76f2e378eb10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x724b5504ed70>
     ```
 - [ ] Attributes: (23)
 
@@ -35411,7 +35582,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76f2b99aed50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x724b2b37f150>
     ```
 - [ ] Attributes: (23)
 
@@ -35614,49 +35785,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-1.345e-12 6.776e-13 5.034e-14 -8.81e-13 ... -495.5 -563.8 -142.0
+  1.514e-10 1.663e-12 2.021e-13 ... -1.063e+03 -1.289e+03 -1.721e+03
 
   ```
-  array([[[[-1.34476845e-12,  6.77637192e-13,  5.03373371e-14, ...,
-            -3.94590671e-13, -1.96384276e-13, -1.38461306e-14],
-           [-7.36036022e-14,  6.01418429e-15, -9.98236625e-15, ...,
-            -1.88253499e-13, -3.59141622e-14,  2.42708562e-14],
-           [-3.25659335e-13, -1.34340445e-13, -1.49736138e-13, ...,
-            -8.98937416e-14,  4.32774014e-14,  2.70757333e-14],
+  array([[[[ 1.51437354e-10,  1.66283925e-12,  2.02127782e-13, ...,
+            -5.04185841e-13, -1.44817384e-13, -2.10671485e-15],
+           [ 1.95624221e-12,  1.48643898e-13,  2.73925125e-14, ...,
+            -2.34792455e-13, -3.67386397e-14,  5.27954754e-15],
+           [-2.20966275e-13, -1.12328173e-13, -1.48845550e-13, ...,
+            -1.10351765e-13,  4.61385840e-14,  2.36229450e-14],
            ...,
-           [-2.91117202e-13, -2.50612225e-14,  3.36795871e-13, ...,
-             1.98392918e-13,  2.03190314e-13,  3.83242167e-14],
-           [ 2.18432107e-13,  2.35306887e-13,  2.39369024e-13, ...,
-             1.50070578e-13,  9.20578923e-14,  2.43992399e-14],
-           [ 1.55275532e-10,  1.03844161e-12,  3.54459904e-13, ...,
-             3.68982037e-12,  3.56455336e-12,  1.13760471e-12]],
+           [-5.20857673e-13, -1.52439245e-14,  4.00027462e-13, ...,
+             2.06741446e-13,  1.50931579e-13,  2.86952483e-14],
+           [ 3.73921061e-13,  1.26075009e-13,  2.95326787e-13, ...,
+             1.57826363e-13,  1.00218770e-13,  1.64848377e-14],
+           [ 5.78353565e-12,  1.42370570e-12,  8.56295192e-13, ...,
+             1.43029636e-12,  2.59859922e-12,  4.74101464e-13]],
 
-          [[-1.57582224e-15,  7.94066635e-16,  5.89861365e-17, ...,
-            -4.62387972e-16, -2.30126390e-16, -1.62251282e-17],
-           [-8.62499364e-17,  7.04752210e-18, -1.16975043e-17, ...,
-            -2.20598610e-16, -4.20848181e-17,  2.84409967e-17],
-           [-3.81613074e-16, -1.57422389e-16, -1.75463320e-16, ...,
-            -1.05338995e-16,  5.07131854e-17,  3.17277987e-17],
+          [[ 1.77456832e-13,  1.94854295e-15,  2.36856727e-16, ...,
+            -5.90813432e-16, -1.69699442e-16, -2.46868382e-18],
+           [ 2.29235746e-15,  1.74183414e-16,  3.20990059e-17, ...,
+            -2.75133740e-16, -4.30509547e-17,  6.18666243e-18],
+           [-2.58931990e-16, -1.31628039e-16, -1.74419714e-16, ...,
+            -1.29312051e-16,  5.40659671e-17,  2.76817635e-17],
   ...
-            -1.06139133e-01, -5.89503071e-02, -2.82537771e-03],
-           [ 2.19256251e-02,  5.37677541e-02,  1.54045950e-01, ...,
-            -1.42429737e-01, -8.40171374e-02, -1.77057669e-02],
-           [ 3.00675978e-02,  1.33747633e-01,  1.68770428e-01, ...,
-            -5.80609669e-01, -6.60618429e-01, -1.66439518e-01]],
+            -8.76047827e-02, -7.08657326e-02, -4.26281873e-03],
+           [ 3.68857972e-02,  7.65886247e-02,  1.42783786e-01, ...,
+            -1.49433541e-01, -1.35715431e-01, -3.45080783e-02],
+           [ 6.47769550e-01,  2.44589552e-01,  6.52852535e-02, ...,
+            -1.24548748e+00, -1.51053291e+00, -2.01714542e+00]],
 
-          [[ 4.17373552e+04,  2.09065333e+02, -9.76825684e+02, ...,
-            -1.28216532e+02,  1.71837623e+00,  4.31103946e+01],
-           [-2.93008715e+03,  7.11710628e+00, -1.01724115e+02, ...,
-            -6.20758322e+01,  9.13663481e+00,  1.36380515e+01],
-           [-1.09998918e+03,  2.26276463e+02,  4.07861200e+01, ...,
-            -1.04312195e+02,  3.29122051e+00,  4.36424921e+00],
+          [[-2.46487479e+05, -7.70197100e+03, -1.48352115e+03, ...,
+            -5.62920511e+02,  2.06163418e+01,  2.65146486e+02],
+           [-6.98709500e+03, -2.50277400e+02, -8.20395391e+01, ...,
+            -9.74554130e+01,  2.23463848e+01,  5.64829785e+01],
+           [-5.55442546e+02,  2.16609203e+02,  9.82118350e+01, ...,
+            -8.63111056e+01,  2.58230710e+01,  8.99918579e+00],
            ...,
-           [-5.43061560e+01,  8.03595023e+01,  2.24396495e+02, ...,
-            -9.05765594e+01, -5.03067611e+01, -2.41110875e+00],
-           [ 1.87107962e+01,  4.58840961e+01,  1.31459075e+02, ...,
-            -1.21546080e+02, -7.16981856e+01, -1.51096718e+01],
-           [ 2.56589591e+01,  1.14136984e+02,  1.44024588e+02, ...,
-            -4.95478198e+02, -5.63755732e+02, -1.42035453e+02]]]],
+           [-4.82009730e+01,  6.85756187e+01,  2.69693293e+02, ...,
+            -7.47597950e+01, -6.04750960e+01, -3.63778599e+00],
+           [ 3.14774441e+01,  6.53588732e+01,  1.21848217e+02, ...,
+            -1.27522956e+02, -1.15816254e+02, -2.94483565e+01],
+           [ 5.52790817e+02,  2.08726788e+02,  5.57128509e+01, ...,
+            -1.06286879e+03, -1.28905211e+03, -1.72138320e+03]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -35811,7 +35982,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76f29c5180b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x724b0e3a8890>
     ```
 - [x] Attributes: (4)
 
@@ -35842,7 +36013,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8958
+Rigid + B-spline final metric: -0.8928
 ```
 
 ```python
@@ -35928,7 +36099,11 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 73.3 s
+**Total running time:** 77.4 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `load` `VolumePlotter` `plot_composite` `plot_volume` `invert_displacement_field` `sample_displacement_field_like` `RegistrationDiagnostics` `register_volume`
 
 [^/pr-preview/pr-519/examples/_built/registration/register_volume_same_subject/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -36292,7 +36467,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d40e02eda90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x728b89bfd810>
     ```
 - [ ] Attributes: (21)
 
@@ -36499,7 +36674,11 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 35.1 s
+**Total running time:** 29.4 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `load` `VolumePlotter` `plot_motion_diagnostics` `register_volumewise` `FUSIAccessor` `FUSIAccessor.scale`
 
 [^/pr-preview/pr-519/examples/_built/registration/volumewise_motion_correction/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
@@ -36538,6 +36717,7 @@ Current development version for the next ConfUSIus release.
 
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Each example page lists the ConfUSIus functions and classes it uses, linked to the API reference, and each API entry lists the examples that use it ([\#519](<https://github.com/confusius-tools/confusius/pull/519>)).
 
 ### 🔧 Maintenance
 
@@ -37039,6 +37219,7 @@ The gallery is built by [zallery](<https://github.com/confusius-tools/zallery>) 
 - Pass the background to the plotting functions rather than relying on their `"black"` default: `bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])`. A figure left on pure black (the registration progress plot, a plotting call that makes its own figure without `bg_color`) is themed as a whole for both pages, pure-white data colors included.
 - Leave `cmap` unset on `plot_stat_map` and `plot_matrix` so the library's background-aware default applies.
 - For brand-colored lines, draw with the light-page variants `#d93a54` (red) and `#27906d` (turquoise); the dark rendering switches them to `#e94b5f` and `#3ad9a4`. Default-cycle colors switch to Matplotlib's `dark_background` cycle, also in scatter plots and filled areas and when named explicitly (`"tab:blue"`), and `inferno_r` becomes `inferno`. These pairs are the data of the `Figures` class in `tools/gallery.py`, a zallery [integration class](<https://github.com/confusius-tools/zallery/blob/main/docs/user-guide/integrations.md>); editing it invalidates the gallery cache.
+- Nothing to write for the API links: each example page ends with the ConfUSIus functions and classes its cells use, linked to the API reference, and each of those API entries lists the example back under "Used in the examples". Only objects held by a name in a cell are found, so a method called on the result of another call (`cf.load(path).mean()`) is not listed.
 
 ### Reporting Issues
 

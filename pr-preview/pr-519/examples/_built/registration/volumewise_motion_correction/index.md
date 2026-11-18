@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d40e02eda90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x728b89bfd810>
     ```
 - [ ] Attributes: (21)
 
@@ -565,7 +565,11 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 35.1 s
+**Total running time:** 29.4 s
+
+## API used in this example
+
+`fetch_cybis_pereira_2026` `load` `VolumePlotter` `plot_motion_diagnostics` `register_volumewise` `FUSIAccessor` `FUSIAccessor.scale`
 
 [^/pr-preview/pr-519/examples/_built/registration/volumewise_motion_correction/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

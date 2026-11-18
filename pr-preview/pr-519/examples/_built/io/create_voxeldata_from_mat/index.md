@@ -333,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e884e088510>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c30cea0770>
     ```
   - time
 
@@ -614,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e88403dc050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c304208d70>
     ```
 - [ ] Attributes: (6)
 
@@ -686,7 +686,11 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 45.5 s
+**Total running time:** 38.6 s
+
+## API used in this example
+
+`gamma_hrf` `FirstLevelModel` `FirstLevelModel.compute_contrast` `FirstLevelModel.fit` `VolumePlotter` `smooth_volume` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.plot` `FUSIAccessor.register` `create_voxeldata`
 
 [^/pr-preview/pr-519/examples/_built/io/create_voxeldata_from_mat/#collection]: This example downloads an external archive, not a collection release. See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for the fUSI-BIDS studies and templates hosted by ConfUSIus.
 

@@ -61,7 +61,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26137/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_23634/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -329,7 +329,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79fdeea10e30>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x783594af5250>
     ```
   - region
 
@@ -452,7 +452,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x79fdeea04050\>
+  \<matplotlib.colors.Normalize object at 0x783594b906e0\>
 
 ## Plot the seed maps
 
@@ -488,6 +488,10 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.1 s
+**Total running time:** 11.8 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.get_masks` `AtlasAccessor.resample_like` `SeedBasedMaps` `SeedBasedMaps.fit` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `load` `VolumePlotter` `VolumePlotter.add_contours` `plot_stat_map` `RegistrationDiagnostics` `register_volume` `compute_compcor_confounds` `smooth_volume` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/connectivity/atlas_seed_map/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

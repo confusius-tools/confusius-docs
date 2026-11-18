@@ -338,7 +338,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74016f0cd6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77c7ec2d5450>
     ```
 - [ ] Attributes: (25)
 
@@ -730,7 +730,11 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 227.6 s
+**Total running time:** 178.9 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `PCA` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/pca_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

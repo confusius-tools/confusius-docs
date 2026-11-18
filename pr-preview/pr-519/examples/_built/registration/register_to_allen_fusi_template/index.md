@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e5a92868050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b00d9872b10>
     ```
 - [ ] Attributes: (27)
 
@@ -490,6 +490,10 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 87.6 s
+**Total running time:** 91.3 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.resample_like` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `get_datasets_dir` `load_atlas` `save_atlas` `load` `VolumePlotter` `VolumePlotter.add_contours` `plot_composite` `plot_volume` `RegistrationDiagnostics` `resample_like` `register_volume` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/registration/register_to_allen_fusi_template/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

@@ -206,7 +206,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c029f2d4b90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x776d4c65c910>
     ```
 - [ ] Attributes: (5)
 
@@ -614,6 +614,10 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 24.3 s
+**Total running time:** 24.5 s
+
+## API used in this example
+
+`fetch_template_pepe_mariani_2026` `VolumePlotter` `FUSIAccessor` `FUSIAccessor.affine` `FUSIAccessor.flip` `FUSIAccessor.origin` `FUSIAccessor.plot` `FUSIAccessor.rotate` `FUSIAccessor.translate` `FUSIAccessor.zoom`
 
 [^/pr-preview/pr-519/examples/_built/io/transforms_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24611/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_22110/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f58939ef790>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c01139df790>
     ```
 - [ ] Attributes: (27)
 
@@ -686,6 +686,10 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.5 s
+**Total running time:** 10.8 s
+
+## API used in this example
+
+`AtlasAccessor` `AtlasAccessor.get_masks` `AtlasAccessor.lookup` `AtlasAccessor.resample_like` `ConnectivityMatrix` `fetch_brainglobe_atlas` `fetch_nunez_elizalde_2022` `fetch_template_pepe_mariani_2026` `extract_with_labels` `load` `plot_matrix` `RegistrationDiagnostics` `register_volume` `compute_compcor_confounds` `clean` `resample_to_uniform_time` `FUSIAccessor` `FUSIAccessor.origin`
 
 [^/pr-preview/pr-519/examples/_built/connectivity/atlas_correlation_matrix/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

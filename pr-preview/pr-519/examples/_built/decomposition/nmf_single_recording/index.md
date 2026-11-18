@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bcac3ce96d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76713e909450>
     ```
 - [ ] Attributes: (25)
 
@@ -730,7 +730,11 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 245.4 s
+**Total running time:** 188.5 s
+
+## API used in this example
+
+`fetch_nunez_elizalde_2022` `_BaseFUSIDecomposer.fit_transform` `NMF` `load` `plot_stat_map` `register_volumewise` `standardize`
 
 [^/pr-preview/pr-519/examples/_built/decomposition/nmf_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-519/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
