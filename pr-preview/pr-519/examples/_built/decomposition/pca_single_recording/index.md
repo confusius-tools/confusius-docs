@@ -338,7 +338,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77c7ec2d5450>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7da45cee1590>
     ```
 - [ ] Attributes: (25)
 
@@ -730,7 +730,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 178.9 s
+**Total running time:** 227.4 s
 
 ## API used in this example
 

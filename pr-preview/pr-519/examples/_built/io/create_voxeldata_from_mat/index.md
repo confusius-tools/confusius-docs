@@ -333,7 +333,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c30cea0770>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75d21fa8c770>
     ```
   - time
 
@@ -614,7 +614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79c304208d70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75d208cb4e30>
     ```
 - [ ] Attributes: (6)
 
@@ -686,7 +686,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 38.6 s
+**Total running time:** 45.4 s
 
 ## API used in this example
 

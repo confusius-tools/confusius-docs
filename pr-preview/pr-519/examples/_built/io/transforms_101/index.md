@@ -206,7 +206,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x776d4c65c910>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74c07df6ca50>
     ```
 - [ ] Attributes: (5)
 
@@ -614,7 +614,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 24.5 s
+**Total running time:** 25.0 s
 
 ## API used in this example
 

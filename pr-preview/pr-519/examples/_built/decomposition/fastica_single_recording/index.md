@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79748974d450>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7461409f1590>
     ```
 - [ ] Attributes: (25)
 
@@ -444,7 +444,7 @@ xarray.DataArray
 
   {'world\_to\_sform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\]), 'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\])}
 
-# Correct for brain motion
+## Correct for brain motion
 
 This recording contains some brain motion, which we can mitigate by performing a rigid transform correction with `register_volumewise`. This is the same preprocessing step used in the [PCA example](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/pca_single_recording/#correct-for-brain-motion>), and it helps avoid components dominated by motion artefacts.
 
@@ -710,7 +710,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 181.8 s
+**Total running time:** 232.6 s
 
 ## API used in this example
 

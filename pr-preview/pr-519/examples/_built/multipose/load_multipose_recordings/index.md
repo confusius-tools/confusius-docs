@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c4e3193d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77868733d570>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x731c3cb29b50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x778670b420f0>
     ```
 - [ ] Attributes: (25)
 
@@ -844,7 +844,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.7 s
+**Total running time:** 13.2 s
 
 ## API used in this example
 

@@ -336,7 +336,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc4417a20d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79f54f092210>
     ```
 - [ ] Attributes: (21)
 
@@ -733,7 +733,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc434266970>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79f541b5de10>
     ```
 - [ ] Attributes: (23)
 
@@ -897,7 +897,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 68.2 s
+**Total running time:** 67.3 s
 
 ## API used in this example
 

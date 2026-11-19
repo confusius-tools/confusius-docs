@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x728b89bfd810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b69fd2d1950>
     ```
 - [ ] Attributes: (21)
 
@@ -565,7 +565,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 29.4 s
+**Total running time:** 35.2 s
 
 ## API used in this example
 

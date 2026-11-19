@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b00d9872b10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7311d7908640>
     ```
 - [ ] Attributes: (27)
 
@@ -490,7 +490,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 91.3 s
+**Total running time:** 89.0 s
 
 ## API used in this example
 

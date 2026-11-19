@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd4ab42900>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79a54d9da120>
     ```
 - [ ] Attributes: (25)
 
@@ -686,7 +686,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd70cb2350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79a574eca490>
     ```
 - [ ] Attributes: (25)
 
@@ -1046,7 +1046,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dfd1d9dc050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79a520ab2850>
     ```
 - [ ] Attributes: (25)
 
@@ -1393,7 +1393,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.1 s
+**Total running time:** 8.5 s
 
 ## API used in this example
 

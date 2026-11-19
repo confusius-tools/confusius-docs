@@ -359,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a25b14bd450>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71a2543e9590>
     ```
 - [ ] Attributes: (21)
 
@@ -594,7 +594,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 25.6 s
+**Total running time:** 22.2 s
 
 ## API used in this example
 

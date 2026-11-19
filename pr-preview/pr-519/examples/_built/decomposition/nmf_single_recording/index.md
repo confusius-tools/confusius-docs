@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76713e909450>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c7c802cd590>
     ```
 - [ ] Attributes: (25)
 
@@ -436,7 +436,7 @@ xarray.DataArray
 
   {'world\_to\_sform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\]), 'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\])}
 
-# Correct for brain motion
+## Correct for brain motion
 
 As in the [PCA](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/pca_single_recording/#correct-for-brain-motion>) and [FastICA](<https://confusius.tools/pr-preview/pr-519/examples/_built/decomposition/fastica_single_recording/#correct-for-brain-motion>) examples, we first perform a rigid transformation correction with `register_volumewise` to mitigate brain motion.
 
@@ -730,7 +730,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 188.5 s
+**Total running time:** 245.2 s
 
 ## API used in this example
 

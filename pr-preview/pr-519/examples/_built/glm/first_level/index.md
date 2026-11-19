@@ -330,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7a03ea2be140>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x71c774a1a610>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -345,7 +345,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...40\>, beta=6.7) |
+|  | hrf\_model | functools.par...10\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -364,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7a03ec015590\>, \<confusius.gl...x7a03ec006520\>, \<confusius.gl...x7a04011c8050\>, \<confusius.gl...x7a03fce7f790\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x71c775a6ae90\>, \<confusius.gl...x71c775be3490\>, \<confusius.gl...x71c7687bc3b0\>, \<confusius.gl...x71c774bdcaf0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -476,7 +476,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 109.3 s
+**Total running time:** 97.5 s
 
 ## API used in this example
 

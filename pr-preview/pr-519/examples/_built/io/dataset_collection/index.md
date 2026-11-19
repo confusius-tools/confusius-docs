@@ -115,7 +115,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.7 s
+**Total running time:** 5.0 s
 
 ## API used in this example
 
