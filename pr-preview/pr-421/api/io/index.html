@@ -5650,7 +5650,20 @@ returned array is computed, so the file must still exist at that point.</p>
 )
           –
           <div class="doc-md-description">
-            <p>How to chunk the array. See <code>load_nifti</code> for the accepted forms.</p>
+            <p>How to chunk the array. Must be one of the following forms.</p>
+<ul>
+<li>A blocksize like <code>1000</code>.</li>
+<li>A blockshape like <code>(1000, 1000)</code>.</li>
+<li>Explicit sizes of all blocks along all dimensions like <code>((1000, 1000,
+  500), (400, 400))</code>.</li>
+<li>A size in bytes, like <code>"100 MiB"</code> which will choose a uniform block-like
+  shape.</li>
+<li>The word <code>"auto"</code> to let Dask choose chunk sizes based on heuristics. See
+  <code>dask.array.normalize_chunks</code> for more details on how chunk sizes are
+  determined.</li>
+<li><code>-1</code> or <code>None</code> as a blocksize indicate the size of the corresponding
+  dimension.</li>
+</ul>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5660,8 +5673,15 @@ returned array is computed, so the file must still exist at that point.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Header affine to use as the primary coordinate-defining geometry. See
-<code>load_nifti</code> for the selection rules.</p>
+            <p>Header affine to use as the primary coordinate-defining geometry.</p>
+<ul>
+<li><code>"auto"</code> prefers sform when both sform and qform are valid, and falls
+  back to qform when only qform is valid.</li>
+<li><code>"sform"</code> forces the sform to define the in-memory coordinate geometry.</li>
+<li><code>"qform"</code> forces the qform to define the in-memory coordinate geometry.</li>
+</ul>
+<p>The non-selected valid header affine is still preserved in
+<code>data_array.attrs["affines"]</code> as a world-to-world transform.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5706,12 +5726,27 @@ plus optional <code>time</code>) and world coordinates <code>z</code>, <code>y</
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If the chunk specification, requested coordinate affine, or reconstructed
-VoxelData geometry is invalid.</p>
+            <p>If the chunk specification or reconstructed VoxelData geometry is invalid,
+or if <code>coordinate_affine</code> is <code>"sform"</code> or <code>"qform"</code> and that form's code is
+zero in the header.</p>
           </div>
         </li>
     </ul>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>When both <code>sform_code</code> and <code>qform_code</code> are 0, the header stores no orientation.
+Following the
+<a href="https://github.com/NIFTI-Imaging/nifti_clib/blob/master/niftilib/nifti1.h">NIfTI-1 standard</a>
+("method 1"), the voxel-to-world affine is then built from the voxel sizes alone:
+the first voxel sits at the origin and no axis is rotated or flipped. A warning is
+emitted. NiBabel's <code>img.affine</code>, used by nilearn and other NiBabel-based tools,
+follows SPM instead: it puts the central voxel at the origin and negates the x axis
+(<a href="https://nipy.org/nibabel/nifti_images.html#the-fall-back-header-affine">NiBabel's fall-back affine</a>).
+World coordinates from ConfUSIus and from those tools therefore differ for such
+images.</p>
+</details>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="language-pycon highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">nibabel</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nib</span>
@@ -5744,7 +5779,8 @@ VoxelData geometry is invalid.</p>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sform&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.io.convert_to_nifti(sform)&lt;/code&gt;)" href="./#confusius.io.convert_to_nifti(sform)">sform</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;qform_code&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.io.convert_to_nifti(qform_code)&lt;/code&gt;)" href="./#confusius.io.convert_to_nifti(qform_code)">qform_code</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;sform_code&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.io.convert_to_nifti(sform_code)&lt;/code&gt;)" href="./#confusius.io.convert_to_nifti(sform_code)">sform_code</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><span title="nibabel.nifti1.Nifti1Image">Nifti1Image</span></span> <span class="o">|</span> <span class="n"><span title="nibabel.nifti2.Nifti2Image">Nifti2Image</span></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#dict">dict</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Any&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n"><a class="autorefs autorefs-internal" title="&lt;b&gt;&lt;code&gt;copy&lt;/code&gt;&lt;/b&gt; (&lt;code&gt;confusius.io.convert_to_nifti(copy)&lt;/code&gt;)" href="./#confusius.io.convert_to_nifti(copy)">copy</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><span title="nibabel.nifti1.Nifti1Image">Nifti1Image</span></span> <span class="o">|</span> <span class="n"><span title="nibabel.nifti2.Nifti2Image">Nifti2Image</span></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#dict">dict</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" title="&lt;code&gt;typing.Any&lt;/code&gt;" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]]</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
@@ -5787,8 +5823,12 @@ larger files and arrays with dimension sizes greater than 32,767.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Key in <code>data_array.attrs["affines"]</code> to write into the NIfTI qform. See
-<code>save_nifti</code> for the fallback and shear-handling rules.</p>
+            <p>Key in <code>data_array.attrs["affines"]</code> to write into the NIfTI qform. When not
+provided, <code>"world_to_qform"</code> is used if present; otherwise qform falls back
+to the coordinate-defining voxel geometry (<code>voxel_to_world</code>) directly.</p>
+<p>If the coordinate-defining affine contains shear, qform writing is disabled
+because the NIfTI qform cannot represent shear. In that case, the geometry is
+written to sform instead.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5798,8 +5838,10 @@ larger files and arrays with dimension sizes greater than 32,767.</p>
 )
           –
           <div class="doc-md-description">
-            <p>Key in <code>data_array.attrs["affines"]</code> to write into the NIfTI sform. See
-<code>save_nifti</code> for the fallback rules.</p>
+            <p>Key in <code>data_array.attrs["affines"]</code> to write into the NIfTI sform. When not
+provided, <code>"world_to_sform"</code> is used if present; otherwise sform also falls
+back to <code>voxel_to_world</code> directly (like qform), unless disabled via
+<code>sform_code=0</code> or <code>attrs["sform_code"] = 0</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5809,7 +5851,10 @@ larger files and arrays with dimension sizes greater than 32,767.</p>
 )
           –
           <div class="doc-md-description">
-            <p>NIfTI qform code to write. See <code>save_nifti</code> for the default rules.</p>
+            <p>NIfTI qform code to write. When provided, takes precedence over
+<code>data_array.attrs["qform_code"]</code>. When not provided, the value from
+<code>attrs["qform_code"]</code> is used if present; otherwise defaults to <code>2</code>
+(<code>NIFTI_XFORM_ALIGNED_ANAT</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -5819,7 +5864,22 @@ larger files and arrays with dimension sizes greater than 32,767.</p>
 )
           –
           <div class="doc-md-description">
-            <p>NIfTI sform code to write. See <code>save_nifti</code> for the default rules.</p>
+            <p>NIfTI sform code to write. When provided, takes precedence over
+<code>data_array.attrs["sform_code"]</code>. When not provided, the value from
+<code>attrs["sform_code"]</code> is used if present; otherwise defaults to <code>2</code>
+(<code>NIFTI_XFORM_ALIGNED_ANAT</code>).</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h4 id="confusius.io.convert_to_nifti(copy)" class="doc doc-heading doc-heading-parameter">              <b><code>copy</code></b>
+<a href="#confusius.io.convert_to_nifti(copy)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#bool">bool</a></code>, default:
+                  <code>False</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>Whether to copy the data into the returned image. If not copied, the image's
+data shares memory with a NumPy-backed <code>data_array</code>, so editing it in place
+(e.g. through <code>img.dataobj</code> or <code>img.get_fdata()</code>) also modifies <code>data_array</code>.</p>
           </div>
         </li>
     </ul>

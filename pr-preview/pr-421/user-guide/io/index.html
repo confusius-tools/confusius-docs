@@ -4291,6 +4291,20 @@ requirements, including equal time lengths and compatible voxel grids.</p>
 timing. Chunk indices come from the <code>pose</code> labels, which must be unique
 non-negative integers. Without <code>{chunk}</code>, select a single pose before saving to
 NIfTI, since one file cannot represent distinct per-pose affines.</p>
+<div class="admonition note">
+<p class="admonition-title">Headers without orientation</p>
+<p>When both <code>sform_code</code> and <code>qform_code</code> are 0, a NIfTI header stores no
+orientation. When loading such a file, or converting such a NiBabel image with
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_from_nifti&lt;/span&gt;" href="../../api/io/#confusius.io.convert_from_nifti"><code>convert_from_nifti</code></a>, ConfUSIus follows the
+<a href="https://github.com/NIFTI-Imaging/nifti_clib/blob/master/niftilib/nifti1.h">NIfTI-1 standard</a>
+and builds the voxel-to-world affine from the voxel sizes alone: the first voxel
+sits at the origin and no axis is rotated or flipped. A warning is emitted.
+NiBabel's <code>img.affine</code>, used by nilearn and other NiBabel-based tools, follows SPM
+instead: it puts the central voxel at the origin and negates the x axis (see
+<a href="https://nipy.org/nibabel/nifti_images.html#the-fall-back-header-affine">NiBabel's fall-back affine</a>).
+World coordinates from ConfUSIus and from those tools therefore differ for such
+files.</p>
+</div>
 <h3 id="loading-other-formats">Loading Other Formats<a class="headerlink" href="#loading-other-formats" title="Permanent link">&para;</a></h3>
 <p>For unsupported formats, such as lab-specific MAT-files, load the array with the
 appropriate Python tool and use <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>

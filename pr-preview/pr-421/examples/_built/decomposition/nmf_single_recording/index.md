@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76d9aa27b610>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d981ec0b750>
     ```
 - [ ] Attributes: (25)
 

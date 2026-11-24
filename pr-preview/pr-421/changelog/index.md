@@ -25,6 +25,7 @@ Current development version for the next ConfUSIus release.
 
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
+- `load_nifti` and `convert_from_nifti` declare the dtype of scaled values (`scl_slope`/`scl_inter`) and size `"auto"` chunks for it ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 📚 Documentation
 
@@ -46,6 +47,7 @@ Current development version for the next ConfUSIus release.
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Align the layer selectors in **Data I/O** with the output path on macOS ([\#592](<https://github.com/confusius-tools/confusius/pull/592>)).
 
 ## 0.9.0
 

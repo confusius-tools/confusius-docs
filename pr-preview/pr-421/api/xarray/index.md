@@ -623,6 +623,7 @@ to_nifti(
     sform: str | None = None,
     qform_code: int | None = None,
     sform_code: int | None = None,
+    copy: bool = False,
 ) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
 ```
 
@@ -659,6 +660,11 @@ Parameters:
   (`int`, default: `None` ) –
 
   NIfTI sform code to write. Takes precedence over `attrs["sform_code"]`. If not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`copy`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to copy the data into the returned image. If not copied, the image's data shares memory with a NumPy-backed array, so editing it in place (e.g. through `img.dataobj` or `img.get_fdata()`) also modifies the array.
 
 Returns:
 
