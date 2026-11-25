@@ -35,7 +35,7 @@ Only the trailing `(k, j, i)` order is required. Leading dimensions have these u
 
 `create_voxeldata` preserves the relative order of leading dimensions. Both `(time, pose, k, j, i)` and `(pose, time, k, j, i)` are valid, as are arrays with extra leading dimensions. Validation checks validity without changing the order.
 
-When a stable order is useful, ConfUSIus's `canonicalize_voxeldata` uses `(...extra_dims, pose, time, k, j, i)` and defaults and validates fUSI acquisition metadata and validates the result. Generic `data.vd.canonicalize()` uses `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
+When a stable order is useful, ConfUSIus's `canonicalize_voxeldata` places extra axes first, keeps `time` and `pose` in their input order, and places `(k, j, i)` last. It also fills in and validates acquisition metadata. Generic `data.vd.canonicalize()` uses `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
 
 Keeping spatial dimensions last has practical benefits:
 
@@ -66,7 +66,7 @@ Additionally, the `VoxelToWorldIndex` attached to `(z, y, x)` carries its own `u
 
 To build a VoxelData array from raw arrays (NumPy, CuPy, etc.), use `create_voxeldata`. If you then modified a VoxelData array and want to check that it still satisfies the VoxelData model, use `validate_voxeldata`.
 
-All ConfUSIus functions that expect a VoxelData array call `canonicalize_voxeldata` on their input, which canonicalizes the DataArray first—reordering dimensions to `(...extra, pose, time, k, j, i)`, restoring a voxel dimension collapsed to a scalar coordinate by a prior `.isel`, and filling in missing `time` metadata with sensible defaults—before validating.
+ConfUSIus consumers use `canonicalize_voxeldata` to restore voxel dimensions collapsed by `.isel`, fill in missing acquisition metadata, and validate the array. Canonicalization preserves the relative order of the acquisition axes.
 
 ## Temporal Conventions
 

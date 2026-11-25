@@ -4689,13 +4689,16 @@ Raises:
 
 ```python
 canonicalize_voxeldata(
-    data: DataArray, **validate_kwargs: Any
+    data: DataArray,
+    *,
+    preserve_dim_order: bool = False,
+    **validate_kwargs: Any,
 ) -> DataArray
 ```
 
 Return a canonical, validated VoxelData array.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored. The normalized result is validated with validate\_voxeldata.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then by default orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored. The normalized result is validated with validate\_voxeldata.
 
 Parameters:
 
@@ -4704,6 +4707,11 @@ Parameters:
   (`DataArray`) –
 
   DataArray to canonicalize and validate.
+- ### **`preserve_dim_order`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to keep the input order of all leading dimensions and retain coordinates' own dimension order. Native voxel axes are always placed last.
 - ### **`**validate_kwargs`**
 
   (`Any`, default: `{}` ) –

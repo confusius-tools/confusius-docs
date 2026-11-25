@@ -206,7 +206,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f65923bd450>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7234a3605d10>
     ```
 - [ ] Attributes: (4)
 
@@ -610,7 +610,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 30.8 s
+**Total running time:** 30.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101.ipynb>)
 

@@ -59,41 +59,28 @@ multipose
 
 ```text
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-1_pwd.nii.gz
-sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-3_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
+sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
 ```
 
 xarray.DataArray
 
 'sub-cp230420a\_ses-1MEDISOses5\_task-rest\_acq-3dfusi\_probe-linear\_chunk-0\_pwd'
 
-- pose: 4
 - time: 1500
+- pose: 4
 - k: 1
 - j: 82
 - i: 128
 
 - [ ]
 
-  dask.array\<chunksize=(1, 1500, 1, 82, 128), meta=np.ndarray\>
+  dask.array\<chunksize=(1500, 1, 1, 82, 128), meta=np.ndarray\>
 
-  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 480.47 MiB </td>                         <td> 120.12 MiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (4, 1500, 1, 82, 128) </td>                         <td> (1, 1500, 1, 82, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 4 chunks in 17 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> float64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 480.47 MiB </td>                         <td> 120.12 MiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1500, 4, 1, 82, 128) </td>                         <td> (1500, 1, 1, 82, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 4 chunks in 18 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> float64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
 - [x] Coordinates: (8)
 
-  - pose
-
-    (pose)
-
-    int64
-
-    0 1 2 3
-
-    ☐ ☐
-
-    ```
-    array([0, 1, 2, 3])
-    ```
   - time
 
     (time, pose)
@@ -124,6 +111,19 @@ xarray.DataArray
            [3.5928e+03, 3.5934e+03, 3.5940e+03, 3.5946e+03],
            [3.5952e+03, 3.5958e+03, 3.5964e+03, 3.5970e+03],
            [3.5976e+03, 3.5982e+03, 3.5988e+03, 3.5994e+03]], shape=(1500, 4))
+    ```
+  - pose
+
+    (pose)
+
+    int64
+
+    0 1 2 3
+
+    ☐ ☐
+
+    ```
+    array([0, 1, 2, 3])
     ```
   - k
 
@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f1c4189c590>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7da2ab7a6f90>
     ```
 - [ ] Attributes: (24)
 
@@ -724,7 +724,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f1c2fe822e0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7da2a065b930>
     ```
 - [ ] Attributes: (24)
 
@@ -839,7 +839,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 18.0 s
+**Total running time:** 17.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/02_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/multipose/load_multipose_recordings.ipynb>)
 

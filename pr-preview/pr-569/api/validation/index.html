@@ -3915,7 +3915,8 @@
 <p>Scalar indexing such as <code>data.isel(j=0)</code> removes <code>j</code> from the array dimensions
 but retains it as a scalar coordinate. This function restores every missing
 native voxel dimension (<code>k</code>, <code>j</code>, <code>i</code>) as a length-one dimension, then orders all
-dimensions as <code>(...extra_dims, pose, time, k, j, i)</code>. It preserves coordinate
+extra dimensions first, followed by the input order of <code>time</code> and <code>pose</code>,
+then <code>(k, j, i)</code>. It preserves coordinate
 values and their order. When scalar indexing fixed a dimension in a
 <code>VoxelToWorldIndex</code>, its geometry is rebuilt from the unchanged voxel-to-world
 affine, preserving the world-space units. Missing time acquisition metadata

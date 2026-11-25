@@ -3831,9 +3831,9 @@ order of leading dimensions. Both <code>(time, pose, k, j, i)</code> and
 <code>(pose, time, k, j, i)</code> are valid, as are arrays with extra leading dimensions.
 Validation checks validity without changing the order.</p>
 <p>When a stable order is useful, ConfUSIus's
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.canonicalize_voxeldata"><code>canonicalize_voxeldata</code></a> uses
-<code>(...extra_dims, pose, time, k, j, i)</code> and defaults and validates <abbr title="Functional Ultrasound Imaging">fUSI</abbr> acquisition
-metadata and validates the result. Generic <code>data.vd.canonicalize()</code> uses
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.canonicalize_voxeldata"><code>canonicalize_voxeldata</code></a> places
+extra axes first, keeps <code>time</code> and <code>pose</code> in their input order, and places
+<code>(k, j, i)</code> last. It also fills in and validates acquisition metadata. Generic <code>data.vd.canonicalize()</code> uses
 <code>(...extra_dims, time, k, j, i)</code>; <code>pose</code> has no special meaning in VoxelData.
 Both preserve the relative order of extra dimensions and restore scalar-selected
 spatial dimensions without inserting absent nonspatial dimensions. Affine stacks
@@ -3907,12 +3907,11 @@ when correctness matters.</p>
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;create_voxeldata&lt;/span&gt;" href="../../api/xarray/#confusius.xarray.create_voxeldata"><code>create_voxeldata</code></a>. If you then modified a
 VoxelData array and want to check that it still satisfies the VoxelData model, use
 <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;validate_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.validate_voxeldata"><code>validate_voxeldata</code></a>.</p>
-<p>All ConfUSIus functions that expect a VoxelData array call
-<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.canonicalize_voxeldata"><code>canonicalize_voxeldata</code></a> on their input, which
-canonicalizes the DataArray first—reordering dimensions to <code>(...extra, pose, time, k,
-j, i)</code>, restoring a voxel dimension collapsed to a scalar coordinate by a prior
-<a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.isel.html#xarray.DataArray.isel"><code>.isel</code></a>, and filling in missing <code>time</code> metadata with sensible
-defaults—before validating.</p>
+<p>ConfUSIus consumers use
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;canonicalize_voxeldata&lt;/span&gt;" href="../../api/validation/#confusius.validation.canonicalize_voxeldata"><code>canonicalize_voxeldata</code></a> to restore voxel
+dimensions collapsed by <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.isel.html#xarray.DataArray.isel"><code>.isel</code></a>, fill in missing acquisition
+metadata, and validate the array. Canonicalization preserves the relative order of the
+acquisition axes.</p>
 <h2 id="temporal-conventions">Temporal Conventions<a class="headerlink" href="#temporal-conventions" title="Permanent link">&para;</a></h2>
 <p>The <code>time</code> coordinate marks when each volume was acquired, in the units named by its
 <code>units</code> attribute (seconds, typically). Because a volume is acquired over a nonzero

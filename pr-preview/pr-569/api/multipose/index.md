@@ -200,7 +200,7 @@ Parameters:
 
   (`sequence[hashable]`, default: `None` ) –
 
-  Pose coordinate labels, one per entry of `poses`. If not provided, defaults to `0, 1, ..., len(poses) - 1`.
+  Strictly increasing finite numeric labels, one per entry of `poses`. If not provided, defaults to `0, 1, ..., len(poses) - 1`.
 
 Returns:
 

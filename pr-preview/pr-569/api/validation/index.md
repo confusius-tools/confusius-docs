@@ -80,7 +80,7 @@ canonicalize_voxeldata(
 
 Return a canonical, acquisition-validated VoxelData array.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, pose, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. The result is checked with validate\_voxeldata, including any consumer-specific requirements passed through `validate_kwargs`.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all extra dimensions first, followed by the input order of `time` and `pose`, then `(k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. The result is checked with validate\_voxeldata, including any consumer-specific requirements passed through `validate_kwargs`.
 
 Parameters:
 

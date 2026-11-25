@@ -912,7 +912,7 @@ Only the trailing `(k, j, i)` order is required. Leading dimensions have these u
 
 `create_voxeldata` preserves the relative order of leading dimensions. Both `(time, pose, k, j, i)` and `(pose, time, k, j, i)` are valid, as are arrays with extra leading dimensions. Validation checks validity without changing the order.
 
-When a stable order is useful, ConfUSIus's `canonicalize_voxeldata` uses `(...extra_dims, pose, time, k, j, i)` and defaults and validates fUSI acquisition metadata and validates the result. Generic `data.vd.canonicalize()` uses `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
+When a stable order is useful, ConfUSIus's `canonicalize_voxeldata` places extra axes first, keeps `time` and `pose` in their input order, and places `(k, j, i)` last. It also fills in and validates acquisition metadata. Generic `data.vd.canonicalize()` uses `(...extra_dims, time, k, j, i)`; `pose` has no special meaning in VoxelData. Both preserve the relative order of extra dimensions and restore scalar-selected spatial dimensions without inserting absent nonspatial dimensions. Affine stacks passed directly to VoxelData must always name their `geometry_dims`.
 
 Keeping spatial dimensions last has practical benefits:
 
@@ -943,7 +943,7 @@ Additionally, the `VoxelToWorldIndex` attached to `(z, y, x)` carries its own `u
 
 To build a VoxelData array from raw arrays (NumPy, CuPy, etc.), use `create_voxeldata`. If you then modified a VoxelData array and want to check that it still satisfies the VoxelData model, use `validate_voxeldata`.
 
-All ConfUSIus functions that expect a VoxelData array call `canonicalize_voxeldata` on their input, which canonicalizes the DataArray first—reordering dimensions to `(...extra, pose, time, k, j, i)`, restoring a voxel dimension collapsed to a scalar coordinate by a prior `.isel`, and filling in missing `time` metadata with sensible defaults—before validating.
+ConfUSIus consumers use `canonicalize_voxeldata` to restore voxel dimensions collapsed by `.isel`, fill in missing acquisition metadata, and validate the array. Canonicalization preserves the relative order of the acquisition axes.
 
 ## Temporal Conventions
 
@@ -1312,7 +1312,7 @@ Most geometry-sensitive ConfUSIus functions automatically restore such scalar-in
 
 ## Creating VoxelData arrays from Raw Arrays
 
-Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. Dimensions can be supplied in any order; the result is canonicalized to native `(..., time, pose, k, j, i)` order:
+Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. The constructor preserves leading dimension order and places `(k, j, i)` last. ConfUSIus canonicalization groups extra dimensions first and retains the relative order of `time` and `pose`.
 
 ```python
 import confusius as cf
@@ -1725,7 +1725,7 @@ Multiple fUSI systems support this approach, including Iconeus, EchoFrame, and A
 
 ## The Multi-Pose Data Model
 
-Multi-pose arrays end in `(k, j, i)`, with leading dimensions in any order. Creation preserves that order; ConfUSIus canonicalization uses `(...extra, pose, time, k, j, i)`. Probe geometry uses `geometry_dims=("pose",)` and the flat `.vd` accessor. Unlike an ordinary dimension, pose affects both spatial coordinates and acquisition times:
+Multi-pose arrays end in `(k, j, i)`, with leading dimensions in any order. Creation preserves that order. Canonicalization groups extra dimensions first, then keeps `time` and `pose` in their input order. Stacking separate poses in a time series creates `(...extra, time, pose, k, j, i)`. Probe geometry uses `geometry_dims=("pose",)` and the flat `.vd` accessor. Unlike an ordinary dimension, pose affects both spatial coordinates and acquisition times:
 
 - **Geometry**: Each pose has its own voxel-to-world affine. World coordinates `(z, y,   x)` therefore have dimensions `(pose, k, j, i)`. Select a pose before selecting by world position, for example `data.isel(pose=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-569/user-guide/voxeldata/#the-voxeldata-model>).
 - **Timing**: When poses are acquired sequentially, their timestamps differ. The time coordinate then has dimensions `(time, pose)` rather than `(time,)`. Selecting one pose gives its 1D time coordinate:
@@ -13865,7 +13865,7 @@ Parameters:
 
   (`sequence[hashable]`, default: `None` ) –
 
-  Pose coordinate labels, one per entry of `poses`. If not provided, defaults to `0, 1, ..., len(poses) - 1`.
+  Strictly increasing finite numeric labels, one per entry of `poses`. If not provided, defaults to `0, 1, ..., len(poses) - 1`.
 
 Returns:
 
@@ -19855,7 +19855,7 @@ ensure_time_acquisition_attrs(data: DataArray) -> DataArray
 
 Fill in default metadata attrs on `data`'s `time` coordinate.
 
-Every VoxelData array with a `time` dimension carries `volume_acquisition_reference`, `volume_acquisition_duration`, and `units` on its `time` coordinate. Data built without going through create\_voxeldata or an I/O loader (e.g. a `time` coordinate assembled by hand) may still be missing them; this fills in `"start"` and `"s"`, respectively. `volume_acquisition_duration` is inferred from the representative `time` step.
+Every VoxelData array with a `time` dimension carries `volume_acquisition_reference`, `volume_acquisition_duration`, and `units` on its `time` coordinate. Data built without going through create\_voxeldata or an I/O loader (e.g. a `time` coordinate assembled by hand) may still be missing them; this fills in `"start"` and `"s"`, respectively. `volume_acquisition_duration` is inferred from the representative step for shared time or the smallest positive offset between series at the same time point for dependent timestamps.
 
 Parameters:
 
@@ -20196,7 +20196,7 @@ canonicalize_voxeldata(
 
 Return a canonical, acquisition-validated VoxelData array.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all dimensions as `(...extra_dims, pose, time, k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. The result is checked with validate\_voxeldata, including any consumer-specific requirements passed through `validate_kwargs`.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, then orders all extra dimensions first, followed by the input order of `time` and `pose`, then `(k, j, i)`. It preserves coordinate values and their order. When scalar indexing fixed a dimension in a `VoxelToWorldIndex`, its geometry is rebuilt from the unchanged voxel-to-world affine, preserving the world-space units. Missing time acquisition metadata also defaults where possible. The result is checked with validate\_voxeldata, including any consumer-specific requirements passed through `validate_kwargs`.
 
 Parameters:
 
@@ -25560,13 +25560,16 @@ Raises:
 
 ```python
 canonicalize_voxeldata(
-    data: DataArray, **validate_kwargs: Any
+    data: DataArray,
+    *,
+    preserve_dim_order: bool = False,
+    **validate_kwargs: Any,
 ) -> DataArray
 ```
 
 Return a canonical, validated VoxelData array.
 
-Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored. The normalized result is validated with validate\_voxeldata.
+Scalar indexing such as `data.isel(j=0)` removes `j` from the array dimensions but retains it as a scalar coordinate. This function restores every missing native voxel dimension (`k`, `j`, `i`) as a length-one dimension, rebuilds voxel-to-world geometry from the untouched affine, then by default orders dimensions as `(...extra_dims, time, k, j, i)`. Extra dimensions retain their relative order. Missing nonspatial dimensions are not restored. The normalized result is validated with validate\_voxeldata.
 
 Parameters:
 
@@ -25575,6 +25578,11 @@ Parameters:
   (`DataArray`) –
 
   DataArray to canonicalize and validate.
+- ### **`preserve_dim_order`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to keep the input order of all leading dimensions and retain coordinates' own dimension order. Native voxel axes are always placed last.
 - ### **`**validate_kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -25665,7 +25673,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24696/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24857/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25882,7 +25890,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fc3bf568d10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x745e885399d0>
     ```
 - [ ] Attributes: (26)
 
@@ -26278,7 +26286,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 14.2 s
+**Total running time:** 13.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -26347,7 +26355,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26220/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26384/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26615,7 +26623,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f00eef91390>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x73830c4b1e10>
     ```
   - region
 
@@ -26734,7 +26742,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7f01082d0ad0\>
+  \<matplotlib.colors.Normalize object at 0x73830c4acad0\>
 
 ## Plot the seed maps
 
@@ -26770,7 +26778,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 14.6 s
+**Total running time:** 14.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -27114,7 +27122,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f393922fc50>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x780befbf8cd0>
     ```
 - [ ] Attributes: (20)
 
@@ -27507,7 +27515,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f392fec8050>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x780bea746510>
     ```
 - [ ] Attributes: (22)
 
@@ -27667,7 +27675,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 86.4 s
+**Total running time:** 84.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/07_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -28015,7 +28023,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fced28ddd10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x722395fa2d50>
     ```
 - [ ] Attributes: (24)
 
@@ -28381,7 +28389,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 245.5 s
+**Total running time:** 245.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -28723,7 +28731,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fd7a0c0dd10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7820c13bad50>
     ```
 - [ ] Attributes: (24)
 
@@ -29117,7 +29125,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 261.1 s
+**Total running time:** 258.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -29465,7 +29473,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f581e885d10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7225643bad50>
     ```
 - [ ] Attributes: (24)
 
@@ -29853,7 +29861,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 240.7 s
+**Total running time:** 240.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/04_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -30196,7 +30204,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f973b3a6f00>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7f1f12157690>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -30211,7 +30219,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...00\>, beta=6.7) |
+|  | hrf\_model | functools.par...90\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -30230,7 +30238,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7f971e79fed0\>, \<confusius.gl...x7f97351748a0\>, \<confusius.gl...x7f9731042210\>, \<confusius.gl...x7f97214ab8a0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7f1f0017b890\>, \<confusius.gl...x7f1f0033a650\>, \<confusius.gl...x7f1f002cee70\>, \<confusius.gl...x7f1ef4fe6cf0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -30342,7 +30350,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 157.0 s
+**Total running time:** 155.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/glm/first_level.ipynb>)
 
@@ -30709,7 +30717,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fea1edd9d10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x734940e2ed50>
     ```
 - [ ] Attributes: (20)
 
@@ -31208,7 +31216,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf93e2660>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d4ba966660>
     ```
 - [ ] Attributes: (24)
 
@@ -31627,7 +31635,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdd345bd950>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d52023a350>
     ```
 - [ ] Attributes: (24)
 
@@ -31983,7 +31991,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf6be56d0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d4b7f51a90>
     ```
 - [ ] Attributes: (24)
 
@@ -32325,7 +32333,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.6 s
+**Total running time:** 9.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -32666,7 +32674,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f2cbdb208a0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f9945d08640>
     ```
   - time
 
@@ -32947,7 +32955,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f2cb9d51cc0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f993c342dd0>
     ```
 - [ ] Attributes: (6)
 
@@ -33019,7 +33027,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 52.5 s
+**Total running time:** 51.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -33144,7 +33152,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 6.2 s
+**Total running time:** 5.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/dataset_collection.ipynb>)
 
@@ -33356,7 +33364,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f65923bd450>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7234a3605d10>
     ```
 - [ ] Attributes: (4)
 
@@ -33760,7 +33768,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 30.8 s
+**Total running time:** 30.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/transforms_101.ipynb>)
 
@@ -33827,41 +33835,28 @@ multipose
 
 ```text
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-1_pwd.nii.gz
-sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-3_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
+sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
 ```
 
 xarray.DataArray
 
 'sub-cp230420a\_ses-1MEDISOses5\_task-rest\_acq-3dfusi\_probe-linear\_chunk-0\_pwd'
 
-- pose: 4
 - time: 1500
+- pose: 4
 - k: 1
 - j: 82
 - i: 128
 
 - [ ]
 
-  dask.array\<chunksize=(1, 1500, 1, 82, 128), meta=np.ndarray\>
+  dask.array\<chunksize=(1500, 1, 1, 82, 128), meta=np.ndarray\>
 
-  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 480.47 MiB </td>                         <td> 120.12 MiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (4, 1500, 1, 82, 128) </td>                         <td> (1, 1500, 1, 82, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 4 chunks in 17 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> float64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 480.47 MiB </td>                         <td> 120.12 MiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1500, 4, 1, 82, 128) </td>                         <td> (1500, 1, 1, 82, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 4 chunks in 18 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> float64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
 - [x] Coordinates: (8)
 
-  - pose
-
-    (pose)
-
-    int64
-
-    0 1 2 3
-
-    ☐ ☐
-
-    ```
-    array([0, 1, 2, 3])
-    ```
   - time
 
     (time, pose)
@@ -33892,6 +33887,19 @@ xarray.DataArray
            [3.5928e+03, 3.5934e+03, 3.5940e+03, 3.5946e+03],
            [3.5952e+03, 3.5958e+03, 3.5964e+03, 3.5970e+03],
            [3.5976e+03, 3.5982e+03, 3.5988e+03, 3.5994e+03]], shape=(1500, 4))
+    ```
+  - pose
+
+    (pose)
+
+    int64
+
+    0 1 2 3
+
+    ☐ ☐
+
+    ```
+    array([0, 1, 2, 3])
     ```
   - k
 
@@ -34051,7 +34059,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f1c4189c590>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7da2ab7a6f90>
     ```
 - [ ] Attributes: (24)
 
@@ -34492,7 +34500,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f1c2fe822e0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7da2a065b930>
     ```
 - [ ] Attributes: (24)
 
@@ -34607,7 +34615,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 18.0 s
+**Total running time:** 17.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/02_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
@@ -34890,7 +34898,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7ff84b780c30>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7ff76bd78770>
     ```
 - [ ] Attributes: (26)
 
@@ -35101,7 +35109,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 116.5 s
+**Total running time:** 115.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -35349,7 +35357,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f4ad5c60c30>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f532a8e6520>
     ```
 - [ ] Attributes: (22)
 
@@ -35626,7 +35634,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f4ad33659d0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f53280967a0>
     ```
 - [ ] Attributes: (22)
 
@@ -35825,49 +35833,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-1.584e-12 2.04e-13 2.188e-14 ... -581.1 -1.88e+03 -1.677e+04
+  3.07e-11 4.814e-13 1.024e-14 -2.5e-13 ... -2.589e+03 -117.0 -15.89
 
   ```
-  array([[[[-1.58375660e-12,  2.03954443e-13,  2.18778552e-14, ...,
-            -6.48912685e-13, -1.38133673e-13, -3.18234211e-14],
-           [-1.11956085e-13,  1.55082648e-15, -1.38884797e-14, ...,
-            -2.21769016e-13, -4.89828590e-14,  4.21892186e-14],
-           [-3.81195268e-13, -1.17862585e-13, -1.40713198e-13, ...,
-            -1.21225676e-13,  4.58889789e-14,  2.37281615e-14],
+  array([[[[ 3.07010034e-11,  4.81424550e-13,  1.02417130e-14, ...,
+            -4.07729237e-13, -7.03115660e-14, -1.25493711e-15],
+           [ 1.03236658e-13,  4.56300081e-14,  1.10644382e-15, ...,
+            -1.35972939e-13, -1.72317643e-14,  2.75900742e-15],
+           [-1.34483369e-13, -7.22180181e-14, -8.16928050e-14, ...,
+            -6.08051747e-14,  3.29880790e-14,  3.88647432e-14],
            ...,
-           [-1.42152096e-13, -6.00753534e-15,  3.42364776e-13, ...,
-             1.77016511e-13,  1.80817167e-13,  2.60361256e-14],
-           [ 4.35485632e-13,  1.16006223e-13,  3.04651696e-13, ...,
-             1.44399123e-13,  5.51013454e-14,  3.97453339e-15],
-           [ 6.16166604e-12,  1.05680036e-12,  6.80486925e-13, ...,
-             3.42923449e-13,  1.62646713e-13,  1.13171063e-14]],
+           [-3.08607690e-13, -7.80362897e-15,  2.53761606e-13, ...,
+             1.29459854e-13,  9.05515891e-14,  5.65558349e-14],
+           [ 1.74205974e-13,  7.86538906e-14,  1.85887605e-13, ...,
+             9.14174580e-14,  5.89089807e-14,  1.79202673e-14],
+           [ 2.71349874e-12,  5.00879003e-13,  5.72416439e-13, ...,
+             2.05523437e-13,  2.23062871e-13,  2.89346228e-13]],
 
-          [[-1.85587256e-15,  2.38997239e-16,  2.56368379e-17, ...,
-            -7.60406776e-16, -1.61867356e-16, -3.72912190e-17],
-           [-1.31192019e-16,  1.81728450e-18, -1.62747536e-17, ...,
-            -2.59872655e-16, -5.73989363e-17,  4.94380345e-17],
-           [-4.46691014e-16, -1.38113355e-16, -1.64890087e-16, ...,
-            -1.42054282e-16,  5.37734758e-17,  2.78050579e-17],
+          [[ 3.59759513e-14,  5.64141369e-16,  1.20014113e-17, ...,
+            -4.77783964e-16, -8.23922732e-17, -1.47055638e-18],
+           [ 1.20974448e-16,  5.34700094e-17,  1.29654944e-18, ...,
+            -1.59335372e-16, -2.01924706e-17,  3.23305120e-18],
+           [-1.57589869e-16, -8.46262858e-17, -9.57290002e-17, ...,
+            -7.12525244e-17,  3.86559847e-17,  4.55423584e-17],
   ...
-            -8.83340146e-02, -7.49952458e-02, -1.00513623e-02],
-           [ 8.98679239e-02,  5.52078258e-02,  1.42468253e-01, ...,
-            -1.15883470e-01, -1.97359994e-01, -1.16061837e-01],
-           [ 7.43953890e-02,  9.84508088e-02,  2.16785872e-01, ...,
-            -6.80959153e-01, -2.20326158e+00, -1.96505358e+01]],
+            -9.73155182e-02, -4.82005440e-02, -3.60737907e-03],
+           [ 1.22611203e-02,  3.94963630e-02,  1.64900231e-01, ...,
+            -1.64186685e-01, -3.25123509e-02, -5.88778883e-03],
+           [ 1.99616056e-02,  1.38367126e-01,  2.69166706e-01, ...,
+            -3.03369635e+00, -1.37044980e-01, -1.86169527e-02]],
 
-          [[ 1.24680669e+04,  2.29131471e+02, -9.60692820e+02, ...,
-            -1.27804648e+02, -1.05795747e+00,  1.96214030e+03],
-           [-1.08151742e+02,  2.45725204e+01, -1.02534984e+02, ...,
-            -6.00544531e+01,  2.25834669e+01,  2.78421568e+01],
-           [-1.01254979e+03,  1.24396209e+02,  6.37902747e+01, ...,
-            -1.12390801e+02,  1.15924503e+01,  4.37188998e+00],
+          [[ 2.17290563e+04,  2.14163965e+02, -3.83431239e+02, ...,
+            -7.89636692e+01, -7.78092817e+00,  9.14460054e+01],
+           [-1.61675571e+02, -1.12360265e+01, -8.47035233e+01, ...,
+            -4.85153588e+01,  3.93042348e+00,  1.01164620e+01],
+           [-6.63501804e+02,  8.98811764e+01,  4.08639833e+01, ...,
+            -1.23984587e+02,  4.66045062e+00,  6.90147756e+00],
            ...,
-           [-2.94966663e+01,  7.95325077e+01,  2.19813520e+02, ...,
-            -7.53821038e+01, -6.39991222e+01, -8.57758849e+00],
-           [ 7.66911047e+01,  4.71130184e+01,  1.21578949e+02, ...,
-            -9.88921402e+01, -1.68422228e+02, -9.90443537e+01],
-           [ 6.34872177e+01,  8.40155302e+01,  1.84999800e+02, ...,
-            -5.81114012e+02, -1.88020996e+03, -1.67692959e+04]]]],
+           [-4.62983737e+01,  5.91601232e+01,  1.60702976e+02, ...,
+            -8.30467008e+01, -4.11331742e+01, -3.07844971e+00],
+           [ 1.04633425e+01,  3.37052375e+01,  1.40721855e+02, ...,
+            -1.40112932e+02, -2.77452511e+01, -5.02449611e+00],
+           [ 1.70347496e+01,  1.18079148e+02,  2.29700333e+02, ...,
+            -2.58888281e+03, -1.16950859e+02, -1.58872549e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -36022,7 +36030,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f4ab9a50830>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7f5325e71320>
     ```
 - [x] Attributes: (4)
 
@@ -36053,7 +36061,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8944
+Rigid + B-spline final metric: -0.8886
 ```
 
 ```python
@@ -36139,7 +36147,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 71.8 s
+**Total running time:** 64.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/03_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -36505,7 +36513,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7feaa47d1f90>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x7cb504d96fd0>
     ```
 - [ ] Attributes: (20)
 
@@ -36708,7 +36716,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 39.4 s
+**Total running time:** 38.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -36727,8 +36735,9 @@ Current development version for the next ConfUSIus release.
 ### 💥 Breaking changes
 
 - Zarr loading requires `variable=` for stores with multiple data variables. Incremental Zarr writes are rejected to avoid inconsistent geometry metadata; save the complete array instead ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Existing single-array Zarr recordings written by `cf.save` can be upgraded in place with the [metadata migration script](<https://confusius.tools/pr-preview/pr-569/downloads/migrate_voxeldata_zarr.py>). Run `python migrate_voxeldata_zarr.py recording.zarr` with the store closed to other writers. It records the affine dependencies, moves named frames and B-spline initialization to their new metadata fields, and refreshes consolidated metadata when present. Signal chunks are untouched. This script applies to the ordinary array format in Zarr v2 and v3 ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
 - Geometry and Zarr persistence now come from the external `voxeldata[io]>=0.0.5` package. Use the flat `.vd` accessor instead of `.fusi.affine`, `.fusi.spacing`, `.fusi.origin`, or `.fusi.direction`. Named world frames live on the VoxelData index and are managed with `.vd.set_affine` and read with `.vd.affines[name]`, not DataArray attributes.
-- Probe positions use `pose` with `geometry_dims=("pose",)`. Leading dimensions may appear in any order; optional canonicalization uses `(...extra, pose, time, k, j, i)` ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
+- Probe positions use `pose` with `geometry_dims=("pose",)`. Leading dimensions may appear in any order. Canonicalization places extra dimensions first and preserves the relative order of `time` and `pose`, including on Zarr save ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
 - World transforms now use VoxelData's flat `.vd.translate`, `.vd.rotate`, `.vd.zoom`, and `.vd.flip` methods, not `.fusi` transform wrappers. Module-level affine functions are direct VoxelData re-exports. Bounds and centers return world-axis dictionaries enclosing all grids; select a geometry for grid-specific values. Use `.vd.world_units` / `.vd.set_world_units`, and `.vd.dt` for time sampling; `.vd.origin` and `.vd.spacing` describe spatial dimensions only ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
 - Use VoxelData's `.vd.extract_with_mask`, `.vd.extract_with_labels`, and `.vd.unmask` instead of `.fusi.extract`. `FUSIExtractAccessor` and `confusius.xarray.extract` are removed; module-level `confusius.extract` function re-exports remain available ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
 - `canonicalize_voxeldata` now normalizes and validates in one call, replacing `ensure_voxeldata`; its `.vd.canonicalize()` counterpart replaces `.vd.ensure()`. Use `.vd.get_relative_affine(other, via=...)` instead of `.vd.to(...)`, and `.vd.affines[name]` instead of `.vd.get_affine(name)`. Redundant accessor properties `world_dims`, `voxel_dims`, `fixed_voxel_coords`, and `scalings` are removed; advanced geometry state remains available through `.vd.index` ([\#569](<https://github.com/confusius-tools/confusius/pull/569>)).
@@ -36775,6 +36784,7 @@ Current development version for the next ConfUSIus release.
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Align the layer selectors in **Data I/O** with the output path on macOS ([\#592](<https://github.com/confusius-tools/confusius/pull/592>)).
 
 ## 0.9.0
 

@@ -4001,8 +4001,9 @@ shape.</p>
 have a NumPy, Dask, or array-like object and want to create a VoxelData
 array. This is useful when you have raw data from a custom acquisition system or a
 non-standard file format. The function will attach VoxelData dimensions, coordinates,
-and metadata. Dimensions can be supplied in any order; the result is canonicalized to
-native <code>(..., time, pose, k, j, i)</code> order:</p>
+and metadata. The constructor preserves leading dimension order and places <code>(k, j, i)</code>
+last. ConfUSIus canonicalization groups extra dimensions first and retains the
+relative order of <code>time</code> and <code>pose</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">confusius</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cf</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">recording</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">create_voxeldata</span><span class="p">(</span>

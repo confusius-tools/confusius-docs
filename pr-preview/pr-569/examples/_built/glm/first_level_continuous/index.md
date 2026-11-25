@@ -359,7 +359,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fea1edd9d10>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x734940e2ed50>
     ```
 - [ ] Attributes: (20)
 

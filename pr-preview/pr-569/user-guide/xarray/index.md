@@ -165,7 +165,7 @@ Most geometry-sensitive ConfUSIus functions automatically restore such scalar-in
 
 ## Creating VoxelData arrays from Raw Arrays
 
-Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. Dimensions can be supplied in any order; the result is canonicalized to native `(..., time, pose, k, j, i)` order:
+Use `create_voxeldata` when you already have a NumPy, Dask, or array-like object and want to create a VoxelData array. This is useful when you have raw data from a custom acquisition system or a non-standard file format. The function will attach VoxelData dimensions, coordinates, and metadata. The constructor preserves leading dimension order and places `(k, j, i)` last. ConfUSIus canonicalization groups extra dimensions first and retains the relative order of `time` and `pose`.
 
 ```python
 import confusius as cf

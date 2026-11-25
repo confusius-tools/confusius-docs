@@ -260,7 +260,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf93e2660>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d4ba966660>
     ```
 - [ ] Attributes: (24)
 
@@ -679,7 +679,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdd345bd950>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d52023a350>
     ```
 - [ ] Attributes: (24)
 
@@ -1035,7 +1035,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <voxeldata.geometry.VoxelToWorldIndex object at 0x7fdcf6be56d0>
+    <voxeldata.geometry.VoxelToWorldIndex object at 0x78d4b7f51a90>
     ```
 - [ ] Attributes: (24)
 
@@ -1377,7 +1377,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 10.6 s
+**Total running time:** 9.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/voxeldata-integration?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-569/examples/_built/io/confusius_xarray_101.ipynb>)
 

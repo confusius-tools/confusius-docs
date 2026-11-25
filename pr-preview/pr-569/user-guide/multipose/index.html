@@ -3702,8 +3702,9 @@ ConfUSIus represents multi-pose data with a <code>pose</code> dimension, each po
 time coordinate and spatial geometry.</p>
 <h2 id="the-multi-pose-data-model">The Multi-Pose Data Model<a class="headerlink" href="#the-multi-pose-data-model" title="Permanent link">&para;</a></h2>
 <p>Multi-pose arrays end in <code>(k, j, i)</code>, with leading dimensions in any order.
-Creation preserves that order; ConfUSIus canonicalization uses
-<code>(...extra, pose, time, k, j, i)</code>. Probe geometry uses
+Creation preserves that order. Canonicalization groups extra dimensions first, then
+keeps <code>time</code> and <code>pose</code> in their input order. Stacking separate poses in a time series
+creates <code>(...extra, time, pose, k, j, i)</code>. Probe geometry uses
 <code>geometry_dims=("pose",)</code> and the flat <code>.vd</code> accessor. Unlike an ordinary
 dimension, pose affects both spatial coordinates and acquisition times:</p>
 <ul>

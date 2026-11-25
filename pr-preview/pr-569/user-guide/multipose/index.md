@@ -8,7 +8,7 @@ Multiple fUSI systems support this approach, including Iconeus, EchoFrame, and A
 
 ## The Multi-Pose Data Model
 
-Multi-pose arrays end in `(k, j, i)`, with leading dimensions in any order. Creation preserves that order; ConfUSIus canonicalization uses `(...extra, pose, time, k, j, i)`. Probe geometry uses `geometry_dims=("pose",)` and the flat `.vd` accessor. Unlike an ordinary dimension, pose affects both spatial coordinates and acquisition times:
+Multi-pose arrays end in `(k, j, i)`, with leading dimensions in any order. Creation preserves that order. Canonicalization groups extra dimensions first, then keeps `time` and `pose` in their input order. Stacking separate poses in a time series creates `(...extra, time, pose, k, j, i)`. Probe geometry uses `geometry_dims=("pose",)` and the flat `.vd` accessor. Unlike an ordinary dimension, pose affects both spatial coordinates and acquisition times:
 
 - **Geometry**: Each pose has its own voxel-to-world affine. World coordinates `(z, y,   x)` therefore have dimensions `(pose, k, j, i)`. Select a pose before selecting by world position, for example `data.isel(pose=0).sel(z=1.2)`. See [The VoxelData Model](<https://confusius.tools/pr-preview/pr-569/user-guide/voxeldata/#the-voxeldata-model>).
 - **Timing**: When poses are acquired sequentially, their timestamps differ. The time coordinate then has dimensions `(time, pose)` rather than `(time,)`. Selecting one pose gives its 1D time coordinate:

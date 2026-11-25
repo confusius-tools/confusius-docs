@@ -191,7 +191,7 @@ ensure_time_acquisition_attrs(data: DataArray) -> DataArray
 
 Fill in default metadata attrs on `data`'s `time` coordinate.
 
-Every VoxelData array with a `time` dimension carries `volume_acquisition_reference`, `volume_acquisition_duration`, and `units` on its `time` coordinate. Data built without going through create\_voxeldata or an I/O loader (e.g. a `time` coordinate assembled by hand) may still be missing them; this fills in `"start"` and `"s"`, respectively. `volume_acquisition_duration` is inferred from the representative `time` step.
+Every VoxelData array with a `time` dimension carries `volume_acquisition_reference`, `volume_acquisition_duration`, and `units` on its `time` coordinate. Data built without going through create\_voxeldata or an I/O loader (e.g. a `time` coordinate assembled by hand) may still be missing them; this fills in `"start"` and `"s"`, respectively. `volume_acquisition_duration` is inferred from the representative step for shared time or the smallest positive offset between series at the same time point for dependent timestamps.
 
 Parameters:
 
