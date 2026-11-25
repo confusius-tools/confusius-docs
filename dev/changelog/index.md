@@ -29,6 +29,7 @@ Current development version for the next ConfUSIus release.
 
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/dev/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Link the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) of the dataset collection from the [datasets guide](<https://confusius.tools/dev/user-guide/datasets/index.md>) and the dataset collection example ([\#598](<https://github.com/confusius-tools/confusius/pull/598>)).
 
 ### 🔧 Maintenance
 
