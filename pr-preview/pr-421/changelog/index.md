@@ -16,7 +16,7 @@ Current development version for the next ConfUSIus release.
 
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
-- Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and in-memory NiBabel NIfTI images, with no file I/O. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and NiBabel NIfTI images without a temporary file. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
@@ -26,6 +26,7 @@ Current development version for the next ConfUSIus release.
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 - `load_nifti` and `convert_from_nifti` declare the dtype of scaled values (`scl_slope`/`scl_inter`) and size `"auto"` chunks for it ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- NIfTI round trips preserve the order of extra dimensions. Saving with both transform codes explicitly set to zero preserves those codes on disk. Slice timing respects the NIfTI slice axis and the acquisition duration's units, and zero-delay BIDS chunks include `DelayAfterTrigger` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 📚 Documentation
 

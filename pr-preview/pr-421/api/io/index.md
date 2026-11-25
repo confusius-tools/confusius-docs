@@ -664,9 +664,9 @@ convert_from_nifti(
 
 Convert an in-memory NiBabel NIfTI image to a VoxelData array.
 
-This is the no-file-I/O counterpart to `load_nifti`, which opens the file, reads its BIDS JSON sidecars, and delegates to this function. It reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and never looks for a sidecar on disk: sidecar metadata is used only when passed through `sidecar`. Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
+This is the image-based counterpart to `load_nifti`, which opens the file, reads its BIDS JSON sidecars, and delegates to this function. It reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and never looks for a sidecar on disk: sidecar metadata is used only when passed through `sidecar`. Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
 
-An image backed by a file on disk (e.g. from `nibabel.load`, whose `img.dataobj` is a NiBabel `ArrayProxy`) stays lazy: voxel data is read from that file only when the returned array is computed, so the file must still exist at that point.
+An image backed by a file on disk (e.g. from `nibabel.load`, whose `img.dataobj` is a NiBabel `ArrayProxy`) stays lazy, including images with slope/intercept scaling. Voxel data is read when the returned array is computed, so the file must remain available until then.
 
 Parameters:
 
@@ -702,13 +702,13 @@ Parameters:
 
   (`dict[str, Any]`, default: `None` ) –
 
-  Metadata using fUSI-BIDS field names and units, as returned by `convert_to_nifti` or read from a BIDS JSON sidecar. Entries override header-derived attributes and feed timing and extra-dimension reconstruction. If not provided, only the NIfTI header is used.
+  Metadata using fUSI-BIDS field names and units, as returned by `convert_to_nifti` or read from a BIDS JSON sidecar. Entries override header-derived attributes and feed timing and extra-dimension reconstruction. When `SliceTiming` is supplied without `SliceEncodingDirection`, the header's slice axis gives the order of increasing slice index. If no sidecar is provided, only the NIfTI header is used.
 
 Returns:
 
 - `DataArray` –
 
-  VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`.
+  VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Extra NIfTI axes precede these dimensions in their original file order.
 
 Raises:
 

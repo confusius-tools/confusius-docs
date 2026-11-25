@@ -5622,15 +5622,16 @@ information is known, or an intentional placeholder (e.g. <code>0.4</code>) othe
     <div class="doc doc-contents ">
 
         <p>Convert an in-memory NiBabel NIfTI image to a VoxelData array.</p>
-<p>This is the no-file-I/O counterpart to <code>load_nifti</code>, which opens the file, reads its
+<p>This is the image-based counterpart to <code>load_nifti</code>, which opens the file, reads its
 <abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON sidecars, and delegates to this function. It reads directly from an
 already-constructed <code>nibabel.Nifti1Image</code>/<code>nibabel.Nifti2Image</code> instance instead of
 a path, and never looks for a sidecar on disk: sidecar metadata is used only when
 passed through <code>sidecar</code>. Useful for interoperating with libraries such as <code>nilearn</code>
 that hand back NIfTI images rather than file paths.</p>
 <p>An image backed by a file on disk (e.g. from <code>nibabel.load</code>, whose <code>img.dataobj</code> is
-a NiBabel <code>ArrayProxy</code>) stays lazy: voxel data is read from that file only when the
-returned array is computed, so the file must still exist at that point.</p>
+a NiBabel <code>ArrayProxy</code>) stays lazy, including images with slope/intercept scaling.
+Voxel data is read when the returned array is computed, so the file must remain
+available until then.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -5694,7 +5695,9 @@ returned array is computed, so the file must still exist at that point.</p>
             <p>Metadata using <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> field names and units, as returned by
 <code>convert_to_nifti</code> or read from a <abbr title="Brain Imaging Data Structure">BIDS</abbr> JSON sidecar. Entries override
 header-derived attributes and feed timing and extra-dimension reconstruction.
-If not provided, only the NIfTI header is used.</p>
+When <code>SliceTiming</code> is supplied without <code>SliceEncodingDirection</code>, the
+header's slice axis gives the order of increasing slice index. If no sidecar
+is provided, only the NIfTI header is used.</p>
           </div>
         </li>
     </ul>
@@ -5707,7 +5710,8 @@ If not provided, only the NIfTI header is used.</p>
           –
           <div class="doc-md-description">
             <p>VoxelData array with voxel-space dimensions in ConfUSIus order (<code>k</code>, <code>j</code>, <code>i</code>
-plus optional <code>time</code>) and world coordinates <code>z</code>, <code>y</code>, <code>x</code>.</p>
+plus optional <code>time</code>) and world coordinates <code>z</code>, <code>y</code>, <code>x</code>. Extra NIfTI
+axes precede these dimensions in their original file order.</p>
           </div>
         </li>
     </ul>

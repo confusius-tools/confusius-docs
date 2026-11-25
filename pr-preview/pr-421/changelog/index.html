@@ -5091,7 +5091,7 @@
   (<a href="https://github.com/confusius-tools/confusius/pull/564">#564</a>).</li>
 <li>Add <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_from_nifti&lt;/span&gt;" href="../api/io/#confusius.io.convert_from_nifti"><code>convert_from_nifti</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_to_nifti&lt;/span&gt;" href="../api/io/#confusius.io.convert_to_nifti"><code>convert_to_nifti</code></a> to convert directly between
-  VoxelData and in-memory NiBabel NIfTI images, with no file I/O. Conversion returns
+  VoxelData and NiBabel NIfTI images without a temporary file. Conversion returns
   <abbr title="Functional Ultrasound Imaging">fUSI</abbr>-<abbr title="Brain Imaging Data Structure">BIDS</abbr> metadata alongside the image to preserve timing and named extra dimensions.
   Conversion to NIfTI is also available on the <code>.fusi</code> accessor,
   as <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;to_nifti&lt;/span&gt;" href="../api/xarray/#confusius.xarray.FUSIAccessor.to_nifti"><code>data.fusi.to_nifti</code></a>
@@ -5129,6 +5129,11 @@
 <li><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_nifti&lt;/span&gt;" href="../api/io/#confusius.io.load_nifti"><code>load_nifti</code></a> and
   <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;convert_from_nifti&lt;/span&gt;" href="../api/io/#confusius.io.convert_from_nifti"><code>convert_from_nifti</code></a> declare the dtype of scaled
   values (<code>scl_slope</code>/<code>scl_inter</code>) and size <code>"auto"</code> chunks for it
+  (<a href="https://github.com/confusius-tools/confusius/pull/421">#421</a>).</li>
+<li>NIfTI round trips preserve the order of extra dimensions. Saving with both transform
+  codes explicitly set to zero preserves those codes on disk. Slice timing respects the
+  NIfTI slice axis and the acquisition duration's units, and zero-delay <abbr title="Brain Imaging Data Structure">BIDS</abbr> chunks
+  include <code>DelayAfterTrigger</code>
   (<a href="https://github.com/confusius-tools/confusius/pull/421">#421</a>).</li>
 </ul>
 <h3 id="documentation"><img alt="📚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4da.svg" title=":books:" /> Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
