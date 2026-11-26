@@ -3397,6 +3397,8 @@ The `confusius.datasets` module provides fetchers for publicly available atlases
 
 The ConfUSIus dataset collection is hosted on Amazon S3, with hosting sponsored by **AWS Open Data**. Downloads are anonymous HTTPS requests: no AWS account, credentials, or CLI is required. The [collection repository](<https://github.com/confusius-tools/confusius-datasets>) documents provenance, conversion recipes, and per-dataset licenses. Hosting does not change attribution or licensing requirements.
 
+To see what a dataset contains before fetching it, browse the collection with the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>). It lists every file of every release, which helps to find the subject, session, task, and acquisition labels that the fetcher filters accept.
+
 ## Quick Start
 
 The fastest way to get started is to fetch a single subject from the Nunez-Elizalde 2022 dataset[^/pr-preview/pr-576/user-guide/datasets/#nunez2022] and load one of its NIfTI files:
@@ -3520,7 +3522,7 @@ confusius datasets --list
 
 ## Available fUSI-BIDS Datasets
 
-Simultaneous neural activity and cerebral blood volume recordings in awake mice, from Nunez-Elizalde et al. (2022)[^/pr-preview/pr-576/user-guide/datasets/#nunez2022], converted to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~7 GB**.
+Simultaneous neural activity and cerebral blood volume recordings in awake mice, from Nunez-Elizalde et al. (2022)[^/pr-preview/pr-576/user-guide/datasets/#nunez2022], converted to fUSI-BIDS format and hosted in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/nunez-elizalde-2022-bids/>). Total size: **\~7 GB**.
 
 Use `fetch_nunez_elizalde_2022` to download the dataset. Four filters narrow the download:
 
@@ -3544,7 +3546,7 @@ bids_root = fetch_nunez_elizalde_2022(
 )
 ```
 
-Functional ultrasound imaging data from a rat model of neuroinflammation, from Pereira et al. (2025)[^/pr-preview/pr-576/user-guide/datasets/#pereira2025], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~30 GB**.
+Functional ultrasound imaging data from a rat model of neuroinflammation, from Pereira et al. (2025)[^/pr-preview/pr-576/user-guide/datasets/#pereira2025], re-exported to fUSI-BIDS format and hosted in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/pereira-2025-bids/>). Total size: **\~30 GB**.
 
 Use `fetch_pereira_2025` to download the dataset. Three filters narrow the download:
 
@@ -3564,7 +3566,7 @@ bids_root = fetch_pereira_2025(
 )
 ```
 
-Functional ultrasound imaging data from freely-moving rats investigating vascular coding of speed in the spatial navigation system, from Cybis Pereira et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#cybis2026], hosted in the S3 collection. Total size: **\~13 GB**.
+Functional ultrasound imaging data from freely-moving rats investigating vascular coding of speed in the spatial navigation system, from Cybis Pereira et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#cybis2026], hosted in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/cybis-pereira-2026-bids/>). Total size: **\~13 GB**.
 
 Use `fetch_cybis_pereira_2026` to download the dataset. Four filters narrow the download:
 
@@ -3605,7 +3607,7 @@ bids_root = fetch_cybis_pereira_2026(
 )
 ```
 
-Transcranial mouse resting-state fUSI recordings and derivatives, from Pepe, Mariani et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#pepe_mariani2026], re-exported to fUSI-BIDS format and hosted in the S3 collection. Total size: **\~38 GB**.
+Transcranial mouse resting-state fUSI recordings and derivatives, from Pepe, Mariani et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#pepe_mariani2026], re-exported to fUSI-BIDS format and hosted in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/pepe-mariani-2026-bids/>). Total size: **\~38 GB**.
 
 Use `fetch_pepe_mariani_2026` to download the dataset. Five filters narrow the download:
 
@@ -3626,7 +3628,7 @@ from confusius.datasets import fetch_pepe_mariani_2026
 bids_root = fetch_pepe_mariani_2026(datasets="registered", datatypes="fusi")
 ```
 
-Functional ultrasound imaging recordings from awake, head-fixed, freely-running mice, from Landemard et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#landemard2026], re-exported to fUSI-BIDS format and hosted on the S3 collection. Total size: **\~42 GB**.
+Functional ultrasound imaging recordings from awake, head-fixed, freely-running mice, from Landemard et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#landemard2026], re-exported to fUSI-BIDS format and hosted in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/landemard-2026-bids/>). Total size: **\~42 GB**.
 
 Use `fetch_landemard_2026` to download the dataset. Four filters narrow the download:
 
@@ -3662,7 +3664,7 @@ bids_root = fetch_landemard_2026(
 )
 ```
 
-Functional ultrasound imaging data from naked mole-rats exposed to olfactory stimulation, from Khallaf et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#khallaf2026], organised following BIDS and the proposed fUSI extension BEP-040. The original data is published on [Edmond (10.17617/3.7QCU1F)](<https://doi.org/10.17617/3.7QCU1F>); ConfUSIus downloads individual files from the S3 collection rather than the source archive.
+Functional ultrasound imaging data from naked mole-rats exposed to olfactory stimulation, from Khallaf et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#khallaf2026], organised following BIDS and the proposed fUSI extension BEP-040. The original data is published on [Edmond (10.17617/3.7QCU1F)](<https://doi.org/10.17617/3.7QCU1F>); ConfUSIus downloads individual files from the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#datasets/khallaf-2026-bids/>) rather than the source archive.
 
 Use `fetch_khallaf_2026` to download the dataset. Six filters narrow the download:
 
@@ -3732,7 +3734,7 @@ Versions are immutable and use separate cache directories. Refreshing an unchang
 
 ## Available Templates
 
-A vascular mouse fUSI template from Brunner, Grillet et al. (2021)[^/pr-preview/pr-576/user-guide/datasets/#brunner2021], sourced from the Macé and Montaldo Zenodo dataset[^/pr-preview/pr-576/user-guide/datasets/#brunner_dataset] and distributed as a NIfTI with its JSON sidecar in the S3 collection under **CC BY 4.0**. Total size: **\~16.3 MB**.
+A vascular mouse fUSI template from Brunner, Grillet et al. (2021)[^/pr-preview/pr-576/user-guide/datasets/#brunner2021], sourced from the Macé and Montaldo Zenodo dataset[^/pr-preview/pr-576/user-guide/datasets/#brunner_dataset] and distributed as a NIfTI with its JSON sidecar in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#templates/brunner-grillet-2021-template/>) under **CC BY 4.0**. Total size: **\~16.3 MB**.
 
 Use `fetch_template_brunner_grillet_2021` to download and load the template directly. Its axes are reordered onto the Allen 50 µm grid, whose affine is explicitly assigned without changing vascular voxel values:
 
@@ -3746,7 +3748,7 @@ template = fetch_template_brunner_grillet_2021()
 atlas = fetch_brainglobe_atlas("allen_mouse_50um")
 ```
 
-A mouse fUSI template derived from Pepe, Mariani et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#pepe_mariani2026] and distributed as a NIfTI with its JSON sidecar in the S3 collection. Total size: **\~5.5 MB**.
+A mouse fUSI template derived from Pepe, Mariani et al. (2026)[^/pr-preview/pr-576/user-guide/datasets/#pepe_mariani2026] and distributed as a NIfTI with its JSON sidecar in the [S3 collection](<https://confusius-datasets.s3.amazonaws.com/index.html#templates/pepe-mariani-2026-template/>). Total size: **\~5.5 MB**.
 
 Use `fetch_template_pepe_mariani_2026` to download and load the template directly. Its native voxel grid and scanner-space `qform` are retained for registration. The `sform` encodes the full Allen atlas alignment, including shear. Use `world_to_sform` to resample the atlas onto the template's native grid:
 
@@ -11689,7 +11691,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Local file path, or HTTP(S) URL to a Zarr store. Remote loading of other formats is not currently supported. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
+  Local file path, or HTTP(S) URL to a Zarr store. URL query parameters apply to every metadata and chunk request. For local NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -12380,7 +12382,7 @@ Functions:
 ```python
 clutter_filter_butterworth(
     block: NDArray,
-    fs: float,
+    fs: float | None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
@@ -12400,9 +12402,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`fs`**
 
-  (`float`) –
+  (`float or None`) –
 
-  Sampling frequency in hertz.
+  Sampling frequency in hertz. Required when either cutoff is specified.
 - #### **`low_cutoff`**
 
   (`float`, default: `None` ) –
@@ -12429,7 +12431,7 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if both `low_cutoff` and `high_cutoff` are `None`.
+  If `block` is not 4D, if cutoff frequencies are invalid, or if a cutoff is specified without a sampling frequency.
 
 ### clutter\_filter\_sosfiltfilt
 
@@ -13192,7 +13194,7 @@ Raises:
 
 - `ValueError` –
 
-  If `filter_method` is `"butterworth"` and `fs` is not provided, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
+  If a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
 
 ### process\_iq\_blocks
 
@@ -13481,7 +13483,7 @@ process_iq_to_power_doppler(
 
 Process blocks of beamformed IQ into power Doppler volumes using sliding windows.
 
-This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
+This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed. With no cutoffs, power Doppler uses the unfiltered samples and needs no sampling rate.
 
 Parameters:
 
@@ -25204,7 +25206,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24523/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24926/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25421,7 +25423,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e0cb0f8a250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76cde4f5a250>
     ```
 - [ ] Attributes: (27)
 
@@ -25825,7 +25827,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 9.6 s
+**Total running time:** 9.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/06_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25894,7 +25896,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26045/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26448/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26162,7 +26164,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7542dc197470>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x780c0df97410>
     ```
   - region
 
@@ -26285,7 +26287,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7542dc1882f0\>
+  \<matplotlib.colors.Normalize object at 0x780c0df882f0\>
 
 ## Plot the seed maps
 
@@ -26665,7 +26667,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7380cdfdc7d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f331eec0910>
     ```
 - [ ] Attributes: (21)
 
@@ -27062,7 +27064,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7380c8876a50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f331878f070>
     ```
 - [ ] Attributes: (23)
 
@@ -27226,7 +27228,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 51.7 s
+**Total running time:** 47.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/08_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27574,7 +27576,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f15d2612850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b55aa25e990>
     ```
 - [ ] Attributes: (25)
 
@@ -27944,7 +27946,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 173.9 s
+**Total running time:** 177.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/05_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -28286,7 +28288,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d6d25a1e850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x779b68d1e990>
     ```
 - [ ] Attributes: (25)
 
@@ -28684,7 +28686,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 197.6 s
+**Total running time:** 176.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/05_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -29032,7 +29034,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x799faebda850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75a14a19a990>
     ```
 - [ ] Attributes: (25)
 
@@ -29424,7 +29426,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 168.9 s
+**Total running time:** 171.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/05_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29764,7 +29766,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7397d62d6ae0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x744c08f3eae0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29798,7 +29800,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7397c466f250\>, \<confusius.gl...x7397c43f8050\>, \<confusius.gl...x7397c47c7410\>, \<confusius.gl...x7397c454a250\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x744bf0e634d0\>, \<confusius.gl...x744bf0ebc770\>, \<confusius.gl...x744bf0e01b50\>, \<confusius.gl...x744bf0cdf790\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29910,7 +29912,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 81.5 s
+**Total running time:** 79.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/07_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.ipynb>)
 
@@ -30277,7 +30279,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70c1c3206850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70fc0b4c2990>
     ```
 - [ ] Attributes: (21)
 
@@ -30512,7 +30514,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 19.4 s
+**Total running time:** 18.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/07_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -30780,7 +30782,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73bc58e3d6a0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73057e5f16a0>
     ```
 - [ ] Attributes: (25)
 
@@ -31206,7 +31208,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73bcac1ae490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7305e419a490>
     ```
 - [ ] Attributes: (25)
 
@@ -31566,7 +31568,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73bc565d5590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73057bdf16d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31913,7 +31915,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 7.7 s
+**Total running time:** 7.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -32254,7 +32256,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x761578fe23f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a99dc9023f0>
     ```
   - time
 
@@ -32535,7 +32537,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x761570aa7230>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a99d42e7290>
     ```
 - [ ] Attributes: (6)
 
@@ -32607,7 +32609,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 38.3 s
+**Total running time:** 35.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32623,7 +32625,7 @@ This example introduces the collection's organization and access conventions. Th
 
 ## Browse the collection
 
-The public S3 bucket contains two prefixes, `datasets/` and `templates/`, with immutable releases under `<identifier>/<version>/`. The `last_versions.conf` catalog lists the latest published versions; each release's `manifest.json` records its file paths, sizes, and SHA-256 checksums.
+The public S3 bucket contains two prefixes, `datasets/` and `templates/`, with immutable releases under `<identifier>/<version>/`. The `last_versions.conf` catalog lists the latest published versions; each release's `manifest.json` records its file paths, sizes, and SHA-256 checksums. The [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) shows this layout in your browser.
 
 Fetchers resolve the latest published release on the first download, then reuse the cached version. Pass `refresh=True` to check for a newer release without overwriting an earlier one. Set `data_dir` for a particular fetch, or the `CONFUSIUS_DATA` environment variable to choose the download-cache directory for all fetchers (for example, `export CONFUSIUS_DATA=/path/to/cache`). `data_dir` takes priority; otherwise the platform cache directory is used by default.
 
@@ -32732,7 +32734,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 4.8 s
+**Total running time:** 4.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32944,7 +32946,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x754dff4d9810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x704a3e0bd950>
     ```
 - [ ] Attributes: (5)
 
@@ -33352,7 +33354,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 21.0 s
+**Total running time:** 18.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/transforms_101.ipynb>)
 
@@ -33601,7 +33603,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x799bd1392f90>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a6a14d670e0>
     ```
 - [x] Attributes: (9)
 
@@ -33732,7 +33734,7 @@ plt.show()
 
 ---
 
-**Total running time:** 10.3 s
+**Total running time:** 11.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/iq/process_beamformed_iq.ipynb>)
 
@@ -33797,8 +33799,8 @@ multipose
 
 ```text
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-1_pwd.nii.gz
-sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-3_pwd.nii.gz
+sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-0_pwd.nii.gz
 sub-cp230420a_ses-1MEDISOses5_task-rest_acq-3dfusi_probe-linear_chunk-2_pwd.nii.gz
 ```
 
@@ -34021,7 +34023,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b1d5b767110>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a4bf9b2f040>
     ```
 - [ ] Attributes: (25)
 
@@ -34463,7 +34465,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b1d51dc9f10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7a4bf51c5eb0>
     ```
 - [ ] Attributes: (25)
 
@@ -34582,7 +34584,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 11.5 s
+**Total running time:** 10.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
@@ -34865,7 +34867,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b0d19e8f5c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7fc71cda7950>
     ```
 - [ ] Attributes: (27)
 
@@ -35080,7 +35082,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 69.8 s
+**Total running time:** 65.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -35328,7 +35330,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70aabd3483e0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x727eeed982b0>
     ```
 - [ ] Attributes: (23)
 
@@ -35609,7 +35611,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70aabd5c7d50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x727eef213d50>
     ```
 - [ ] Attributes: (23)
 
@@ -35812,49 +35814,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-2.207e-12 2.473e-13 4.24e-14 ... -1.348e+03 -1.979e+03 -663.3
+  \-1.813e-12 8.047e-13 3.337e-14 -4.733e-13 ... -602.0 -257.1 -89.17
 
   ```
-  array([[[[-2.20701440e-12,  2.47322849e-13,  4.24028281e-14, ...,
-            -5.66876029e-13, -1.78609435e-13, -7.35471896e-15],
-           [-6.98550997e-14, -1.03084989e-16, -1.05829488e-14, ...,
-            -1.94938242e-13, -3.25192888e-14,  1.19238342e-14],
-           [-5.59122399e-13, -1.68481527e-13, -1.52819392e-13, ...,
-            -1.01793970e-13,  5.36271779e-14,  4.72821768e-14],
+  array([[[[-1.81256948e-12,  8.04719190e-13,  3.33725965e-14, ...,
+            -3.61822599e-13, -6.17329406e-13, -2.62813405e-14],
+           [-5.84386500e-14,  2.44717151e-15, -1.10688606e-14, ...,
+            -1.72386167e-13, -3.95741412e-14,  1.61353946e-14],
+           [-3.46773721e-13, -1.36116920e-13, -1.38215941e-13, ...,
+            -8.97343460e-14,  4.30157206e-14,  3.60035144e-14],
            ...,
-           [-3.61666814e-13,  2.16940794e-14,  3.64689798e-13, ...,
-             2.77319205e-13,  1.03748052e-13,  1.54037560e-14],
-           [ 2.03419471e-13,  1.25645349e-13,  2.94352194e-13, ...,
-             1.26189417e-13,  9.38646026e-14,  1.08851306e-14],
-           [ 4.24947078e-12,  4.91853911e-13,  3.29328974e-13, ...,
-             4.23241208e-13,  1.64264953e-12,  4.69141021e-13]],
+           [-6.18162437e-13, -1.74721677e-14,  3.05974276e-13, ...,
+             1.86482218e-13,  1.02221039e-13,  1.47117023e-14],
+           [ 3.16263379e-13,  8.84689273e-14,  3.34182586e-13, ...,
+             1.21201761e-13,  5.22392888e-14,  5.06654344e-15],
+           [ 2.04540174e-12,  4.87021995e-13,  5.38520314e-13, ...,
+             2.87910731e-13,  1.11257565e-13,  1.04949455e-14]],
 
-          [[-2.58621652e-15,  2.89817066e-16,  4.96883457e-17, ...,
-            -6.64274846e-16, -2.09297534e-16, -8.61838313e-18],
-           [-8.18573784e-17, -1.20796720e-19, -1.24012770e-17, ...,
-            -2.28431904e-16, -3.81066484e-17,  1.39725490e-17],
-           [-6.55189012e-16, -1.97429481e-16, -1.79076329e-16, ...,
-            -1.19283882e-16,  6.28412272e-17,  5.54060484e-17],
+          [[-2.12399934e-15,  9.42983455e-16,  3.91065688e-17, ...,
+            -4.23989795e-16, -7.23396959e-16, -3.07969159e-17],
+           [-6.84793909e-17,  2.86763666e-18, -1.29706766e-17, ...,
+            -2.02005004e-16, -4.63736430e-17,  1.89077263e-17],
+           [-4.06355267e-16, -1.59504091e-16, -1.61963760e-16, ...,
+            -1.05152213e-16,  5.04065434e-17,  4.21895225e-17],
   ...
-            -8.52195241e-02, -5.81889058e-02, -7.08552838e-03],
-           [ 1.28535387e-01,  2.73158990e-02,  1.85440048e-01, ...,
-            -1.33583397e-01, -9.66997491e-02, -1.83140535e-02],
-           [-6.16668836e-02,  1.36427976e-01, -3.81162194e-01, ...,
-            -1.57979543e+00, -2.31946968e+00, -7.77245642e-01]],
+            -9.64826887e-02, -5.30692510e-02, -2.42898322e-03],
+           [ 1.06584968e-01,  3.96662875e-02,  1.63664155e-01, ...,
+            -1.21358600e-01, -7.33085195e-02, -2.22011916e-02],
+           [-1.77063259e-01,  2.37677865e-01, -1.87691284e-01, ...,
+            -7.05401149e-01, -3.01273638e-01, -1.04486155e-01]],
 
-          [[ 3.13575904e+04, -1.02242003e+03, -3.67948806e+02, ...,
-            -1.04861950e+03,  5.30104312e+01,  2.03520132e+03],
-           [-4.27246362e+03, -8.39149237e+01, -7.45939154e+01, ...,
-            -7.59910310e+01,  2.98785091e+01,  3.85321509e+02],
-           [-3.53348434e+02,  1.34678660e+02,  6.86325333e+01, ...,
-            -9.07898937e+01,  1.31701052e+01,  1.16633216e+01],
+          [[ 1.03835047e+04,  1.11617233e+03, -2.19760582e+03, ...,
+            -1.50949581e+02, -1.20394453e+01,  3.98644194e+02],
+           [-8.35796402e+01,  1.63681326e+01, -4.92947184e+01, ...,
+            -6.37614680e+01,  8.62335853e+00,  1.15288613e+02],
+           [-8.09991720e+02,  9.93346793e+01,  6.39797774e+01, ...,
+            -1.08423177e+02,  3.92612506e+00,  1.63513913e+01],
            ...,
-           [-7.12918007e+01,  8.32485404e+01,  1.93990853e+02, ...,
-            -7.27242733e+01, -4.96569998e+01, -6.04661794e+00],
-           [ 1.09688977e+02,  2.33107251e+01,  1.58250036e+02, ...,
-            -1.13996828e+02, -8.25212186e+01, -1.56287689e+01],
-           [-5.26250231e+01,  1.16424323e+02, -3.25274563e+02, ...,
-            -1.34815908e+03, -1.97937910e+03, -6.63282761e+02]]]],
+           [-3.93415454e+02,  9.12055533e+01,  1.85675163e+02, ...,
+            -8.23359846e+01, -4.52880107e+01, -2.07283533e+00],
+           [ 9.09570236e+01,  3.38502468e+01,  1.39667017e+02, ...,
+            -1.03564484e+02, -6.25597111e+01, -1.89459577e+01],
+           [-1.51101494e+02,  2.02828518e+02, -1.60171186e+02, ...,
+            -6.01972217e+02, -2.57099610e+02, -8.91659570e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -36009,7 +36011,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70aab8450ef0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x727eea0ac470>
     ```
 - [x] Attributes: (4)
 
@@ -36040,7 +36042,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8944
+Rigid + B-spline final metric: -0.8945
 ```
 
 ```python
@@ -36126,7 +36128,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 49.9 s
+**Total running time:** 62.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -36492,7 +36494,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76c35d4aaad0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d2b26042c10>
     ```
 - [ ] Attributes: (21)
 
@@ -36699,7 +36701,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 28.6 s
+**Total running time:** 26.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/04_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -36726,7 +36728,7 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
-- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load` ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
+- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load`, including stores that require query parameters on each request ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
@@ -36735,6 +36737,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- Power Doppler with no Butterworth cutoffs supports single-frame windows and returns the squared magnitude of each frame ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
@@ -36744,6 +36747,7 @@ Current development version for the next ConfUSIus release.
 - Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-576/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Link the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) of the dataset collection from the [datasets guide](<https://confusius.tools/pr-preview/pr-576/user-guide/datasets/index.md>) and the dataset collection example ([\#598](<https://github.com/confusius-tools/confusius/pull/598>)).
 
 ### 🔧 Maintenance
 
@@ -36759,6 +36763,7 @@ Current development version for the next ConfUSIus release.
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Align the layer selectors in **Data I/O** with the output path on macOS ([\#592](<https://github.com/confusius-tools/confusius/pull/592>)).
 
 ## 0.9.0
 
