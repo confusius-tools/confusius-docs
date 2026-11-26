@@ -330,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x744c08f3eae0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x78e210b9aae0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -364,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x744bf0e634d0\>, \<confusius.gl...x744bf0ebc770\>, \<confusius.gl...x744bf0e01b50\>, \<confusius.gl...x744bf0cdf790\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x78e1f8e7dd10\>, \<confusius.gl...x78e2000fb820\>, \<confusius.gl...x78e1f8fb2b10\>, \<confusius.gl...x78e1f8b51370\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -476,7 +476,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 79.1 s
+**Total running time:** 99.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/07_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/glm/first_level.ipynb>)
 
