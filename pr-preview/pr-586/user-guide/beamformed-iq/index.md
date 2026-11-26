@@ -280,7 +280,7 @@ Constructing an IQ-processing graph does not read IQ samples or invoke the callb
 
 The low-level function also accepts `windows_per_task` to batch several outer windows into one Dask task. This changes execution granularity, not window width, stride, filtering, or output times. Requests smaller than the minimum needed for an overlap halo are increased to that minimum. Larger batches can reduce scheduler overhead but increase memory and reduce parallelism; benchmark representative data before changing them. Built-in wrappers retain their existing minimum-batch default.
 
-B-mode and statically identifiable no-op clutter filters preserve the input's real precision (`complex64` gives `float32`; `complex128` gives `float64`). Potentially active clutter filters promote to at least double precision, even when an adaptive window selects no components to remove. This keeps dtype independent of the first window's contents. Velocity parameters represented by NumPy scalars can additionally promote output precision under NumPy's normal arithmetic rules.
+B-mode and statically identifiable no-op clutter filters preserve the input's real precision (`complex64` gives `float32`; `complex128` gives `float64`). Potentially active clutter filters promote to at least double precision, even when an adaptive window selects no components to remove. This keeps dtype independent of the first window's contents. NumPy scalar acquisition metadata (transmit frequency and sound velocity) can additionally promote velocity precision under NumPy's arithmetic rules. Python and NumPy integer lags give the same precision.
 
 ```
 ---

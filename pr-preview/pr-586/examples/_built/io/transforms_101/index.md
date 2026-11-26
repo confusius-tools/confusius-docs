@@ -206,7 +206,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74fc3dbf1810>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f42a8f99950>
     ```
 - [ ] Attributes: (5)
 
@@ -614,7 +614,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 25.0 s
+**Total running time:** 24.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101.ipynb>)
 

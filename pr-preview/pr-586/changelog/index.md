@@ -17,7 +17,7 @@ Current development version for the next ConfUSIus release.
 ### ✨ Enhancements
 
 - Tune execution batching in `process_iq_blocks` with `windows_per_task`, independently of scientific window sizes. Existing overlap-safe defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
-- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load` ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
+- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load`, including stores that require query parameters on each request ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
@@ -30,7 +30,9 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- IQ processing accepts NumPy integer window sizes and strides on long recordings. NumPy integer lags give the same velocity values and precision as Python integer lags ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Power Doppler with no Butterworth cutoffs supports single-frame windows and returns the squared magnitude of each frame ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
@@ -40,6 +42,7 @@ Current development version for the next ConfUSIus release.
 - Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Link the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) of the dataset collection from the [datasets guide](<https://confusius.tools/pr-preview/pr-586/user-guide/datasets/index.md>) and the dataset collection example ([\#598](<https://github.com/confusius-tools/confusius/pull/598>)).
 
 ### 🔧 Maintenance
 
@@ -55,6 +58,7 @@ Current development version for the next ConfUSIus release.
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Open multipose arrays as one positioned layer per pose in `plot_napari`, its xarray accessors, and the CLI, with pose values in layer names ([\#562](<https://github.com/confusius-tools/confusius/pull/562>)).
+- Align the layer selectors in **Data I/O** with the output path on macOS ([\#592](<https://github.com/confusius-tools/confusius/pull/592>)).
 
 ## 0.9.0
 

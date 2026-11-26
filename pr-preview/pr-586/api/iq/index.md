@@ -66,7 +66,7 @@ Functions:
 ```python
 clutter_filter_butterworth(
     block: NDArray,
-    fs: float,
+    fs: float | None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
@@ -86,9 +86,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`fs`**
 
-  (`float`) –
+  (`float or None`) –
 
-  Sampling frequency in hertz.
+  Sampling frequency in hertz. Required when either cutoff is specified.
 - #### **`low_cutoff`**
 
   (`float`, default: `None` ) –
@@ -115,7 +115,7 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if both `low_cutoff` and `high_cutoff` are `None`.
+  If `block` is not 4D, if cutoff frequencies are invalid, or if a cutoff is specified without a sampling frequency.
 
 ### clutter\_filter\_sosfiltfilt
 
@@ -376,9 +376,9 @@ compute_axial_velocity_volume(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    velocity_window_width: int | None = None,
-    velocity_window_stride: int | None = None,
-    lag: int = 1,
+    velocity_window_width: int | integer | None = None,
+    velocity_window_stride: int | integer | None = None,
+    lag: int | integer = 1,
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
@@ -521,8 +521,8 @@ compute_power_doppler_volume(
     high_cutoff: float | None = None,
     fs: float | None = None,
     butterworth_order: int = 4,
-    doppler_window_width: int | None = None,
-    doppler_window_stride: int | None = None,
+    doppler_window_width: int | integer | None = None,
+    doppler_window_stride: int | integer | None = None,
 ) -> NDArray
 ```
 
@@ -594,10 +594,10 @@ Returns:
 ```python
 compute_processed_volume_timings(
     iq: DataArray,
-    clutter_window_width: int,
-    clutter_window_stride: int,
-    inner_window_width: int,
-    inner_window_stride: int,
+    clutter_window_width: int | integer,
+    clutter_window_stride: int | integer,
+    inner_window_width: int | integer,
+    inner_window_stride: int | integer,
     processed_time_reference: VolumeAcquisitionReference
     | None = None,
 ) -> tuple[NDArray[floating], NDArray[floating]]
@@ -710,8 +710,8 @@ compute_svd_cumulative_energy_threshold(
     iq: DataArray,
     singular_value_index: int,
     clutter_mask: DataArray | None = None,
-    window_width: int | None = None,
-    window_stride: int | None = None,
+    window_width: int | integer | None = None,
+    window_stride: int | integer | None = None,
 ) -> Array
 ```
 
@@ -786,8 +786,8 @@ process_iq_block_with_clutter_filter(
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
-    window_width: int | None = None,
-    window_stride: int | None = None,
+    window_width: int | integer | None = None,
+    window_stride: int | integer | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -878,7 +878,7 @@ Raises:
 
 - `ValueError` –
 
-  If `filter_method` is `"butterworth"` and `fs` is not provided, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
+  If a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
 
 ### process\_iq\_blocks
 
@@ -889,9 +889,9 @@ process_iq_blocks(
     *,
     output_shape: tuple[int, ...],
     output_dtype: DTypeLike,
-    window_width: int | None = None,
-    window_stride: int | None = None,
-    windows_per_task: int | None = None,
+    window_width: int | integer | None = None,
+    window_stride: int | integer | None = None,
+    windows_per_task: int | integer | None = None,
 ) -> Array
 ```
 
@@ -961,8 +961,8 @@ Raises:
 ```python
 process_iq_to_axial_velocity(
     iq: DataArray,
-    clutter_window_width: int | None = None,
-    clutter_window_stride: int | None = None,
+    clutter_window_width: int | integer | None = None,
+    clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -973,9 +973,9 @@ process_iq_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    velocity_window_width: int | None = None,
-    velocity_window_stride: int | None = None,
-    lag: int = 1,
+    velocity_window_width: int | integer | None = None,
+    velocity_window_stride: int | integer | None = None,
+    lag: int | integer = 1,
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
@@ -1112,8 +1112,8 @@ Returns:
 ```python
 process_iq_to_bmode(
     iq: DataArray,
-    bmode_window_width: int | None = None,
-    bmode_window_stride: int | None = None,
+    bmode_window_width: int | integer | None = None,
+    bmode_window_stride: int | integer | None = None,
 ) -> DataArray
 ```
 
@@ -1150,8 +1150,8 @@ Returns:
 ```python
 process_iq_to_power_doppler(
     iq: DataArray,
-    clutter_window_width: int | None = None,
-    clutter_window_stride: int | None = None,
+    clutter_window_width: int | integer | None = None,
+    clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -1162,14 +1162,14 @@ process_iq_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    doppler_window_width: int | None = None,
-    doppler_window_stride: int | None = None,
+    doppler_window_width: int | integer | None = None,
+    doppler_window_stride: int | integer | None = None,
 ) -> DataArray
 ```
 
 Process blocks of beamformed IQ into power Doppler volumes using sliding windows.
 
-This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
+This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed. With no cutoffs, power Doppler uses the unfiltered samples and needs no sampling rate.
 
 Parameters:
 
