@@ -4002,7 +4002,7 @@
 
 
 <h1 id="processing-beamformed-iq-data">Processing Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> Data<a class="headerlink" href="#processing-beamformed-iq-data" title="Permanent link">&para;</a></h1>
-<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> signals contains very rich information about tissue and blood. ConfUSIus
+<p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> signals contain very rich information about tissue and blood. ConfUSIus
 lets you process these recordings to produce the following measures:</p>
 <ul>
 <li><strong>B-mode</strong>, to visualize tissue anatomy.</li>
@@ -4100,7 +4100,7 @@ squared <abbr title="In-phase and Quadrature">IQ</abbr> magnitude over each Dopp
 <p><a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_to_power_doppler&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_to_power_doppler"><code>process_iq_to_power_doppler</code></a> uses
 <code>clutter_window_width</code> to determine the clutter filter window size and
 <code>doppler_window_width</code> for power Doppler averaging. Its output is <strong>signal power in
-arbitrary units</strong>, not an absolute measure blood volume.</p>
+arbitrary units</strong>, not an absolute measure of blood volume.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pwd</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">iq</span><span class="o">.</span><span class="n">process_iq_to_power_doppler</span><span class="p">(</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">iq</span><span class="p">,</span> <span class="n">filter_method</span><span class="o">=</span><span class="s2">&quot;svd_indices&quot;</span><span class="p">,</span> <span class="n">low_cutoff</span><span class="o">=</span><span class="mi">40</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
@@ -4170,7 +4170,7 @@ later ones. Removing leading components can therefore suppress tissue echoes.</p
 <div class="admonition tip">
 <p class="admonition-title">Which <abbr title="Singular Value Decomposition">SVD</abbr> filter should I use?</p>
 <p>Start with <strong><code>svd_indices</code></strong> for most recordings. For awake subjects with
-strong, variable motion, adaptive methods may
+strong, variable motion, adaptive methods<sup id="fnref:baranger2018"><a class="footnote-ref" href="#fn:baranger2018">3</a></sup> may
 help<sup id="fnref5:lemeurdiebolt2025"><a class="footnote-ref" href="#fn:lemeurdiebolt2025">4</a></sup><sup id="fnref:bertolo2023"><a class="footnote-ref" href="#fn:bertolo2023">5</a></sup>. However, they are less established and
 can impact the signals you want to measure. In particular, avoid
 <code>svd_cumulative_energy</code> when global hemodynamic changes are of interest.</p>
@@ -4257,7 +4257,7 @@ Using this minimum helps prevent excessive filtering in any window<sup id="fnref
 </span></code></pre></div>
 <h2 id="processing-windows-and-custom-functions">Processing Windows and Custom Functions<a class="headerlink" href="#processing-windows-and-custom-functions" title="Permanent link">&para;</a></h2>
 <h3 id="nested-sliding-windows">Nested Sliding Windows<a class="headerlink" href="#nested-sliding-windows" title="Permanent link">&para;</a></h3>
-<p>For power Doppler and axial velocity, ConfUSIus uses <strong>two nested slilding windows</strong>:</p>
+<p>For power Doppler and axial velocity, ConfUSIus uses <strong>two nested sliding windows</strong>:</p>
 <ol>
 <li><strong>Clutter window:</strong> Filter a block of <abbr title="In-phase and Quadrature">IQ</abbr> volumes to suppress tissue echoes.</li>
 <li><strong>Measurement windows:</strong> Compute one or more power Doppler or velocity volumes from

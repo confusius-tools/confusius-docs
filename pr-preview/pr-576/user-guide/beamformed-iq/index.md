@@ -1,6 +1,6 @@
 # Processing Beamformed IQ Data
 
-Beamformed IQ signals contains very rich information about tissue and blood. ConfUSIus lets you process these recordings to produce the following measures:
+Beamformed IQ signals contain very rich information about tissue and blood. ConfUSIus lets you process these recordings to produce the following measures:
 
 - **B-mode**, to visualize tissue anatomy.
 - **Power Doppler**, to track changes in blood signal power, commonly used as a measure of relative cerebral blood volume in fUSI.
@@ -77,7 +77,7 @@ ConfUSIus provides built-in functions to process beamformed IQ data using slidin
 
 **Power Doppler** is the most common fUSI measure of relative cerebral blood volume changes. After removing tissue echoes with a clutter filter, ConfUSIus averages the squared IQ magnitude over each Doppler window.
 
-`process_iq_to_power_doppler` uses `clutter_window_width` to determine the clutter filter window size and `doppler_window_width` for power Doppler averaging. Its output is **signal power in arbitrary units**, not an absolute measure blood volume.
+`process_iq_to_power_doppler` uses `clutter_window_width` to determine the clutter filter window size and `doppler_window_width` for power Doppler averaging. Its output is **signal power in arbitrary units**, not an absolute measure of blood volume.
 
 ```python
 pwd = cf.iq.process_iq_to_power_doppler(
@@ -136,7 +136,7 @@ Tissue echoes are often strong and vary together across many voxels, while blood
 >
 > **Which SVD filter should I use?**
 >
-> Start with **`svd_indices`** for most recordings. For awake subjects with strong, variable motion, adaptive methods may help[^/pr-preview/pr-576/user-guide/beamformed-iq/#lemeurdiebolt2025][^/pr-preview/pr-576/user-guide/beamformed-iq/#bertolo2023]. However, they are less established and can impact the signals you want to measure. In particular, avoid `svd_cumulative_energy` when global hemodynamic changes are of interest.
+> Start with **`svd_indices`** for most recordings. For awake subjects with strong, variable motion, adaptive methods[^/pr-preview/pr-576/user-guide/beamformed-iq/#baranger2018] may help[^/pr-preview/pr-576/user-guide/beamformed-iq/#lemeurdiebolt2025][^/pr-preview/pr-576/user-guide/beamformed-iq/#bertolo2023]. However, they are less established and can impact the signals you want to measure. In particular, avoid `svd_cumulative_energy` when global hemodynamic changes are of interest.
 
 **`butterworth`** filters IQ signals by temporal frequency. A high-pass setting suppresses slow motion, but it cannot separate tissue from blood when their frequency ranges overlap. It may also remove slow flow in small vessels.
 
@@ -194,7 +194,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 
 ### Nested Sliding Windows
 
-For power Doppler and axial velocity, ConfUSIus uses **two nested slilding windows**:
+For power Doppler and axial velocity, ConfUSIus uses **two nested sliding windows**:
 
 1. **Clutter window:** Filter a block of IQ volumes to suppress tissue echoes.
 2. **Measurement windows:** Compute one or more power Doppler or velocity volumes from smaller windows within that filtered block.
