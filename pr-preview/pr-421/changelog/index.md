@@ -33,6 +33,7 @@ Current development version for the next ConfUSIus release.
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-421/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Added the [Use nilearn on a VoxelData array](<https://confusius.tools/pr-preview/pr-421/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `convert_from_nifti` and `convert_to_nifti` for easier interoperability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- Link the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) of the dataset collection from the [datasets guide](<https://confusius.tools/pr-preview/pr-421/user-guide/datasets/index.md>) and the dataset collection example ([\#598](<https://github.com/confusius-tools/confusius/pull/598>)).
 
 ### 🔧 Maintenance
 

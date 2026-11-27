@@ -6,7 +6,7 @@ This example introduces the collection's organization and access conventions. Th
 
 ## Browse the collection
 
-The public S3 bucket contains two prefixes, `datasets/` and `templates/`, with immutable releases under `<identifier>/<version>/`. The `last_versions.conf` catalog lists the latest published versions; each release's `manifest.json` records its file paths, sizes, and SHA-256 checksums.
+The public S3 bucket contains two prefixes, `datasets/` and `templates/`, with immutable releases under `<identifier>/<version>/`. The `last_versions.conf` catalog lists the latest published versions; each release's `manifest.json` records its file paths, sizes, and SHA-256 checksums. The [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) shows this layout in your browser.
 
 Fetchers resolve the latest published release on the first download, then reuse the cached version. Pass `refresh=True` to check for a newer release without overwriting an earlier one. Set `data_dir` for a particular fetch, or the `CONFUSIUS_DATA` environment variable to choose the download-cache directory for all fetchers (for example, `export CONFUSIUS_DATA=/path/to/cache`). `data_dir` takes priority; otherwise the platform cache directory is used by default.
 
@@ -115,6 +115,6 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.9 s
+**Total running time:** 5.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/worktree-agent-a3d24615deea0c5c6?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-421/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-421/examples/_built/io/dataset_collection.ipynb>)
