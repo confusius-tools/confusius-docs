@@ -66,7 +66,7 @@ Functions:
 ```python
 clutter_filter_butterworth(
     block: NDArray,
-    fs: float | None,
+    fs: float,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
@@ -86,9 +86,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`fs`**
 
-  (`float or None`) –
+  (`float`) –
 
-  Sampling frequency in hertz. Required when either cutoff is specified.
+  Sampling frequency in hertz.
 - #### **`low_cutoff`**
 
   (`float`, default: `None` ) –
@@ -115,7 +115,7 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if a cutoff is specified without a sampling frequency.
+  If `block` is not 4D or if cutoff frequencies are invalid.
 
 ### clutter\_filter\_sosfiltfilt
 
