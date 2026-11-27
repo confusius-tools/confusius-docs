@@ -4403,11 +4403,28 @@ methods use it internally, but you can call it directly to implement your own me
 or filters.</p>
 <div class="admonition note">
 <p class="admonition-title">Low-level interface</p>
-<p>Unlike most ConfUSIus functions, <code>process_iq_blocks</code> takes a <strong>Dask array</strong>, not a
+<p>Unlike most ConfUSIus functions,
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> takes a <strong>Dask array</strong>, not a
 VoxelData array. It returns processed data without managing coordinates or metadata.
 The built-in power Doppler, velocity, and B-mode functions handle those details for
 you.</p>
 </div>
+<pre class="mermaid"><code>---
+config:
+  layout: elk
+---
+
+flowchart LR
+    IQ --&gt;|Window 1| F1{{"User Function"}}
+    IQ --&gt; ellipsis{{"..."}}
+    IQ --&gt;|Window &lt;em&gt;n&lt;/em&gt;| F2{{"User Function"}}
+
+    F1 --&gt;|"Output Volume(s)"| output
+    F2 --&gt;|"Output Volume(s)"| output
+
+    IQ@{ shape: processes, label: "Input IQ Volumes" }
+    output@{ shape: processes, label: "Stacked Output Volumes" }
+    ellipsis@{ shape: text}</code></pre>
 <p>Custom callbacks must declare <code>output_shape</code> and <code>output_dtype</code>. The shape describes
 <strong>one outer window</strong>, including its leading output-time axis, not a whole recording
 or a batch of windows. Every callback must return a NumPy array with exactly that
@@ -4419,9 +4436,9 @@ point with two component maps</strong>. Non-temporal axis mapping is automatic, 
 spatially reduced outputs such as <code>(1,)</code> for a scalar measurement. Built-in wrappers
 supply these declarations internally.</p>
 <p>The callback receives just the NumPy <abbr title="In-phase and Quadrature">IQ</abbr> window. Bind its settings with
-<code>functools.partial</code> rather than forwarding them through <code>process_iq_blocks</code>.
-For complex64 or complex128 <abbr title="In-phase and Quadrature">IQ</abbr>, this example emits two 50-volume power measurements
-from each 100-volume <abbr title="Singular Value Decomposition">SVD</abbr> window:</p>
+<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functools.html#functools.partial"><code>functools.partial</code></a> rather than forwarding them through
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a>. For complex64 or complex128 <abbr title="In-phase and Quadrature">IQ</abbr>,
+this example emits two 50-volume power measurements from each 100-volume <abbr title="Singular Value Decomposition">SVD</abbr> window:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -4441,41 +4458,16 @@ from each 100-volume <abbr title="Singular Value Decomposition">SVD</abbr> windo
 </span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    <span class="n">window_stride</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 </span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>Results are concatenated in outer-window order, then within-window output-time order.
-The low-level function does not assign timestamps or deduplicate measurements from
-overlapping windows.</p>
-<p>Constructing an <abbr title="In-phase and Quadrature">IQ</abbr>-processing graph does not read <abbr title="In-phase and Quadrature">IQ</abbr> samples or invoke the callback.
-A supplied clutter mask is still loaded for validation. Callbacks should remain
+<p>Results are concatenated in outer-window order, then within-window output-time order.</p>
+<p>Constructing an <abbr title="In-phase and Quadrature">IQ</abbr>-processing graph does not read <abbr title="In-phase and Quadrature">IQ</abbr> samples or invoke the callback. A
+supplied clutter mask is still loaded for validation. Callbacks should remain
 side-effect-free because Dask can retry or recompute tasks.</p>
-<p>The low-level function also accepts <code>windows_per_task</code> to batch several outer
-windows into one Dask task. This changes execution granularity, not window width,
-stride, filtering, or output times. Requests smaller than the minimum needed for
-an overlap halo are increased to that minimum. Larger batches can reduce scheduler
-overhead but increase memory and reduce parallelism; benchmark representative data
-before changing them. Built-in wrappers retain their existing minimum-batch default.</p>
-<p>B-mode and statically identifiable no-op clutter filters preserve the input's real
-precision (<code>complex64</code> gives <code>float32</code>; <code>complex128</code> gives <code>float64</code>). Potentially
-active clutter filters promote to at least double precision, even when an adaptive
-window selects no components to remove. This keeps dtype independent of the first
-window's contents. NumPy scalar acquisition metadata (transmit frequency and sound
-velocity) can additionally promote velocity precision under NumPy's arithmetic rules.
-Python and NumPy integer lags give the same precision.</p>
-<pre class="mermaid"><code>---
-config:
-  layout: elk
----
-
-flowchart LR
-    IQ --&gt;|Window 1| F1{{"User Function"}}
-    IQ --&gt; ellipsis{{"..."}}
-    IQ --&gt;|Window &lt;em&gt;n&lt;/em&gt;| F2{{"User Function"}}
-
-    F1 --&gt;|"Output Volume(s)"| output
-    F2 --&gt;|"Output Volume(s)"| output
-
-    IQ@{ shape: processes, label: "Input IQ Volumes" }
-    output@{ shape: processes, label: "Stacked Output Volumes" }
-    ellipsis@{ shape: text}</code></pre>
+<p>The low-level function also accepts <code>windows_per_task</code> to batch several outer windows
+into one Dask task. This changes execution granularity, not window width, stride,
+filtering, or output times. Requests smaller than the minimum needed for an overlap halo
+are increased to that minimum. Larger batches can reduce scheduler overhead but increase
+memory and reduce parallelism. Built-in wrappers retain their existing minimum-batch
+default.</p>
 <h2 id="working-with-large-recordings">Working with Large Recordings<a class="headerlink" href="#working-with-large-recordings" title="Permanent link">&para;</a></h2>
 <p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> recordings can be tens or hundreds of gigabytes. ConfUSIus uses
 <a href="https://docs.dask.org/en/stable/">Dask</a> to process data in chunks, so the entire

@@ -1575,14 +1575,14 @@ process_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
-    butterworth_padtype: str | None = "odd",
-    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -1632,6 +1632,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - ##### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -1652,16 +1662,6 @@ Parameters:
   (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
-- ##### **`butterworth_padtype`**
-
-  (`(odd, even, constant, None)`, default: `"odd"` ) –
-
-  Butterworth padding extension type. Pass `None` to disable padding.
-- ##### **`butterworth_padlen`**
-
-  (`int`, default: `None` ) –
-
-  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -1740,10 +1740,10 @@ process_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    doppler_window_width: int | None = None,
-    doppler_window_stride: int | None = None,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
+    doppler_window_width: int | None = None,
+    doppler_window_stride: int | None = None,
 ) -> DataArray
 ```
 
@@ -1793,16 +1793,6 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
-- ##### **`doppler_window_width`**
-
-  (`int`, default: `None` ) –
-
-  Width of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `clutter_window_width`.
-- ##### **`doppler_window_stride`**
-
-  (`int`, default: `None` ) –
-
-  Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
 - ##### **`butterworth_padtype`**
 
   (`(odd, even, constant, None)`, default: `"odd"` ) –
@@ -1813,6 +1803,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
+- ##### **`doppler_window_width`**
+
+  (`int`, default: `None` ) –
+
+  Width of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `clutter_window_width`.
+- ##### **`doppler_window_stride`**
+
+  (`int`, default: `None` ) –
+
+  Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
 
 Returns:
 

@@ -247,6 +247,25 @@ The underlying `process_iq_blocks` function applies **any user-defined function*
 >
 > Unlike most ConfUSIus functions, `process_iq_blocks` takes a **Dask array**, not a VoxelData array. It returns processed data without managing coordinates or metadata. The built-in power Doppler, velocity, and B-mode functions handle those details for you.
 
+```
+---
+config:
+  layout: elk
+---
+
+flowchart LR
+    IQ -->|Window 1| F1{{"User Function"}}
+    IQ --> ellipsis{{"..."}}
+    IQ -->|Window <em>n</em>| F2{{"User Function"}}
+
+    F1 -->|"Output Volume(s)"| output
+    F2 -->|"Output Volume(s)"| output
+
+    IQ@{ shape: processes, label: "Input IQ Volumes" }
+    output@{ shape: processes, label: "Stacked Output Volumes" }
+    ellipsis@{ shape: text}
+```
+
 Custom callbacks must declare `output_shape` and `output_dtype`. The shape describes **one outer window**, including its leading output-time axis, not a whole recording or a batch of windows. Every callback must return a NumPy array with exactly that shape and dtype; mismatches raise when the graph executes. The dtype declaration does not cast callback outputs.
 
 For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply these declarations internally.
@@ -274,32 +293,11 @@ result = cf.iq.process_iq_blocks(
 )
 ```
 
-Results are concatenated in outer-window order, then within-window output-time order. The low-level function does not assign timestamps or deduplicate measurements from overlapping windows.
+Results are concatenated in outer-window order, then within-window output-time order.
 
 Constructing an IQ-processing graph does not read IQ samples or invoke the callback. A supplied clutter mask is still loaded for validation. Callbacks should remain side-effect-free because Dask can retry or recompute tasks.
 
-The low-level function also accepts `windows_per_task` to batch several outer windows into one Dask task. This changes execution granularity, not window width, stride, filtering, or output times. Requests smaller than the minimum needed for an overlap halo are increased to that minimum. Larger batches can reduce scheduler overhead but increase memory and reduce parallelism; benchmark representative data before changing them. Built-in wrappers retain their existing minimum-batch default.
-
-B-mode and statically identifiable no-op clutter filters preserve the input's real precision (`complex64` gives `float32`; `complex128` gives `float64`). Potentially active clutter filters promote to at least double precision, even when an adaptive window selects no components to remove. This keeps dtype independent of the first window's contents. NumPy scalar acquisition metadata (transmit frequency and sound velocity) can additionally promote velocity precision under NumPy's arithmetic rules. Python and NumPy integer lags give the same precision.
-
-```
----
-config:
-  layout: elk
----
-
-flowchart LR
-    IQ -->|Window 1| F1{{"User Function"}}
-    IQ --> ellipsis{{"..."}}
-    IQ -->|Window <em>n</em>| F2{{"User Function"}}
-
-    F1 -->|"Output Volume(s)"| output
-    F2 -->|"Output Volume(s)"| output
-
-    IQ@{ shape: processes, label: "Input IQ Volumes" }
-    output@{ shape: processes, label: "Stacked Output Volumes" }
-    ellipsis@{ shape: text}
-```
+The low-level function also accepts `windows_per_task` to batch several outer windows into one Dask task. This changes execution granularity, not window width, stride, filtering, or output times. Requests smaller than the minimum needed for an overlap halo are increased to that minimum. Larger batches can reduce scheduler overhead but increase memory and reduce parallelism. Built-in wrappers retain their existing minimum-batch default.
 
 ## Working with Large Recordings
 
