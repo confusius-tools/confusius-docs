@@ -21,6 +21,10 @@ Current development version for the next ConfUSIus release.
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
 
+### ⚡ Performance
+
+- Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
+
 ### 🐛 Fixes
 
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).

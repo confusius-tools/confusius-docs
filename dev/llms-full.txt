@@ -11919,7 +11919,7 @@ Parameters:
   - A blockshape like `(1000, 1000)`.
   - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
   - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
-  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - The word `"auto"` to use the disk-order chunking described in `load_nifti` for file-backed images. Dask chooses chunk sizes for in-memory arrays.
   - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
 - #### **`coordinate_affine`**
 
@@ -12392,7 +12392,7 @@ Parameters:
   - A blockshape like `(1000, 1000)`.
   - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
   - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
-  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - The word `"auto"` to group voxels in disk order up to Dask's configured chunk-size target. For 2D and 3D images, chunks contain complete rows or planes when they fit. For 4D through 7D files, each chunk holds at least one complete spatial volume, even when it exceeds the target.
   - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
 - #### **`coordinate_affine`**
 
@@ -37159,6 +37159,10 @@ Current development version for the next ConfUSIus release.
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
+
+### ⚡ Performance
+
+- Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
 
 ### 🐛 Fixes
 

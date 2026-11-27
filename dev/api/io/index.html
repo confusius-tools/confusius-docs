@@ -5659,9 +5659,9 @@ available until then.</p>
   500), (400, 400))</code>.</li>
 <li>A size in bytes, like <code>"100 MiB"</code> which will choose a uniform block-like
   shape.</li>
-<li>The word <code>"auto"</code> to let Dask choose chunk sizes based on heuristics. See
-  <code>dask.array.normalize_chunks</code> for more details on how chunk sizes are
-  determined.</li>
+<li>The word <code>"auto"</code> to use the disk-order chunking described in
+  <code>load_nifti</code> for file-backed images. Dask chooses chunk sizes for
+  in-memory arrays.</li>
 <li><code>-1</code> or <code>None</code> as a blocksize indicate the size of the corresponding
   dimension.</li>
 </ul>
@@ -6609,9 +6609,10 @@ Each chunk must satisfy <code>stack_poses</code>' single-pose input requirements
   500), (400, 400))</code>.</li>
 <li>A size in bytes, like <code>"100 MiB"</code> which will choose a uniform block-like
   shape.</li>
-<li>The word <code>"auto"</code> to let Dask choose chunk sizes based on heuristics. See
-  <code>dask.array.normalize_chunks</code> for more details on how chunk sizes are
-  determined.</li>
+<li>The word <code>"auto"</code> to group voxels in disk order up to Dask's configured
+  chunk-size target. For 2D and 3D images, chunks contain complete rows
+  or planes when they fit. For 4D through 7D files, each chunk holds at
+  least one complete spatial volume, even when it exceeds the target.</li>
 <li><code>-1</code> or <code>None</code> as a blocksize indicate the size of the corresponding
   dimension.</li>
 </ul>
