@@ -407,9 +407,9 @@ compute_axial_velocity_volume(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    velocity_window_width: int | integer | None = None,
-    velocity_window_stride: int | integer | None = None,
-    lag: int | integer = 1,
+    velocity_window_width: int | None = None,
+    velocity_window_stride: int | None = None,
+    lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
@@ -565,8 +565,8 @@ compute_power_doppler_volume(
     high_cutoff: float | None = None,
     fs: float | None = None,
     butterworth_order: int = 4,
-    doppler_window_width: int | integer | None = None,
-    doppler_window_stride: int | integer | None = None,
+    doppler_window_width: int | None = None,
+    doppler_window_stride: int | None = None,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> NDArray
@@ -651,10 +651,10 @@ Returns:
 compute_processed_volume_timings(
     iq: DataArray,
     *,
-    clutter_window_width: int | integer,
-    clutter_window_stride: int | integer,
-    inner_window_width: int | integer,
-    inner_window_stride: int | integer,
+    clutter_window_width: int,
+    clutter_window_stride: int,
+    inner_window_width: int,
+    inner_window_stride: int,
     processed_time_reference: VolumeAcquisitionReference
     | None = None,
 ) -> tuple[NDArray[floating], NDArray[floating]]
@@ -768,8 +768,8 @@ compute_svd_cumulative_energy_threshold(
     singular_value_index: int,
     *,
     clutter_mask: DataArray | None = None,
-    window_width: int | integer | None = None,
-    window_stride: int | integer | None = None,
+    window_width: int | None = None,
+    window_stride: int | None = None,
 ) -> Array
 ```
 
@@ -845,8 +845,8 @@ process_iq_block_with_clutter_filter(
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
-    window_width: int | integer | None = None,
-    window_stride: int | integer | None = None,
+    window_width: int | None = None,
+    window_stride: int | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -960,9 +960,9 @@ process_iq_blocks(
     *,
     output_shape: tuple[int, ...],
     output_dtype: DTypeLike,
-    window_width: int | integer | None = None,
-    window_stride: int | integer | None = None,
-    windows_per_task: int | integer | None = None,
+    window_width: int | None = None,
+    window_stride: int | None = None,
+    windows_per_task: int | None = None,
 ) -> Array
 ```
 
@@ -1033,8 +1033,8 @@ Raises:
 process_iq_to_axial_velocity(
     iq: DataArray,
     *,
-    clutter_window_width: int | integer | None = None,
-    clutter_window_stride: int | integer | None = None,
+    clutter_window_width: int | None = None,
+    clutter_window_stride: int | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -1045,9 +1045,9 @@ process_iq_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    velocity_window_width: int | integer | None = None,
-    velocity_window_stride: int | integer | None = None,
-    lag: int | integer = 1,
+    velocity_window_width: int | None = None,
+    velocity_window_stride: int | None = None,
+    lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
@@ -1197,8 +1197,8 @@ Returns:
 process_iq_to_bmode(
     iq: DataArray,
     *,
-    bmode_window_width: int | integer | None = None,
-    bmode_window_stride: int | integer | None = None,
+    bmode_window_width: int | None = None,
+    bmode_window_stride: int | None = None,
 ) -> DataArray
 ```
 
@@ -1236,8 +1236,8 @@ Returns:
 process_iq_to_power_doppler(
     iq: DataArray,
     *,
-    clutter_window_width: int | integer | None = None,
-    clutter_window_stride: int | integer | None = None,
+    clutter_window_width: int | None = None,
+    clutter_window_stride: int | None = None,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -1248,8 +1248,8 @@ process_iq_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
-    doppler_window_width: int | integer | None = None,
-    doppler_window_stride: int | integer | None = None,
+    doppler_window_width: int | None = None,
+    doppler_window_stride: int | None = None,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray

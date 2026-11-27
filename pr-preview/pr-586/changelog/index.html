@@ -5277,8 +5277,8 @@
   odd-order and band-pass filters. Dask-backed results report the filtered dtype
   before computation
   (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
-<li><abbr title="In-phase and Quadrature">IQ</abbr> processing accepts NumPy integer window sizes and strides on long recordings.
-  NumPy integer lags give the same velocity values and precision as Python integer lags
+<li><abbr title="In-phase and Quadrature">IQ</abbr> window counting avoids integer overflow on long recordings, and axial
+  velocity calculations use consistent precision across integer lag types
   (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
 <li>Adaptive <abbr title="Singular Value Decomposition">SVD</abbr> filtering retains consistent output precision even when a window
   selects no clutter components, preventing other windows from being silently
