@@ -66,10 +66,13 @@ Functions:
 ```python
 clutter_filter_butterworth(
     block: NDArray,
-    fs: float | None,
+    fs: float,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -86,9 +89,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`fs`**
 
-  (`float or None`) –
+  (`float`) –
 
-  Sampling frequency in hertz. Required when either cutoff is specified.
+  Sampling frequency in hertz.
 - #### **`low_cutoff`**
 
   (`float`, default: `None` ) –
@@ -104,6 +107,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Filter order. Due to forward-backward filtering, the effective order is doubled.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -115,13 +128,17 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if a cutoff is specified without a sampling frequency.
+  If `block` is not 4D or if cutoff frequencies are invalid.
 
 ### clutter\_filter\_sosfiltfilt
 
 ```python
 clutter_filter_sosfiltfilt(
-    block: NDArray, sos: NDArray
+    block: NDArray,
+    sos: NDArray,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -141,6 +158,16 @@ Parameters:
   (`(sections, 6) numpy.ndarray`) –
 
   Second-order sections filter coefficients, typically obtained from SciPy functions like `scipy.signal.butter`, `scipy.signal.cheby1`, etc.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -384,6 +411,9 @@ compute_axial_velocity_volume(
     | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -463,6 +493,16 @@ Parameters:
   (`float`, default: `1540` ) –
 
   Speed of sound assumed during beamforming, in meters per second.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -523,6 +563,9 @@ compute_power_doppler_volume(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -582,6 +625,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window, in volumes. If not provided, equals `doppler_window_width`.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -796,6 +849,9 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     **kwargs: Any,
 ) -> NDArray
 ```
@@ -862,6 +918,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   When using the Butterworth clutter filter, the order of the filter.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -979,6 +1045,9 @@ process_iq_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -1056,6 +1125,16 @@ Parameters:
   (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -1164,6 +1243,9 @@ process_iq_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -1228,6 +1310,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 

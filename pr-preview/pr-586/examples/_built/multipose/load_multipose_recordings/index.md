@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71efd685f040>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x721cd9d8fad0>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71efccd83f50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x721cd0294410>
     ```
 - [ ] Attributes: (25)
 
@@ -844,7 +844,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.5 s
+**Total running time:** 12.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/multipose/load_multipose_recordings.ipynb>)
 

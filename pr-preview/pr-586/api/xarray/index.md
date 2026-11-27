@@ -143,6 +143,9 @@ Methods:
 - **`save`** –
 
   Save the DataArray to file, dispatching by extension.
+- **`to_nifti`** –
+
+  Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
 - **`translate`** –
 
   Translate a VoxelData array in world space.
@@ -608,6 +611,82 @@ Examples:
 ...     np.zeros((10, 32, 1, 64)), dims=["time", "k", "j", "i"]
 ... )
 >>> data.fusi.save("recording.nii.gz")
+```
+
+#### to\_nifti
+
+```python
+to_nifti(
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+    copy: bool = False,
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
+```
+
+Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
+
+Builds the same image and metadata as `save_nifti` without writing files. Pass the metadata as `sidecar` to `convert_from_nifti` to preserve timing and named extra dimensions. This is a convenience wrapper around `convert_to_nifti`.
+
+Parameters:
+
+- ##### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- ##### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI qform. If not provided, `"world_to_qform"` is used if present; otherwise qform falls back to the coordinate-defining voxel geometry (`voxel_to_world`) directly.
+
+  If the coordinate-defining affine contains shear, qform writing is disabled because the NIfTI qform cannot represent shear. In that case, the geometry is written to sform instead.
+- ##### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI sform. If not provided, `"world_to_sform"` is used if present; otherwise sform also falls back to `voxel_to_world` directly (like qform), unless disabled via `sform_code=0` or `attrs["sform_code"] = 0`.
+- ##### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. Takes precedence over `attrs["qform_code"]`. If not provided, the value from `attrs["qform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. Takes precedence over `attrs["sform_code"]`. If not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`copy`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to copy the data into the returned image. If not copied, the image's data shares memory with a NumPy-backed array, so editing it in place (e.g. through `img.dataobj` or `img.get_fdata()`) also modifies the array.
+
+Returns:
+
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
+
+  In-memory NIfTI image with spacings, qform/sform, and units in the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius as cf
+>>> data = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img, metadata = data.fusi.to_nifti()
 ```
 
 #### translate
@@ -1501,6 +1580,9 @@ process_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -1570,6 +1652,16 @@ Parameters:
   (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -1648,6 +1740,9 @@ process_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -1707,6 +1802,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 

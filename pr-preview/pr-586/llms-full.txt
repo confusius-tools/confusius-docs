@@ -663,6 +663,12 @@ da.fusi.save("sub-01_ses-01_chunk-{chunk}_pwd.nii")
 
 Each pose gets its own NIfTI file and JSON sidecar, preserving its geometry and timing. Chunk indices come from the `pose` labels, which must be unique non-negative integers. Without `{chunk}`, select a single pose before saving to NIfTI, since one file cannot represent distinct per-pose affines.
 
+> [!NOTE]
+>
+> **Headers without orientation**
+>
+> When both `sform_code` and `qform_code` are 0, a NIfTI header stores no orientation. When loading such a file, or converting such a NiBabel image with `convert_from_nifti`, ConfUSIus follows the [NIfTI-1 standard](<https://github.com/NIFTI-Imaging/nifti_clib/blob/master/niftilib/nifti1.h>) and builds the voxel-to-world affine from the voxel sizes alone: the first voxel sits at the origin and no axis is rotated or flipped. A warning is emitted. NiBabel's `img.affine`, used by nilearn and other NiBabel-based tools, follows SPM instead: it puts the central voxel at the origin and negates the x axis (see [NiBabel's fall-back affine](<https://nipy.org/nibabel/nifti_images.html#the-fall-back-header-affine>)). World coordinates from ConfUSIus and from those tools therefore differ for such files.
+
 ### Loading Other Formats
 
 For unsupported formats, such as lab-specific MAT-files, load the array with the appropriate Python tool and use `create_voxeldata` to attach dimensions, coordinates, and metadata:
@@ -1383,6 +1389,7 @@ The `.fusi` accessor is organized into focused sub-accessors, plus a set of glob
 | Accessor | Description |
 | --- | --- |
 | `.fusi.save` | Save data to file (NIfTI or Zarr), dispatching by extension. |
+| `.fusi.to_nifti` | Return an in-memory NiBabel NIfTI image and fUSI-BIDS metadata, with no file I/O. |
 | `.fusi.iq` | Process beamformed IQ into power Doppler or axial velocity volumes. |
 | `.fusi.scale` | Scaling transformations: decibel, log, and power scaling. |
 | `.fusi.affine` | Inspect and apply voxel-to-world and world-to-reference affine transforms. |
@@ -1995,7 +2002,7 @@ The `pose` labels must be unique, non-negative integers. The `{chunk}` placehold
 
 # Processing Beamformed IQ Data
 
-Beamformed IQ signals contains very rich information about tissue and blood. ConfUSIus lets you process these recordings to produce the following measures:
+Beamformed IQ signals contain very rich information about tissue and blood. ConfUSIus lets you process these recordings to produce the following measures:
 
 - **B-mode**, to visualize tissue anatomy.
 - **Power Doppler**, to track changes in blood signal power, commonly used as a measure of relative cerebral blood volume in fUSI.
@@ -2072,7 +2079,7 @@ ConfUSIus provides built-in functions to process beamformed IQ data using slidin
 
 **Power Doppler** is the most common fUSI measure of relative cerebral blood volume changes. After removing tissue echoes with a clutter filter, ConfUSIus averages the squared IQ magnitude over each Doppler window.
 
-`process_iq_to_power_doppler` uses `clutter_window_width` to determine the clutter filter window size and `doppler_window_width` for power Doppler averaging. Its output is **signal power in arbitrary units**, not an absolute measure blood volume.
+`process_iq_to_power_doppler` uses `clutter_window_width` to determine the clutter filter window size and `doppler_window_width` for power Doppler averaging. Its output is **signal power in arbitrary units**, not an absolute measure of blood volume.
 
 ```python
 pwd = cf.iq.process_iq_to_power_doppler(
@@ -2131,11 +2138,13 @@ Tissue echoes are often strong and vary together across many voxels, while blood
 >
 > **Which SVD filter should I use?**
 >
-> Start with **`svd_indices`** for most recordings. For awake subjects with strong, variable motion, adaptive methods may help[^/pr-preview/pr-586/user-guide/beamformed-iq/#lemeurdiebolt2025][^/pr-preview/pr-586/user-guide/beamformed-iq/#bertolo2023]. However, they are less established and can impact the signals you want to measure. In particular, avoid `svd_cumulative_energy` when global hemodynamic changes are of interest.
+> Start with **`svd_indices`** for most recordings. For awake subjects with strong, variable motion, adaptive methods[^/pr-preview/pr-586/user-guide/beamformed-iq/#baranger2018] may help[^/pr-preview/pr-586/user-guide/beamformed-iq/#lemeurdiebolt2025][^/pr-preview/pr-586/user-guide/beamformed-iq/#bertolo2023]. However, they are less established and can impact the signals you want to measure. In particular, avoid `svd_cumulative_energy` when global hemodynamic changes are of interest.
 
 **`butterworth`** filters IQ signals by temporal frequency. A high-pass setting suppresses slow motion, but it cannot separate tissue from blood when their frequency ranges overlap. It may also remove slow flow in small vessels.
 
 For these reasons, **Butterworth filtering alone is generally unsuitable for fUSI**. It can be useful before SVD filtering[^/pr-preview/pr-586/user-guide/beamformed-iq/#brunner2020][^/pr-preview/pr-586/user-guide/beamformed-iq/#nunez-elizalde2022][^/pr-preview/pr-586/user-guide/beamformed-iq/#lemeurdiebolt2025] or in specialized applications such as tissue-motion tracking.
+
+IQ processing functions and accessors accept `butterworth_padtype` (`"odd"`, `"even"`, `"constant"`, or `None`) and `butterworth_padlen` (samples) to control padding at each clutter window's boundaries. Defaults match SciPy: odd extension and an automatic length based on the filter coefficients. Set `butterworth_padtype=None` to disable padding; this also ignores the padding length. Shorter padding permits shorter windows but can increase boundary artifacts. The low-level `clutter_filter_butterworth` and `clutter_filter_sosfiltfilt` functions expose the same settings as `padtype` and `padlen`.
 
 ### Filter cutoffs
 
@@ -2189,7 +2198,7 @@ pwd = iq.fusi.iq.process_to_power_doppler(
 
 ### Nested Sliding Windows
 
-For power Doppler and axial velocity, ConfUSIus uses **two nested slilding windows**:
+For power Doppler and axial velocity, ConfUSIus uses **two nested sliding windows**:
 
 1. **Clutter window:** Filter a block of IQ volumes to suppress tissue echoes.
 2. **Measurement windows:** Compute one or more power Doppler or velocity volumes from smaller windows within that filtered block.
@@ -3493,19 +3502,6 @@ Attributes: (12/24)
     transmit_voltage:                    25.0
 ```
 
-## Sample beamformed IQ
-
-`fetch_sample_beamformed_iq` opens a Landemard et al. (2026) recording lazily from the collection:
-
-```python
-from confusius.datasets import fetch_sample_beamformed_iq
-
-iq = fetch_sample_beamformed_iq()
-segment = iq.isel(time=slice(0, 300)).compute()
-```
-
-Release metadata is cached like other datasets; use `refresh=True` to check for a newer release. Opening the store still requires network access, and IQ chunks are not cached locally. Only the chunks needed by a computation are transferred. Repeated reads may download the same chunks again; computing the entire array transfers the full recording. The recording is licensed under CC BY-NC 4.0.
-
 ## Datasets Storage
 
 ConfUSIus resolves the cache directory using the following priority chain:
@@ -3542,12 +3538,13 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✗    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✗    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✗    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✗    │
 └─────────────────────────────────────┴──────────┴─────────┘
 ```
 
-The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
+The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below). `fetch_sample_beamformed_iq` streams its recording, so only its release metadata is ever stored on disk.
 
 The same table is available from the command line:
 
@@ -3766,6 +3763,19 @@ bids_root = fetch_nunez_elizalde_2022(subjects=["CR020"], refresh=True)
 ```
 
 Versions are immutable and use separate cache directories. Refreshing an unchanged release does not reread or download files whose recorded SHA-256 matches the remote manifest. If an upstream hash changes or the cached hash is unknown, the file is revalidated and downloaded when necessary. The same release-selection behavior applies to template fetchers.
+
+## Available Samples
+
+`fetch_sample_beamformed_iq` opens a Landemard et al. (2026) recording lazily from the collection:
+
+```python
+from confusius.datasets import fetch_sample_beamformed_iq
+
+iq = fetch_sample_beamformed_iq()
+segment = iq.isel(time=slice(0, 300)).compute()
+```
+
+Release metadata is cached like other datasets; use `refresh=True` to check for a newer release. Opening the store still requires network access, and IQ chunks are not cached locally. Only the chunks needed by a computation are transferred. Repeated reads may download the same chunks again; computing the entire array transfers the full recording. The recording is licensed under CC BY-NC 4.0.
 
 ## Available Templates
 
@@ -11108,6 +11118,12 @@ Functions:
 - **`convert_autc_dats_to_zarr`** –
 
   Convert AUTC DAT files to Zarr format compatible with Xarray.
+- **`convert_from_nifti`** –
+
+  Convert an in-memory NiBabel NIfTI image to a VoxelData array.
+- **`convert_to_nifti`** –
+
+  Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
 - **`load`** –
 
   Load a VoxelData array from file, dispatching by extension.
@@ -11695,6 +11711,183 @@ Raises:
 > Spatial coordinates (`z`, `y`, `x`) follow the ConfUSIus probe-relative coordinate system: world distances in millimeters along each voxel axis, with the origin at the center of the probe face. Unlike EchoFrame data (where coordinates are embedded in the metadata file), AUTC's own file data carries no physical calibration for any axis, so `spacing` must always be supplied by the caller -- there is no meaningful default.
 >
 > Correctly computing elevation (`spacing[0]`) spacing requires the elevation beam width, which itself needs the elevation aperture and elevation focus; that computation isn't implemented here, so pass `spacing[0]` explicitly if that information is known, or an intentional placeholder (e.g. `0.4`) otherwise.
+
+### convert\_from\_nifti
+
+```python
+convert_from_nifti(
+    img: Nifti1Image | Nifti2Image,
+    chunks: int | tuple[int, ...] | str | None = "auto",
+    *,
+    coordinate_affine: Literal[
+        "auto", "sform", "qform"
+    ] = "auto",
+    sidecar: dict[str, Any] | None = None,
+) -> DataArray
+```
+
+Convert an in-memory NiBabel NIfTI image to a VoxelData array.
+
+This is the image-based counterpart to `load_nifti`, which opens the file, reads its BIDS JSON sidecars, and delegates to this function. It reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and never looks for a sidecar on disk: sidecar metadata is used only when passed through `sidecar`. Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
+
+An image backed by a file on disk (e.g. from `nibabel.load`, whose `img.dataobj` is a NiBabel `ArrayProxy`) stays lazy, including images with slope/intercept scaling. Voxel data is read when the returned array is computed, so the file must remain available until then.
+
+Parameters:
+
+- #### **`img`**
+
+  (`Nifti1Image or Nifti2Image`) –
+
+  In-memory NiBabel NIfTI image.
+- #### **`chunks`**
+
+  (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
+
+  How to chunk the array. Must be one of the following forms.
+
+  - A blocksize like `1000`.
+  - A blockshape like `(1000, 1000)`.
+  - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
+  - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
+  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
+- #### **`coordinate_affine`**
+
+  (`(auto, sform, qform)`, default: `"auto"` ) –
+
+  Header affine to use as the primary coordinate-defining geometry.
+
+  - `"auto"` prefers sform when both sform and qform are valid, and falls back to qform when only qform is valid.
+  - `"sform"` forces the sform to define the in-memory coordinate geometry.
+  - `"qform"` forces the qform to define the in-memory coordinate geometry.
+
+  The non-selected valid header affine is still preserved in `data_array.attrs["affines"]` as a world-to-world transform.
+- #### **`sidecar`**
+
+  (`dict[str, Any]`, default: `None` ) –
+
+  Metadata using fUSI-BIDS field names and units, as returned by `convert_to_nifti` or read from a BIDS JSON sidecar. Entries override header-derived attributes and feed timing and extra-dimension reconstruction. When `SliceTiming` is supplied without `SliceEncodingDirection`, the header's slice axis gives the order of increasing slice index. If no sidecar is provided, only the NIfTI header is used.
+
+Returns:
+
+- `DataArray` –
+
+  VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Extra NIfTI axes precede these dimensions in their original file order.
+
+Raises:
+
+- `TypeError` –
+
+  If `img` is not a `nibabel.Nifti1Image` or `nibabel.Nifti2Image`.
+- `ValueError` –
+
+  If the chunk specification or reconstructed VoxelData geometry is invalid, or if `coordinate_affine` is `"sform"` or `"qform"` and that form's code is zero in the header.
+
+> [!NOTE]
+>
+> **Notes**
+>
+> When both `sform_code` and `qform_code` are 0, the header stores no orientation. Following the [NIfTI-1 standard](<https://github.com/NIFTI-Imaging/nifti_clib/blob/master/niftilib/nifti1.h>) ("method 1"), the voxel-to-world affine is then built from the voxel sizes alone: the first voxel sits at the origin and no axis is rotated or flipped. A warning is emitted. NiBabel's `img.affine`, used by nilearn and other NiBabel-based tools, follows SPM instead: it puts the central voxel at the origin and negates the x axis ([NiBabel's fall-back affine](<https://nipy.org/nibabel/nifti_images.html#the-fall-back-header-affine>)). World coordinates from ConfUSIus and from those tools therefore differ for such images.
+
+Examples:
+
+```pycon
+>>> import nibabel as nib
+>>> import numpy as np
+>>> import confusius as cf
+>>> img = nib.Nifti1Image(np.random.rand(64, 64, 32).astype(np.float32), np.eye(4))
+>>> da = cf.io.convert_from_nifti(img)
+>>> print(da.dims)
+("k", "j", "i")
+```
+
+### convert\_to\_nifti
+
+```python
+convert_to_nifti(
+    data_array: DataArray,
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+    copy: bool = False,
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
+```
+
+Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
+
+This is the no-file-I/O counterpart to `save_nifti`: it builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the `nibabel.Nifti1Image`/`nibabel.Nifti2Image` object directly instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. The returned metadata carries sidecar-only information such as `SliceTiming` and extra-dimension names. Pass it as `sidecar` to `convert_from_nifti` to preserve that information.
+
+Parameters:
+
+- #### **`data_array`**
+
+  (`DataArray`) –
+
+  VoxelData array to convert.
+- #### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- #### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI qform. When not provided, `"world_to_qform"` is used if present; otherwise qform falls back to the coordinate-defining voxel geometry (`voxel_to_world`) directly.
+
+  If the coordinate-defining affine contains shear, qform writing is disabled because the NIfTI qform cannot represent shear. In that case, the geometry is written to sform instead.
+- #### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI sform. When not provided, `"world_to_sform"` is used if present; otherwise sform also falls back to `voxel_to_world` directly (like qform), unless disabled via `sform_code=0` or `attrs["sform_code"] = 0`.
+- #### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. When provided, takes precedence over `data_array.attrs["qform_code"]`. When not provided, the value from `attrs["qform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- #### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. When provided, takes precedence over `data_array.attrs["sform_code"]`. When not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- #### **`copy`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to copy the data into the returned image. If not copied, the image's data shares memory with a NumPy-backed `data_array`, so editing it in place (e.g. through `img.dataobj` or `img.get_fdata()`) also modifies `data_array`.
+
+Returns:
+
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
+
+  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
+
+Raises:
+
+- `ValueError` –
+
+  If the input is not valid VoxelData, has a `pose` dimension, exceeds NIfTI's dimension limit, or requests an invalid affine or transform code.
+
+Examples:
+
+```pycon
+>>> import confusius as cf
+>>> import numpy as np
+>>> da = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img, metadata = cf.io.convert_to_nifti(da)
+```
 
 ### load
 
@@ -12417,10 +12610,13 @@ Functions:
 ```python
 clutter_filter_butterworth(
     block: NDArray,
-    fs: float | None,
+    fs: float,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12437,9 +12633,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`fs`**
 
-  (`float or None`) –
+  (`float`) –
 
-  Sampling frequency in hertz. Required when either cutoff is specified.
+  Sampling frequency in hertz.
 - #### **`low_cutoff`**
 
   (`float`, default: `None` ) –
@@ -12455,6 +12651,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Filter order. Due to forward-backward filtering, the effective order is doubled.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -12466,13 +12672,17 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if a cutoff is specified without a sampling frequency.
+  If `block` is not 4D or if cutoff frequencies are invalid.
 
 ### clutter\_filter\_sosfiltfilt
 
 ```python
 clutter_filter_sosfiltfilt(
-    block: NDArray, sos: NDArray
+    block: NDArray,
+    sos: NDArray,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12492,6 +12702,16 @@ Parameters:
   (`(sections, 6) numpy.ndarray`) –
 
   Second-order sections filter coefficients, typically obtained from SciPy functions like `scipy.signal.butter`, `scipy.signal.cheby1`, etc.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -12735,6 +12955,9 @@ compute_axial_velocity_volume(
     | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12814,6 +13037,16 @@ Parameters:
   (`float`, default: `1540` ) –
 
   Speed of sound assumed during beamforming, in meters per second.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -12874,6 +13107,9 @@ compute_power_doppler_volume(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12933,6 +13169,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window, in volumes. If not provided, equals `doppler_window_width`.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -13147,6 +13393,9 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     **kwargs: Any,
 ) -> NDArray
 ```
@@ -13213,6 +13462,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   When using the Butterworth clutter filter, the order of the filter.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -13330,6 +13589,9 @@ process_iq_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -13407,6 +13669,16 @@ Parameters:
   (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -13515,6 +13787,9 @@ process_iq_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -13579,6 +13854,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -18852,7 +19137,7 @@ filter_butterworth(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 5,
-    padtype: str = "odd",
+    padtype: str | None = "odd",
     padlen: int | None = None,
     uniformity_tolerance: float = 0.01,
 ) -> DataArray
@@ -18892,12 +19177,12 @@ Parameters:
 
   (`(odd, even, constant, None)`, default: `"odd"` ) –
 
-  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, `"constant"` pads with zeros. If not provided, no padding is applied.
+  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, and `"constant"` extends the endpoint values. Pass `None` to disable padding.
 - #### **`padlen`**
 
   (`int`, default: `None` ) –
 
-  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)` where `n_sections = ceil(order/2)`.
+  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)`, based on the designed coefficients.
 - #### **`uniformity_tolerance`**
 
   (`float`, default: `1e-2` ) –
@@ -18914,7 +19199,7 @@ Raises:
 
 - `ValueError` –
 
-  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the filter order (needs more than `3 * (2 * ceil(order / 2) + 1)`).
+  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the effective padding length.
 - `ValueError` –
 
   If both `low_cutoff` and `high_cutoff` are `None` (no filtering), or if cutoff frequencies are invalid (negative, above Nyquist, or if high\_cutoff \<= low\_cutoff for band-pass).
@@ -21029,6 +21314,9 @@ Methods:
 - **`save`** –
 
   Save the DataArray to file, dispatching by extension.
+- **`to_nifti`** –
+
+  Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
 - **`translate`** –
 
   Translate a VoxelData array in world space.
@@ -21494,6 +21782,82 @@ Examples:
 ...     np.zeros((10, 32, 1, 64)), dims=["time", "k", "j", "i"]
 ... )
 >>> data.fusi.save("recording.nii.gz")
+```
+
+#### to\_nifti
+
+```python
+to_nifti(
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+    copy: bool = False,
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
+```
+
+Convert the VoxelData array to a NIfTI image and fUSI-BIDS metadata.
+
+Builds the same image and metadata as `save_nifti` without writing files. Pass the metadata as `sidecar` to `convert_from_nifti` to preserve timing and named extra dimensions. This is a convenience wrapper around `convert_to_nifti`.
+
+Parameters:
+
+- ##### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- ##### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI qform. If not provided, `"world_to_qform"` is used if present; otherwise qform falls back to the coordinate-defining voxel geometry (`voxel_to_world`) directly.
+
+  If the coordinate-defining affine contains shear, qform writing is disabled because the NIfTI qform cannot represent shear. In that case, the geometry is written to sform instead.
+- ##### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `attrs["affines"]` to write into the NIfTI sform. If not provided, `"world_to_sform"` is used if present; otherwise sform also falls back to `voxel_to_world` directly (like qform), unless disabled via `sform_code=0` or `attrs["sform_code"] = 0`.
+- ##### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. Takes precedence over `attrs["qform_code"]`. If not provided, the value from `attrs["qform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. Takes precedence over `attrs["sform_code"]`. If not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- ##### **`copy`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to copy the data into the returned image. If not copied, the image's data shares memory with a NumPy-backed array, so editing it in place (e.g. through `img.dataobj` or `img.get_fdata()`) also modifies the array.
+
+Returns:
+
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
+
+  In-memory NIfTI image with spacings, qform/sform, and units in the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
+
+Examples:
+
+```pycon
+>>> import numpy as np
+>>> import confusius as cf
+>>> data = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img, metadata = data.fusi.to_nifti()
 ```
 
 #### translate
@@ -22387,6 +22751,9 @@ process_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -22456,6 +22823,16 @@ Parameters:
   (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -22534,6 +22911,9 @@ process_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
+    *,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
 ) -> DataArray
 ```
 
@@ -22593,6 +22973,16 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window for power Doppler integration, in volumes. If not provided, equals `doppler_window_width`.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -25243,7 +25633,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_24774/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24779/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25460,7 +25850,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x707f237b6250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c17d14fe580>
     ```
 - [ ] Attributes: (27)
 
@@ -25864,7 +26254,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 11.9 s
+**Total running time:** 9.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/06_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -25933,7 +26323,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26298/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26303/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26201,7 +26591,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7376e84233b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x786bb01ce510>
     ```
   - region
 
@@ -26324,7 +26714,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x7376e84302f0\>
+  \<matplotlib.colors.Normalize object at 0x786bb020d400\>
 
 ## Plot the seed maps
 
@@ -26360,7 +26750,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 12.4 s
+**Total running time:** 10.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/06_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -26704,7 +27094,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c370e6b0910>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79cdf7a1d450>
     ```
 - [ ] Attributes: (21)
 
@@ -27101,7 +27491,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c3701ebe970>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x79cdf01f9390>
     ```
 - [ ] Attributes: (23)
 
@@ -27265,7 +27655,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 70.2 s
+**Total running time:** 50.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/08_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -27613,7 +28003,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c46ceb86990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x763fef1bb390>
     ```
 - [ ] Attributes: (25)
 
@@ -27983,7 +28373,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 233.5 s
+**Total running time:** 181.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/05_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -28325,7 +28715,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x797186c2e990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x72e97ed9b390>
     ```
 - [ ] Attributes: (25)
 
@@ -28723,7 +29113,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 247.0 s
+**Total running time:** 184.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/05_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -29071,7 +29461,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f196661a990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x78538c6bb390>
     ```
 - [ ] Attributes: (25)
 
@@ -29463,7 +29853,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 230.9 s
+**Total running time:** 172.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/05_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -29803,7 +30193,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7582d9aaeae0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x791dfc0e6610>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -29818,7 +30208,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...e0\>, beta=6.7) |
+|  | hrf\_model | functools.par...10\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -29837,7 +30227,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7582b43b74d0\>, \<confusius.gl...x7582b4214770\>, \<confusius.gl...x7582b4355b50\>, \<confusius.gl...x7582b402f680\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x791dd8d83d90\>, \<confusius.gl...x791dd8dcd6e0\>, \<confusius.gl...x791dd8d416d0\>, \<confusius.gl...x791dd8a5aad0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -29949,7 +30339,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 107.6 s
+**Total running time:** 81.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/07_glm/01_first_level.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/glm/first_level.ipynb>)
 
@@ -30316,7 +30706,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7bc14e6a6990>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x751a0bd17390>
     ```
 - [ ] Attributes: (21)
 
@@ -30551,11 +30941,338 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 23.1 s
+**Total running time:** 19.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/07_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/glm/first_level_continuous.ipynb>)
 
 [^/pr-preview/pr-586/examples/_built/glm/first_level_continuous/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Use nilearn on a VoxelData array
+
+This example shows how to pass data between ConfUSIus and [nilearn](<https://nilearn.github.io>). `convert_to_nifti` returns an in-memory NIfTI image and fUSI-BIDS metadata. `convert_from_nifti` converts a NIfTI image back to a VoxelData array.
+
+We use nilearn to find the clusters of a statistical map from [Cybis Pereira *et al.* 2026](<https://doi.org/10.1016/j.celrep.2025.116791>)[^/pr-preview/pr-586/examples/_built/interoperability/nilearn/#collection]. Then we plot these clusters with ConfUSIus.
+
+> [!WARNING]
+>
+> **nilearn is not a dependency of ConfUSIus**
+>
+> ConfUSIus does not install nilearn. If nilearn is not in your environment, install it before you run this example:
+>
+> `pip install nilearn`
+
+## Load a statistical map
+
+`fetch_cybis_pereira_2026` downloads the `glm-speed` results of one rat. The file that we load contains t-statistic maps for the contrast between fUSI signal and animal speed. Its `time` dimension holds the lag between speed and fUSI. We keep the map at a lag of 2 s as we know this is a lag that shows a strong correlation.
+
+```python
+from pathlib import Path
+
+import matplotlib as mpl
+import xarray as xr
+from nilearn.reporting import get_clusters_table
+
+import confusius as cf
+
+# Adapt background color to the current Matplotlib style.
+bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
+
+# Keep notebook output compact for large DataArray displays.
+_ = xr.set_options(display_expand_attrs=False, display_expand_data=False)
+
+subject = "rat75"
+acq = "slice32"
+
+bids_root = cf.datasets.fetch_cybis_pereira_2026(
+    datasets="glm-speed",
+    subjects=subject,
+    acqs=acq,
+)
+
+stat_path = (
+    Path(bids_root)
+    / "derivatives/glm-speed"
+    / f"sub-{subject}"
+    / f"sub-{subject}_acq-{acq}_rec-staticsvd60clutterwindowwidth200dopplerwindowwidth40_contrast-speed_stat-t_control-bonferroni_alpha-001_statmap.nii"
+)
+
+stat = cf.load(stat_path).sel(time=2, method="nearest")
+stat.attrs["long_name"] = "t statistic"
+```
+
+```
+If you use this dataset in your work, please cite the following source:
+
+Cybis Pereira, F., Castedo, S. H., Meur-Diebolt, S. L., Ialy-Radio, N., Bhattacharya, S., Ferrier, J., Osmanski, B.
+F., Cocco, S., Monasson, R., Pezet, S., & Tanter, M. (2026). A vascular code for speed in the spatial navigation 
+system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
+```
+
+```text
+/tmp/ipykernel_7424/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:   - DelayAfterTrigger: Input should be greater than or equal to 0
+  stat = cf.load(stat_path).sel(time=2, method="nearest")
+```
+
+## Convert the map to a NIfTI image
+
+nilearn reads the world coordinates of an image from `img.affine`. NiBabel [sets this affine](<https://nipy.org/nibabel/nifti_images.html#choosing-the-image-affine>) to the `sform` when `sform_code` is not 0. If `sform_code` is 0, NiBabel uses the `qform`.
+
+In this file, the `qform` points to the probe space. In that space, the imaging plane is aligned with the `x` and `y` axes, which makes the cluster coordinates easy to read. Thus we move the world coordinates to that space with `affine.apply`. Then we set `sform_code` to 0, and `convert_to_nifti` writes only the `qform`.
+
+```python
+stat = stat.fusi.affine.apply("world_to_qform")
+stat.attrs["sform_code"] = 0
+
+img, metadata = stat.fusi.to_nifti()
+```
+
+## Find the clusters with nilearn
+
+`get_clusters_table` finds the clusters of voxels with a value more than `stat_threshold`. It returns a table with the peak of each cluster, in the world coordinates of the image. With `return_label_maps=True`, it also returns the cluster labels as NIfTI images.
+
+nilearn gives the cluster size in full cubic millimeters. As a result, a cluster smaller than 1 mm³ shows a size of 0.
+
+```python
+table, label_maps = get_clusters_table(
+    img,
+    stat_threshold=5,
+    return_label_maps=True,
+)
+
+table
+```
+
+|  | Cluster ID | X | Y | Z | Peak Stat | Cluster Size (mm3) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | \-0.055 | 7.85824 | \-8.881784e-16 | 43.928615 | 6 |
+| 1 | 2 | \-5.445 | 10.42080 | \-8.881784e-16 | 24.196712 | 0 |
+| 2 | 3 | \-5.775 | 8.74528 | \-8.881784e-16 | 20.813019 | 0 |
+| 3 | 4 | 2.805 | 6.08416 | \-8.881784e-16 | 15.179721 | 0 |
+| 4 | 5 | 2.255 | 10.71648 | \-8.881784e-16 | 11.706382 | 0 |
+| 5 | 6 | 1.485 | 5.98560 | \-8.881784e-16 | 11.415170 | 0 |
+
+## Convert the cluster labels to a VoxelData array
+
+`convert_from_nifti` converts the label image to a VoxelData array. This array has the same world coordinates as `stat`.
+
+```python
+labels = cf.io.convert_from_nifti(label_maps[0])
+labels
+```
+
+xarray.DataArray
+
+- k: 1
+- j: 112
+- i: 128
+
+- [ ]
+
+  dask.array\<chunksize=(1, 112, 128), meta=np.ndarray\>
+
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 56.00 kiB </td>                         <td> 56.00 kiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1, 112, 128) </td>                         <td> (1, 112, 128) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 1 chunks in 2 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> int32 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+- [x] Coordinates: (6)
+
+  - k
+
+    (k)
+
+    int64
+
+    0
+
+    ☐ ☐
+
+    ```
+    array([0])
+    ```
+  - j
+
+    (j)
+
+    int64
+
+    0 1 2 3 4 5 ... 107 108 109 110 111
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111])
+    ```
+  - i
+
+    (i)
+
+    int64
+
+    0 1 2 3 4 5 ... 123 124 125 126 127
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+           112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125,
+           126, 127])
+    ```
+  - z
+
+    (k, j, i)
+
+    float64
+
+    \-8.882e-16 ... -8.882e-16
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+  - y
+
+    (k, j, i)
+
+    float64
+
+    5.0 5.0 5.0 ... 15.94 15.94 15.94
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+  - x
+
+    (k, j, i)
+
+    float64
+
+    \-6.985 -6.875 ... 6.875 6.985
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [14336 values with dtype=float64]
+    ```
+- [ ] Indexes: (4)
+
+  - k
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([0], dtype='int64', name='k'))
+    ```
+  - j
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           102, 103, 104, 105, 106, 107, 108, 109, 110, 111],
+          dtype='int64', name='j', length=112))
+    ```
+  - i
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           118, 119, 120, 121, 122, 123, 124, 125, 126, 127],
+          dtype='int64', name='i', length=128))
+    ```
+  - z  
+    y  
+    x
+
+    VoxelToWorldIndex
+
+    ☐ ☐
+
+    ```
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71da8fa7c050>
+    ```
+- [ ] Attributes: (2)
+
+  **qform\_code :**
+
+  1
+
+  **affines :**
+
+  {'world\_to\_qform': array(\[\[1., 0., 0., 0.\], \[0., 1., 0., 0.\], \[0., 0., 1., 0.\], \[0., 0., 0., 1.\]\])}
+
+## Plot the clusters
+
+We plot the contour of each cluster on the statistical map. Then we mark the peak of each cluster at its coordinates from the nilearn table.
+
+```python
+# Subpeak IDs such as "1a" belong to an existing cluster, not a new label.
+peaks = table[table["Cluster ID"].astype(str).str.fullmatch(r"\d+")]
+colors = {
+    int(row["Cluster ID"]): mpl.colors.to_hex(mpl.colormaps["tab10"](i % 10))
+    for i, (_, row) in enumerate(peaks.iterrows())
+}
+assert set(colors) == set(labels.values.ravel()) - {0}
+
+plotter = cf.plotting.plot_stat_map(stat, bg_color=bg_color)
+plotter.add_contours(labels, colors=colors)
+ax = plotter.axes[0][0]
+
+for _, row in peaks.iterrows():
+    cluster_id = int(row["Cluster ID"])
+    ax.plot(
+        row["X"],
+        row["Y"],
+        marker="o",
+        color=colors[cluster_id],
+        markersize=7,
+        label=f"Cluster ID {cluster_id}",
+    )
+
+_ = ax.legend()
+```
+
+---
+
+**Total running time:** 4.7 s
+
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/02_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/interoperability/nilearn.ipynb>)
+
+[^/pr-preview/pr-586/examples/_built/interoperability/nilearn/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 
 # ConfUSIus and Xarray 101
 
@@ -30819,7 +31536,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c90d5796a0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c86e922900>
     ```
 - [ ] Attributes: (25)
 
@@ -31245,7 +31962,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c970166490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c8d4542490>
     ```
 - [ ] Attributes: (25)
 
@@ -31605,7 +32322,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c90ad6d6d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71c86c0e60d0>
     ```
 - [ ] Attributes: (25)
 
@@ -31952,7 +32669,7 @@ mean_db_masked.fusi.save(
 
 ---
 
-**Total running time:** 8.6 s
+**Total running time:** 7.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/01_io/01_confusius_xarray_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/confusius_xarray_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/confusius_xarray_101.ipynb>)
 
@@ -32293,7 +33010,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x72967cf263f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74deb591afd0>
     ```
   - time
 
@@ -32574,7 +33291,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7296748df230>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74deac220230>
     ```
 - [ ] Attributes: (6)
 
@@ -32646,7 +33363,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 46.1 s
+**Total running time:** 35.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -32692,6 +33409,7 @@ cf.datasets.list_datasets()
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✓    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
 └─────────────────────────────────────┴──────────┴─────────┘
@@ -32771,7 +33489,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.0 s
+**Total running time:** 3.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/dataset_collection.ipynb>)
 
@@ -32983,7 +33701,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f42a8f99950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77f10c5ce350>
     ```
 - [ ] Attributes: (5)
 
@@ -33391,7 +34109,7 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 24.6 s
+**Total running time:** 18.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101.ipynb>)
 
@@ -33640,7 +34358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x792bf3816e40>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x78a857eb0590>
     ```
 - [x] Attributes: (9)
 
@@ -33763,7 +34481,7 @@ plt.show()
 
 ---
 
-**Total running time:** 11.3 s
+**Total running time:** 9.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/iq/process_beamformed_iq.ipynb>)
 
@@ -34052,7 +34770,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71efd685f040>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x721cd9d8fad0>
     ```
 - [ ] Attributes: (25)
 
@@ -34494,7 +35212,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71efccd83f50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x721cd0294410>
     ```
 - [ ] Attributes: (25)
 
@@ -34613,7 +35331,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 13.5 s
+**Total running time:** 12.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
@@ -34896,7 +35614,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74b9446c3950>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73fde1027950>
     ```
 - [ ] Attributes: (27)
 
@@ -35111,7 +35829,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 92.0 s
+**Total running time:** 65.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/04_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -35359,7 +36077,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7833d01042b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7951f7ae5220>
     ```
 - [ ] Attributes: (23)
 
@@ -35640,7 +36358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7833d259fd50>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7951f7ca0d50>
     ```
 - [ ] Attributes: (23)
 
@@ -35843,49 +36561,49 @@ xarray.DataArray
 
 - [ ]
 
-  \-1.437e-12 1.174e-13 9.236e-14 -1.599e-12 ... -1.15e+03 -275.7 -20.01
+  \-1.668e-12 2.787e-13 8.856e-14 -3.211e-12 ... -2.076e+03 -257.3 -53.41
 
   ```
-  array([[[[-1.43743041e-12,  1.17388468e-13,  9.23612068e-14, ...,
-            -1.54452700e-12, -1.92501154e-12, -3.15886182e-13],
-           [-4.09661627e-13,  1.98372974e-15, -2.72235731e-14, ...,
-            -3.62027664e-13, -1.08387800e-13,  1.48651365e-14],
-           [-5.47506423e-13, -1.65985413e-13, -2.65603888e-13, ...,
-            -2.25188585e-13,  5.95927532e-14,  4.76285674e-14],
+  array([[[[-1.66756936e-12,  2.78681902e-13,  8.85646112e-14, ...,
+            -1.00351679e-11, -6.28477998e-12,  1.18972162e-11],
+           [-2.39296771e-13,  1.40661767e-15, -4.59476444e-15, ...,
+            -6.61691432e-13, -2.67092096e-13,  1.22493705e-13],
+           [-6.30901095e-13, -2.45287829e-13, -2.58313849e-13, ...,
+            -2.29124845e-13,  8.36288344e-14,  8.87796722e-14],
            ...,
-           [-6.02988527e-13, -8.99194090e-16,  4.96501966e-13, ...,
-             2.76808415e-13,  1.37938363e-13,  1.55952998e-14],
-           [ 2.42300060e-13,  1.08202014e-13,  3.56316562e-13, ...,
-             2.45381082e-13,  1.22793651e-13,  2.47948457e-14],
-           [ 4.22289079e-13,  1.60398885e-13,  1.05293197e-12, ...,
-             7.68101199e-13,  3.08817568e-13,  6.87570865e-13]],
+           [-7.84380499e-13,  3.88510616e-15,  5.64239342e-13, ...,
+             3.16626634e-13,  2.14525918e-13,  3.25376760e-14],
+           [ 1.67298396e-13,  1.30706188e-13,  4.79143475e-13, ...,
+             2.21171344e-13,  2.03390937e-13,  2.20512615e-13],
+           [ 3.87221546e-13,  2.60922928e-13,  7.17499451e-13, ...,
+             5.46225666e-13,  1.29300123e-12,  4.15203711e-12]],
 
-          [[-1.68440508e-15,  1.37557778e-16,  1.08230412e-16, ...,
-            -1.80990266e-15, -2.25576083e-15, -3.70160731e-16],
-           [-4.80048371e-16,  2.32456781e-18, -3.19010399e-17, ...,
-            -4.24230093e-16, -1.27010644e-16,  1.74192165e-17],
-           [-6.41577216e-16, -1.94504493e-16, -3.11239094e-16, ...,
-            -2.63879764e-16,  6.98317884e-17,  5.58119547e-17],
+          [[-1.95408577e-15,  3.26564131e-16,  1.03781498e-16, ...,
+            -1.17593782e-14, -7.36461068e-15,  1.39413578e-14],
+           [-2.80411972e-16,  1.64829820e-18, -5.38422209e-18, ...,
+            -7.75381127e-16, -3.12983002e-16,  1.43540179e-16],
+           [-7.39300493e-16, -2.87432395e-16, -3.02696504e-16, ...,
+            -2.68492339e-16,  9.79976719e-17,  1.04033510e-16],
   ...
-            -7.85342939e-02, -6.95181359e-02, -8.03405377e-03],
-           [ 2.19546358e-02,  5.89722384e-02,  1.65372527e-01, ...,
-            -2.28440730e-01, -8.24426768e-02, -7.94138810e-03],
-           [ 8.57726148e-02,  3.79128056e-01,  9.45155720e-02, ...,
-            -1.34777689e+00, -3.23087226e-01, -2.34478755e-02]],
+            -7.35607714e-02, -9.48918761e-02, -9.84622689e-03],
+           [ 1.67046759e-02,  5.82336555e-03,  1.99155934e-01, ...,
+            -2.16675929e-01, -1.09157494e-01, -2.96713478e-02],
+           [ 8.66636336e-05, -8.36295948e-04, -1.56089270e+00, ...,
+            -2.43263994e+00, -3.01486300e-01, -6.25839040e-02]],
 
-          [[ 3.36586452e+03,  5.35306612e+02, -1.67148337e+03, ...,
-            -5.13252941e+02,  2.90884908e+00,  7.98319324e+01],
-           [ 1.88946151e+02,  7.10702261e+01, -6.81227818e+01, ...,
-            -7.35519748e+01,  2.04584716e+01,  1.78544575e+01],
-           [-1.09194082e+03,  1.17214508e+02,  6.45356290e+01, ...,
-            -1.02021449e+02,  2.24001680e+01,  1.01528850e+01],
+          [[ 8.41164244e+03,  7.90448544e+02, -1.77957527e+03, ...,
+            -3.40017203e+02,  5.70996661e+01,  7.02153980e+01],
+           [ 2.99743509e+01,  5.90932727e+01, -6.55040440e+01, ...,
+            -6.69984837e+01,  2.76207331e+01,  1.99422492e+01],
+           [-1.02517756e+03,  1.01266787e+02,  7.98537239e+01, ...,
+            -9.72843557e+01,  2.61499619e+01,  1.67874547e+00],
            ...,
-           [-4.47175221e+01,  8.92127547e+01,  2.51067296e+02, ...,
-            -6.70192601e+01, -5.93250897e+01, -6.85606643e+00],
-           [ 1.87355534e+01,  5.03254768e+01,  1.41124901e+02, ...,
-            -1.94945773e+02, -7.03545791e+01, -6.77698787e+00],
-           [ 7.31962698e+01,  3.23538681e+02,  8.06572946e+01, ...,
-            -1.15016009e+03, -2.75714793e+02, -2.00098472e+01]]]],
+           [-3.52929802e+01,  6.37152959e+01,  2.45304142e+02, ...,
+            -6.27749767e+01, -8.09784236e+01, -8.40253101e+00],
+           [ 1.42553649e+01,  4.96951881e+00,  1.69954840e+02, ...,
+            -1.84905978e+02, -9.31523562e+01, -2.53208080e+01],
+           [ 7.39566433e-02, -7.13674660e-01, -1.33202795e+03, ...,
+            -2.07595589e+03, -2.57281091e+02, -5.34075834e+01]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -36040,7 +36758,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7833cd425070>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7951f1f01d90>
     ```
 - [x] Attributes: (4)
 
@@ -36071,7 +36789,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8948
+Rigid + B-spline final metric: -0.8953
 ```
 
 ```python
@@ -36157,7 +36875,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 79.8 s
+**Total running time:** 66.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/04_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -36523,7 +37241,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7c53e3d1ec10>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70e794c8b610>
     ```
 - [ ] Attributes: (21)
 
@@ -36730,7 +37448,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 35.8 s
+**Total running time:** 27.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/04_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -36748,7 +37466,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
-- Custom `process_iq_blocks` calls now require `output_shape` and `output_dtype` for one processing window. Callbacks must return NumPy arrays matching both declarations and retain the leading output-time axis. Execution options are keyword-only, non-temporal axes are inferred automatically, and callback settings must be bound with `functools.partial` instead of forwarded keywords. The Dask-specific `drop_axis` and `new_axis` options are removed; built-in wrapper signatures are unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Custom `process_iq_blocks` calls now require `output_shape` and `output_dtype` for one processing window. Callbacks must return NumPy arrays matching both declarations and retain the leading output-time axis. Execution options are keyword-only, non-temporal axes are inferred automatically, and callback settings must be bound with `functools.partial` instead of forwarded keywords. The Dask-specific `drop_axis` and `new_axis` options are removed ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - `compute_axial_velocity_volume`, `process_iq_to_axial_velocity`, and the corresponding xarray accessor now default `spatial_kernel` to `1`, disabling spatial median filtering unless requested ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `get_bounding_box` and `.fusi.affine.bounding_box` now return a dictionary mapping world coordinate names to `(min, max)` bounds instead of a DataArray. Access bounds with `bbox["z"]` instead of `.sel`; pose-dependent data now returns one box enclosing all poses, so select a pose first for its own box ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
@@ -36758,10 +37476,12 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- Control Butterworth clutter-filter padding with `padtype`/`padlen`, also exposed as `butterworth_padtype`/`butterworth_padlen` in IQ processing functions and accessors. Existing defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Tune execution batching in `process_iq_blocks` with `windows_per_task`, independently of scientific window sizes. Existing overlap-safe defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load`, including stores that require query parameters on each request ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
+- Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and NiBabel NIfTI images without a temporary file. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 - Add `apply_translation`, `apply_rotation`, `apply_zoom` and `apply_flip`, plus the matching `.fusi.translate()`, `.fusi.rotate()`, `.fusi.zoom()` and `.fusi.flip()` accessor methods, to move VoxelData in world space without resampling ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
@@ -36772,18 +37492,21 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - IQ processing accepts NumPy integer window sizes and strides on long recordings. NumPy integer lags give the same velocity values and precision as Python integer lags ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
-- Power Doppler with no Butterworth cutoffs supports single-frame windows and returns the squared magnitude of each frame ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
+- `load_nifti` and `convert_from_nifti` declare the dtype of scaled values (`scl_slope`/`scl_inter`) and size `"auto"` chunks for it ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
+- NIfTI round trips preserve the order of extra dimensions. Saving with both transform codes explicitly set to zero preserves those codes on disk. Slice timing respects the NIfTI slice axis and the acquisition duration's units, and zero-delay BIDS chunks include `DelayAfterTrigger` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 
 ### 📚 Documentation
 
 - Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/pr-preview/pr-586/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
+- Added the [Use nilearn on a VoxelData array](<https://confusius.tools/pr-preview/pr-586/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `convert_from_nifti` and `convert_to_nifti` for easier interoperability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
 - Link the [online explorer](<https://confusius-datasets.s3.amazonaws.com/index.html>) of the dataset collection from the [datasets guide](<https://confusius.tools/pr-preview/pr-586/user-guide/datasets/index.md>) and the dataset collection example ([\#598](<https://github.com/confusius-tools/confusius/pull/598>)).
 
 ### 🔧 Maintenance
