@@ -340,7 +340,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7f233d0ee850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74917e2e3390>
     ```
 - [ ] Attributes: (25)
 
@@ -710,9 +710,9 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 292.9 s
+**Total running time:** 285.1 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
 [^/dev/examples/_built/decomposition/fastica_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

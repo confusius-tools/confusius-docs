@@ -358,7 +358,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e56971f6ad0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x783b9a483610>
     ```
 - [ ] Attributes: (21)
 
@@ -565,9 +565,9 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 43.6 s
+**Total running time:** 43.2 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
 [^/dev/examples/_built/registration/volumewise_motion_correction/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

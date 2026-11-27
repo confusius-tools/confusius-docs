@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77a6f7ed3040>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73331d1cbba0>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77a6e42631d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7333096a5670>
     ```
 - [ ] Attributes: (25)
 
@@ -844,8 +844,8 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 16.7 s
+**Total running time:** 16.9 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/02_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
 [^/dev/examples/_built/multipose/load_multipose_recordings/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

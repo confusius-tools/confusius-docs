@@ -332,7 +332,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7af04ba72850>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e27a6153390>
     ```
 - [ ] Attributes: (25)
 
@@ -730,9 +730,9 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 306.3 s
+**Total running time:** 299.5 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
 [^/dev/examples/_built/decomposition/nmf_single_recording/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
 

@@ -330,7 +330,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x71f767be2ae0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7d5b405166c0>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -345,7 +345,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...e0\>, beta=6.7) |
+|  | hrf\_model | functools.par...c0\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -364,7 +364,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x71f744d33390\>, \<confusius.gl...x71f744d90640\>, \<confusius.gl...x71f744d985f0\>, \<confusius.gl...x71f744be27a0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x7d5b206e3ed0\>, \<confusius.gl...x7d5b2052d480\>, \<confusius.gl...x7d5b2064ae70\>, \<confusius.gl...x7d5b2037fce0\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -476,8 +476,8 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 108.3 s
+**Total running time:** 106.4 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_glm/01_first_level.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/07_glm/01_first_level.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level.ipynb>)
 
 [^/dev/examples/_built/glm/first_level/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

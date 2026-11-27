@@ -65,7 +65,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_22275/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_25031/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -282,7 +282,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x788386a8e250>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ba95b36e690>
     ```
 - [ ] Attributes: (27)
 
@@ -686,8 +686,8 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 13.8 s
+**Total running time:** 13.6 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
 [^/dev/examples/_built/connectivity/atlas_correlation_matrix/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

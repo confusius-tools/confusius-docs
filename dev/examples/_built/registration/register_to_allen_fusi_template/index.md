@@ -275,7 +275,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7161259535c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x762c83a0b5c0>
     ```
 - [ ] Attributes: (27)
 
@@ -490,8 +490,8 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 113.0 s
+**Total running time:** 119.8 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
 [^/dev/examples/_built/registration/register_to_allen_fusi_template/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.

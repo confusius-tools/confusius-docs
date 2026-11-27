@@ -61,7 +61,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_23800/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26554/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -329,7 +329,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x72d2087f3110>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x78b0ec1662d0>
     ```
   - region
 
@@ -452,7 +452,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x72d2087ec1a0\>
+  \<matplotlib.colors.Normalize object at 0x78b0ec121160\>
 
 ## Plot the seed maps
 
@@ -488,8 +488,8 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 14.5 s
+**Total running time:** 14.3 s
 
-[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.ipynb>)
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
 [^/dev/examples/_built/connectivity/atlas_seed_map/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
