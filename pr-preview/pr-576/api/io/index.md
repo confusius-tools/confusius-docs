@@ -54,6 +54,12 @@ Functions:
 - **`convert_autc_dats_to_zarr`** –
 
   Convert AUTC DAT files to Zarr format compatible with Xarray.
+- **`convert_from_nifti`** –
+
+  Convert an in-memory NiBabel NIfTI image to a VoxelData array.
+- **`convert_to_nifti`** –
+
+  Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
 - **`load`** –
 
   Load a VoxelData array from file, dispatching by extension.
@@ -641,6 +647,183 @@ Raises:
 > Spatial coordinates (`z`, `y`, `x`) follow the ConfUSIus probe-relative coordinate system: world distances in millimeters along each voxel axis, with the origin at the center of the probe face. Unlike EchoFrame data (where coordinates are embedded in the metadata file), AUTC's own file data carries no physical calibration for any axis, so `spacing` must always be supplied by the caller -- there is no meaningful default.
 >
 > Correctly computing elevation (`spacing[0]`) spacing requires the elevation beam width, which itself needs the elevation aperture and elevation focus; that computation isn't implemented here, so pass `spacing[0]` explicitly if that information is known, or an intentional placeholder (e.g. `0.4`) otherwise.
+
+### convert\_from\_nifti
+
+```python
+convert_from_nifti(
+    img: Nifti1Image | Nifti2Image,
+    chunks: int | tuple[int, ...] | str | None = "auto",
+    *,
+    coordinate_affine: Literal[
+        "auto", "sform", "qform"
+    ] = "auto",
+    sidecar: dict[str, Any] | None = None,
+) -> DataArray
+```
+
+Convert an in-memory NiBabel NIfTI image to a VoxelData array.
+
+This is the image-based counterpart to `load_nifti`, which opens the file, reads its BIDS JSON sidecars, and delegates to this function. It reads directly from an already-constructed `nibabel.Nifti1Image`/`nibabel.Nifti2Image` instance instead of a path, and never looks for a sidecar on disk: sidecar metadata is used only when passed through `sidecar`. Useful for interoperating with libraries such as `nilearn` that hand back NIfTI images rather than file paths.
+
+An image backed by a file on disk (e.g. from `nibabel.load`, whose `img.dataobj` is a NiBabel `ArrayProxy`) stays lazy, including images with slope/intercept scaling. Voxel data is read when the returned array is computed, so the file must remain available until then.
+
+Parameters:
+
+- #### **`img`**
+
+  (`Nifti1Image or Nifti2Image`) –
+
+  In-memory NiBabel NIfTI image.
+- #### **`chunks`**
+
+  (`int or tuple[int, ...] or str or None`, default: `"auto"` ) –
+
+  How to chunk the array. Must be one of the following forms.
+
+  - A blocksize like `1000`.
+  - A blockshape like `(1000, 1000)`.
+  - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
+  - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
+  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
+- #### **`coordinate_affine`**
+
+  (`(auto, sform, qform)`, default: `"auto"` ) –
+
+  Header affine to use as the primary coordinate-defining geometry.
+
+  - `"auto"` prefers sform when both sform and qform are valid, and falls back to qform when only qform is valid.
+  - `"sform"` forces the sform to define the in-memory coordinate geometry.
+  - `"qform"` forces the qform to define the in-memory coordinate geometry.
+
+  The non-selected valid header affine is still preserved in `data_array.attrs["affines"]` as a world-to-world transform.
+- #### **`sidecar`**
+
+  (`dict[str, Any]`, default: `None` ) –
+
+  Metadata using fUSI-BIDS field names and units, as returned by `convert_to_nifti` or read from a BIDS JSON sidecar. Entries override header-derived attributes and feed timing and extra-dimension reconstruction. When `SliceTiming` is supplied without `SliceEncodingDirection`, the header's slice axis gives the order of increasing slice index. If no sidecar is provided, only the NIfTI header is used.
+
+Returns:
+
+- `DataArray` –
+
+  VoxelData array with voxel-space dimensions in ConfUSIus order (`k`, `j`, `i` plus optional `time`) and world coordinates `z`, `y`, `x`. Extra NIfTI axes precede these dimensions in their original file order.
+
+Raises:
+
+- `TypeError` –
+
+  If `img` is not a `nibabel.Nifti1Image` or `nibabel.Nifti2Image`.
+- `ValueError` –
+
+  If the chunk specification or reconstructed VoxelData geometry is invalid, or if `coordinate_affine` is `"sform"` or `"qform"` and that form's code is zero in the header.
+
+> [!NOTE]
+>
+> **Notes**
+>
+> When both `sform_code` and `qform_code` are 0, the header stores no orientation. Following the [NIfTI-1 standard](<https://github.com/NIFTI-Imaging/nifti_clib/blob/master/niftilib/nifti1.h>) ("method 1"), the voxel-to-world affine is then built from the voxel sizes alone: the first voxel sits at the origin and no axis is rotated or flipped. A warning is emitted. NiBabel's `img.affine`, used by nilearn and other NiBabel-based tools, follows SPM instead: it puts the central voxel at the origin and negates the x axis ([NiBabel's fall-back affine](<https://nipy.org/nibabel/nifti_images.html#the-fall-back-header-affine>)). World coordinates from ConfUSIus and from those tools therefore differ for such images.
+
+Examples:
+
+```pycon
+>>> import nibabel as nib
+>>> import numpy as np
+>>> import confusius as cf
+>>> img = nib.Nifti1Image(np.random.rand(64, 64, 32).astype(np.float32), np.eye(4))
+>>> da = cf.io.convert_from_nifti(img)
+>>> print(da.dims)
+("k", "j", "i")
+```
+
+### convert\_to\_nifti
+
+```python
+convert_to_nifti(
+    data_array: DataArray,
+    nifti_version: NiftiVersion = 1,
+    *,
+    qform: str | None = None,
+    sform: str | None = None,
+    qform_code: int | None = None,
+    sform_code: int | None = None,
+    copy: bool = False,
+) -> tuple[Nifti1Image | Nifti2Image, dict[str, Any]]
+```
+
+Convert a VoxelData array to a NiBabel NIfTI image and fUSI-BIDS metadata.
+
+This is the no-file-I/O counterpart to `save_nifti`: it builds the same NIfTI header geometry, dtype, and pixdim as `save_nifti`, but returns the `nibabel.Nifti1Image`/`nibabel.Nifti2Image` object directly instead of writing a file and a BIDS JSON sidecar. Useful for interoperating with libraries such as `nilearn` that expect NIfTI image objects rather than file paths. The returned metadata carries sidecar-only information such as `SliceTiming` and extra-dimension names. Pass it as `sidecar` to `convert_from_nifti` to preserve that information.
+
+Parameters:
+
+- #### **`data_array`**
+
+  (`DataArray`) –
+
+  VoxelData array to convert.
+- #### **`nifti_version`**
+
+  (`(1, 2)`, default: `1` ) –
+
+  NIfTI format version to use. Version 2 is a simple extension to support larger files and arrays with dimension sizes greater than 32,767.
+- #### **`qform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI qform. When not provided, `"world_to_qform"` is used if present; otherwise qform falls back to the coordinate-defining voxel geometry (`voxel_to_world`) directly.
+
+  If the coordinate-defining affine contains shear, qform writing is disabled because the NIfTI qform cannot represent shear. In that case, the geometry is written to sform instead.
+- #### **`sform`**
+
+  (`str`, default: `None` ) –
+
+  Key in `data_array.attrs["affines"]` to write into the NIfTI sform. When not provided, `"world_to_sform"` is used if present; otherwise sform also falls back to `voxel_to_world` directly (like qform), unless disabled via `sform_code=0` or `attrs["sform_code"] = 0`.
+- #### **`qform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI qform code to write. When provided, takes precedence over `data_array.attrs["qform_code"]`. When not provided, the value from `attrs["qform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- #### **`sform_code`**
+
+  (`int`, default: `None` ) –
+
+  NIfTI sform code to write. When provided, takes precedence over `data_array.attrs["sform_code"]`. When not provided, the value from `attrs["sform_code"]` is used if present; otherwise defaults to `2` (`NIFTI_XFORM_ALIGNED_ANAT`).
+- #### **`copy`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to copy the data into the returned image. If not copied, the image's data shares memory with a NumPy-backed `data_array`, so editing it in place (e.g. through `img.dataobj` or `img.get_fdata()`) also modifies `data_array`.
+
+Returns:
+
+- **`img`** ( `Nifti1Image or Nifti2Image` ) –
+
+  In-memory NIfTI image with spacings, qform/sform, and units written to the header.
+- **`metadata`** ( `dict[str, Any]` ) –
+
+  JSON-serializable sidecar metadata using fUSI-BIDS field names and units.
+
+Raises:
+
+- `ValueError` –
+
+  If the input is not valid VoxelData, has a `pose` dimension, exceeds NIfTI's dimension limit, or requests an invalid affine or transform code.
+
+Examples:
+
+```pycon
+>>> import confusius as cf
+>>> import numpy as np
+>>> da = cf.xarray.create_voxeldata(
+...     np.random.rand(10, 1, 32, 64),
+...     dims=("time", "k", "j", "i"),
+...     dt=0.5,
+...     spacing=(0.4, 0.1, 0.1),
+... )
+>>> img, metadata = cf.io.convert_to_nifti(da)
+```
 
 ### load
 
