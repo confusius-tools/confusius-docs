@@ -4281,14 +4281,6 @@ frequency ranges overlap. It may also remove slow flow in small vessels.</p>
 It can be useful before <abbr title="Singular Value Decomposition">SVD</abbr>
 filtering<sup id="fnref:brunner2020"><a class="footnote-ref" href="#fn:brunner2020">6</a></sup><sup id="fnref:nunez-elizalde2022"><a class="footnote-ref" href="#fn:nunez-elizalde2022">11</a></sup><sup id="fnref4:lemeurdiebolt2025"><a class="footnote-ref" href="#fn:lemeurdiebolt2025">4</a></sup> or in specialized
 applications such as tissue-motion tracking.</p>
-<p><abbr title="In-phase and Quadrature">IQ</abbr> processing functions and accessors accept <code>butterworth_padtype</code> (<code>"odd"</code>,
-<code>"even"</code>, <code>"constant"</code>, or <code>None</code>) and <code>butterworth_padlen</code> (samples) to control
-padding at each clutter window's boundaries. Defaults match SciPy: odd extension
-and an automatic length based on the filter coefficients. Set
-<code>butterworth_padtype=None</code> to disable padding; this also ignores the padding length.
-Shorter padding permits shorter windows but can increase boundary artifacts.
-The low-level <code>clutter_filter_butterworth</code> and <code>clutter_filter_sosfiltfilt</code>
-functions expose the same settings as <code>padtype</code> and <code>padlen</code>.</p>
 </div>
 </div>
 </div>
@@ -4426,8 +4418,7 @@ per window. In contrast, <code>output_shape=(1, 2, *iq.shape[1:])</code> means <
 point with two component maps</strong>. Non-temporal axis mapping is automatic, including
 spatially reduced outputs such as <code>(1,)</code> for a scalar measurement. Built-in wrappers
 supply these declarations internally.</p>
-<p>Only <abbr title="In-phase and Quadrature">IQ</abbr> and the callback are positional arguments; execution settings are keyword-only.
-The callback receives just the NumPy <abbr title="In-phase and Quadrature">IQ</abbr> window. Bind its settings with
+<p>The callback receives just the NumPy <abbr title="In-phase and Quadrature">IQ</abbr> window. Bind its settings with
 <code>functools.partial</code> rather than forwarding them through <code>process_iq_blocks</code>.
 For complex64 or complex128 <abbr title="In-phase and Quadrature">IQ</abbr>, this example emits two 50-volume power measurements
 from each 100-volume <abbr title="Singular Value Decomposition">SVD</abbr> window:</p>
@@ -4489,7 +4480,9 @@ flowchart LR
 <p>Beamformed <abbr title="In-phase and Quadrature">IQ</abbr> recordings can be tens or hundreds of gigabytes. ConfUSIus uses
 <a href="https://docs.dask.org/en/stable/">Dask</a> to process data in chunks, so the entire
 recording does not need to fit in RAM. Most operations are <strong>lazy</strong>: the computation
-runs when you call <code>.compute()</code> or save the result.</p>
+runs when you call <code>.compute()</code> or save the result. With NumPy-backed <abbr title="In-phase and Quadrature">IQ</abbr>, the
+pending computation shares the input buffer. Keep the samples unchanged until the
+computation finishes.</p>
 <h3 id="recommended-threaded-scheduler">Recommended: threaded scheduler<a class="headerlink" href="#recommended-threaded-scheduler" title="Permanent link">&para;</a></h3>
 <p>Dask's <strong>threaded scheduler</strong> is a good default for local <abbr title="In-phase and Quadrature">IQ</abbr> processing and is often
 faster than a distributed cluster, which adds scheduling and data-transfer overhead.</p>
@@ -4547,8 +4540,9 @@ or <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-obj
 still download the same chunks again; compute multiple measures together as shown below.</p>
 <p>For repeated analyses, consider a local Zarr copy. You can also load a small subset
 into memory with <a class="autorefs autorefs-external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.compute.html#xarray.DataArray.compute"><code>.compute()</code></a>, but this is not required to
-build processing graphs. After doing so, specify window widths explicitly because the
-original Dask chunking is no longer available.</p>
+build processing graphs. In memory, the default window width follows the stored
+time chunk size when available. If you rechunked the recording in Dask and want
+that time window after loading, pass its width explicitly.</p>
 <h3 id="computing-multiple-measures-together">Computing multiple measures together<a class="headerlink" href="#computing-multiple-measures-together" title="Permanent link">&para;</a></h3>
 <p>When processing several measures from the same recording, use
 <a class="autorefs autorefs-external" href="https://docs.dask.org/en/stable/api.html#dask.compute"><code>dask.compute</code></a> to share common input reads:</p>

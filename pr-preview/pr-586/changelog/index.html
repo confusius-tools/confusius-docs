@@ -5266,16 +5266,24 @@
 </ul>
 <h3 id="performance"><img alt="⚡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a1.svg" title=":zap:" /> Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Automatic NIfTI chunks follow disk order, reducing fragmented reads on network
+  drives. Large 2D and 3D images split along their slowest axes first, and
+  4D through 7D files group complete spatial volumes
+  (<a href="https://github.com/confusius-tools/confusius/pull/597">#597</a>).</li>
 <li><abbr title="In-phase and Quadrature">IQ</abbr> processing and cumulative-energy threshold calibration construct their Dask
-  graphs without reading or filtering initial <abbr title="In-phase and Quadrature">IQ</abbr> windows, avoiding startup I/O and
-  repeated processing (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
+  graphs without reading <abbr title="In-phase and Quadrature">IQ</abbr> samples, including for Zarr recordings opened with
+  <code>chunks=None</code>. Processing reuses existing Dask chunks or the storage chunk sizes
+  when available. NumPy-backed inputs share their sample buffer with the pending
+  computation, avoiding a full recording copy. Keep the samples unchanged until
+  computation finishes (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Signal Butterworth filtering checks the actual padding requirement, accepting
   short signals with custom or disabled padding and accounting correctly for
   odd-order and band-pass filters. Dask-backed results report the filtered dtype
-  before computation
+  before computation. Both signal and <abbr title="In-phase and Quadrature">IQ</abbr> Butterworth filters require a positive
+  filter order when filtering is requested
   (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
 <li><abbr title="In-phase and Quadrature">IQ</abbr> window counting avoids integer overflow on long recordings, and axial
   velocity calculations use consistent precision across integer lag types
@@ -5347,6 +5355,9 @@
 </ul>
 <h3 id="napari-plugin"><img alt="🖼" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f5bc.svg" title=":frame_photo:" /> Napari plugin<a class="headerlink" href="#napari-plugin" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Switching image layers in Signals mouse mode now redraws the voxel trace once,
+  avoiding repeated reads from lazily loaded images
+  (<a href="https://github.com/confusius-tools/confusius/pull/596">#596</a>).</li>
 <li>Videos open in a separate, time-synchronized viewer with their own layer list. Load
   recordings and videos from <strong>Data I/O</strong>
   (<a href="https://github.com/confusius-tools/confusius/pull/521">#521</a>).</li>

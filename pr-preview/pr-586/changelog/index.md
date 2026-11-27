@@ -29,11 +29,12 @@ Current development version for the next ConfUSIus release.
 
 ### ⚡ Performance
 
-- IQ processing and cumulative-energy threshold calibration construct their Dask graphs without reading or filtering initial IQ windows, avoiding startup I/O and repeated processing ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
+- IQ processing and cumulative-energy threshold calibration construct their Dask graphs without reading IQ samples, including for Zarr recordings opened with `chunks=None`. Processing reuses existing Dask chunks or the storage chunk sizes when available. NumPy-backed inputs share their sample buffer with the pending computation, avoiding a full recording copy. Keep the samples unchanged until computation finishes ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 
 ### 🐛 Fixes
 
-- Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation. Both signal and IQ Butterworth filters require a positive filter order when filtering is requested ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - IQ window counting avoids integer overflow on long recordings, and axial velocity calculations use consistent precision across integer lag types ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
@@ -60,6 +61,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
+- Switching image layers in Signals mouse mode now redraws the voxel trace once, avoiding repeated reads from lazily loaded images ([\#596](<https://github.com/confusius-tools/confusius/pull/596>)).
 - Videos open in a separate, time-synchronized viewer with their own layer list. Load recordings and videos from **Data I/O** ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).

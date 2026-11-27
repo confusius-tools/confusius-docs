@@ -241,7 +241,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x78a857eb0590>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76847b2442f0>
     ```
 - [x] Attributes: (9)
 
@@ -364,6 +364,6 @@ plt.show()
 
 ---
 
-**Total running time:** 9.0 s
+**Total running time:** 11.2 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/lazy-iq-blocks?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/pr-preview/pr-586/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-586/examples/_built/iq/process_beamformed_iq.ipynb>)

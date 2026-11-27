@@ -142,8 +142,6 @@ Tissue echoes are often strong and vary together across many voxels, while blood
 
 For these reasons, **Butterworth filtering alone is generally unsuitable for fUSI**. It can be useful before SVD filtering[^/pr-preview/pr-586/user-guide/beamformed-iq/#brunner2020][^/pr-preview/pr-586/user-guide/beamformed-iq/#nunez-elizalde2022][^/pr-preview/pr-586/user-guide/beamformed-iq/#lemeurdiebolt2025] or in specialized applications such as tissue-motion tracking.
 
-IQ processing functions and accessors accept `butterworth_padtype` (`"odd"`, `"even"`, `"constant"`, or `None`) and `butterworth_padlen` (samples) to control padding at each clutter window's boundaries. Defaults match SciPy: odd extension and an automatic length based on the filter coefficients. Set `butterworth_padtype=None` to disable padding; this also ignores the padding length. Shorter padding permits shorter windows but can increase boundary artifacts. The low-level `clutter_filter_butterworth` and `clutter_filter_sosfiltfilt` functions expose the same settings as `padtype` and `padlen`.
-
 ### Filter cutoffs
 
 The meaning of `low_cutoff` and `high_cutoff` depends on the chosen method:
@@ -253,7 +251,7 @@ Custom callbacks must declare `output_shape` and `output_dtype`. The shape descr
 
 For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply these declarations internally.
 
-Only IQ and the callback are positional arguments; execution settings are keyword-only. The callback receives just the NumPy IQ window. Bind its settings with `functools.partial` rather than forwarding them through `process_iq_blocks`. For complex64 or complex128 IQ, this example emits two 50-volume power measurements from each 100-volume SVD window:
+The callback receives just the NumPy IQ window. Bind its settings with `functools.partial` rather than forwarding them through `process_iq_blocks`. For complex64 or complex128 IQ, this example emits two 50-volume power measurements from each 100-volume SVD window:
 
 ```python
 from functools import partial
@@ -305,7 +303,7 @@ flowchart LR
 
 ## Working with Large Recordings
 
-Beamformed IQ recordings can be tens or hundreds of gigabytes. ConfUSIus uses [Dask](<https://docs.dask.org/en/stable/>) to process data in chunks, so the entire recording does not need to fit in RAM. Most operations are **lazy**: the computation runs when you call `.compute()` or save the result.
+Beamformed IQ recordings can be tens or hundreds of gigabytes. ConfUSIus uses [Dask](<https://docs.dask.org/en/stable/>) to process data in chunks, so the entire recording does not need to fit in RAM. Most operations are **lazy**: the computation runs when you call `.compute()` or save the result. With NumPy-backed IQ, the pending computation shares the input buffer. Keep the samples unchanged until the computation finishes.
 
 ### Recommended: threaded scheduler
 
@@ -361,7 +359,7 @@ The distributed scheduler is not necessarily faster, even for large recordings. 
 
 IQ processing graphs are built without reading or filtering IQ samples. For remote Zarr recordings, IQ data are downloaded when `.compute()` or `confusius.save` executes the graph. Separate computations can still download the same chunks again; compute multiple measures together as shown below.
 
-For repeated analyses, consider a local Zarr copy. You can also load a small subset into memory with `.compute()`, but this is not required to build processing graphs. After doing so, specify window widths explicitly because the original Dask chunking is no longer available.
+For repeated analyses, consider a local Zarr copy. You can also load a small subset into memory with `.compute()`, but this is not required to build processing graphs. In memory, the default window width follows the stored time chunk size when available. If you rechunked the recording in Dask and want that time window after loading, pass its width explicitly.
 
 ### Computing multiple measures together
 

@@ -800,7 +800,7 @@ Parameters:
 
   (`int`, default: `None` ) –
 
-  Width of the sliding temporal window, in volumes. If not provided, defaults to the total number of volumes.
+  Width of the sliding temporal window, in volumes. If not provided, uses the largest time chunk of the IQ data.
 - #### **`window_stride`**
 
   (`int`, default: `None` ) –
@@ -949,7 +949,7 @@ Raises:
 
 - `ValueError` –
 
-  If a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
+  If `block` is not 4D, if a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
 
 ### process\_iq\_blocks
 
