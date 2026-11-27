@@ -685,7 +685,7 @@ Parameters:
   - A blockshape like `(1000, 1000)`.
   - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
   - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
-  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - The word `"auto"` to use the disk-order chunking described in `load_nifti` for file-backed images. Dask chooses chunk sizes for in-memory arrays.
   - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
 - #### **`coordinate_affine`**
 
@@ -1158,7 +1158,7 @@ Parameters:
   - A blockshape like `(1000, 1000)`.
   - Explicit sizes of all blocks along all dimensions like `((1000, 1000,   500), (400, 400))`.
   - A size in bytes, like `"100 MiB"` which will choose a uniform block-like shape.
-  - The word `"auto"` to let Dask choose chunk sizes based on heuristics. See `dask.array.normalize_chunks` for more details on how chunk sizes are determined.
+  - The word `"auto"` to group voxels in disk order up to Dask's configured chunk-size target. For 2D and 3D images, chunks contain complete rows or planes when they fit. For 4D through 7D files, each chunk holds at least one complete spatial volume, even when it exceeds the target.
   - `-1` or `None` as a blocksize indicate the size of the corresponding dimension.
 - #### **`coordinate_affine`**
 

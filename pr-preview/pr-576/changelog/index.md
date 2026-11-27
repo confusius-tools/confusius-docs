@@ -23,6 +23,10 @@ Current development version for the next ConfUSIus release.
 - Add `get_geometry_center` and `.fusi.affine.geometry_center` to get the world-space center of a VoxelData array ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Save multi-pose VoxelData arrays to separate NIfTI files and JSON sidecars with a `{chunk}` filename template, preserving each pose's geometry and timing ([\#579](<https://github.com/confusius-tools/confusius/pull/579>)).
 
+### ⚡ Performance
+
+- Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
+
 ### 🐛 Fixes
 
 - SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
@@ -49,6 +53,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🖼 Napari plugin
 
+- Switching image layers in Signals mouse mode now redraws the voxel trace once, avoiding repeated reads from lazily loaded images ([\#596](<https://github.com/confusius-tools/confusius/pull/596>)).
 - Videos open in a separate, time-synchronized viewer with their own layer list. Load recordings and videos from **Data I/O** ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - `confusius --video PATH` opens a video without a data file ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).
 - Fix video synchronization with recordings timed in milliseconds or microseconds ([\#521](<https://github.com/confusius-tools/confusius/pull/521>)).

@@ -283,7 +283,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d25a5787ba0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e83314d7ba0>
     ```
 - [ ] Attributes: (25)
 
@@ -725,7 +725,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d2593c517f0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e831f9b97f0>
     ```
 - [ ] Attributes: (25)
 
@@ -844,7 +844,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 11.1 s
+**Total running time:** 13.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/feat/sample-beamformed-iq?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/pr-preview/pr-576/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/pr-preview/pr-576/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
