@@ -251,7 +251,7 @@ The underlying `process_iq_blocks` function applies **any user-defined function*
 
 Custom callbacks must declare `output_shape` and `output_dtype`. The shape describes **one outer window**, including its leading output-time axis, not a whole recording or a batch of windows. Every callback must return a NumPy array with exactly that shape and dtype; mismatches raise when the graph executes. The dtype declaration does not cast callback outputs.
 
-For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply declarations internally; their calling signatures are unchanged.
+For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply these declarations internally.
 
 Only IQ and the callback are positional arguments; execution settings are keyword-only. The callback receives just the NumPy IQ window. Bind its settings with `functools.partial` rather than forwarding them through `process_iq_blocks`. For complex64 or complex128 IQ, this example emits two 50-volume power measurements from each 100-volume SVD window:
 

@@ -2253,7 +2253,7 @@ The underlying `process_iq_blocks` function applies **any user-defined function*
 
 Custom callbacks must declare `output_shape` and `output_dtype`. The shape describes **one outer window**, including its leading output-time axis, not a whole recording or a batch of windows. Every callback must return a NumPy array with exactly that shape and dtype; mismatches raise when the graph executes. The dtype declaration does not cast callback outputs.
 
-For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply declarations internally; their calling signatures are unchanged.
+For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply these declarations internally.
 
 Only IQ and the callback are positional arguments; execution settings are keyword-only. The callback receives just the NumPy IQ window. Bind its settings with `functools.partial` rather than forwarding them through `process_iq_blocks`. For complex64 or complex128 IQ, this example emits two 50-volume power measurements from each 100-volume SVD window:
 
@@ -12611,10 +12611,10 @@ Functions:
 clutter_filter_butterworth(
     block: NDArray,
     fs: float,
+    *,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
-    *,
     padtype: str | None = "odd",
     padlen: int | None = None,
 ) -> NDArray
@@ -12736,6 +12736,7 @@ Raises:
 ```python
 clutter_filter_svd_from_cumulative_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -12804,6 +12805,7 @@ Raises:
 ```python
 clutter_filter_svd_from_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -12870,6 +12872,7 @@ Raises:
 ```python
 clutter_filter_svd_from_indices(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: int | None = None,
     high_cutoff: int | None = None,
@@ -12937,6 +12940,7 @@ Raises:
 compute_axial_velocity_volume(
     block: NDArray,
     fs: float,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -12955,7 +12959,6 @@ compute_axial_velocity_volume(
     | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> NDArray
@@ -13094,6 +13097,7 @@ Returns:
 ```python
 compute_power_doppler_volume(
     block: NDArray,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -13107,7 +13111,6 @@ compute_power_doppler_volume(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> NDArray
@@ -13191,6 +13194,7 @@ Returns:
 ```python
 compute_processed_volume_timings(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer,
     clutter_window_stride: int | integer,
     inner_window_width: int | integer,
@@ -13306,6 +13310,7 @@ array([2.5, 2.5, 2.5, 2.5])
 compute_svd_cumulative_energy_threshold(
     iq: DataArray,
     singular_value_index: int,
+    *,
     clutter_mask: DataArray | None = None,
     window_width: int | integer | None = None,
     window_stride: int | integer | None = None,
@@ -13380,6 +13385,7 @@ process_iq_block_with_clutter_filter(
     process_block_func: Callable[
         Concatenate[NDArray, ...], NDArray
     ],
+    *,
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -13393,7 +13399,6 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
     **kwargs: Any,
@@ -13571,6 +13576,7 @@ Raises:
 ```python
 process_iq_to_axial_velocity(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -13589,7 +13595,6 @@ process_iq_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -13735,6 +13740,7 @@ Returns:
 ```python
 process_iq_to_bmode(
     iq: DataArray,
+    *,
     bmode_window_width: int | integer | None = None,
     bmode_window_stride: int | integer | None = None,
 ) -> DataArray
@@ -13773,6 +13779,7 @@ Returns:
 ```python
 process_iq_to_power_doppler(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -13787,7 +13794,6 @@ process_iq_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -22733,6 +22739,7 @@ Methods:
 
 ```python
 process_to_axial_velocity(
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -22751,7 +22758,6 @@ process_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -22856,6 +22862,7 @@ Examples:
 
 ```python
 process_to_bmode(
+    *,
     bmode_window_width: int | integer | None = None,
     bmode_window_stride: int | integer | None = None,
 ) -> DataArray
@@ -22897,6 +22904,7 @@ Examples:
 
 ```python
 process_to_power_doppler(
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -22911,7 +22919,6 @@ process_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -37466,6 +37473,7 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- IQ processing functions and their xarray accessors now require window widths, strides, filter cutoffs, masks, and other optional settings to be passed by keyword. This also applies to the required window settings in `compute_processed_volume_timings`. For example, use `iq.fusi.iq.process_to_bmode(bmode_window_width=300)` ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Custom `process_iq_blocks` calls now require `output_shape` and `output_dtype` for one processing window. Callbacks must return NumPy arrays matching both declarations and retain the leading output-time axis. Execution options are keyword-only, non-temporal axes are inferred automatically, and callback settings must be bound with `functools.partial` instead of forwarded keywords. The Dask-specific `drop_axis` and `new_axis` options are removed ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - `compute_axial_velocity_volume`, `process_iq_to_axial_velocity`, and the corresponding xarray accessor now default `spatial_kernel` to `1`, disabling spatial median filtering unless requested ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `get_bounding_box` and `.fusi.affine.bounding_box` now return a dictionary mapping world coordinate names to `(min, max)` bounds instead of a DataArray. Access bounds with `bbox["z"]` instead of `.sel`; pose-dependent data now returns one box enclosing all poses, so select a pose first for its own box ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).

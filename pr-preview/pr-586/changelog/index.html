@@ -5169,6 +5169,12 @@
 <p>Current development version for the next ConfUSIus release.</p>
 <h3 id="breaking-changes"><img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4a5.svg" title=":boom:" /> Breaking changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><abbr title="In-phase and Quadrature">IQ</abbr> processing functions and their xarray accessors now require window widths,
+  strides, filter cutoffs, masks, and other optional settings to be passed by
+  keyword. This also applies to the required window settings in
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;compute_processed_volume_timings&lt;/span&gt;" href="../api/iq/#confusius.iq.compute_processed_volume_timings"><code>compute_processed_volume_timings</code></a>.
+  For example, use <code>iq.fusi.iq.process_to_bmode(bmode_window_width=300)</code>
+  (<a href="https://github.com/confusius-tools/confusius/pull/586">#586</a>).</li>
 <li>Custom <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;process_iq_blocks&lt;/span&gt;" href="../api/iq/#confusius.iq.process_iq_blocks"><code>process_iq_blocks</code></a> calls now require
   <code>output_shape</code> and <code>output_dtype</code> for one processing window. Callbacks must return
   NumPy arrays matching both declarations and retain the leading output-time axis.

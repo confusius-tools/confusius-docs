@@ -1562,6 +1562,7 @@ Methods:
 
 ```python
 process_to_axial_velocity(
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -1580,7 +1581,6 @@ process_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -1685,6 +1685,7 @@ Examples:
 
 ```python
 process_to_bmode(
+    *,
     bmode_window_width: int | integer | None = None,
     bmode_window_stride: int | integer | None = None,
 ) -> DataArray
@@ -1726,6 +1727,7 @@ Examples:
 
 ```python
 process_to_power_doppler(
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -1740,7 +1742,6 @@ process_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray

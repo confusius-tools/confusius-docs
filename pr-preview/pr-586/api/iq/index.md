@@ -67,10 +67,10 @@ Functions:
 clutter_filter_butterworth(
     block: NDArray,
     fs: float,
+    *,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
-    *,
     padtype: str | None = "odd",
     padlen: int | None = None,
 ) -> NDArray
@@ -192,6 +192,7 @@ Raises:
 ```python
 clutter_filter_svd_from_cumulative_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -260,6 +261,7 @@ Raises:
 ```python
 clutter_filter_svd_from_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -326,6 +328,7 @@ Raises:
 ```python
 clutter_filter_svd_from_indices(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: int | None = None,
     high_cutoff: int | None = None,
@@ -393,6 +396,7 @@ Raises:
 compute_axial_velocity_volume(
     block: NDArray,
     fs: float,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -411,7 +415,6 @@ compute_axial_velocity_volume(
     | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> NDArray
@@ -550,6 +553,7 @@ Returns:
 ```python
 compute_power_doppler_volume(
     block: NDArray,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -563,7 +567,6 @@ compute_power_doppler_volume(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> NDArray
@@ -647,6 +650,7 @@ Returns:
 ```python
 compute_processed_volume_timings(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer,
     clutter_window_stride: int | integer,
     inner_window_width: int | integer,
@@ -762,6 +766,7 @@ array([2.5, 2.5, 2.5, 2.5])
 compute_svd_cumulative_energy_threshold(
     iq: DataArray,
     singular_value_index: int,
+    *,
     clutter_mask: DataArray | None = None,
     window_width: int | integer | None = None,
     window_stride: int | integer | None = None,
@@ -836,6 +841,7 @@ process_iq_block_with_clutter_filter(
     process_block_func: Callable[
         Concatenate[NDArray, ...], NDArray
     ],
+    *,
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -849,7 +855,6 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
     **kwargs: Any,
@@ -1027,6 +1032,7 @@ Raises:
 ```python
 process_iq_to_axial_velocity(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -1045,7 +1051,6 @@ process_iq_to_axial_velocity(
     spatial_kernel: int
     | tuple[int, int, int]
     | list[int] = 1,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
@@ -1191,6 +1196,7 @@ Returns:
 ```python
 process_iq_to_bmode(
     iq: DataArray,
+    *,
     bmode_window_width: int | integer | None = None,
     bmode_window_stride: int | integer | None = None,
 ) -> DataArray
@@ -1229,6 +1235,7 @@ Returns:
 ```python
 process_iq_to_power_doppler(
     iq: DataArray,
+    *,
     clutter_window_width: int | integer | None = None,
     clutter_window_stride: int | integer | None = None,
     filter_method: Literal[
@@ -1243,7 +1250,6 @@ process_iq_to_power_doppler(
     butterworth_order: int = 4,
     doppler_window_width: int | integer | None = None,
     doppler_window_stride: int | integer | None = None,
-    *,
     butterworth_padtype: str | None = "odd",
     butterworth_padlen: int | None = None,
 ) -> DataArray
