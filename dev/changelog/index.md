@@ -6,6 +6,9 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- IQ processing functions and their xarray accessors now require window widths, strides, filter cutoffs, masks, and other optional settings to be passed by keyword. This also applies to the required window settings in `compute_processed_volume_timings`. For example, use `iq.fusi.iq.process_to_bmode(bmode_window_width=300)` ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Custom `process_iq_blocks` calls now require `output_shape` and `output_dtype` for one processing window. Callbacks must return NumPy arrays matching both declarations and retain the leading output-time axis. Execution options are keyword-only, non-temporal axes are inferred automatically, and callback settings must be bound with `functools.partial` instead of forwarded keywords. The Dask-specific `drop_axis` and `new_axis` options are removed ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- `compute_axial_velocity_volume`, `process_iq_to_axial_velocity`, and the corresponding xarray accessor now default `spatial_kernel` to `1`, disabling spatial median filtering unless requested ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `get_bounding_box` and `.fusi.affine.bounding_box` now return a dictionary mapping world coordinate names to `(min, max)` bounds instead of a DataArray. Access bounds with `bbox["z"]` instead of `.sel`; pose-dependent data now returns one box enclosing all poses, so select a pose first for its own box ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
@@ -14,6 +17,9 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- Control Butterworth clutter-filter padding with `padtype`/`padlen`, also exposed as `butterworth_padtype`/`butterworth_padlen` in IQ processing functions and accessors. Existing defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Tune execution batching in `process_iq_blocks` with `windows_per_task`, independently of scientific window sizes. Existing overlap-safe defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load`, including stores that require query parameters on each request ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 - Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and NiBabel NIfTI images without a temporary file. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
@@ -24,9 +30,14 @@ Current development version for the next ConfUSIus release.
 ### ⚡ Performance
 
 - Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
+- IQ processing and cumulative-energy threshold calibration construct their Dask graphs without reading IQ samples, including for Zarr recordings opened with `chunks=None`. Processing reuses existing Dask chunks or the storage chunk sizes when available. NumPy-backed inputs share their sample buffer with the pending computation, avoiding a full recording copy. Keep the samples unchanged until computation finishes ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 
 ### 🐛 Fixes
 
+- Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation. Both signal and IQ Butterworth filters require a positive filter order when filtering is requested ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- IQ window counting avoids integer overflow on long recordings, and axial velocity calculations use consistent precision across integer lag types ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 - `load_nifti` and `convert_from_nifti` declare the dtype of scaled values (`scl_slope`/`scl_inter`) and size `"auto"` chunks for it ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
@@ -34,6 +45,7 @@ Current development version for the next ConfUSIus release.
 
 ### 📚 Documentation
 
+- Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/dev/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Added the [Use nilearn on a VoxelData array](<https://confusius.tools/dev/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `convert_from_nifti` and `convert_to_nifti` for easier interoperability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).

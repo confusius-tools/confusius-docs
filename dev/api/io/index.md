@@ -855,7 +855,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
+  Local file path, or HTTP(S) URL to a Zarr store. URL query parameters apply to every metadata and chunk request. For local NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –

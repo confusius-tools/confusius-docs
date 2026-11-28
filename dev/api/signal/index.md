@@ -557,7 +557,7 @@ filter_butterworth(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 5,
-    padtype: str = "odd",
+    padtype: str | None = "odd",
     padlen: int | None = None,
     uniformity_tolerance: float = 0.01,
 ) -> DataArray
@@ -597,12 +597,12 @@ Parameters:
 
   (`(odd, even, constant, None)`, default: `"odd"` ) –
 
-  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, `"constant"` pads with zeros. If not provided, no padding is applied.
+  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, and `"constant"` extends the endpoint values. Pass `None` to disable padding.
 - #### **`padlen`**
 
   (`int`, default: `None` ) –
 
-  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)` where `n_sections = ceil(order/2)`.
+  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)`, based on the designed coefficients.
 - #### **`uniformity_tolerance`**
 
   (`float`, default: `1e-2` ) –
@@ -619,7 +619,7 @@ Raises:
 
 - `ValueError` –
 
-  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the filter order (needs more than `3 * (2 * ceil(order / 2) + 1)`).
+  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the effective padding length.
 - `ValueError` –
 
   If both `low_cutoff` and `high_cutoff` are `None` (no filtering), or if cutoff frequencies are invalid (negative, above Nyquist, or if high\_cutoff \<= low\_cutoff for band-pass).

@@ -27,6 +27,9 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
+- **`fetch_sample_beamformed_iq`** –
+
+  Open a sample beamformed IQ recording lazily from the ConfUSIus collection.
 - **`fetch_template_brunner_grillet_2021`** –
 
   Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
@@ -581,6 +584,48 @@ Returns:
 1. Pereira, M. et al. (2025). Induction of haemodynamic travelling waves by glial-related vasomotion in a rat model of neuroinflammation: Implications for functional neuroimaging. *eBioMedicine*, 116, 105777. [https://doi.org/10.1016/j.ebiom.2025.105777](<https://doi.org/10.1016/j.ebiom.2025.105777>)
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
+
+### fetch\_sample\_beamformed\_iq
+
+```python
+fetch_sample_beamformed_iq(
+    data_dir: str | Path | None = None,
+    refresh: bool = False,
+    print_citation: bool = True,
+) -> DataArray
+```
+
+Open a sample beamformed IQ recording lazily from the ConfUSIus collection.
+
+The Landemard et al. (2026) awake ALD019 recording is a Zarr store. Data chunks are downloaded when computed; no full local copy is created. Repeated reads may transfer the same chunks again. The recording is licensed under CC BY-NC 4.0.
+
+Parameters:
+
+- #### **`data_dir`**
+
+  (`str or Path`, default: `None` ) –
+
+  Directory in which to cache release metadata. Defaults to the platform cache directory, overridable via the `CONFUSIUS_DATA` environment variable. IQ chunks are not cached locally.
+- #### **`refresh`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to resolve the latest published release instead of reusing cached release metadata. Opening the Zarr store still requires network access.
+- #### **`print_citation`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to print the citation for the recording.
+
+Returns:
+
+- `DataArray` –
+
+  Dask-backed beamformed IQ VoxelData array.
+
+**References**
+
+1. Landemard, A. et al. (2026). Brainwide blood volume reflects opposing neural populations. Nature. [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>)
 
 ### fetch\_template\_brunner\_grillet\_2021
 

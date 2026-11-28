@@ -67,9 +67,12 @@ Functions:
 clutter_filter_butterworth(
     block: NDArray,
     fs: float,
+    *,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -104,6 +107,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Filter order. Due to forward-backward filtering, the effective order is doubled.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -115,13 +128,17 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if both `low_cutoff` and `high_cutoff` are `None`.
+  If `block` is not 4D or if cutoff frequencies are invalid.
 
 ### clutter\_filter\_sosfiltfilt
 
 ```python
 clutter_filter_sosfiltfilt(
-    block: NDArray, sos: NDArray
+    block: NDArray,
+    sos: NDArray,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -141,6 +158,16 @@ Parameters:
   (`(sections, 6) numpy.ndarray`) –
 
   Second-order sections filter coefficients, typically obtained from SciPy functions like `scipy.signal.butter`, `scipy.signal.cheby1`, etc.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -165,6 +192,7 @@ Raises:
 ```python
 clutter_filter_svd_from_cumulative_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -190,7 +218,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -233,6 +261,7 @@ Raises:
 ```python
 clutter_filter_svd_from_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -258,7 +287,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -299,6 +328,7 @@ Raises:
 ```python
 clutter_filter_svd_from_indices(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: int | None = None,
     high_cutoff: int | None = None,
@@ -322,9 +352,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`mask`**
 
-  (`(z, y x) numpy.ndarray`, default: `None` ) –
+  (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int`, default: `None` ) –
@@ -366,6 +396,7 @@ Raises:
 compute_axial_velocity_volume(
     block: NDArray,
     fs: float,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -376,12 +407,14 @@ compute_axial_velocity_volume(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
 ) -> NDArray
@@ -433,6 +466,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -450,7 +493,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - #### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 - #### **`transmit_frequency`**
@@ -510,6 +553,7 @@ Returns:
 ```python
 compute_power_doppler_volume(
     block: NDArray,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -521,6 +565,8 @@ compute_power_doppler_volume(
     high_cutoff: float | None = None,
     fs: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     doppler_window_width: int | None = None,
     doppler_window_stride: int | None = None,
 ) -> NDArray
@@ -572,6 +618,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`doppler_window_width`**
 
   (`int`, default: `None` ) –
@@ -594,6 +650,7 @@ Returns:
 ```python
 compute_processed_volume_timings(
     iq: DataArray,
+    *,
     clutter_window_width: int,
     clutter_window_stride: int,
     inner_window_width: int,
@@ -709,6 +766,7 @@ array([2.5, 2.5, 2.5, 2.5])
 compute_svd_cumulative_energy_threshold(
     iq: DataArray,
     singular_value_index: int,
+    *,
     clutter_mask: DataArray | None = None,
     window_width: int | None = None,
     window_stride: int | None = None,
@@ -742,7 +800,7 @@ Parameters:
 
   (`int`, default: `None` ) –
 
-  Width of the sliding temporal window, in volumes. If not provided, defaults to the total number of volumes.
+  Width of the sliding temporal window, in volumes. If not provided, uses the largest time chunk of the IQ data.
 - #### **`window_stride`**
 
   (`int`, default: `None` ) –
@@ -759,7 +817,7 @@ Raises:
 
 - `ValueError` –
 
-  If `singular_value_index` is less than 1 or greater than `window_width - 1`.
+  If `singular_value_index` is less than 1 or greater than `window_width - 1`, or if `clutter_mask` selects no voxels.
 
 > [!NOTE]
 >
@@ -783,6 +841,7 @@ process_iq_block_with_clutter_filter(
     process_block_func: Callable[
         Concatenate[NDArray, ...], NDArray
     ],
+    *,
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -796,6 +855,8 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     **kwargs: Any,
 ) -> NDArray
 ```
@@ -862,6 +923,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   When using the Butterworth clutter filter, the order of the filter.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -878,27 +949,26 @@ Raises:
 
 - `ValueError` –
 
-  If `filter_method` is `"butterworth"` and `fs` is not provided, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
+  If `block` is not 4D, if a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
 
 ### process\_iq\_blocks
 
 ```python
 process_iq_blocks(
     iq: Array,
-    process_func: Callable[
-        Concatenate[NDArray, ...], NDArray
-    ],
+    process_func: Callable[[NDArray], NDArray],
+    *,
+    output_shape: tuple[int, ...],
+    output_dtype: DTypeLike,
     window_width: int | None = None,
     window_stride: int | None = None,
-    drop_axis: int | tuple[int, ...] | None = None,
-    new_axis: int | tuple[int, ...] | None = None,
-    **kwargs: Any,
+    windows_per_task: int | None = None,
 ) -> Array
 ```
 
 Process blocks of IQ data using sliding windows.
 
-This function applies a processing operation to IQ data using Dask. It uses `dask.array.map_blocks` for non-overlapping windows. When temporal overlap is required, it batches multiple sliding windows into each task, applies explicit overlap between batches, and runs `process_func` on each window within the batch.
+This function applies a processing operation to IQ data using Dask. It uses `dask.array.map_blocks` for non-overlapping windows. When temporal overlap is required, it batches multiple sliding windows into each task, applies explicit overlap between batches, and runs `process_func` on each window within the batch. Graph construction does not read IQ samples or invoke `process_func`. Output metadata describes one window, independently of execution batching.
 
 > [!WARNING]
 >
@@ -915,7 +985,17 @@ Parameters:
 
   (`callable`) –
 
-  Function to apply to each temporal window. It must accept a `(window_volumes, z, y, x)` array as first argument and return a `(output_volumes, ...)` array.
+  Function accepting one `(window_volumes, k, j, i)` NumPy array and returning a NumPy array with `output_shape` and `output_dtype`. Configure additional callback arguments with `functools.partial`.
+- #### **`output_shape`**
+
+  (`tuple[int, ...]`) –
+
+  Fixed shape returned by one callback on one temporal window. The leading axis is output time: `(2, k, j, i)` produces two time points per window; `(1, 2, k, j, i)` produces one time point with two component maps. All sizes must be positive integers. Non-temporal axis mapping is automatic.
+- #### **`output_dtype`**
+
+  (`DTypeLike`) –
+
+  Dtype returned by every callback invocation. This declares the dtype; it does not cast callback outputs.
 - #### **`window_width`**
 
   (`int`, default: `None` ) –
@@ -926,21 +1006,11 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window, in volumes. Must be less than or equal to `window_width`. If not provided, equals `window_width`.
-- #### **`drop_axis`**
+- #### **`windows_per_task`**
 
-  (`int or tuple[int, ...]`, default: `None` ) –
+  (`int`, default: `None` ) –
 
-  Axes dropped by `process_func`.
-- #### **`new_axis`**
-
-  (`int or tuple[int, ...]`, default: `None` ) –
-
-  New axes added by `process_func`.
-- #### **`**kwargs`**
-
-  (`Any`, default: `{}` ) –
-
-  Additional keyword arguments passed to `process_func`.
+  Requested number of outer windows per Dask task. If not provided, uses the minimum needed for temporal overlap. Smaller requests are increased to that minimum. Larger batches do not change scientific windows, but increase task memory and can reduce parallelism.
 
 Returns:
 
@@ -952,13 +1022,17 @@ Raises:
 
 - `ValueError` –
 
-  If `window_stride` is greater than `window_width`.
+  If window sizes are invalid, no complete window fits, input sizes are unknown, output sizes are invalid, or a callback returns the wrong shape.
+- `TypeError` –
+
+  If `iq` is not a Dask array, or a callback returns a non-NumPy array or a dtype different from `output_dtype`. Callback errors occur at execution.
 
 ### process\_iq\_to\_axial\_velocity
 
 ```python
 process_iq_to_axial_velocity(
     iq: DataArray,
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -971,18 +1045,20 @@ process_iq_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
 ) -> DataArray
 ```
 
 Process blocks of beamformed IQ into axial velocity volumes using sliding windows.
 
-This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
 
 Parameters:
 
@@ -1034,6 +1110,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -1051,7 +1137,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - #### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 
@@ -1110,6 +1196,7 @@ Returns:
 ```python
 process_iq_to_bmode(
     iq: DataArray,
+    *,
     bmode_window_width: int | None = None,
     bmode_window_stride: int | None = None,
 ) -> DataArray
@@ -1148,6 +1235,7 @@ Returns:
 ```python
 process_iq_to_power_doppler(
     iq: DataArray,
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -1160,6 +1248,8 @@ process_iq_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     doppler_window_width: int | None = None,
     doppler_window_stride: int | None = None,
 ) -> DataArray
@@ -1167,7 +1257,7 @@ process_iq_to_power_doppler(
 
 Process blocks of beamformed IQ into power Doppler volumes using sliding windows.
 
-This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed. With no cutoffs, power Doppler uses the unfiltered samples and needs no sampling rate.
 
 Parameters:
 
@@ -1216,6 +1306,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`doppler_window_width`**
 
   (`int`, default: `None` ) –

@@ -1,6 +1,6 @@
 # Datasets
 
-The `confusius.datasets` module provides fetchers for publicly available atlases, templates, and fUSI datasets distributed in [fUSI-BIDS](<https://bids.neuroimaging.io/>) format. Each fetcher downloads the dataset on first call, caches it locally for offline reuse, and returns either the path to the root directory, or a more specific object (e.g., a DataArray for templates or an atlas Dataset for atlases\]).
+The `confusius.datasets` module provides fetchers for publicly available atlases, templates, and fUSI datasets distributed in [fUSI-BIDS](<https://bids.neuroimaging.io/>) format. Each fetcher downloads the dataset on first call, caches it locally for offline reuse, and returns either the path to the root directory, or a more specific object (e.g., a DataArray for templates or an atlas Dataset for atlases\]). The sample beamformed IQ fetcher is an exception: it reads chunks lazily over the network instead of caching the recording.
 
 > [!TIP]
 >
@@ -107,12 +107,13 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✗    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✗    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✗    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✗    │
 └─────────────────────────────────────┴──────────┴─────────┘
 ```
 
-The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
+The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below). `fetch_sample_beamformed_iq` streams its recording, so only its release metadata is ever stored on disk.
 
 The same table is available from the command line:
 
@@ -331,6 +332,19 @@ bids_root = fetch_nunez_elizalde_2022(subjects=["CR020"], refresh=True)
 ```
 
 Versions are immutable and use separate cache directories. Refreshing an unchanged release does not reread or download files whose recorded SHA-256 matches the remote manifest. If an upstream hash changes or the cached hash is unknown, the file is revalidated and downloaded when necessary. The same release-selection behavior applies to template fetchers.
+
+## Available Samples
+
+`fetch_sample_beamformed_iq` opens a Landemard et al. (2026) recording lazily from the collection:
+
+```python
+from confusius.datasets import fetch_sample_beamformed_iq
+
+iq = fetch_sample_beamformed_iq()
+segment = iq.isel(time=slice(0, 300)).compute()
+```
+
+Release metadata is cached like other datasets; use `refresh=True` to check for a newer release. Opening the store still requires network access, and IQ chunks are not cached locally. Only the chunks needed by a computation are transferred. Repeated reads may download the same chunks again; computing the entire array transfers the full recording. The recording is licensed under CC BY-NC 4.0.
 
 ## Available Templates
 

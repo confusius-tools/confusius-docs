@@ -822,7 +822,7 @@ iq = cf.create_voxeldata(
 validate_voxeldata(iq, require_velocity_attrs=True)
 ```
 
-See [Processing Beamformed IQ Data](<https://confusius.tools/dev/user-guide/beamformed-iq/#expected-data-structure>) for the required dimensions, metadata fields, and processing assumptions.
+See [Processing Beamformed IQ Data](<https://confusius.tools/dev/user-guide/beamformed-iq/#data-format-and-metadata>) for the required dimensions, metadata fields, and processing assumptions.
 
 ## Saving Data
 
@@ -2002,80 +2002,54 @@ The `pose` labels must be unique, non-negative integers. The `{chunk}` placehold
 
 # Processing Beamformed IQ Data
 
-## Introduction
+Beamformed IQ signals contain very rich information about tissue and blood. ConfUSIus lets you process these recordings to produce the following measures:
 
-After [loading your beamformed IQ data](<https://confusius.tools/dev/user-guide/io/#loading-data>), the next step in most fUSI workflows is processing it to extract hemodynamic signals. This guide explains how to use ConfUSIus to transform beamformed IQ data into measures like B-mode, power Doppler, and axial velocity.
+- **B-mode**, to visualize tissue anatomy.
+- **Power Doppler**, to track changes in blood signal power, commonly used as a measure of relative cerebral blood volume in fUSI.
+- **Axial velocity**, to estimate motion along the ultrasound beam.
 
-## Why Process IQ Data?
+You can also apply your own processing functions to compute other measures. Blood-related measures usually require **clutter filtering** to suppress the much stronger tissue echoes before calculating the output.
 
-Beamformed IQ data contains signals from all moving and stationary structures in the imaging field:
+This guide covers IQ data requirements, built-in measures, clutter filtering, processing windows, and custom workflows. To learn how to load beamformed IQ data into ConfUSIus, see [Loading data](<https://confusius.tools/dev/user-guide/io/#loading-data>).
 
-- **Tissue signals**: Strong echoes from slow-moving tissue (\~40-60 dB stronger than blood).
-- **Blood signals**: Weak echoes from fast-moving red blood cells.
+## Understanding Beamformed IQ Data
 
-Beamformed IQ signals can be processed to extract different types of information depending on your application:
+### What Are Beamformed IQ Signals?
 
-- **Structural imaging** (B-mode): Use amplitude information to visualize tissue anatomy.
-- **Blood volume** (power Doppler): Separate blood from tissue to quantify cerebral blood volume changes.
-- **Blood flow velocimetry** (color Doppler): Estimate blood flow speed and direction.
-- **Tissue motion**: Track tissue displacement (e.g., cardiac pulsatility, respiration).
+A fUSI scanner transmits high-frequency pulses and records the returning echoes as radio-frequency (RF) signals. IQ demodulation then converts these echoes into complex-valued signals that preserve amplitude and phase while discarding the high-frequency carrier. Finally, a beamforming algorithm combines the signals into a volume; a sequence of volumes forms a **beamformed IQ recording**.
 
-This guide covers the **IQ processing functions in ConfUSIus**, which focus primarily on extracting blood volume information for fUSI applications. The typical workflow involves:
+Each beamformed IQ sample can be written as
 
-1. **Filtering** to isolate signals of interest (e.g., blood).
-2. **Computing derived measures** from the filtered IQ signals (e.g., power Doppler, velocity).
+\\\[ \\mathrm{IQ}(i,j,k,t)=A(i,j,k,t)e^{j\\phi(i,j,k,t)}, \\\]
 
-For fUSI specifically, this means using clutter filtering to separate blood from tissue, then computing measures like power Doppler or axial velocity. The result is a series of volumes showing changes in cerebral blood volume or flow.
-
-## Understanding Your IQ Data
-
-Before processing, it's important to understand what beamformed IQ data represents and how it's structured.
-
-### Quick Primer on Beamformed IQ Signals
-
-Most fUSI users work with beamformed IQ signals rather than raw radio-frequency (RF) signals. Indeed, ultrasound systems emit pulses at high frequencies (typically 1–30 MHz). The received echoes oscillate at these same high frequencies. However, for imaging we only care about:
-
-- **Amplitude**: How strong is the reflection (related to tissue properties)?
-- **Phase**: How much has the phase shifted (related to motion via Doppler effect)?
-
-IQ demodulation extracts this amplitude and phase information while discarding the high-frequency carrier, allowing for a significant reduction in sampling rate and thus drastically reducing data volume. A beamformed IQ sample can be represented as
-
-\\\[ \\text{IQ}(i, j, k, t) = A(i, j, k, t) \\, e^{j\\phi(i, j, k, t)}, \\\]
-
-where \\(A\\) is amplitude, \\(\\phi\\) is phase, \\((i, j, k)\\) are spatial coordinates, and \\(t\\) is the **slow-time** index.
+where \\(A\\) is the echo amplitude, \\(\\phi\\) its phase, \\((i,j,k)\\) the voxel position, and \\(t\\) the time. **Amplitude** reflects echo strength; **changes in phase** can reveal motion.
 
 > [!NOTE]
 >
-> **Slow time vs. fast time**
+> **Pulse repetition and compound sampling frequencies**
 >
-> - **Fast time**: RF signals sampled at MHz rates.
-> - **Slow time**: Beamformed IQ signals sampled once per pulse, at kHz rates.
+> With single plane-wave imaging, beamformed IQ volumes are acquired at the *pulse repetition frequency (PRF)*, usually in the kilohertz range. In **compounded imaging**, echoes from several plane-wave angles are combined into one volume[^/dev/user-guide/beamformed-iq/#montaldo2009]. The resulting *compound sampling frequency* is typically the PRF divided by the number of angles, often giving hundreds of volumes per second. However, some fUSI scanners add a delay between each beamformed IQ volume (often to avoid probe heating, or because of computer processing limits). In this case, the compound sampling frequency is lower.
 
-For single plane-wave imaging, the sampling rate of the beamformed IQ signals equals the pulse repetition frequency (PRF), typically kHz rates. With **compound imaging** (common in fUSI), multiple plane waves are emitted at different angles and their echoes are combined to form a single compound volume[^/dev/user-guide/beamformed-iq/#montaldo2009]. In this case, the effective sampling rate, the **compound frequency**, is the PRF divided by the number of angles, typically hundreds of hertz.
+### Data Format and Metadata
 
-### Expected Data Structure
+ConfUSIus represents IQ recordings as complex-valued [VoxelData](<https://confusius.tools/dev/user-guide/voxeldata/#the-voxeldata-model>) arrays. For axial velocity computation, the VoxelData array must also have `transmit_frequency` and `beamforming_sound_velocity` attributes. Some formats contain these attributes, but others do not. You may supply them manually after loading, or when creating an array with `create_voxeldata`.
 
-Beamformed IQ data in ConfUSIus is a complex-valued, [VoxelData model](<https://confusius.tools/dev/user-guide/voxeldata/#the-voxeldata-model>) DataArray, with `time` as the slow-time dimension. This dimension order keeps IQ processing's sliding-window operations efficient.
-
-Beyond the VoxelData requirements, axial velocity estimation also requires the `transmit_frequency` and `beamforming_sound_velocity` DataArray attributes. `create_voxeldata` accepts both as optional arguments, and `process_iq_to_axial_velocity` checks for their presence internally via `validate_voxeldata`.
-
-Here is what a valid IQ DataArray looks like once loaded:
+For example:
 
 ```pycon
 >>> import confusius as cf
->>>
 >>> iq = cf.load("sub-01_task-rest_iq.zarr")
 >>> iq
 <xarray.DataArray 'iq' (time: 50000, k: 1, j: 118, i: 52)> Size: 2GB
-dask.array<xarray-<this-array>, shape=(50000, 1, 118, 52), dtype=complex64, chunksize=(1000, 1, 118, 52), chunktype=numpy.ndarray>
+dask.array<... shape=(50000, 1, 118, 52), dtype=complex64, chunksize=(1000, 1, 118, 52)>
 Coordinates:
-  * time     (time) float64 400kB 0.0 0.002 0.004 ... 99.99 100.0 100.0
-  * k        (k) int64 8B 0
-  * j        (j) int64 944B 0 1 2 3 4 5 6 7 ... 110 111 112 113 114 115 116 117
-  * i        (i) int64 416B 0 1 2 3 4 5 6 7 8 9 ... 43 44 45 46 47 48 49 50 51
-  * z        (k, j, i) float64 49kB dask.array<chunksize=(1, 118, 52), meta=np.ndarray>
-  * y        (k, j, i) float64 49kB dask.array<chunksize=(1, 118, 52), meta=np.ndarray>
-  * x        (k, j, i) float64 49kB dask.array<chunksize=(1, 118, 52), meta=np.ndarray>
+  * time     (time) float64 0.0 0.002 0.004 ... 100.0
+  * k        (k) int64 0
+  * j        (j) int64 0 1 2 ... 117
+  * i        (i) int64 0 1 2 ... 51
+  * z        (k, j, i) float64 ...
+  * y        (k, j, i) float64 ...
+  * x        (k, j, i) float64 ...
 Indexes:
   ┌ z        VoxelToWorldIndex
   │ y
@@ -2087,55 +2061,152 @@ Attributes:
     beamforming_sound_velocity:   1540.0
 ```
 
-ConfUSIus loads AUTC DAT, EchoFrame DAT, and Iconeus RAW beamformed IQ files directly; see the [I/O guide](<https://confusius.tools/dev/user-guide/io/index.md>) for more details. If your acquisition system isn't directly supported, see [Other Systems](<https://confusius.tools/dev/user-guide/io/#other-systems>) for how to wrap a custom complex array as an IQ DataArray.
+ConfUSIus can load beamformed IQ files from AUTC DAT, EchoFrame DAT, and Iconeus RAW recordings. See the [I/O guide](<https://confusius.tools/dev/user-guide/io/index.md>) for supported formats, or [Other systems](<https://confusius.tools/dev/user-guide/io/#other-systems>) to convert your own complex-valued arrays.
 
-> [!NOTE]
+> [!TIP]
 >
-> **Finding metadata values**
+> **Finding acquisition metadata**
 >
-> If you're unsure about the correct values:
->
-> - `volume_acquisition_duration`: This is usually equal to the number of plane wave angles divided by the pulse repetition frequency.
-> - `transmit_frequency`: Found in your probe specifications or acquisition settings. Generally around 5-10 MHz for clinical probes, and 12-20 MHz for high-frequency probes used in small animal imaging.
-> - `beamforming_sound_velocity`: Typically 1540 m/s for brain tissues, but may vary with temperature and tissue type.
+> - `volume_acquisition_duration`: Usually the number of plane-wave angles divided by the PRF, with an optional delay between volumes.
+> - `transmit_frequency`: Look in your probe specifications or acquisition settings (typically 5–10 MHz for clinical probes and 12–30 MHz for high-frequency small-animal probes).
+> - `beamforming_sound_velocity`: Often set to 1540 m/s for soft tissue, but depends on tissue and temperature.
 
-## How ConfUSIus Processes IQ Data
+## Computing B-Mode, Power Doppler, and Velocity
 
-ConfUSIus offers a flexible framework for processing IQ data using sliding windows. At its core is the `process_iq_blocks` function, which allows you to run any user-defined function on sliding windows of IQ signals along the temporal dimension. This base function is then wrapped by specialized processing functions for common fUSI applications.
+ConfUSIus provides built-in functions to process beamformed IQ data using sliding temporal windows. All IQ processing functions return Dask-backed VoxelData arrays. Call `.compute()` to load the result into memory, or use `confusius.save` to write it in chunks. See the [Processing beamformed IQ recordings](<https://confusius.tools/dev/examples/_built/iq/process_beamformed_iq/index.md>) for a practical example.
 
-### Generic IQ Processing
+### Power Doppler
 
-The `process_iq_blocks` function is the foundation of IQ processing in ConfUSIus. It provides a generic interface for applying any user-defined function to "blocks" of IQ data using sliding temporal windows. You will generally not call this function directly, but it is worth knowing it exists if you ever need to implement a custom processing workflow (for example, when implementing new clutter filters).
+**Power Doppler** is the most common fUSI measure of relative cerebral blood volume changes. After removing tissue echoes with a clutter filter, ConfUSIus averages the squared IQ magnitude over each Doppler window.
 
-```
----
-config:
-  layout: elk
----
+`process_iq_to_power_doppler` uses `clutter_window_width` to determine the clutter filter window size and `doppler_window_width` for power Doppler averaging. Its output is **signal power in arbitrary units**, not an absolute measure of blood volume.
 
-flowchart LR
-    IQ -->|Window 1| F1{{"User Function"}}
-    IQ --> ellipsis{{"..."}}
-    IQ -->|Window <em>n</em>| F2{{"User Function"}}
-
-    F1 -->|"Output Volume(s)"| output
-    F2 -->|"Output Volume(s)"| output
-
-    IQ@{ shape: processes, label: "Input IQ Volumes" }
-    output@{ shape: processes, label: "Stacked Output Volumes" }
-    ellipsis@{ shape: text}
+```python
+pwd = cf.iq.process_iq_to_power_doppler(
+    iq, filter_method="svd_indices", low_cutoff=40
+).compute()
 ```
 
-> [!NOTE]
+### Axial Velocity
+
+**Axial velocity** describes motion along the ultrasound beam. `process_iq_to_axial_velocity` estimates it from phase changes between beamformed IQ samples, averaged over `velocity_window_width` frames[^/dev/user-guide/beamformed-iq/#kasai1985]. The `lag` parameter determines the separation between samples (`lag=1` compares consecutive frames).
+
+Clutter filtering controls which motion dominates the estimate:
+
+- **With tissue suppression:** the estimate primarily reflects blood motion.
+- **Without a filter**: strong tissue echoes dominate, making it useful for tracking tissue motion associated with cardiac pulsatility, respiration[^/dev/user-guide/beamformed-iq/#zucker2025], or movement[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025].
+
+```python
+blood_velocity = cf.iq.process_iq_to_axial_velocity(
+    iq, filter_method="svd_indices", low_cutoff=40, spatial_kernel=1
+).compute()
+
+tissue_velocity = cf.iq.process_iq_to_axial_velocity(iq).compute()
+```
+
+Values are in **m/s** and represent only the velocity component along the beam. The sign depends on the scanner's IQ convention; verify which direction is positive using a phantom or known flow.
+
+> [!WARNING]
 >
-> Contrary to most ConfUSIus functions, `process_iq_blocks` is a low-level function that expects a [Dask array](<https://examples.dask.org/array.html>) instead of an Xarray DataArray. This is because it operates on IQ data directly and returns processed data without metadata and coordinate handling. The wrapper functions for power Doppler and axial velocity handle the Xarray integration and metadata management for you.
+> **Velocity aliasing**
+>
+> If the phase changes too much between compared samples, the velocity estimate becomes ambiguous and may appear to reverse direction. Reduce `lag` or increase the IQ sampling rate to measure faster motion without aliasing.
 
-### Convenience Wrappers
+### B-Mode
 
-The specialized functions `process_iq_to_power_doppler` and `process_iq_to_axial_velocity` wrap `process_iq_blocks` to implement a **nested sliding window** approach. `process_iq_to_bmode` is similar but uses a single window level since no clutter filtering is involved:
+**B-mode** visualizes tissue anatomy from echo strength. `process_iq_to_bmode` averages the IQ magnitude over `bmode_window_width` frames. It does not apply clutter filtering. Longer windows give smoother images but may blur moving structures.
 
-1. **Outer windows (clutter filtering)**: A first sliding window is used for clutter filtering. Within each window, the clutter filter is applied to separate blood from tissue signals.
-2. **Inner windows (derived measure computation)**: Inside each clutter-filtered window, a second sliding window runs to compute the desired measure (power Doppler or axial velocity). Multiple output volumes can be extracted from each clutter window.
+```python
+bmode = cf.iq.process_iq_to_bmode(iq).compute()
+```
+
+## Clutter Filtering
+
+Blood echoes are typically 40–60 dB weaker than tissue echoes (roughly 100–1000 times lower in amplitude). **Clutter filtering** suppresses tissue signals so blood-related measures can be computed reliably.
+
+Tissue echoes are often strong and vary together across many voxels, while blood echoes tend to be weaker and more localized. Tissue usually moves more slowly than blood, but their Doppler frequencies can overlap—especially when the subject moves. This is why frequency filtering alone is often insufficient.
+
+### Available methods
+
+**Singular value decomposition (SVD)** separates IQ data into components ordered by their signal strength[^/dev/user-guide/beamformed-iq/#demene2015]. Strong, spatially coherent tissue signals tend to appear in the leading components, while weaker blood signals are spread across later ones. Removing leading components can therefore suppress tissue echoes.
+
+- **`svd_indices` (fixed cutoff):** Removes a fixed set of components in every window. This is the widely used default in fUSI studies[^/dev/user-guide/beamformed-iq/#ferrier2020][^/dev/user-guide/beamformed-iq/#rabut2020][^/dev/user-guide/beamformed-iq/#brunner2021][^/dev/user-guide/beamformed-iq/#nunez-elizalde2022].
+- **`svd_energy` (adaptive):** Chooses components to remove using their individual energies. Can respond to changing motion, but may over-filter and cause power Doppler drops during motion.
+- **`svd_cumulative_energy` (adaptive):** Uses the cumulative distribution of component energy. Can adapt to changing motion, but also suppresses global power changes, potentially removing meaningful widespread signals.
+
+> [!TIP]
+>
+> **Which SVD filter should I use?**
+>
+> Start with **`svd_indices`** for most recordings. For awake subjects with strong, variable motion, adaptive methods[^/dev/user-guide/beamformed-iq/#baranger2018] may help[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025][^/dev/user-guide/beamformed-iq/#bertolo2023]. However, they are less established and can impact the signals you want to measure. In particular, avoid `svd_cumulative_energy` when global hemodynamic changes are of interest.
+
+**`butterworth`** filters IQ signals by temporal frequency. A high-pass setting suppresses slow motion, but it cannot separate tissue from blood when their frequency ranges overlap. It may also remove slow flow in small vessels.
+
+For these reasons, **Butterworth filtering alone is generally unsuitable for fUSI**. It can be useful before SVD filtering[^/dev/user-guide/beamformed-iq/#brunner2020][^/dev/user-guide/beamformed-iq/#nunez-elizalde2022][^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025] or in specialized applications such as tissue-motion tracking.
+
+### Filter cutoffs
+
+The meaning of `low_cutoff` and `high_cutoff` depends on the chosen method:
+
+| Method | `low_cutoff` | `high_cutoff` |
+| --- | --- | --- |
+| `svd_indices` | Remove components with indices below this value (usually strong tissue components). | Remove components at or above this index (usually weak noise components). |
+| `svd_energy` | Remove components with energy below this value. | Remove components with energy above this value. |
+| `svd_cumulative_energy` | Remove components with cumulative energy below this value. | Remove components with cumulative energy above this value. |
+| `butterworth` | Remove frequencies below this value (Hz). | Remove frequencies above this value (Hz). |
+
+### Masks for SVD filtering
+
+You can supply a `clutter_mask` to use only selected voxels when identifying tissue-related components, which may improve filtering[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025].
+
+```python
+brain_mask = cf.load("brain_mask.zarr")
+
+pwd = iq.fusi.iq.process_to_power_doppler(
+    filter_method="svd_indices", clutter_mask=brain_mask, low_cutoff=50,
+)
+```
+
+### Choosing a cumulative-energy cutoff
+
+Because the energy distribution varies across time windows, choosing `high_cutoff` for `svd_cumulative_energy` can be difficult. `compute_svd_cumulative_energy_threshold` examines each window and finds the **minimum cumulative energy** corresponding to a chosen singular-value index (accumulated from low-energy to high-energy components). Using this minimum helps prevent excessive filtering in any window[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025].
+
+```python
+import confusius as cf
+
+iq = cf.load("recording.zarr")["iq"]
+brain_mask = cf.load("brain_mask.zarr")["mask"]
+
+threshold = cf.iq.compute_svd_cumulative_energy_threshold(
+    iq,
+    singular_value_index=40,
+    clutter_mask=brain_mask,
+    window_width=200,
+).compute()
+
+pwd = iq.fusi.iq.process_to_power_doppler(
+    filter_method="svd_cumulative_energy",
+    clutter_mask=brain_mask,
+    high_cutoff=threshold,
+    clutter_window_width=200,
+)
+```
+
+## Processing Windows and Custom Functions
+
+### Nested Sliding Windows
+
+For power Doppler and axial velocity, ConfUSIus uses **two nested sliding windows**:
+
+1. **Clutter window:** Filter a block of IQ volumes to suppress tissue echoes.
+2. **Measurement windows:** Compute one or more power Doppler or velocity volumes from smaller windows within that filtered block.
+
+This lets you choose the filtering window independently of the output time resolution:
+
+- `clutter_window_width` and `clutter_window_stride` control how much IQ data is used for each clutter-filtering step and how far that window advances.
+- `doppler_window_width` / `velocity_window_width` and the corresponding strides control each measurement and its spacing in time.
+
+B-mode uses only one window level because it does not need clutter filtering.
 
 ```
 ---
@@ -2168,458 +2239,152 @@ flowchart LR
     e2@{ shape: text}
 ```
 
-This nested approach allows independent control over:
+### Custom processing
 
-- **Clutter filtering temporal resolution**: Controlled by `clutter_window_width` and `clutter_window_stride`.
-- **Measure computation temporal resolution**: Controlled by `doppler_window_width` / `velocity_window_width` and their corresponding strides.
+The underlying `process_iq_blocks` function applies **any user-defined function** to successive time windows. The built-in processing methods use it internally, but you can call it directly to implement your own measures or filters.
 
-### Memory and Performance Optimization
+> [!NOTE]
+>
+> **Low-level interface**
+>
+> Unlike most ConfUSIus functions, `process_iq_blocks` takes a **Dask array**, not a VoxelData array. It returns processed data without managing coordinates or metadata. The built-in power Doppler, velocity, and B-mode functions handle those details for you.
 
-Beamformed IQ datasets are typically very large (tens to hundreds of GB). ConfUSIus relies on the Dask backend for Xarray to enable out-of-core processing, allowing you to work with datasets larger than available RAM. Dask uses **lazy evaluation**, meaning data stays on disk until you explicitly compute results. This allows you to build complex processing pipelines that only execute when needed.
+```
+---
+config:
+  layout: elk
+---
 
-For optimal performance, **always start a Dask distributed `Client`** before running computations. Even for local processing (single machine), the distributed scheduler provides significantly better performance than the default scheduler, along with task monitoring and a web-based dashboard to track progress:
+flowchart LR
+    IQ -->|Window 1| F1{{"User Function"}}
+    IQ --> ellipsis{{"..."}}
+    IQ -->|Window <em>n</em>| F2{{"User Function"}}
+
+    F1 -->|"Output Volume(s)"| output
+    F2 -->|"Output Volume(s)"| output
+
+    IQ@{ shape: processes, label: "Input IQ Volumes" }
+    output@{ shape: processes, label: "Stacked Output Volumes" }
+    ellipsis@{ shape: text}
+```
+
+Custom callbacks must declare `output_shape` and `output_dtype`. The shape describes **one outer window**, including its leading output-time axis, not a whole recording or a batch of windows. Every callback must return a NumPy array with exactly that shape and dtype; mismatches raise when the graph executes. The dtype declaration does not cast callback outputs.
+
+For example, `output_shape=(2, *iq.shape[1:])` means **two output time points** per window. In contrast, `output_shape=(1, 2, *iq.shape[1:])` means **one time point with two component maps**. Non-temporal axis mapping is automatic, including spatially reduced outputs such as `(1,)` for a scalar measurement. Built-in wrappers supply these declarations internally.
+
+The callback receives just the NumPy IQ window. Bind its settings with `functools.partial` rather than forwarding them through `process_iq_blocks`. For complex64 or complex128 IQ, this example emits two 50-volume power measurements from each 100-volume SVD window:
 
 ```python
-from dask.distributed import Client
-import xarray as xr
-import confusius
+from functools import partial
 
-# Start a local Dask cluster.
-client = Client()
+import numpy as np
 
-# The client prints a dashboard link for monitoring progress.
-# Example: http://127.0.0.1:8787/status
+processor = partial(
+    cf.iq.compute_power_doppler_volume,
+    low_cutoff=2,
+    doppler_window_width=50,
+    doppler_window_stride=50,
+)
+result = cf.iq.process_iq_blocks(
+    iq.data,
+    processor,
+    output_shape=(2, *iq.shape[1:]),
+    output_dtype=np.float64,
+    window_width=100,
+    window_stride=100,
+)
+```
 
-# Load IQ data (metadata only, no data in memory yet).
+Results are concatenated in outer-window order, then within-window output-time order.
+
+Constructing an IQ-processing graph does not read IQ samples or invoke the callback. A supplied clutter mask is still loaded for validation. Callbacks should remain side-effect-free because Dask can retry or recompute tasks.
+
+The low-level function also accepts `windows_per_task` to batch several outer windows into one Dask task. This changes execution granularity, not window width, stride, filtering, or output times. Requests smaller than the minimum needed for an overlap halo are increased to that minimum. Larger batches can reduce scheduler overhead but increase memory and reduce parallelism. Built-in wrappers retain their existing minimum-batch default.
+
+## Working with Large Recordings
+
+Beamformed IQ recordings can be tens or hundreds of gigabytes. ConfUSIus uses [Dask](<https://docs.dask.org/en/stable/>) to process data in chunks, so the entire recording does not need to fit in RAM. Most operations are **lazy**: the computation runs when you call `.compute()` or save the result. With NumPy-backed IQ, the pending computation shares the input buffer. Keep the samples unchanged until the computation finishes.
+
+### Recommended: threaded scheduler
+
+Dask's **threaded scheduler** is a good default for local IQ processing and is often faster than a distributed cluster, which adds scheduling and data-transfer overhead.
+
+Numerical operations such as SVD may already use multiple CPU threads through BLAS libraries. Running several Dask tasks in parallel can therefore create too many competing threads and slow down processing. We recommend limiting BLAS to one thread per task using [`threadpoolctl`](<https://github.com/joblib/threadpoolctl>).
+
+```python
+import dask
+import confusius as cf
+from threadpoolctl import threadpool_limits
+
 iq = cf.load("large_iq_data.zarr")
 
-# Build computation graph (still no execution).
+# Limit BLAS threads and configure Dask parallelism.
+with threadpool_limits(limits=1, user_api="blas"):
+    with dask.config.set(scheduler="threads", num_workers=8):
+        pwd = iq.fusi.iq.process_to_power_doppler(low_cutoff=40)
+        cf.save(pwd, "power_doppler.zarr")
+```
+
+Adjust `num_workers` based on your CPU and available memory. More workers are not always faster, especially for memory-intensive operations such as SVD.
+
+### Optional: distributed scheduler
+
+For more control over worker resources or to monitor processing through a web dashboard, you can start a local Dask `Client`:
+
+```python
+from dask.distributed import Client
+
+client = Client(
+    n_workers=4,
+    threads_per_worker=2,
+    memory_limit="8GB",  # Per worker.
+)
+
+# Process and save the recording.
 pwd = iq.fusi.iq.process_to_power_doppler(low_cutoff=40)
-
-# Execute and save results (data processed in chunks, written to disk).
-pwd.to_zarr("power_doppler.zarr")
+cf.save(pwd, "power_doppler.zarr")
 ```
 
-> [!TIP]
->
-> **Customizing the cluster**
->
-> You can customize cluster resources based on your system:
->
-> ```python
-> # Limit workers and memory.
-> client = Client(
->     n_workers=4,  # Number of worker processes.
->     threads_per_worker=2,  # Threads per worker.
->     memory_limit="8GB",  # Memory limit per worker.
-> )
-> ```
->
-> See the [Dask documentation](<https://docs.dask.org/en/stable/>) for more configuration options.
+The dashboard is usually available at **[http://localhost:8787/status](<http://localhost:8787/status>)**. If the port is already in use, Dask may choose another. Check `client.dashboard_link` for the actual address.
 
-> [!TIP]
->
-> **Computing multiple measures in a single pass**
->
-> Since `process_to_power_doppler`, `process_to_axial_velocity`, and `process_to_bmode` all return lazy Dask-backed arrays, you can compute them **simultaneously** using [`dask.compute`](<https://docs.dask.org/en/stable/base.html#dask.compute>):
->
-> ```python
-> import dask
-> import confusius
->
-> pwd = iq.fusi.iq.process_to_power_doppler(...)
-> velocity = iq.fusi.iq.process_to_axial_velocity(...)
-> bmode = iq.fusi.iq.process_to_bmode(...)
->
-> # Compute all three with a single pass over the IQ data.
-> pwd, velocity, bmode = dask.compute(pwd, velocity, bmode)
-> ```
->
-> Calling `.compute()` on each separately would scan through the IQ file multiple times. `dask.compute` merges the task graphs and reads the data only once, which can significantly cut processing time for large datasets.
-
-## Clutter Filtering
-
-Clutter filtering is an essential step in fUSI processing to separate weak blood signals from strong tissue signals. Indeed, blood signals from red blood cells are typically 40-60 dB (100-1000×) weaker than tissue signals, making effective clutter rejection essential for detecting hemodynamic changes.
-
-### How Clutter Filtering Works
-
-Clutter filters exploit the different spatiotemporal characteristics of tissue and blood signals:
-
-- **Tissue signals**: Spatially coherent across large regions, with low temporal frequencies from slow tissue motion.
-- **Blood signals**: Spatially localized to vascular structures, with higher temporal frequencies from faster blood flow.
-
-The challenge is that tissue motion (especially in awake subjects) can create Doppler frequencies that overlap with blood flow signals, making simple frequency-based separation insufficient.
-
-### Available Filter Methods
-
-ConfUSIus provides several clutter filtering methods, each with different trade-offs:
-
-Singular Value Decomposition (SVD) filters exploit both spatial and temporal information to separate tissue from blood[^/dev/user-guide/beamformed-iq/#demene2015]. The SVD decomposes IQ signals into orthogonal components (modes) sorted by energy. Tissue motion, being spatially coherent and energetic, concentrates in the highest-energy modes. Blood flow, being spatially incoherent and weak, distributes across lower-energy modes. By removing the top singular vectors, tissue clutter is suppressed while preserving blood signals.
-
-**Static filter:**
-
-- **`svd_indices`**: Removes a fixed number of singular vectors across all windows. Simple and widely used, but assumes constant motion levels throughout the acquisition.
-
-**Adaptive filters:**[^/dev/user-guide/beamformed-iq/#baranger2018]
-
-- **`svd_energy`**: Adaptively determines the threshold based on individual singular vector energies. Adjusts to varying motion levels, but its interpretation can be less intuitive.
-- **`svd_cumulative_energy`**: Adaptively determines the threshold based on cumulative energy distribution. More robust to motion variations, but removes global energy variations across windows (similar to global signal regression).
+The distributed scheduler is not necessarily faster, even for large recordings. Start with the threaded scheduler and switch if you need its monitoring or resource-management features.
 
 > [!NOTE]
 >
-> **Static vs. adaptive SVD filters**
+> **BLAS threads with distributed workers**
 >
-> **Static SVD filters** (`svd_indices`) are the standard method used in the vast majority of fUSI studies[^/dev/user-guide/beamformed-iq/#ferrier2020] [^/dev/user-guide/beamformed-iq/#rabut2020] [^/dev/user-guide/beamformed-iq/#brunner2021] [^/dev/user-guide/beamformed-iq/#nunez-elizalde2022]. They are well-tested and effective for typical imaging conditions.
->
-> However, static filters assume constant tissue energy levels throughout the acquisition. This assumption breaks down in paradigms with strong, variable tissue motion, such as awake preclinical imaging. In these cases, **adaptive clutter filters** have shown promise by adjusting thresholds to each window's characteristics[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025] [^/dev/user-guide/beamformed-iq/#bertolo2023].
->
-> **Important caveats for adaptive filters:**
->
-> - Much less tested than static filters in the fUSI literature.
-> - Their impact on filtered signals can complicate interpretation.
-> - `svd_energy` may over-filter signals leading to drops in power Doppler intensity during motion periods.
-> - `svd_cumulative_energy` removes global energy variations (like global signal regression), which is a strong denoising step only appropriate when studying local effects.
->
-> **Recommendation:**
->
-> - Use **`svd_indices`** (static) as the default choice for most fUSI applications.
-> - Consider **adaptive filters** only when imaging conditions involve high, variable motion levels (e.g., awake subjects) and you are studying local hemodynamic effects rather than global changes.
+> Dask's nanny-managed process workers normally set `OMP_NUM_THREADS`, `MKL_NUM_THREADS`, and `OPENBLAS_NUM_THREADS` to `1` before startup. The default process-based `Client()` setup therefore usually needs no additional BLAS limits. Existing environment variables can override these defaults; check worker settings if you override them or use a custom deployment.
 
-Temporal high-pass Butterworth filter that removes low-frequency components. Uses only temporal frequency information, not spatial characteristics.
+### Processing remote recordings
 
-> [!WARNING]
->
-> **Limited use for fUSI**
->
-> Butterworth filters alone are **inadequate for fUSI** because they cannot separate tissue and blood when Doppler frequencies overlap (common during motion), and they remove slow blood flows in capillaries and small vessels.
->
-> May be used as a pre-processing step before SVD filtering[^/dev/user-guide/beamformed-iq/#brunner2020] [^/dev/user-guide/beamformed-iq/#nunez-elizalde2022] [^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025] or for specialized applications like tissue motion tracking.
+IQ processing graphs are built without reading or filtering IQ samples. For remote Zarr recordings, IQ data are downloaded when `.compute()` or `confusius.save` executes the graph. Separate computations can still download the same chunks again; compute multiple measures together as shown below.
 
-### Filter Parameters
+For repeated analyses, consider a local Zarr copy. You can also load a small subset into memory with `.compute()`, but this is not required to build processing graphs. In memory, the default window width follows the stored time chunk size when available. If you rechunked the recording in Dask and want that time window after loading, pass its width explicitly.
 
-The interpretation of cutoff parameters depends on the filter method:
+### Computing multiple measures together
 
-| Filter Method | `low_cutoff` | `high_cutoff` |
-| --- | --- | --- |
-| `svd_indices` | Remove components with index \< `low_cutoff` (high-energy tissue, typically 40-100). | Remove components with index ≥ `high_cutoff` (low-energy noise). |
-| `svd_energy` | Remove components with energy \< `low_cutoff` (low-energy noise). | Remove components with energy \> `high_cutoff` (high-energy tissue). |
-| `svd_cumulative_energy` | Remove components with cumulative energy \< `low_cutoff` (low-energy noise). | Remove components with cumulative energy \> `high_cutoff` (high-energy tissue). |
-| `butterworth` | Remove frequencies below this value (Hz). | Remove frequencies above this value (Hz). |
-
-### Computing the Cumulative Energy Threshold
-
-Setting `high_cutoff` for `svd_cumulative_energy` is non-trivial because cumulative energy values depend on the amount of tissue motion and change from window to window. `compute_svd_cumulative_energy_threshold` automates this: it iterates over sliding temporal windows, computes the cumulative eigenvalue spectrum for each window (accumulating from low-energy to high-energy components), and returns the minimum cumulative energy at a given singular-value index across all windows. Using the minimum ensures that the chosen cutoff does not over-filter any window.
+When processing several measures from the same recording, use `dask.compute` to share common input reads:
 
 ```python
-import confusius as cf
+import dask
 
-iq = cf.load("recording.zarr")["iq"]
-brain_mask = cf.load("brain_mask.zarr")["mask"]
+pwd = iq.fusi.iq.process_to_power_doppler(...)
+velocity = iq.fusi.iq.process_to_axial_velocity(...)
+bmode = iq.fusi.iq.process_to_bmode(...)
 
-# Compute the minimum cumulative energy at singular value index 40 across all windows.
-threshold = cf.iq.compute_svd_cumulative_energy_threshold(
-    iq,
-    singular_value_index=40,
-    clutter_mask=brain_mask,
-    window_width=200,
-).compute()
-
-# Apply the cumulative energy filter using the computed threshold.
-pwd = iq.fusi.iq.process_to_power_doppler(
-    filter_method="svd_cumulative_energy",
-    clutter_mask=brain_mask,
-    high_cutoff=threshold,
-    clutter_window_width=200,
-)
+pwd, velocity, bmode = dask.compute(pwd, velocity, bmode)
 ```
 
-### Clutter Masks for SVD Filters
+This avoids reading the same IQ data separately for each computation where tasks can be shared.
 
-For SVD-based filters, you can provide a spatial mask identifying tissue regions. This improves filter performance by computing tissue subspaces only from masked voxels[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025]:
-
-```python
-import xarray as xr
-
-# Load a brain mask (e.g., from an anatomical atlas or segmentation).
-brain_mask = cf.load("brain_mask.zarr")
-
-# Use the mask for clutter filtering.
-pwd = iq.fusi.iq.process_to_power_doppler(
-    filter_method="svd_indices",
-    clutter_mask=brain_mask,
-    low_cutoff=50,
-)
-```
-
-## Computing Derived Measures
-
-ConfUSIus can compute several derived measures from beamformed IQ data. In fUSI, the primary measures are **B-mode** (tissue anatomy), **power Doppler** (cerebral blood volume changes), and **axial velocity** (blood flow speed and direction).
-
-> [!NOTE]
->
-> **When clutter filtering is not needed**
->
-> While clutter filtering is essential for isolating blood signals in fUSI, it can be skipped for applications focused on tissue motion rather than blood flow.
->
-> - **Tissue velocity estimation**: Computing axial velocity without clutter filtering captures tissue motion, useful for extracting physiological signals like cardiac pulsatility and respiration[^/dev/user-guide/beamformed-iq/#zucker2025].
-> - **Motion tracking**: Brain tissue motion can also be used to estimate animal movement during awake imaging[^/dev/user-guide/beamformed-iq/#lemeurdiebolt2025].
->
-> To disable clutter filtering, omit both the `low_cutoff` and `high_cutoff` parameters.
-
-### Power Doppler
-
-Power Doppler allows estimation of cerebral blood volume by integrating the Doppler power spectrum over time. It is the most common fUSI readout and is ideally suited for mapping functional brain activity.
-
-#### Computing Power Doppler
-
-To compute power Doppler signals from beamformed IQ data, you may use either the `confusius.iq.process_iq_to_power_doppler` function or the corresponding Xarray accessor method.
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius as cf
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to power Doppler using SVD filtering.
-pwd = cf.iq.process_iq_to_power_doppler(
-    iq,
-    clutter_window_width=200,  # Use 200 volumes per clutter filter window.
-    doppler_window_width=100,  # Integrate power in nested windows of 100 volumes.
-    filter_method="svd_indices",  # Use the static SVD filter.
-    low_cutoff=50,  # Remove 50 strongest singular vectors.
-)
-```
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to power Doppler using SVD filtering.
-pwd = iq.fusi.iq.process_to_power_doppler(
-    clutter_window_width=200,  # Use 200 volumes per clutter filter window.
-    doppler_window_width=100,  # Integrate power over 100 volumes.
-    filter_method="svd_indices",  # Use static SVD filter.
-    low_cutoff=50,  # Remove 50 strongest singular vectors.
-)
-```
-
-The resulting power Doppler DataArray will be backed by a Dask array (even if the input wasn't Dask-backed) and rely on lazy evaluation.
-
-```pycon
->>> pwd
-<xarray.DataArray 'power_doppler' (time: 20, k: 1, j: 32, i: 24)> Size: 123kB
-dask.array<compute_power_doppler_volume, shape=(20, 1, 32, 24), dtype=float64, chunksize=(2, 1, 32, 24), chunktype=numpy.ndarray>
-Coordinates:
-  * time     (time) float64 160B 0.0 0.2 0.4 0.6 0.8 1.0 ... 3.0 3.2 3.4 3.6 3.8
-  * k        (k) int64 8B 0
-  * j        (j) int64 256B 0 1 2 3 4 5 6 7 8 9 ... 23 24 25 26 27 28 29 30 31
-  * i        (i) int64 192B 0 1 2 3 4 5 6 7 8 9 ... 15 16 17 18 19 20 21 22 23
-  * z        (k, j, i) float64 6kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0
-  * y        (k, j, i) float64 6kB 4.656 4.656 4.656 4.656 ... 7.756 7.756 7.756
-  * x        (k, j, i) float64 6kB -2.671 -2.571 -2.471 ... -0.571 -0.471 -0.371
-Indexes:
-  ┌ z        VoxelToWorldIndex
-  │ y
-  └ x
-Attributes:
-    compound_sampling_frequency:         500.0
-    pulse_repetition_frequency:          15000.0
-    transmit_frequency:                  15625000.0
-    beamforming_sound_velocity:          1540.0
-    units:                               a.u.
-    long_name:                           Power Doppler intensity
-    cmap:                                 gray
-    clutter_filters:                      Index-based SVD [50, +inf[
-    clutter_filter_window_duration:       0.4
-    clutter_filter_window_stride:         0.3999999999999999
-    power_doppler_integration_duration:   0.19999999999999996
-```
-
-To actually compute the power Doppler values and load them into memory, you must call `.compute()`:
-
-```pycon
->>> pwd = pwd.compute()
->>> pwd
-<xarray.DataArray 'power_doppler' (time: 20, k: 1, j: 32, i: 24)> Size: 123kB
-array([[[[1.07897822, 1.233959  , 1.26681306, ..., 1.10582708,
-          1.15312583, 1.01522477],
-         [1.03980397, 1.1777878 , 1.34812695, ..., 1.14753257,
-          1.18028614, 0.99100816],
-         ...
-...
-```
-
-> [!NOTE]
->
-> **Processing parameters**
->
-> For detailed documentation of all parameters (window widths, strides, filter methods, cutoffs, etc.), see the API reference for `process_iq_to_power_doppler`.
-
-### Axial Velocity
-
-Axial velocity estimation quantifies the speed and direction of blood flow along the ultrasound beam axis using autocorrelation-based methods.
-
-#### Computing Axial Velocity
-
-To compute axial velocity from beamformed IQ data, you may use either the `confusius.iq.process_iq_to_axial_velocity` function or the corresponding Xarray accessor method.
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius as cf
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to axial velocity using SVD filtering.
-velocity = cf.iq.process_iq_to_axial_velocity(
-    iq,
-    clutter_window_width=50,
-    velocity_window_width=50,
-    filter_method="svd_indices",
-    low_cutoff=50,
-    lag=1,  # Autocorrelation lag (volumes).
-)
-```
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to axial velocity using SVD filtering.
-velocity = iq.fusi.iq.process_to_axial_velocity(
-    clutter_window_width=50,
-    velocity_window_width=50,
-    filter_method="svd_indices",
-    low_cutoff=50,
-    lag=1,  # Autocorrelation lag (volumes).
-)
-```
-
-The resulting axial velocity DataArray will be backed by a Dask array (even if the input wasn't Dask-backed) and rely on lazy evaluation.
-
-```pycon
->>> velocity
-<xarray.DataArray 'axial_velocity' (time: 20, k: 1, j: 32, i: 24)> Size: 123kB
-dask.array<compute_axial_velocity_volume, shape=(20, 1, 32, 24), dtype=float64, chunksize=(2, 1, 32, 24), chunktype=numpy.ndarray>
-Coordinates:
-  * time     (time) float64 160B 0.0 0.2 0.4 0.6 0.8 1.0 ... 3.0 3.2 3.4 3.6 3.8
-  * k        (k) int64 8B 0
-  * j        (j) int64 256B 0 1 2 3 4 5 6 7 8 9 ... 23 24 25 26 27 28 29 30 31
-  * i        (i) int64 192B 0 1 2 3 4 5 6 7 8 9 ... 15 16 17 18 19 20 21 22 23
-  * z        (k, j, i) float64 6kB 0.0 0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0 0.0
-  * y        (k, j, i) float64 6kB 4.656 4.656 4.656 4.656 ... 7.756 7.756 7.756
-  * x        (k, j, i) float64 6kB -2.671 -2.571 -2.471 ... -0.571 -0.471 -0.371
-Indexes:
-  ┌ z        VoxelToWorldIndex
-  │ y
-  └ x
-Attributes:
-    compound_sampling_frequency:          500.0
-    pulse_repetition_frequency:           15000.0
-    transmit_frequency:                   15625000.0
-    beamforming_sound_velocity:           1540.0
-    units:                                m/s
-    long_name:                            Axial velocity
-    cmap:                                 berlin
-    clutter_filters:                      Index-based SVD [50, +inf[
-    clutter_filter_window_duration:       0.4
-    clutter_filter_window_stride:         0.3999999999999999
-    axial_velocity_lag:                   1
-    axial_velocity_spatial_kernel:        3
-    axial_velocity_integration_duration:  0.19999999999999996
-```
-
-> [!NOTE]
->
-> **Processing parameters**
->
-> For detailed documentation of all parameters (lag, estimation method, spatial kernel, etc.), see the API reference for `process_iq_to_axial_velocity`.
-
-#### Interpreting Velocity
-
-Velocity values are returned in **meters per second** and correspond to the speed of scatterers along the ultrasound beam. However, the **sign convention is scanner- dependent**: it depends on choices such as the analytic-signal convention, the IQ demodulation, and other parameters. Before interpreting the sign, verify it on your scanner with a known flow direction (e.g., large arteries flowing from the circle of Willis toward the probe) or a phantom, or another acquisition where the motion direction is unambiguous.
-
-> [!WARNING]
->
-> **Velocity aliasing**
->
-> Very high velocities may exceed the Nyquist limit and cause aliasing (wrapping). If you observe sudden sign reversals in high-motion regions, reduce the `lag` parameter or increase the pulse repetition frequency during acquisition.
-
-### B-mode
-
-B-mode imaging visualizes tissue anatomy by averaging the IQ signal magnitude over time. Unlike power Doppler, no clutter filtering is applied and the mean magnitude (not squared magnitude) is computed within each temporal window.
-
-#### Computing B-mode
-
-To compute B-mode volumes from beamformed IQ data, you may use either the `confusius.iq.process_iq_to_bmode` function or the corresponding Xarray accessor method.
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius as cf
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to B-mode using a sliding window of 200 volumes.
-bmode = cf.iq.process_iq_to_bmode(iq, bmode_window_width=200)
-```
-
-```python
-from dask.distributed import Client
-import xarray as xr
-import confusius
-
-# Start a local Dask cluster for optimal performance.
-client = Client()
-
-# Load IQ data.
-iq = cf.load("sub-01_task-rest_iq.zarr")
-
-# Process to B-mode using a sliding window of 200 volumes.
-bmode = iq.fusi.iq.process_to_bmode(bmode_window_width=200)
-```
-
-> [!NOTE]
->
-> **Processing parameters**
->
-> For detailed documentation of all parameters, see the API reference for `process_iq_to_bmode`.
+For a complete example, see [Processing beamformed IQ recordings](<https://confusius.tools/dev/examples/_built/iq/process_beamformed_iq/index.md>).
 
 ## Next Steps
 
-Now that you've processed your beamformed IQ data into power Doppler or velocity volumes, you're ready to:
-
-1. **[Visualization](<https://confusius.tools/dev/user-guide/visualization/index.md>)**: explore your data interactively with napari and generate static figures with Matplotlib.
-2. **[Quality Control](<https://confusius.tools/dev/user-guide/quality-control/index.md>)**: assess data quality and identify artifacts *(coming soon)*
-3. **[Registration](<https://confusius.tools/dev/user-guide/registration/index.md>)**: correct for motion and align to anatomical templates *(coming soon)*
-4. **[Signal Processing](<https://confusius.tools/dev/user-guide/signal/index.md>)**: extract regional signals and apply denoising *(coming soon)*
+- **[Visualization](<https://confusius.tools/dev/user-guide/visualization/index.md>):** Explore recordings with napari or create figures with Matplotlib.
+- **[Quality control](<https://confusius.tools/dev/user-guide/quality-control/index.md>):** Assess quality and identify artifacts.
+- **[Registration](<https://confusius.tools/dev/user-guide/registration/index.md>):** Correct motion and align data to anatomical templates.
+- **[Signal processing](<https://confusius.tools/dev/user-guide/signal/index.md>):** Extract regional signals and denoise recordings.
 
 [^/dev/user-guide/beamformed-iq/#montaldo2009]: Montaldo, G., et al. "Coherent Plane-Wave Compounding for Very High Frame Rate Ultrasonography and Transient Elastography." IEEE Transactions on Ultrasonics, Ferroelectrics and Frequency Control, vol. 56, no. 3, Mar. 2009, pp. 489–506. DOI.org (Crossref), [https://doi.org/10.1109/TUFFC.2009.1067](<https://doi.org/10.1109/TUFFC.2009.1067>).
 
@@ -2642,6 +2407,8 @@ Now that you've processed your beamformed IQ data into power Doppler or velocity
 [^/dev/user-guide/beamformed-iq/#brunner2021]: Brunner, Clément, et al. “Whole-Brain Functional Ultrasound Imaging in Awake Head-Fixed Mice.” Nature Protocols, vol. 16, no. 7, July 2021, pp. 3547–71. DOI.org (Crossref), [https://doi.org/10.1038/s41596-021-00548-8](<https://doi.org/10.1038/s41596-021-00548-8>).
 
 [^/dev/user-guide/beamformed-iq/#nunez-elizalde2022]: Nunez-Elizalde, Anwar O., et al. “Neural Correlates of Blood Flow Measured by Ultrasound.” Neuron, vol. 110, no. 10, May 2022, pp. 1631-1640.e4. DOI.org (Crossref), [https://doi.org/10.1016/j.neuron.2022.02.012](<https://doi.org/10.1016/j.neuron.2022.02.012>).
+
+[^/dev/user-guide/beamformed-iq/#kasai1985]: Kasai, C., Namekawa, K., Koyano, A., &amp; Omoto, R. (1985). Real-time two-dimensional blood flow imaging using an autocorrelation technique. IEEE Transactions on Sonics and Ultrasonics, 32(3), 458–464. https://doi.org/10.1109/T-SU.1985.31615
 
 # Visualization
 
@@ -3660,7 +3427,7 @@ For full parameter documentation, see the [atlas API reference](<https://confusi
 
 # Datasets
 
-The `confusius.datasets` module provides fetchers for publicly available atlases, templates, and fUSI datasets distributed in [fUSI-BIDS](<https://bids.neuroimaging.io/>) format. Each fetcher downloads the dataset on first call, caches it locally for offline reuse, and returns either the path to the root directory, or a more specific object (e.g., a DataArray for templates or an atlas Dataset for atlases\]).
+The `confusius.datasets` module provides fetchers for publicly available atlases, templates, and fUSI datasets distributed in [fUSI-BIDS](<https://bids.neuroimaging.io/>) format. Each fetcher downloads the dataset on first call, caches it locally for offline reuse, and returns either the path to the root directory, or a more specific object (e.g., a DataArray for templates or an atlas Dataset for atlases\]). The sample beamformed IQ fetcher is an exception: it reads chunks lazily over the network instead of caching the recording.
 
 > [!TIP]
 >
@@ -3767,12 +3534,13 @@ Use `list_datasets` to print a table of available fetchers and their full downlo
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✗    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✗    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✗    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✗    │
 └─────────────────────────────────────┴──────────┴─────────┘
 ```
 
-The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below).
+The sizes shown are for the **full** dataset. Filtered fetches are typically a small fraction of this (see the examples below). `fetch_sample_beamformed_iq` streams its recording, so only its release metadata is ever stored on disk.
 
 The same table is available from the command line:
 
@@ -3991,6 +3759,19 @@ bids_root = fetch_nunez_elizalde_2022(subjects=["CR020"], refresh=True)
 ```
 
 Versions are immutable and use separate cache directories. Refreshing an unchanged release does not reread or download files whose recorded SHA-256 matches the remote manifest. If an upstream hash changes or the cached hash is unknown, the file is revalidated and downloaded when necessary. The same release-selection behavior applies to template fetchers.
+
+## Available Samples
+
+`fetch_sample_beamformed_iq` opens a Landemard et al. (2026) recording lazily from the collection:
+
+```python
+from confusius.datasets import fetch_sample_beamformed_iq
+
+iq = fetch_sample_beamformed_iq()
+segment = iq.isel(time=slice(0, 300)).compute()
+```
+
+Release metadata is cached like other datasets; use `refresh=True` to check for a newer release. Opening the store still requires network access, and IQ chunks are not cached locally. Only the chunks needed by a computation are transferred. Repeated reads may download the same chunks again; computing the entire array transfers the full recording. The recording is licensed under CC BY-NC 4.0.
 
 ## Available Templates
 
@@ -7108,6 +6889,9 @@ Functions:
 - **`fetch_pereira_2025`** –
 
   Fetch the Pereira 2025 fUSI-BIDS dataset.
+- **`fetch_sample_beamformed_iq`** –
+
+  Open a sample beamformed IQ recording lazily from the ConfUSIus collection.
 - **`fetch_template_brunner_grillet_2021`** –
 
   Fetch the Brunner, Grillet et al. (2021) mouse vascular fUSI template.
@@ -7662,6 +7446,48 @@ Returns:
 1. Pereira, M. et al. (2025). Induction of haemodynamic travelling waves by glial-related vasomotion in a rat model of neuroinflammation: Implications for functional neuroimaging. *eBioMedicine*, 116, 105777. [https://doi.org/10.1016/j.ebiom.2025.105777](<https://doi.org/10.1016/j.ebiom.2025.105777>)
 2. [ConfUSIus dataset collection](<https://github.com/confusius-tools/confusius-datasets>).
 3. Dataset license (CC BY 4.0): [https://creativecommons.org/licenses/by/4.0/](<https://creativecommons.org/licenses/by/4.0/>)
+
+### fetch\_sample\_beamformed\_iq
+
+```python
+fetch_sample_beamformed_iq(
+    data_dir: str | Path | None = None,
+    refresh: bool = False,
+    print_citation: bool = True,
+) -> DataArray
+```
+
+Open a sample beamformed IQ recording lazily from the ConfUSIus collection.
+
+The Landemard et al. (2026) awake ALD019 recording is a Zarr store. Data chunks are downloaded when computed; no full local copy is created. Repeated reads may transfer the same chunks again. The recording is licensed under CC BY-NC 4.0.
+
+Parameters:
+
+- #### **`data_dir`**
+
+  (`str or Path`, default: `None` ) –
+
+  Directory in which to cache release metadata. Defaults to the platform cache directory, overridable via the `CONFUSIUS_DATA` environment variable. IQ chunks are not cached locally.
+- #### **`refresh`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to resolve the latest published release instead of reusing cached release metadata. Opening the Zarr store still requires network access.
+- #### **`print_citation`**
+
+  (`bool`, default: `True` ) –
+
+  Whether to print the citation for the recording.
+
+Returns:
+
+- `DataArray` –
+
+  Dask-backed beamformed IQ VoxelData array.
+
+**References**
+
+1. Landemard, A. et al. (2026). Brainwide blood volume reflects opposing neural populations. Nature. [https://doi.org/10.1038/s41586-026-10350-9](<https://doi.org/10.1038/s41586-026-10350-9>)
 
 ### fetch\_template\_brunner\_grillet\_2021
 
@@ -12089,7 +11915,7 @@ Parameters:
 
   (`str or Path`) –
 
-  Path to the file to load. For NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
+  Local file path, or HTTP(S) URL to a Zarr store. URL query parameters apply to every metadata and chunk request. For local NIfTI files, a `{chunk}` placeholder in the filename loads matching integer chunks in numeric order along `pose`; see load\_nifti.
 - #### **`variable`**
 
   (`str`, default: `None` ) –
@@ -12781,9 +12607,12 @@ Functions:
 clutter_filter_butterworth(
     block: NDArray,
     fs: float,
+    *,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 4,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12818,6 +12647,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Filter order. Due to forward-backward filtering, the effective order is doubled.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -12829,13 +12668,17 @@ Raises:
 
 - `ValueError` –
 
-  If `block` is not 4D, if cutoff frequencies are invalid, or if both `low_cutoff` and `high_cutoff` are `None`.
+  If `block` is not 4D or if cutoff frequencies are invalid.
 
 ### clutter\_filter\_sosfiltfilt
 
 ```python
 clutter_filter_sosfiltfilt(
-    block: NDArray, sos: NDArray
+    block: NDArray,
+    sos: NDArray,
+    *,
+    padtype: str | None = "odd",
+    padlen: int | None = None,
 ) -> NDArray
 ```
 
@@ -12855,6 +12698,16 @@ Parameters:
   (`(sections, 6) numpy.ndarray`) –
 
   Second-order sections filter coefficients, typically obtained from SciPy functions like `scipy.signal.butter`, `scipy.signal.cheby1`, etc.
+- #### **`padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Padding extension type. Pass `None` to disable padding.
+- #### **`padlen`**
+
+  (`int`, default: `None` ) –
+
+  Padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 
 Returns:
 
@@ -12879,6 +12732,7 @@ Raises:
 ```python
 clutter_filter_svd_from_cumulative_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -12904,7 +12758,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -12947,6 +12801,7 @@ Raises:
 ```python
 clutter_filter_svd_from_energy(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -12972,7 +12827,7 @@ Parameters:
 
   (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int or float`, default: `None` ) –
@@ -13013,6 +12868,7 @@ Raises:
 ```python
 clutter_filter_svd_from_indices(
     block: NDArray,
+    *,
     mask: NDArray | None = None,
     low_cutoff: int | None = None,
     high_cutoff: int | None = None,
@@ -13036,9 +12892,9 @@ Parameters:
   Complex beamformed IQ data, where `time` is the temporal dimension and `(k, j, i)` are spatial dimensions.
 - #### **`mask`**
 
-  (`(z, y x) numpy.ndarray`, default: `None` ) –
+  (`(k, j, i) numpy.ndarray`, default: `None` ) –
 
-  Boolean mask. SVD is computed only from masked voxels. If not provided, all voxels are used.
+  Boolean mask selecting at least one voxel. SVD is computed only from masked voxels. If not provided, all voxels are used.
 - #### **`low_cutoff`**
 
   (`int`, default: `None` ) –
@@ -13080,6 +12936,7 @@ Raises:
 compute_axial_velocity_volume(
     block: NDArray,
     fs: float,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -13090,12 +12947,14 @@ compute_axial_velocity_volume(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
     transmit_frequency: float = 15625000.0,
     beamforming_sound_velocity: float = 1540,
 ) -> NDArray
@@ -13147,6 +13006,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -13164,7 +13033,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - #### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 - #### **`transmit_frequency`**
@@ -13224,6 +13093,7 @@ Returns:
 ```python
 compute_power_doppler_volume(
     block: NDArray,
+    *,
     filter_method: Literal[
         "svd_indices",
         "svd_energy",
@@ -13235,6 +13105,8 @@ compute_power_doppler_volume(
     high_cutoff: float | None = None,
     fs: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     doppler_window_width: int | None = None,
     doppler_window_stride: int | None = None,
 ) -> NDArray
@@ -13286,6 +13158,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`doppler_window_width`**
 
   (`int`, default: `None` ) –
@@ -13308,6 +13190,7 @@ Returns:
 ```python
 compute_processed_volume_timings(
     iq: DataArray,
+    *,
     clutter_window_width: int,
     clutter_window_stride: int,
     inner_window_width: int,
@@ -13423,6 +13306,7 @@ array([2.5, 2.5, 2.5, 2.5])
 compute_svd_cumulative_energy_threshold(
     iq: DataArray,
     singular_value_index: int,
+    *,
     clutter_mask: DataArray | None = None,
     window_width: int | None = None,
     window_stride: int | None = None,
@@ -13456,7 +13340,7 @@ Parameters:
 
   (`int`, default: `None` ) –
 
-  Width of the sliding temporal window, in volumes. If not provided, defaults to the total number of volumes.
+  Width of the sliding temporal window, in volumes. If not provided, uses the largest time chunk of the IQ data.
 - #### **`window_stride`**
 
   (`int`, default: `None` ) –
@@ -13473,7 +13357,7 @@ Raises:
 
 - `ValueError` –
 
-  If `singular_value_index` is less than 1 or greater than `window_width - 1`.
+  If `singular_value_index` is less than 1 or greater than `window_width - 1`, or if `clutter_mask` selects no voxels.
 
 > [!NOTE]
 >
@@ -13497,6 +13381,7 @@ process_iq_block_with_clutter_filter(
     process_block_func: Callable[
         Concatenate[NDArray, ...], NDArray
     ],
+    *,
     clutter_mask: NDArray | None = None,
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
@@ -13510,6 +13395,8 @@ process_iq_block_with_clutter_filter(
     ] = "svd_indices",
     fs: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     **kwargs: Any,
 ) -> NDArray
 ```
@@ -13576,6 +13463,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   When using the Butterworth clutter filter, the order of the filter.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`**kwargs`**
 
   (`Any`, default: `{}` ) –
@@ -13592,27 +13489,26 @@ Raises:
 
 - `ValueError` –
 
-  If `filter_method` is `"butterworth"` and `fs` is not provided, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
+  If `block` is not 4D, if a Butterworth cutoff is specified without `fs`, if `filter_method` is `"svd_indices"` and `low_cutoff`/`high_cutoff` are not both integers or `None`, or if `filter_method` is not one of `"svd_indices"`, `"svd_energy"`, `"svd_cumulative_energy"`, or `"butterworth"`.
 
 ### process\_iq\_blocks
 
 ```python
 process_iq_blocks(
     iq: Array,
-    process_func: Callable[
-        Concatenate[NDArray, ...], NDArray
-    ],
+    process_func: Callable[[NDArray], NDArray],
+    *,
+    output_shape: tuple[int, ...],
+    output_dtype: DTypeLike,
     window_width: int | None = None,
     window_stride: int | None = None,
-    drop_axis: int | tuple[int, ...] | None = None,
-    new_axis: int | tuple[int, ...] | None = None,
-    **kwargs: Any,
+    windows_per_task: int | None = None,
 ) -> Array
 ```
 
 Process blocks of IQ data using sliding windows.
 
-This function applies a processing operation to IQ data using Dask. It uses `dask.array.map_blocks` for non-overlapping windows. When temporal overlap is required, it batches multiple sliding windows into each task, applies explicit overlap between batches, and runs `process_func` on each window within the batch.
+This function applies a processing operation to IQ data using Dask. It uses `dask.array.map_blocks` for non-overlapping windows. When temporal overlap is required, it batches multiple sliding windows into each task, applies explicit overlap between batches, and runs `process_func` on each window within the batch. Graph construction does not read IQ samples or invoke `process_func`. Output metadata describes one window, independently of execution batching.
 
 > [!WARNING]
 >
@@ -13629,7 +13525,17 @@ Parameters:
 
   (`callable`) –
 
-  Function to apply to each temporal window. It must accept a `(window_volumes, z, y, x)` array as first argument and return a `(output_volumes, ...)` array.
+  Function accepting one `(window_volumes, k, j, i)` NumPy array and returning a NumPy array with `output_shape` and `output_dtype`. Configure additional callback arguments with `functools.partial`.
+- #### **`output_shape`**
+
+  (`tuple[int, ...]`) –
+
+  Fixed shape returned by one callback on one temporal window. The leading axis is output time: `(2, k, j, i)` produces two time points per window; `(1, 2, k, j, i)` produces one time point with two component maps. All sizes must be positive integers. Non-temporal axis mapping is automatic.
+- #### **`output_dtype`**
+
+  (`DTypeLike`) –
+
+  Dtype returned by every callback invocation. This declares the dtype; it does not cast callback outputs.
 - #### **`window_width`**
 
   (`int`, default: `None` ) –
@@ -13640,21 +13546,11 @@ Parameters:
   (`int`, default: `None` ) –
 
   Stride of the sliding temporal window, in volumes. Must be less than or equal to `window_width`. If not provided, equals `window_width`.
-- #### **`drop_axis`**
+- #### **`windows_per_task`**
 
-  (`int or tuple[int, ...]`, default: `None` ) –
+  (`int`, default: `None` ) –
 
-  Axes dropped by `process_func`.
-- #### **`new_axis`**
-
-  (`int or tuple[int, ...]`, default: `None` ) –
-
-  New axes added by `process_func`.
-- #### **`**kwargs`**
-
-  (`Any`, default: `{}` ) –
-
-  Additional keyword arguments passed to `process_func`.
+  Requested number of outer windows per Dask task. If not provided, uses the minimum needed for temporal overlap. Smaller requests are increased to that minimum. Larger batches do not change scientific windows, but increase task memory and can reduce parallelism.
 
 Returns:
 
@@ -13666,13 +13562,17 @@ Raises:
 
 - `ValueError` –
 
-  If `window_stride` is greater than `window_width`.
+  If window sizes are invalid, no complete window fits, input sizes are unknown, output sizes are invalid, or a callback returns the wrong shape.
+- `TypeError` –
+
+  If `iq` is not a Dask array, or a callback returns a non-NumPy array or a dtype different from `output_dtype`. Callback errors occur at execution.
 
 ### process\_iq\_to\_axial\_velocity
 
 ```python
 process_iq_to_axial_velocity(
     iq: DataArray,
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -13685,18 +13585,20 @@ process_iq_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
 ) -> DataArray
 ```
 
 Process blocks of beamformed IQ into axial velocity volumes using sliding windows.
 
-This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes axial velocity volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, axial velocity volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed.
 
 Parameters:
 
@@ -13748,6 +13650,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -13765,7 +13677,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - #### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 
@@ -13824,6 +13736,7 @@ Returns:
 ```python
 process_iq_to_bmode(
     iq: DataArray,
+    *,
     bmode_window_width: int | None = None,
     bmode_window_stride: int | None = None,
 ) -> DataArray
@@ -13862,6 +13775,7 @@ Returns:
 ```python
 process_iq_to_power_doppler(
     iq: DataArray,
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -13874,6 +13788,8 @@ process_iq_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     doppler_window_width: int | None = None,
     doppler_window_stride: int | None = None,
 ) -> DataArray
@@ -13881,7 +13797,7 @@ process_iq_to_power_doppler(
 
 Process blocks of beamformed IQ into power Doppler volumes using sliding windows.
 
-This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach.
+This function computes power Doppler volumes from blocks of beamformed IQ data using nested sliding windows. A first sliding window is used for clutter filtering. Inside each clutter-filtered window, power Doppler volumes are computed using a second sliding window. See the notes section for an illustration of the nested sliding window approach. Butterworth filtering requires regular sampling at the same rate in every clutter window (1% tolerance); gaps between windows are allowed. With no cutoffs, power Doppler uses the unfiltered samples and needs no sampling rate.
 
 Parameters:
 
@@ -13930,6 +13846,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- #### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- #### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - #### **`doppler_window_width`**
 
   (`int`, default: `None` ) –
@@ -19213,7 +19139,7 @@ filter_butterworth(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     order: int = 5,
-    padtype: str = "odd",
+    padtype: str | None = "odd",
     padlen: int | None = None,
     uniformity_tolerance: float = 0.01,
 ) -> DataArray
@@ -19253,12 +19179,12 @@ Parameters:
 
   (`(odd, even, constant, None)`, default: `"odd"` ) –
 
-  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, `"constant"` pads with zeros. If not provided, no padding is applied.
+  Type of padding to use. See `scipy.signal.sosfiltfilt` for details. `"odd"` pads with odd-extension (reduces edge effects), `"even"` pads with even-extension, and `"constant"` extends the endpoint values. Pass `None` to disable padding.
 - #### **`padlen`**
 
   (`int`, default: `None` ) –
 
-  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)` where `n_sections = ceil(order/2)`.
+  Number of elements to pad at each end. If not provided, uses scipy's default: `3 * (2 * n_sections + 1 - compensation)`, based on the designed coefficients.
 - #### **`uniformity_tolerance`**
 
   (`float`, default: `1e-2` ) –
@@ -19275,7 +19201,7 @@ Raises:
 
 - `ValueError` –
 
-  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the filter order (needs more than `3 * (2 * ceil(order / 2) + 1)`).
+  If `signals` does not have a `time` dimension or `time` coordinates, if time coordinates are not uniformly sampled within the specified tolerance, or if insufficient timepoints for the effective padding length.
 - `ValueError` –
 
   If both `low_cutoff` and `high_cutoff` are `None` (no filtering), or if cutoff frequencies are invalid (negative, above Nyquist, or if high\_cutoff \<= low\_cutoff for band-pass).
@@ -22809,6 +22735,7 @@ Methods:
 
 ```python
 process_to_axial_velocity(
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -22821,12 +22748,14 @@ process_to_axial_velocity(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     velocity_window_width: int | None = None,
     velocity_window_stride: int | None = None,
     lag: int = 1,
     spatial_kernel: int
     | tuple[int, int, int]
-    | list[int] = 3,
+    | list[int] = 1,
 ) -> DataArray
 ```
 
@@ -22876,6 +22805,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - ##### **`velocity_window_width`**
 
   (`int`, default: `None` ) –
@@ -22893,7 +22832,7 @@ Parameters:
   Temporal lag in volumes for autocorrelation computation. Must be positive.
 - ##### **`spatial_kernel`**
 
-  (`int or tuple[int, int, int] or list[int]`, default: `3` ) –
+  (`int or tuple[int, int, int] or list[int]`, default: `1` ) –
 
   Size of the median filter kernel applied spatially to denoise. A scalar uses the same kernel size on all spatial axes; a length-3 sequence specifies `(k, j, i)` sizes directly. Values must be positive. Any even sizes are rounded up to the next odd size. If all sizes are `1`, no spatial filtering is applied.
 
@@ -22919,6 +22858,7 @@ Examples:
 
 ```python
 process_to_bmode(
+    *,
     bmode_window_width: int | None = None,
     bmode_window_stride: int | None = None,
 ) -> DataArray
@@ -22960,6 +22900,7 @@ Examples:
 
 ```python
 process_to_power_doppler(
+    *,
     clutter_window_width: int | None = None,
     clutter_window_stride: int | None = None,
     filter_method: Literal[
@@ -22972,6 +22913,8 @@ process_to_power_doppler(
     low_cutoff: float | None = None,
     high_cutoff: float | None = None,
     butterworth_order: int = 4,
+    butterworth_padtype: str | None = "odd",
+    butterworth_padlen: int | None = None,
     doppler_window_width: int | None = None,
     doppler_window_stride: int | None = None,
 ) -> DataArray
@@ -23023,6 +22966,16 @@ Parameters:
   (`int`, default: `4` ) –
 
   Order of Butterworth filter. Effective order is doubled due to forward-backward filtering.
+- ##### **`butterworth_padtype`**
+
+  (`(odd, even, constant, None)`, default: `"odd"` ) –
+
+  Butterworth padding extension type. Pass `None` to disable padding.
+- ##### **`butterworth_padlen`**
+
+  (`int`, default: `None` ) –
+
+  Butterworth padding length in samples. If not provided, uses SciPy's default. Ignored when padding is disabled.
 - ##### **`doppler_window_width`**
 
   (`int`, default: `None` ) –
@@ -25683,7 +25636,7 @@ moving
 ```
 
 ```text
-/tmp/ipykernel_25031/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_24934/415482052.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -25900,7 +25853,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ba95b36e690>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x755f95b92470>
     ```
 - [ ] Attributes: (27)
 
@@ -26304,7 +26257,7 @@ fig, ax = cf.plotting.plot_matrix(
 
 ---
 
-**Total running time:** 13.6 s
+**Total running time:** 14.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_connectivity/01_atlas_correlation_matrix.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_correlation_matrix.ipynb>)
 
@@ -26373,7 +26326,7 @@ moving = data.mean(dim="time").fusi.scale.db().compute()
 ```
 
 ```text
-/tmp/ipykernel_26554/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
+/tmp/ipykernel_26457/3634357438.py:10: UserWarning: Time coordinate is non-uniform; using the median step to build a uniform target grid.
   data = cf.timing.resample_to_uniform_time(cf.load(data_path))
 ```
 
@@ -26641,7 +26594,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x78b0ec1662d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7761b4b8e570>
     ```
   - region
 
@@ -26764,7 +26717,7 @@ xarray.DataArray
 
   **norm :**
 
-  \<matplotlib.colors.Normalize object at 0x78b0ec121160\>
+  \<matplotlib.colors.Normalize object at 0x7761b4b9d550\>
 
 ## Plot the seed maps
 
@@ -26800,7 +26753,7 @@ _ = fig.suptitle("Seed-based connectivity maps", fontsize=16)
 
 ---
 
-**Total running time:** 14.3 s
+**Total running time:** 14.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/06_connectivity/02_atlas_seed_map.py>) [Download .py](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/connectivity/atlas_seed_map.ipynb>)
 
@@ -27144,7 +27097,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75231b21d450>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74ba67201450>
     ```
 - [ ] Attributes: (21)
 
@@ -27541,7 +27494,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x75230d360d70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74ba59374670>
     ```
 - [ ] Attributes: (23)
 
@@ -27705,7 +27658,7 @@ The overlap is partial: the two maps answer related but different questions. The
 
 ---
 
-**Total running time:** 86.9 s
+**Total running time:** 87.1 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/08_decoding/01_searchlight_speed.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decoding/searchlight_speed.ipynb>)
 
@@ -28053,7 +28006,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74917e2e3390>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71a47d68f390>
     ```
 - [ ] Attributes: (25)
 
@@ -28423,7 +28376,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 285.1 s
+**Total running time:** 284.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_decomposition/02_fastica_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/fastica_single_recording.ipynb>)
 
@@ -28765,7 +28718,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e27a6153390>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b39823f7390>
     ```
 - [ ] Attributes: (25)
 
@@ -29163,7 +29116,7 @@ _ = fig.suptitle(
 
 ---
 
-**Total running time:** 299.5 s
+**Total running time:** 299.3 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_decomposition/03_nmf_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/nmf_single_recording.ipynb>)
 
@@ -29511,7 +29464,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7b6db495b390>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7764d7e27390>
     ```
 - [ ] Attributes: (25)
 
@@ -29903,7 +29856,7 @@ _ = fig.suptitle("Spatial PCA maps and time courses (first 6 components)", fonts
 
 ---
 
-**Total running time:** 280.2 s
+**Total running time:** 279.9 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/05_decomposition/01_pca_single_recording.py>) [Download .py](<https://confusius.tools/dev/examples/_built/decomposition/pca_single_recording.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/decomposition/pca_single_recording.ipynb>)
 
@@ -30243,7 +30196,7 @@ glm.fit(resampled_fusi_list, events=events, confounds=confounds)
 ```
 
 ```
-FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x7d5b405166c0>, beta=6.7),
+FirstLevelModel(hrf_model=functools.partial(<function claron2021_hrf at 0x73c156f26560>, beta=6.7),
                 show_progress=True, smoothing_fwhm=0.3)
 ```
 
@@ -30258,7 +30211,7 @@ iFitted
 
 |  |  |  |
 | --- | --- | --- |
-|  | hrf\_model | functools.par...c0\>, beta=6.7) |
+|  | hrf\_model | functools.par...60\>, beta=6.7) |
 |  | smoothing\_fwhm | 0.3 |
 |  | show\_progress | True |
 |  | drift\_model | 'cosine' |
@@ -30277,7 +30230,7 @@ iFitted
 | Name | Type | Value |
 | --- | --- | --- |
 | design\_matrices\_ | list | \[ acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , acti...00 1.0 , ...\] |
-| results\_ | list | \[\<confusius.gl...x7d5b206e3ed0\>, \<confusius.gl...x7d5b2052d480\>, \<confusius.gl...x7d5b2064ae70\>, \<confusius.gl...x7d5b2037fce0\>, ...\] |
+| results\_ | list | \[\<confusius.gl...x73c14428a850\>, \<confusius.gl...x73c14454fce0\>, \<confusius.gl...x73c1443def90\>, \<confusius.gl...x73c133f0e140\>, ...\] |
 
 ## Inspect the design matrix
 
@@ -30389,7 +30342,7 @@ _ = plotter.add_contours(
 
 ---
 
-**Total running time:** 106.4 s
+**Total running time:** 105.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/07_glm/01_first_level.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level.ipynb>)
 
@@ -30756,7 +30709,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e2934247390>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ca3419ab390>
     ```
 - [ ] Attributes: (21)
 
@@ -30991,7 +30944,7 @@ _ = thresholded_zscore.fusi.plot.stat_map(
 
 ---
 
-**Total running time:** 26.9 s
+**Total running time:** 27.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/07_glm/02_first_level_continuous.py>) [Download .py](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/glm/first_level_continuous.ipynb>)
 
@@ -31059,7 +31012,7 @@ system. Cell Reports, 45(1). https://doi.org/10.1016/j.celrep.2025.116791
 ```
 
 ```text
-/tmp/ipykernel_7811/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:   - DelayAfterTrigger: Input should be greater than or equal to 0
+/tmp/ipykernel_7813/2528182235.py:31: UserWarning: fUSI-BIDS validation warning:   - DelayAfterTrigger: Input should be greater than or equal to 0
   stat = cf.load(stat_path).sel(time=2, method="nearest")
 ```
 
@@ -31273,7 +31226,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x74794decc3b0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x71f09da0c3b0>
     ```
 - [ ] Attributes: (2)
 
@@ -31318,7 +31271,7 @@ _ = ax.legend()
 
 ---
 
-**Total running time:** 6.0 s
+**Total running time:** 5.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/02_interoperability/01_nilearn.py>) [Download .py](<https://confusius.tools/dev/examples/_built/interoperability/nilearn.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/interoperability/nilearn.ipynb>)
 
@@ -31586,7 +31539,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70f19b34e660>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e7892d96a50>
     ```
 - [ ] Attributes: (25)
 
@@ -32012,7 +31965,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70f1f8e9e490>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e78f09b6490>
     ```
 - [ ] Attributes: (25)
 
@@ -32372,7 +32325,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x70f198ada0d0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7e78905ba0d0>
     ```
 - [ ] Attributes: (25)
 
@@ -33060,7 +33013,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x712ed2e9f230>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76aaf654aea0>
     ```
   - time
 
@@ -33341,7 +33294,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x712ec8950290>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x76aae4d24230>
     ```
 - [ ] Attributes: (6)
 
@@ -33413,7 +33366,7 @@ _ = ax.legend(loc="upper left")
 
 ---
 
-**Total running time:** 56.6 s
+**Total running time:** 56.4 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/02_create_voxeldata_from_mat.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/create_voxeldata_from_mat.ipynb>)
 
@@ -33459,6 +33412,7 @@ cf.datasets.list_datasets()
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✓    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
 └─────────────────────────────────────┴──────────┴─────────┘
@@ -33538,7 +33492,7 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.6 s
+**Total running time:** 5.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/dataset_collection.ipynb>)
 
@@ -33750,7 +33704,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x708fa493e350>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7dba57532350>
     ```
 - [ ] Attributes: (5)
 
@@ -34158,11 +34112,381 @@ array([[ 0.2       ,  0.        ,  0.        , -1.67043706],
 
 ---
 
-**Total running time:** 33.4 s
+**Total running time:** 34.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/05_transforms_101.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/transforms_101.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/transforms_101.ipynb>)
 
 [^/dev/examples/_built/io/transforms_101/#collection]: See [The ConfUSIus Dataset Collection](<https://confusius.tools/dev/examples/_built/io/dataset_collection/index.md>) for available studies, formats, licenses, and reproducible subset downloads.
+
+# Processing beamformed IQ recordings
+
+This example shows how to compute B-mode, power Doppler, and axial velocity from beamformed in-phase and quadrature (IQ) data. We use a short segment of an awake mouse recording from [Landemard et al. (2026)](<https://doi.org/10.1038/s41586-026-10350-9>) and compare the temporal-average maps, as in the ConfUSIus paper's IQ panel.
+
+```python
+import dask
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from threadpoolctl import threadpool_limits
+
+import confusius as cf
+
+bg_color = mpl.colors.to_hex(mpl.rcParams["figure.facecolor"])
+```
+
+## Load an IQ recording lazily
+
+`fetch_sample_beamformed_iq` opens the recording lazily from the [ConfUSIus Dataset Collection](<https://confusius.tools/dev/user-guide/datasets/index.md>). The IQ array is backed by Dask: opening it reads metadata and coordinates, but not the IQ samples.
+
+```python
+iq = cf.datasets.fetch_sample_beamformed_iq()
+iq
+```
+
+```
+If you use this dataset in your work, please cite the following source:
+
+Landemard, A., Krumin, M., Harris, K. D., & Carandini, M. (2026). Brainwide blood volume reflects opposing neural 
+populations. Nature. https://doi.org/10.1038/s41586-026-10350-9
+```
+
+xarray.DataArray
+
+'iq'
+
+- time: 1130900
+- k: 1
+- j: 125
+- i: 80
+
+- [x]
+
+  dask.array\<chunksize=(300, 1, 125, 80), meta=np.ndarray\>
+
+  <table>     <tr>         <td>             <table style="border-collapse: collapse;">                 <thead>                     <tr>                         <td> </td>                         <th> Array </th>                         <th> Chunk </th>                     </tr>                 </thead>                 <tbody>                      <tr>                         <th> Bytes </th>                         <td> 84.26 GiB </td>                         <td> 22.89 MiB </td>                     </tr>                      <tr>                         <th> Shape </th>                         <td> (1130900, 1, 125, 80) </td>                         <td> (300, 1, 125, 80) </td>                     </tr>                     <tr>                         <th> Dask graph </th>                         <td colspan="2"> 3770 chunks in 2 graph layers </td>                     </tr>                     <tr>                         <th> Data type </th>                         <td colspan="2"> complex64 numpy.ndarray </td>                     </tr>                 </tbody>             </table>         </td>         <td>                  </td>     </tr> </table>
+- [x] Coordinates: (7)
+
+  - time
+
+    (time)
+
+    float64
+
+    6.757 6.759 ... 2.27e+03 2.27e+03
+
+    ☐ ☐
+
+    **units :**
+
+    s
+
+    **long\_name :**
+
+    Time
+
+    **volume\_acquisition\_reference :**
+
+    start
+
+    **volume\_acquisition\_duration :**
+
+    0.002
+
+    ```
+    array([   6.757,    6.759,    6.761, ..., 2269.585, 2269.587, 2269.589],
+          shape=(1130900,))
+    ```
+  - k
+
+    (k)
+
+    int64
+
+    0
+
+    ☐ ☐
+
+    ```
+    array([0])
+    ```
+  - j
+
+    (j)
+
+    int64
+
+    0 1 2 3 4 5 ... 120 121 122 123 124
+
+    ☐ ☐
+
+    ```
+    array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,
+            14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
+            28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
+            42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,
+            56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+            70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+            84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+            98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+           112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124])
+    ```
+  - i
+
+    (i)
+
+    int64
+
+    0 1 2 3 4 5 6 ... 74 75 76 77 78 79
+
+    ☐ ☐
+
+    ```
+    array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+           36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+           54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+           72, 73, 74, 75, 76, 77, 78, 79])
+    ```
+  - z
+
+    (k, j, i)
+
+    float64
+
+    0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10000 values with dtype=float64]
+    ```
+  - y
+
+    (k, j, i)
+
+    float64
+
+    0.0 0.0 0.0 ... 5.992 5.992 5.992
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10000 values with dtype=float64]
+    ```
+  - x
+
+    (k, j, i)
+
+    float64
+
+    2.4 2.5 2.6 2.7 ... 10.1 10.2 10.3
+
+    ☐ ☐
+
+    **units :**
+
+    mm
+
+    ```
+    [10000 values with dtype=float64]
+    ```
+- [ ] Indexes: (5)
+
+  - i
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+           36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+           54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+           72, 73, 74, 75, 76, 77, 78, 79],
+          dtype='int64', name='i'))
+    ```
+  - j
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+           ...
+           115, 116, 117, 118, 119, 120, 121, 122, 123, 124],
+          dtype='int64', name='j', length=125))
+    ```
+  - k
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([0], dtype='int64', name='k'))
+    ```
+  - time
+
+    PandasIndex
+
+    ☐ ☐
+
+    ```
+    PandasIndex(Index([ 6.757000000000001,              6.759,              6.761,
+            6.763000000000001,  6.765000000000001,              6.767,
+                        6.769,  6.771000000000001,  6.773000000000001,
+                        6.775,
+           ...
+                     2269.571,           2269.573,           2269.575,
+           2269.5769999999998,           2269.579,           2269.581,
+                     2269.583,           2269.585,           2269.587,
+                     2269.589],
+          dtype='float64', name='time', length=1130900))
+    ```
+  - z  
+    y  
+    x
+
+    VoxelToWorldIndex
+
+    ☐ ☐
+
+    ```
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7777233882f0>
+    ```
+- [x] Attributes: (9)
+
+  **transmit\_frequency :**
+
+  15625000.0
+
+  **probe\_number\_of\_elements :**
+
+  128
+
+  **probe\_pitch :**
+
+  0.1
+
+  **beamforming\_sound\_velocity :**
+
+  1510.0
+
+  **plane\_wave\_angles :**
+
+  \[-10.0, -7.9, -5.8, -3.6999999999999993, -1.5999999999999996, 0.5000000000000018, 2.6000000000000014, 4.700000000000002, 6.8000000000000025, 8.900000000000002\]
+
+  **compound\_sampling\_frequency :**
+
+  500.0
+
+  **pulse\_repetition\_frequency :**
+
+  5000.0
+
+  **beamforming\_method :**
+
+  Fourier
+
+  **citation :**
+
+  Landemard, A., Krumin, M., Harris, K. D., &amp; Carandini, M. (2026). Brainwide blood volume reflects opposing neural populations. Nature. https://doi.org/10.1038/s41586-026-10350-9
+
+## Understanding chunks
+
+Zarr stores data in independently readable chunks, allowing subsets to be loaded without downloading the whole recording. Here, each chunk has shape `(300, 1, 125, 80)` and size \~23 MiB, as shown above. The 300-frame time chunks match the original ensemble size used during acquisition.
+
+Dask breaks processing into tasks that operate on these chunks. The tasks stay lazy: IQ samples are downloaded and processed when we call `dask.compute`, not when we select data or set up processing.
+
+> [!TIP]
+>
+> **Choosing chunk sizes**
+>
+> You can rechunk the array to work with, for example, 600-frame blocks instead of 300. This changes Dask's layout, not the stored chunks: smaller Dask chunks may still require reading a full storage chunk. When writing IQ data, choose storage chunks that suit your workflow. Processing window widths can also be set explicitly, independently of the chunking.
+
+We select the first 900 frames (three chunks) for this short demonstration. The slice stays lazy and preserves the 300-frame chunks without loading IQ samples.
+
+```python
+iq = iq.isel(time=slice(0, 900))
+```
+
+## Compute B-mode, power Doppler, and axial velocity
+
+Several measurements can be derived from beamformed IQ data. ConfUSIus provides convenient functions for computing:
+
+- B-mode: the amplitude of the IQ signal, which is a measure of tissue echogenicity.
+- Power Doppler: the power of the IQ signal after clutter filtering, which is a measure of blood volume.
+- Axial velocity: the velocity of tissue or blood along the ultrasound beam, which is a measure of motion.
+
+For blood measurements, an SVD clutter filter removes tissue contributions before computing power Doppler and axial blood velocity. For tissue velocity, we instead retain the tissue components.
+
+By default, each 300-frame time chunk is one processing window. The windows do not overlap, and each call below produces one output volume per window.
+
+```python
+bmode = cf.iq.process_iq_to_bmode(iq)
+# The low_cutoff/high_cutoff parameters define the cutoff index for the SVD clutter
+# filter. This cutoff was chosen manually and may not be optimal for all recordings.
+pwd = cf.iq.process_iq_to_power_doppler(iq, low_cutoff=40)
+blood_vel = cf.iq.process_iq_to_axial_velocity(iq, low_cutoff=40)
+tissue_vel = cf.iq.process_iq_to_axial_velocity(iq, high_cutoff=40)
+
+with threadpool_limits(limits=1, user_api="blas"):
+    bmode, pwd, blood_vel, tissue_vel = dask.compute(bmode, pwd, blood_vel, tissue_vel)
+```
+
+> [!TIP]
+>
+> **Dask, threading, and BLAS**
+>
+> The processing calls above only build lazy computations. A single `dask.compute` executes all four together, letting them share IQ reads. Computing each output separately may download the same data again.
+>
+> BLAS, the linear algebra library used by SVD, can use multiple threads. Dask also runs tasks in parallel, so we limit BLAS to one thread to avoid too many competing threads slowing processing down. See the [IQ processing guide](<https://confusius.tools/dev/user-guide/beamformed-iq/#working-with-large-recordings>) for more details.
+
+## Plot average maps
+
+For visualization, we average each output over time. For tissue velocity, we take the absolute value before averaging to avoid cancellation between opposite directions of motion. Blood axial velocity remains signed.
+
+We display the mean B-mode amplitude and power Doppler in relative decibels, and convert velocities from m/s to µm/s (tissue) or mm/s (blood).
+
+```python
+fig, axes = plt.subplots(2, 2, figsize=(8, 6), constrained_layout=True)
+panels = (
+    ("B-mode", bmode.mean("time").fusi.scale.db(factor=20), "gray", -60, 0, "dB"),
+    ("Tissue velocity", abs(tissue_vel).mean("time") * 1e6, "inferno", 0, 5, "µm/s"),
+    ("Power Doppler", pwd.mean("time").fusi.scale.db(), "gray", -20, 0, "dB"),
+    ("Blood velocity", blood_vel.mean("time") * 1e3, "coolwarm", -10, 10, "mm/s"),
+)
+for ax, (title, image, cmap, vmin, vmax, unit) in zip(axes.flat, panels, strict=True):
+    cf.plotting.plot_volume(
+        image,
+        slice_mode="z",
+        axes=ax,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        show_colorbar=False,
+        show_titles=False,
+        bg_color=bg_color,
+    )
+    ax.set_title(title)
+    fig.colorbar(ax.collections[-1], ax=ax, label=unit, shrink=0.65)
+plt.show()
+```
+
+---
+
+**Total running time:** 12.3 s
+
+[Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/02_iq/01_process_beamformed_iq.py>) [Download .py](<https://confusius.tools/dev/examples/_built/iq/process_beamformed_iq.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/iq/process_beamformed_iq.ipynb>)
 
 # Load and save multi-pose recordings
 
@@ -34449,7 +34773,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x73331d1cbba0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffae038bba0>
     ```
 - [ ] Attributes: (25)
 
@@ -34891,7 +35215,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7333096a5670>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7ffacc7a4410>
     ```
 - [ ] Attributes: (25)
 
@@ -35010,7 +35334,7 @@ plotter = cf.plotting.plot_volume(
 
 ---
 
-**Total running time:** 16.9 s
+**Total running time:** 16.7 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/03_multipose/01_load_multipose_recordings.py>) [Download .py](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/multipose/load_multipose_recordings.ipynb>)
 
@@ -35293,7 +35617,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x762c83a0b5c0>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7db2100875c0>
     ```
 - [ ] Attributes: (27)
 
@@ -35508,7 +35832,7 @@ _ = plotter.add_contours(resampled_atlas.annotation)
 
 ---
 
-**Total running time:** 119.8 s
+**Total running time:** 120.0 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_registration/03_register_to_allen_fusi_template.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_to_allen_fusi_template.ipynb>)
 
@@ -35756,7 +36080,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77b551ee5220>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d30e540cfc0>
     ```
 - [ ] Attributes: (23)
 
@@ -36037,7 +36361,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77b5522ad050>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d30e57c8d50>
     ```
 - [ ] Attributes: (23)
 
@@ -36240,49 +36564,49 @@ xarray.DataArray
 
 - [ ]
 
-  1.314e-12 2.719e-12 9.303e-13 -9.464e-13 ... -1.494e+03 -559.1 -45.57
+  \-9.804e-13 3.431e-14 9.228e-15 ... -1.06e+03 -2.407e+03 -3.518e+03
 
   ```
-  array([[[[ 1.31366992e-12,  2.71917971e-12,  9.30264149e-13, ...,
-            -3.31714009e-12, -2.45632806e-13, -1.82055909e-14],
-           [-3.04521763e-14,  3.62183295e-14,  3.45086050e-14, ...,
-            -5.55373398e-13, -6.65075392e-14,  4.69381374e-15],
-           [-2.90975765e-13, -1.44816088e-13, -1.65379747e-13, ...,
-            -2.37235983e-13,  3.98607812e-14,  5.89092410e-14],
+  array([[[[-9.80386778e-13,  3.43074228e-14,  9.22833230e-15, ...,
+            -1.01473435e-12, -3.54004252e-13, -4.80509980e-14],
+           [-5.87404596e-14, -6.80390738e-15, -7.95707306e-15, ...,
+            -2.87615080e-13, -5.02842431e-14,  3.69359177e-15],
+           [-2.22710592e-13, -1.13879170e-13, -1.27106853e-13, ...,
+            -1.08737416e-13,  3.93813925e-14,  5.76450683e-14],
            ...,
-           [-7.26978228e-13, -3.29589915e-14,  4.43490464e-13, ...,
-             2.43009327e-13,  1.84667725e-13,  3.64949881e-14],
-           [ 3.97148869e-12,  3.02457166e-13,  2.90760565e-13, ...,
-             1.85587456e-13,  8.26951907e-14,  2.28964204e-14],
-           [ 5.83749170e-10,  1.86378436e-12,  3.07274957e-13, ...,
-             1.18333161e-12,  1.78942455e-13,  5.27068767e-14]],
+           [-2.69045848e-13, -1.19188799e-14,  4.74335182e-13, ...,
+             1.87992906e-13,  1.02251322e-13,  3.70478723e-14],
+           [ 2.41423540e-13,  1.15402129e-13,  4.50014166e-13, ...,
+             1.69899366e-13,  9.10837710e-14,  8.47262066e-14],
+           [ 1.50618305e-11,  6.18831908e-13,  1.96202477e-12, ...,
+             4.00918489e-12,  1.04877659e-12,  1.42781704e-12]],
 
-          [[ 1.53938047e-15,  3.18638043e-15,  1.09009914e-15, ...,
-            -3.88708044e-15, -2.87836645e-16, -2.13336170e-17],
-           [-3.56843713e-17,  4.24412464e-17,  4.04377625e-17, ...,
-            -6.50795870e-16, -7.79346508e-17,  5.50028973e-18],
-           [-3.40970286e-16, -1.69697923e-16, -1.93794764e-16, ...,
-            -2.77997107e-16,  4.67095325e-17,  6.90308374e-17],
+          [[-1.14883368e-15,  4.02020139e-17,  1.08139147e-17, ...,
+            -1.18908275e-15, -4.14828124e-16, -5.63069659e-17],
+           [-6.88330566e-17, -7.97293288e-18, -9.32423178e-18, ...,
+            -3.37032179e-16, -5.89239201e-17,  4.32821283e-18],
+           [-2.60976010e-16, -1.33445523e-16, -1.48945944e-16, ...,
+            -1.27420330e-16,  4.61477767e-17,  6.75494585e-17],
   ...
-            -8.94257639e-02, -9.14015197e-02, -1.18979310e-02],
-           [ 1.20148431e-01,  4.17318762e-02,  1.58297653e-01, ...,
-            -2.19121474e-01, -8.72729269e-02, -9.37760081e-03],
-           [ 4.54692652e-02,  8.94061373e-02, -2.16031665e-01, ...,
-            -1.75102345e+00, -6.55139161e-01, -5.34051466e-02]],
+            -8.30204531e-02, -1.93752634e-01, -1.02219711e-01],
+           [ 2.66454926e-02,  2.95173505e-02,  1.24056801e-01, ...,
+            -1.04282633e-01, -1.23068955e-01, -1.55471065e-01],
+           [ 2.71531205e-02,  8.51911336e-02, -6.70740601e-02, ...,
+            -1.24222079e+00, -2.82010633e+00, -4.12224371e+00]],
 
-          [[ 7.38824448e+03,  3.86138727e+02, -1.08743856e+03, ...,
-            -4.01695451e+03, -4.67365997e+01, -2.96560723e+01],
-           [ 1.44446590e+02,  5.04642287e+01, -9.87134848e+01, ...,
-            -1.02133835e+02,  1.73617712e+01,  6.21114821e+00],
-           [-1.10855673e+03,  1.20284550e+02,  6.67008376e+01, ...,
-            -8.56072130e+01,  1.90335692e+01,  5.48202119e-01],
+          [[ 1.54744606e+04,  3.92974955e+02, -5.35603152e+02, ...,
+            -3.08231871e+02, -1.85731844e+01,  2.05726031e+01],
+           [-2.58237744e+02, -1.75707972e+00, -1.12339718e+02, ...,
+            -6.93921260e+01,  5.37886934e+00,  1.05843406e+01],
+           [-1.06105203e+03,  1.16938050e+02,  5.31313419e+01, ...,
+            -9.51926546e+01,  9.16730405e+00,  4.38948760e+00],
            ...,
-           [-5.55159100e+01,  7.25997284e+01,  2.46971270e+02, ...,
-            -7.63137762e+01, -7.79998383e+01, -1.01534055e+01],
-           [ 1.02531755e+02,  3.56129701e+01,  1.35087375e+02, ...,
-            -1.86992946e+02, -7.44765975e+01, -8.00261696e+00],
-           [ 3.88023655e+01,  7.62970273e+01, -1.84356179e+02, ...,
-            -1.49428090e+03, -5.59079872e+02, -4.55746562e+01]]]],
+           [-1.63549499e+01,  6.19741716e+01,  2.14804565e+02, ...,
+            -7.08476394e+01, -1.65343795e+02, -8.72318237e+01],
+           [ 2.27386167e+01,  2.51893904e+01,  1.05867063e+02, ...,
+            -8.89922671e+01, -1.05024058e+02, -1.32675234e+02],
+           [ 2.31718138e+01,  7.27000456e+01, -5.72393745e+01, ...,
+            -1.06008106e+03, -2.40661034e+03, -3.51782313e+03]]]],
         shape=(3, 9, 9, 9))
   ```
 - [x] Coordinates: (7)
@@ -36437,7 +36761,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x77b54c51cd70>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7d30e074d2b0>
     ```
 - [x] Attributes: (4)
 
@@ -36468,7 +36792,7 @@ print(f"Rigid + B-spline final metric: {diagnostics_bspline.final_metric_value:.
 
 ```text
 Rigid final metric: -0.8197
-Rigid + B-spline final metric: -0.8950
+Rigid + B-spline final metric: -0.8927
 ```
 
 ```python
@@ -36554,7 +36878,7 @@ fig.tight_layout()
 
 ---
 
-**Total running time:** 106.5 s
+**Total running time:** 68.6 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_registration/01_register_volume_same_subject.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/register_volume_same_subject.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/register_volume_same_subject.ipynb>)
 
@@ -36920,7 +37244,7 @@ xarray.DataArray
     ☐ ☐
 
     ```
-    <confusius._utils.geometry.VoxelToWorldIndex object at 0x783b9a483610>
+    <confusius._utils.geometry.VoxelToWorldIndex object at 0x7531f3e37610>
     ```
 - [ ] Attributes: (21)
 
@@ -37127,7 +37451,7 @@ For a full visual check of the corrected movie, open the result in napari with `
 
 ---
 
-**Total running time:** 43.2 s
+**Total running time:** 43.5 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/04_registration/02_volumewise_motion_correction.py>) [Download .py](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/registration/volumewise_motion_correction.ipynb>)
 
@@ -37145,6 +37469,9 @@ Current development version for the next ConfUSIus release.
 
 ### 💥 Breaking changes
 
+- IQ processing functions and their xarray accessors now require window widths, strides, filter cutoffs, masks, and other optional settings to be passed by keyword. This also applies to the required window settings in `compute_processed_volume_timings`. For example, use `iq.fusi.iq.process_to_bmode(bmode_window_width=300)` ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Custom `process_iq_blocks` calls now require `output_shape` and `output_dtype` for one processing window. Callbacks must return NumPy arrays matching both declarations and retain the leading output-time axis. Execution options are keyword-only, non-temporal axes are inferred automatically, and callback settings must be bound with `functools.partial` instead of forwarded keywords. The Dask-specific `drop_axis` and `new_axis` options are removed ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- `compute_axial_velocity_volume`, `process_iq_to_axial_velocity`, and the corresponding xarray accessor now default `spatial_kernel` to `1`, disabling spatial median filtering unless requested ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `get_bounding_box` and `.fusi.affine.bounding_box` now return a dictionary mapping world coordinate names to `(min, max)` bounds instead of a DataArray. Access bounds with `bbox["z"]` instead of `.sel`; pose-dependent data now returns one box enclosing all poses, so select a pose first for its own box ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - `plot_stat_map` and `plot_matrix` default to the `"berlin"` colormap for signed data on dark backgrounds (`"coolwarm"` stays the default on light ones), judged from `bg_color` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Seed-based correlation maps, decomposition maps, GLM contrast maps and `process_iq_to_axial_velocity` outputs carry `attrs["cmap"] = "berlin"`, the colormap `plot_volume` and `plot_napari` draw them with ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
@@ -37153,6 +37480,9 @@ Current development version for the next ConfUSIus release.
 
 ### ✨ Enhancements
 
+- Control Butterworth clutter-filter padding with `padtype`/`padlen`, also exposed as `butterworth_padtype`/`butterworth_padlen` in IQ processing functions and accessors. Existing defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Tune execution batching in `process_iq_blocks` with `windows_per_task`, independently of scientific window sizes. Existing overlap-safe defaults remain unchanged ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Stream the Landemard beamformed IQ sample lazily and open HTTP(S) Zarr stores with `cf.load`, including stores that require query parameters on each request ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - New `ThresholdedColormap`, the gray-banded colormap stat maps are drawn with, which remembers its source colormap and threshold and can be rebuilt on another colormap with `with_source` ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - Load multi-pose arrays split into several NIfTI files using `{chunk}` in the filename, stacking them along `pose` in numeric chunk order while preserving geometry and timing ([\#564](<https://github.com/confusius-tools/confusius/pull/564>)).
 - Add `convert_from_nifti` and `convert_to_nifti` to convert directly between VoxelData and NiBabel NIfTI images without a temporary file. Conversion returns fUSI-BIDS metadata alongside the image to preserve timing and named extra dimensions. Conversion to NIfTI is also available on the `.fusi` accessor, as `data.fusi.to_nifti` ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
@@ -37163,9 +37493,14 @@ Current development version for the next ConfUSIus release.
 ### ⚡ Performance
 
 - Automatic NIfTI chunks follow disk order, reducing fragmented reads on network drives. Large 2D and 3D images split along their slowest axes first, and 4D through 7D files group complete spatial volumes ([\#597](<https://github.com/confusius-tools/confusius/pull/597>)).
+- IQ processing and cumulative-energy threshold calibration construct their Dask graphs without reading IQ samples, including for Zarr recordings opened with `chunks=None`. Processing reuses existing Dask chunks or the storage chunk sizes when available. NumPy-backed inputs share their sample buffer with the pending computation, avoiding a full recording copy. Keep the samples unchanged until computation finishes ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 
 ### 🐛 Fixes
 
+- Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation. Both signal and IQ Butterworth filters require a positive filter order when filtering is requested ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- IQ window counting avoids integer overflow on long recordings, and axial velocity calculations use consistent precision across integer lag types ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
+- SVD clutter filters and cumulative-energy threshold calibration now raise `ValueError` when a supplied mask selects no voxels, preventing silently unfiltered outputs or invalid thresholds. Omitting the mask still uses all voxels ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - `plot_motion_diagnostics` draws the iteration count in a darker turquoise, readable on light backgrounds ([\#518](<https://github.com/confusius-tools/confusius/pull/518>)).
 - `apply_affine` and `reindex_voxels` now accept scalar-indexed VoxelData arrays and restore the indexed voxel dimension in their result. `inplace=True` raises a `ValueError` on such arrays ([\#558](<https://github.com/confusius-tools/confusius/pull/558>)).
 - `load_nifti` and `convert_from_nifti` declare the dtype of scaled values (`scl_slope`/`scl_inter`) and size `"auto"` chunks for it ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).
@@ -37173,6 +37508,7 @@ Current development version for the next ConfUSIus release.
 
 ### 📚 Documentation
 
+- Add a beamformed IQ processing example covering B-mode, power Doppler, and axial velocity ([\#576](<https://github.com/confusius-tools/confusius/pull/576>)).
 - Cite the ConfUSIus preprint as the preferred reference, link to the Zenodo software archive, and simplify dataset and template citations ([\#565](<https://github.com/confusius-tools/confusius/pull/565>)).
 - Add the [Transforms 101](<https://confusius.tools/dev/examples/_built/io/transforms_101/index.md>) example, which shows how to translate, rotate and zoom a VoxelData array and what the `center` argument does ([\#556](<https://github.com/confusius-tools/confusius/pull/556>)).
 - Added the [Use nilearn on a VoxelData array](<https://confusius.tools/dev/examples/_built/interoperability/nilearn/index.md>) example, which shows how to use `convert_from_nifti` and `convert_to_nifti` for easier interoperability with [nilearn](<https://nilearn.github.io>) ([\#421](<https://github.com/confusius-tools/confusius/pull/421>)).

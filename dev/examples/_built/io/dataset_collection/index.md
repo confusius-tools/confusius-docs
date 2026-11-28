@@ -36,6 +36,7 @@ cf.datasets.list_datasets()
 │ fetch_pepe_mariani_2026             │ 37.56 GB │    ✓    │
 │ fetch_landemard_2026                │ 42.04 GB │    ✓    │
 │ fetch_khallaf_2026                  │ 24.02 GB │    ✓    │
+│ fetch_sample_beamformed_iq          │ 84.61 GB │    ✗    │
 │ fetch_template_brunner_grillet_2021 │ 16.34 MB │    ✗    │
 │ fetch_template_pepe_mariani_2026    │ 5.508 MB │    ✓    │
 └─────────────────────────────────────┴──────────┴─────────┘
@@ -115,6 +116,6 @@ Beyond these examples, the ConfUSIus dataset collection can support further anal
 
 ---
 
-**Total running time:** 5.6 s
+**Total running time:** 5.8 s
 
 [Launch in Binder](<https://mybinder.org/v2/gh/confusius-tools/confusius/main?urlpath=lab/tree/docs/examples/01_io/04_dataset_collection.py>) [Download .py](<https://confusius.tools/dev/examples/_built/io/dataset_collection.py>) [Download .ipynb](<https://confusius.tools/dev/examples/_built/io/dataset_collection.ipynb>)
