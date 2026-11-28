@@ -319,7 +319,7 @@ Parameters:
 
   (`DataArray`) –
 
-  DataArray with a `time` coordinate.
+  DataArray with a `time` coordinate of dimensions `(time,)`.
 - #### **`new_time`**
 
   (`array_like`) –
@@ -356,7 +356,7 @@ Raises:
 
 - `ValueError` –
 
-  If `data` does not have a `time` dimension, has only 1 timepoint, or its `time` coordinate is not strictly increasing.
+  If `data` does not have a `time` dimension, has only 1 timepoint, its `time` coordinate is not strictly increasing, or its `time` coordinate has dimensions other than `(time,)` (e.g. pose-dependent multi-pose data, which `correct_slice_timings` resamples onto a shared 1D `time`).
 
 ### resample\_to\_uniform\_time
 
@@ -392,7 +392,7 @@ Parameters:
 
   (`DataArray`) –
 
-  DataArray with a `time` coordinate.
+  DataArray with a `time` coordinate of dimensions `(time,)`.
 - #### **`start`**
 
   (`float`, default: `None` ) –
@@ -439,7 +439,7 @@ Raises:
 
 - `ValueError` –
 
-  If `data` does not have a `time` dimension or has only 1 timepoint.
+  If `data` does not have a `time` dimension, has only 1 timepoint, or its `time` coordinate has dimensions other than `(time,)` (e.g. pose-dependent multi-pose data, which `correct_slice_timings` resamples onto a shared 1D `time`).
 - `ValueError` –
 
   If `start` is greater than or equal to `stop`, if `step` is not positive, or if no valid representative step can be derived.

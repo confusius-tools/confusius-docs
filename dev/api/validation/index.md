@@ -622,6 +622,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: Literal[False] = False,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, None]
 ```
 
@@ -633,6 +634,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: Literal[True] = True,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, float]
 ```
 
@@ -644,6 +646,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: bool = False,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, float | None]
 ```
 
@@ -653,9 +656,10 @@ Performs common validation checks:
 
 1. Time series have a `time` dimension.
 2. Time dimension has more than 1 timepoint.
-3. Time dimension is not chunked for Dask arrays (optional).
-4. Time coordinate is strictly increasing (optional).
-5. Time coordinate is uniformly sampled (optional).
+3. Time coordinate has dimensions `(time,)` (optional).
+4. Time dimension is not chunked for Dask arrays (optional).
+5. Time coordinate is strictly increasing (optional).
+6. Time coordinate is uniformly sampled (optional).
 
 Parameters:
 
@@ -689,6 +693,11 @@ Parameters:
   (`float`, default: `1e-2` ) –
 
   Maximum allowed relative range of consecutive time intervals, defined as `(max_interval - min_interval) / median_interval`. Raise a `ValueError` if the time coordinate exceeds this threshold.
+- #### **`require_1d_time`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to require the `time` coordinate to have dimensions `(time,)`.
 
 Returns:
 
@@ -703,7 +712,7 @@ Raises:
 
 - `ValueError` –
 
-  If `time_series` has no `time` dimension, if the `time` dimension has only 1 timepoint, if the `time` dimension is chunked in a Dask array (when `require_unchunked_time=True`), if `require_sorted_time=True` and the `time` coordinate is not strictly increasing, or if `require_uniform_time=True` and the `time` coordinate is not uniformly sampled.
+  If `time_series` has no `time` dimension, if the `time` dimension has only 1 timepoint, if `require_1d_time=True` and the `time` coordinate has dimensions other than `(time,)`, if the `time` dimension is chunked in a Dask array (when `require_unchunked_time=True`), if `require_sorted_time=True` and the `time` coordinate is not strictly increasing, or if `require_uniform_time=True` and the `time` coordinate is not uniformly sampled.
 
 ### validate\_voxeldata
 

@@ -20237,7 +20237,7 @@ Parameters:
 
   (`DataArray`) –
 
-  DataArray with a `time` coordinate.
+  DataArray with a `time` coordinate of dimensions `(time,)`.
 - #### **`new_time`**
 
   (`array_like`) –
@@ -20274,7 +20274,7 @@ Raises:
 
 - `ValueError` –
 
-  If `data` does not have a `time` dimension, has only 1 timepoint, or its `time` coordinate is not strictly increasing.
+  If `data` does not have a `time` dimension, has only 1 timepoint, its `time` coordinate is not strictly increasing, or its `time` coordinate has dimensions other than `(time,)` (e.g. pose-dependent multi-pose data, which `correct_slice_timings` resamples onto a shared 1D `time`).
 
 ### resample\_to\_uniform\_time
 
@@ -20310,7 +20310,7 @@ Parameters:
 
   (`DataArray`) –
 
-  DataArray with a `time` coordinate.
+  DataArray with a `time` coordinate of dimensions `(time,)`.
 - #### **`start`**
 
   (`float`, default: `None` ) –
@@ -20357,7 +20357,7 @@ Raises:
 
 - `ValueError` –
 
-  If `data` does not have a `time` dimension or has only 1 timepoint.
+  If `data` does not have a `time` dimension, has only 1 timepoint, or its `time` coordinate has dimensions other than `(time,)` (e.g. pose-dependent multi-pose data, which `correct_slice_timings` resamples onto a shared 1D `time`).
 - `ValueError` –
 
   If `start` is greater than or equal to `stop`, if `step` is not positive, or if no valid representative step can be derived.
@@ -20992,6 +20992,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: Literal[False] = False,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, None]
 ```
 
@@ -21003,6 +21004,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: Literal[True] = True,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, float]
 ```
 
@@ -21014,6 +21016,7 @@ validate_time_series(
     require_sorted_time: bool = False,
     require_uniform_time: bool = False,
     uniformity_tolerance: float = 0.01,
+    require_1d_time: bool = False,
 ) -> tuple[int, float | None]
 ```
 
@@ -21023,9 +21026,10 @@ Performs common validation checks:
 
 1. Time series have a `time` dimension.
 2. Time dimension has more than 1 timepoint.
-3. Time dimension is not chunked for Dask arrays (optional).
-4. Time coordinate is strictly increasing (optional).
-5. Time coordinate is uniformly sampled (optional).
+3. Time coordinate has dimensions `(time,)` (optional).
+4. Time dimension is not chunked for Dask arrays (optional).
+5. Time coordinate is strictly increasing (optional).
+6. Time coordinate is uniformly sampled (optional).
 
 Parameters:
 
@@ -21059,6 +21063,11 @@ Parameters:
   (`float`, default: `1e-2` ) –
 
   Maximum allowed relative range of consecutive time intervals, defined as `(max_interval - min_interval) / median_interval`. Raise a `ValueError` if the time coordinate exceeds this threshold.
+- #### **`require_1d_time`**
+
+  (`bool`, default: `False` ) –
+
+  Whether to require the `time` coordinate to have dimensions `(time,)`.
 
 Returns:
 
@@ -21073,7 +21082,7 @@ Raises:
 
 - `ValueError` –
 
-  If `time_series` has no `time` dimension, if the `time` dimension has only 1 timepoint, if the `time` dimension is chunked in a Dask array (when `require_unchunked_time=True`), if `require_sorted_time=True` and the `time` coordinate is not strictly increasing, or if `require_uniform_time=True` and the `time` coordinate is not uniformly sampled.
+  If `time_series` has no `time` dimension, if the `time` dimension has only 1 timepoint, if `require_1d_time=True` and the `time` coordinate has dimensions other than `(time,)`, if the `time` dimension is chunked in a Dask array (when `require_unchunked_time=True`), if `require_sorted_time=True` and the `time` coordinate is not strictly increasing, or if `require_uniform_time=True` and the `time` coordinate is not uniformly sampled.
 
 ### validate\_voxeldata
 
@@ -37497,6 +37506,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- `resample_time` and `resample_to_uniform_time` now require one timestamp per timepoint along the `time` dimension. For multi-pose recordings with a `(time, pose)`-shaped `time` coordinate, resample the poses onto a shared grid with `correct_slice_timings` ([\#424](<https://github.com/confusius-tools/confusius/pull/424>)).
 - Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation. Both signal and IQ Butterworth filters require a positive filter order when filtering is requested ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - IQ window counting avoids integer overflow on long recordings, and axial velocity calculations use consistent precision across integer lag types ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).

@@ -34,6 +34,7 @@ Current development version for the next ConfUSIus release.
 
 ### 🐛 Fixes
 
+- `resample_time` and `resample_to_uniform_time` now require one timestamp per timepoint along the `time` dimension. For multi-pose recordings with a `(time, pose)`-shaped `time` coordinate, resample the poses onto a shared grid with `correct_slice_timings` ([\#424](<https://github.com/confusius-tools/confusius/pull/424>)).
 - Signal Butterworth filtering checks the actual padding requirement, accepting short signals with custom or disabled padding and accounting correctly for odd-order and band-pass filters. Dask-backed results report the filtered dtype before computation. Both signal and IQ Butterworth filters require a positive filter order when filtering is requested ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - IQ window counting avoids integer overflow on long recordings, and axial velocity calculations use consistent precision across integer lag types ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).
 - Adaptive SVD filtering retains consistent output precision even when a window selects no clutter components, preventing other windows from being silently downcast during Dask assembly ([\#586](<https://github.com/confusius-tools/confusius/pull/586>)).

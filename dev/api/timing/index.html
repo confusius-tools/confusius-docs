@@ -4542,7 +4542,7 @@ assumed.</p>
 <a href="#confusius.timing.resample_time(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray with a <code>time</code> coordinate.</p>
+            <p>DataArray with a <code>time</code> coordinate of dimensions <code>(time,)</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4608,8 +4608,11 @@ side.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>data</code> does not have a <code>time</code> dimension, has only 1 timepoint, or its <code>time</code>
-coordinate is not strictly increasing.</p>
+            <p>If <code>data</code> does not have a <code>time</code> dimension, has only 1 timepoint, its <code>time</code>
+coordinate is not strictly increasing, or its <code>time</code> coordinate has dimensions
+other than <code>(time,)</code> (e.g. pose-dependent multi-pose data, which
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a>
+resamples onto a shared 1D <code>time</code>).</p>
           </div>
         </li>
     </ul>
@@ -4662,7 +4665,7 @@ coordinate is not strictly increasing.</p>
 <a href="#confusius.timing.resample_to_uniform_time(data)" class="headerlink" title="Permanent link">&para;</a></h4>              (<code><a class="autorefs autorefs-external" title="&lt;code&gt;xarray.DataArray&lt;/code&gt;" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray">DataArray</a></code>)
           –
           <div class="doc-md-description">
-            <p>DataArray with a <code>time</code> coordinate.</p>
+            <p>DataArray with a <code>time</code> coordinate of dimensions <code>(time,)</code>.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
@@ -4754,7 +4757,11 @@ side.</p>
               <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError">ValueError</a></code>
             –
           <div class="doc-md-description">
-            <p>If <code>data</code> does not have a <code>time</code> dimension or has only 1 timepoint.</p>
+            <p>If <code>data</code> does not have a <code>time</code> dimension, has only 1 timepoint, or its <code>time</code>
+coordinate has dimensions other than <code>(time,)</code> (e.g. pose-dependent multi-pose
+data, which
+<a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a>
+resamples onto a shared 1D <code>time</code>).</p>
           </div>
         </li>
         <li class="doc-section-item field-body">

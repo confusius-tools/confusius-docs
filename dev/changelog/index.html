@@ -5279,6 +5279,11 @@
 </ul>
 <h3 id="fixes"><img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f41b.svg" title=":bug:" /> Fixes<a class="headerlink" href="#fixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><code>resample_time</code> and <code>resample_to_uniform_time</code> now require one timestamp per
+  timepoint along the <code>time</code> dimension. For multi-pose recordings with a
+  <code>(time, pose)</code>-shaped <code>time</code> coordinate, resample the poses onto a shared grid with
+  <a class="autorefs autorefs-internal" title="&lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;correct_slice_timings&lt;/span&gt;" href="../api/multipose/#confusius.multipose.correct_slice_timings"><code>correct_slice_timings</code></a>
+  (<a href="https://github.com/confusius-tools/confusius/pull/424">#424</a>).</li>
 <li>Signal Butterworth filtering checks the actual padding requirement, accepting
   short signals with custom or disabled padding and accounting correctly for
   odd-order and band-pass filters. Dask-backed results report the filtered dtype
